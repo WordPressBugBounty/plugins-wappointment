@@ -19,7 +19,7 @@ trait PreparesClientEmail
         $this->body = $email->getHtmlBody($appointment);
         return \true;
     }
-    private function tryToLoadEmail($eventType, $localized = \false, $reminderId)
+    private function tryToLoadEmail($eventType, $localized, $reminderId)
     {
         if ($localized !== \false) {
             $email = $this->tryEmail($eventType, $localized, $reminderId);
@@ -29,7 +29,7 @@ trait PreparesClientEmail
         }
         return $this->tryEmail($eventType, \false, $reminderId);
     }
-    private function tryEmail($eventType, $localized = \false, $reminderId)
+    private function tryEmail($eventType, $localized, $reminderId)
     {
         $query = Reminder::where('published', 1)->where('type', Reminder::getType('email'))->where('event', $eventType);
         if ($localized) {
