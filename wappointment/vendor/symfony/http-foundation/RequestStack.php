@@ -48,14 +48,14 @@ class RequestStack
         if (!$this->requests) {
             return null;
         }
-        return \array_pop($this->requests);
+        return array_pop($this->requests);
     }
     /**
      * @return Request|null
      */
     public function getCurrentRequest()
     {
-        return \end($this->requests) ?: null;
+        return end($this->requests) ?: null;
     }
     /**
      * Gets the main request.
@@ -64,7 +64,7 @@ class RequestStack
      * might make it un-compatible with other features of your framework
      * like ESI support.
      */
-    public function getMainRequest() : ?Request
+    public function getMainRequest(): ?Request
     {
         if (!$this->requests) {
             return null;
@@ -104,9 +104,9 @@ class RequestStack
      *
      * @throws SessionNotFoundException
      */
-    public function getSession() : SessionInterface
+    public function getSession(): SessionInterface
     {
-        if (null !== ($request = \end($this->requests) ?: null) && $request->hasSession()) {
+        if (null !== ($request = end($this->requests) ?: null) && $request->hasSession()) {
             return $request->getSession();
         }
         throw new SessionNotFoundException();

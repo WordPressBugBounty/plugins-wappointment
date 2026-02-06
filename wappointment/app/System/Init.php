@@ -13,12 +13,13 @@ class Init
     {
         $this->is_installed = \Wappointment\System\Status::isInstalled();
         WPHelpers::requestCapture($this->is_installed);
-        if (\defined('WAPPOINTMENT_PDO_FAIL')) {
+        if (defined('WAPPOINTMENT_PDO_FAIL')) {
             //Database::capsule();
             // maybe we should find a way to run without pdo_mysql
         } else {
             Database::capsule();
         }
+        $this->registerLaravelMacros();
         if ($this->is_installed) {
             \Wappointment\System\Listeners::init();
             add_action('init', [$this, 'baseInit']);
@@ -32,6 +33,14 @@ class Init
             new \Wappointment\System\InitBackend($this->is_installed);
         }
     }
+    private function registerLaravelMacros()
+    {
+        if (!\WappoVendor\Illuminate\Support\Arr::hasMacro('query')) {
+            \WappoVendor\Illuminate\Support\Arr::macro('query', function ($array) {
+                return http_build_query($array);
+            });
+        }
+    }
     public function initNotInstalled()
     {
         new \Wappointment\System\InitPreinstall();
@@ -43,10 +52,10 @@ class Init
         new \Wappointment\Routes\Main();
         (new \Wappointment\WP\CustomPage())->boot();
         if (!\Wappointment\Services\Payment::isWooActive()) {
-            add_filter('wappointment_package_save', ['\\Wappointment\\Services\\AdminPackage', 'dataSave'], 10, 2);
-            add_filter('wappointment_package_delete', ['\\Wappointment\\Services\\AdminPackage', 'delete']);
+            add_filter('wappointment_package_save', ['\Wappointment\Services\AdminPackage', 'dataSave'], 10, 2);
+            add_filter('wappointment_package_delete', ['\Wappointment\Services\AdminPackage', 'delete']);
         }
-        add_action('wappointment_cancel_ticket', ['\\Wappointment\\Services\\Ticket', 'cancel'], 10, 1);
+        add_action('wappointment_cancel_ticket', ['\Wappointment\Services\Ticket', 'cancel'], 10, 1);
     }
     public function initInstalled()
     {
@@ -58,7 +67,7 @@ class Init
     }
     public function registeringWidget()
     {
-        register_widget('Wappointment\\WP\\Widget');
+        register_widget('Wappointment\WP\Widget');
     }
     public function jsVariables()
     {
@@ -66,7 +75,7 @@ class Init
         if (is_user_logged_in()) {
             $variables['nonce'] = wp_create_nonce('wp_rest');
         }
-        if (\defined('WP_DEBUG')) {
+        if (defined('WP_DEBUG')) {
             $variables['debug'] = \true;
         }
         if (is_admin()) {

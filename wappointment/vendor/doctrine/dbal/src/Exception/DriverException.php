@@ -44,7 +44,7 @@ class DriverException extends Exception implements TheDriverException
         assert($previous instanceof TheDriverException);
         return $previous->getSQLState();
     }
-    public function getQuery() : ?Query
+    public function getQuery(): ?Query
     {
         return $this->query;
     }

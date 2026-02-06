@@ -18,10 +18,10 @@ class Helper
         }
         return static::generateBinding($definition);
     }
-    private static function getDefinition($type) : PluginDefinition
+    private static function getDefinition($type): PluginDefinition
     {
-        $class = __NAMESPACE__ . '\\' . $type . '\\Definition';
-        if (!\class_exists($class)) {
+        $class = __NAMESPACE__ . '\\' . $type . '\Definition';
+        if (!class_exists($class)) {
             throw new \WappointmentException("Cannot find plugin definition " . $type, 1);
         }
         return new $class();

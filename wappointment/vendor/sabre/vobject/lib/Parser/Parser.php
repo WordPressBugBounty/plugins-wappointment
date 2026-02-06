@@ -42,7 +42,7 @@ abstract class Parser
      */
     public function __construct($input = null, $options = 0)
     {
-        if (!\is_null($input)) {
+        if (!is_null($input)) {
             $this->setInput($input);
         }
         $this->options = $options;
@@ -60,11 +60,11 @@ abstract class Parser
      *
      * @return array
      */
-    public abstract function parse($input = null, $options = 0);
+    abstract public function parse($input = null, $options = 0);
     /**
      * Sets the input data.
      *
      * @param mixed $input
      */
-    public abstract function setInput($input);
+    abstract public function setInput($input);
 }

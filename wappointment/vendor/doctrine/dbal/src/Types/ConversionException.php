@@ -78,7 +78,7 @@ class ConversionException extends Exception
         $actualType = is_object($value) ? get_class($value) : gettype($value);
         return new self(sprintf("Could not convert PHP type '%s' to '%s', as an '%s' error was triggered by the serialization", $actualType, $format, $error), 0, func_num_args() >= 4 ? func_get_arg(3) : null);
     }
-    public static function conversionFailedUnserialization(string $format, string $error) : self
+    public static function conversionFailedUnserialization(string $format, string $error): self
     {
         return new self(sprintf("Could not convert database value to '%s' as an error was triggered by the unserialization: '%s'", $format, $error));
     }

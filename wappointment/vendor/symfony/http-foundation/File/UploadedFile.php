@@ -87,7 +87,7 @@ class UploadedFile extends File
      */
     public function getClientOriginalExtension()
     {
-        return \pathinfo($this->originalName, \PATHINFO_EXTENSION);
+        return pathinfo($this->originalName, \PATHINFO_EXTENSION);
     }
     /**
      * Returns the file mime type.
@@ -125,7 +125,7 @@ class UploadedFile extends File
      */
     public function guessClientExtension()
     {
-        if (!\class_exists(MimeTypes::class)) {
+        if (!class_exists(MimeTypes::class)) {
             throw new \LogicException('You cannot guess the extension as the Mime component is not installed. Try running "composer require symfony/mime".');
         }
         return MimeTypes::getDefault()->getExtensions($this->getClientMimeType())[0] ?? null;
@@ -150,7 +150,7 @@ class UploadedFile extends File
     public function isValid()
     {
         $isOk = \UPLOAD_ERR_OK === $this->error;
-        return $this->test ? $isOk : $isOk && \is_uploaded_file($this->getPathname());
+        return $this->test ? $isOk : $isOk && is_uploaded_file($this->getPathname());
     }
     /**
      * Moves the file to a new location.
@@ -166,18 +166,18 @@ class UploadedFile extends File
                 return parent::move($directory, $name);
             }
             $target = $this->getTargetFile($directory, $name);
-            \set_error_handler(function ($type, $msg) use(&$error) {
+            set_error_handler(function ($type, $msg) use (&$error) {
                 $error = $msg;
             });
             try {
-                $moved = \move_uploaded_file($this->getPathname(), $target);
+                $moved = move_uploaded_file($this->getPathname(), $target);
             } finally {
-                \restore_error_handler();
+                restore_error_handler();
             }
             if (!$moved) {
-                throw new FileException(\sprintf('Could not move the file "%s" to "%s" (%s).', $this->getPathname(), $target, \strip_tags($error)));
+                throw new FileException(sprintf('Could not move the file "%s" to "%s" (%s).', $this->getPathname(), $target, strip_tags($error)));
             }
-            @\chmod($target, 0666 & ~\umask());
+            @chmod($target, 0666 & ~umask());
             return $target;
         }
         switch ($this->error) {
@@ -207,7 +207,7 @@ class UploadedFile extends File
     {
         $sizePostMax = self::parseFilesize(\ini_get('post_max_size'));
         $sizeUploadMax = self::parseFilesize(\ini_get('upload_max_filesize'));
-        return \min($sizePostMax ?: \PHP_INT_MAX, $sizeUploadMax ?: \PHP_INT_MAX);
+        return min($sizePostMax ?: \PHP_INT_MAX, $sizeUploadMax ?: \PHP_INT_MAX);
     }
     /**
      * Returns the given size from an ini value in bytes.
@@ -219,16 +219,16 @@ class UploadedFile extends File
         if ('' === $size) {
             return 0;
         }
-        $size = \strtolower($size);
-        $max = \ltrim($size, '+');
-        if (\str_starts_with($max, '0x')) {
+        $size = strtolower($size);
+        $max = ltrim($size, '+');
+        if (str_starts_with($max, '0x')) {
             $max = \intval($max, 16);
-        } elseif (\str_starts_with($max, '0')) {
+        } elseif (str_starts_with($max, '0')) {
             $max = \intval($max, 8);
         } else {
             $max = (int) $max;
         }
-        switch (\substr($size, -1)) {
+        switch (substr($size, -1)) {
             case 't':
                 $max *= 1024;
             // no break
@@ -254,6 +254,6 @@ class UploadedFile extends File
         $errorCode = $this->error;
         $maxFilesize = \UPLOAD_ERR_INI_SIZE === $errorCode ? self::getMaxFilesize() / 1024 : 0;
         $message = $errors[$errorCode] ?? 'The file "%s" was not uploaded due to an unknown error.';
-        return \sprintf($message, $this->getClientOriginalName(), $maxFilesize);
+        return sprintf($message, $this->getClientOriginalName(), $maxFilesize);
     }
 }

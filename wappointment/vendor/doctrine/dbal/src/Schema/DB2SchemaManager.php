@@ -166,7 +166,7 @@ class DB2SchemaManager extends AbstractSchemaManager
     /**
      * {@inheritdoc}
      */
-    public function listTableDetails($name) : Table
+    public function listTableDetails($name): Table
     {
         $table = parent::listTableDetails($name);
         $sql = $this->_platform->getListTableCommentsSQL($name);

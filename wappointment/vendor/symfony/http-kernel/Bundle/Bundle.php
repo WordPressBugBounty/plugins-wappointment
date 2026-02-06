@@ -61,13 +61,13 @@ abstract class Bundle implements BundleInterface
             $extension = $this->createContainerExtension();
             if (null !== $extension) {
                 if (!$extension instanceof ExtensionInterface) {
-                    throw new \LogicException(\sprintf('Extension "%s" must implement Symfony\\Component\\DependencyInjection\\Extension\\ExtensionInterface.', \get_debug_type($extension)));
+                    throw new \LogicException(sprintf('Extension "%s" must implement Symfony\Component\DependencyInjection\Extension\ExtensionInterface.', get_debug_type($extension)));
                 }
                 // check naming convention
-                $basename = \preg_replace('/Bundle$/', '', $this->getName());
+                $basename = preg_replace('/Bundle$/', '', $this->getName());
                 $expectedAlias = Container::underscore($basename);
                 if ($expectedAlias != $extension->getAlias()) {
-                    throw new \LogicException(\sprintf('Users will expect the alias of the default extension of a bundle to be the underscored version of the bundle name ("%s"). You can override "Bundle::getContainerExtension()" if you want to use "%s" or another alias.', $expectedAlias, $extension->getAlias()));
+                    throw new \LogicException(sprintf('Users will expect the alias of the default extension of a bundle to be the underscored version of the bundle name ("%s"). You can override "Bundle::getContainerExtension()" if you want to use "%s" or another alias.', $expectedAlias, $extension->getAlias()));
                 }
                 $this->extension = $extension;
             } else {
@@ -100,7 +100,7 @@ abstract class Bundle implements BundleInterface
     /**
      * Returns the bundle name (the class short name).
      */
-    public final function getName() : string
+    final public function getName(): string
     {
         if (null === $this->name) {
             $this->parseClassName();
@@ -117,8 +117,8 @@ abstract class Bundle implements BundleInterface
      */
     protected function getContainerExtensionClass()
     {
-        $basename = \preg_replace('/Bundle$/', '', $this->getName());
-        return $this->getNamespace() . '\\DependencyInjection\\' . $basename . 'Extension';
+        $basename = preg_replace('/Bundle$/', '', $this->getName());
+        return $this->getNamespace() . '\DependencyInjection\\' . $basename . 'Extension';
     }
     /**
      * Creates the bundle's container extension.
@@ -127,14 +127,14 @@ abstract class Bundle implements BundleInterface
      */
     protected function createContainerExtension()
     {
-        return \class_exists($class = $this->getContainerExtensionClass()) ? new $class() : null;
+        return class_exists($class = $this->getContainerExtensionClass()) ? new $class() : null;
     }
     private function parseClassName()
     {
-        $pos = \strrpos(static::class, '\\');
-        $this->namespace = \false === $pos ? '' : \substr(static::class, 0, $pos);
+        $pos = strrpos(static::class, '\\');
+        $this->namespace = \false === $pos ? '' : substr(static::class, 0, $pos);
         if (null === $this->name) {
-            $this->name = \false === $pos ? static::class : \substr(static::class, $pos + 1);
+            $this->name = \false === $pos ? static::class : substr(static::class, $pos + 1);
         }
     }
 }

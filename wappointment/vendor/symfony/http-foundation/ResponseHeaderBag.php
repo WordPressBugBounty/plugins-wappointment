@@ -77,8 +77,8 @@ class ResponseHeaderBag extends HeaderBag
     {
         $headers = parent::all();
         if (null !== $key) {
-            $key = \strtr($key, self::UPPER, self::LOWER);
-            return 'set-cookie' !== $key ? $headers[$key] ?? [] : \array_map('strval', $this->getCookies());
+            $key = strtr($key, self::UPPER, self::LOWER);
+            return 'set-cookie' !== $key ? $headers[$key] ?? [] : array_map('strval', $this->getCookies());
         }
         foreach ($this->getCookies() as $cookie) {
             $headers['set-cookie'][] = (string) $cookie;
@@ -90,7 +90,7 @@ class ResponseHeaderBag extends HeaderBag
      */
     public function set(string $key, $values, bool $replace = \true)
     {
-        $uniqueKey = \strtr($key, self::UPPER, self::LOWER);
+        $uniqueKey = strtr($key, self::UPPER, self::LOWER);
         if ('set-cookie' === $uniqueKey) {
             if ($replace) {
                 $this->cookies = [];
@@ -104,7 +104,7 @@ class ResponseHeaderBag extends HeaderBag
         $this->headerNames[$uniqueKey] = $key;
         parent::set($key, $values, $replace);
         // ensure the cache-control header has sensible defaults
-        if (\in_array($uniqueKey, ['cache-control', 'etag', 'last-modified', 'expires'], \true) && '' !== ($computed = $this->computeCacheControlValue())) {
+        if (\in_array($uniqueKey, ['cache-control', 'etag', 'last-modified', 'expires'], \true) && '' !== $computed = $this->computeCacheControlValue()) {
             $this->headers['cache-control'] = [$computed];
             $this->headerNames['cache-control'] = 'Cache-Control';
             $this->computedCacheControl = $this->parseCacheControl($computed);
@@ -115,7 +115,7 @@ class ResponseHeaderBag extends HeaderBag
      */
     public function remove(string $key)
     {
-        $uniqueKey = \strtr($key, self::UPPER, self::LOWER);
+        $uniqueKey = strtr($key, self::UPPER, self::LOWER);
         unset($this->headerNames[$uniqueKey]);
         if ('set-cookie' === $uniqueKey) {
             $this->cookies = [];
@@ -177,7 +177,7 @@ class ResponseHeaderBag extends HeaderBag
     public function getCookies(string $format = self::COOKIES_FLAT)
     {
         if (!\in_array($format, [self::COOKIES_FLAT, self::COOKIES_ARRAY])) {
-            throw new \InvalidArgumentException(\sprintf('Format "%s" invalid (%s).', $format, \implode(', ', [self::COOKIES_FLAT, self::COOKIES_ARRAY])));
+            throw new \InvalidArgumentException(sprintf('Format "%s" invalid (%s).', $format, implode(', ', [self::COOKIES_FLAT, self::COOKIES_ARRAY])));
         }
         if (self::COOKIES_ARRAY === $format) {
             return $this->cookies;
@@ -234,8 +234,8 @@ class ResponseHeaderBag extends HeaderBag
         }
         return $header;
     }
-    private function initDate() : void
+    private function initDate(): void
     {
-        $this->set('Date', \gmdate('D, d M Y H:i:s') . ' GMT');
+        $this->set('Date', gmdate('D, d M Y H:i:s') . ' GMT');
     }
 }

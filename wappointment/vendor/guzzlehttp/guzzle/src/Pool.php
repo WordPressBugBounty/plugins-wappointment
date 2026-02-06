@@ -46,14 +46,14 @@ class Pool implements PromisorInterface
             $opts = [];
         }
         $iterable = \WappoVendor\GuzzleHttp\Promise\iter_for($requests);
-        $requests = function () use($iterable, $client, $opts) {
+        $requests = function () use ($iterable, $client, $opts) {
             foreach ($iterable as $key => $rfn) {
                 if ($rfn instanceof RequestInterface) {
-                    (yield $key => $client->sendAsync($rfn, $opts));
-                } elseif (\is_callable($rfn)) {
-                    (yield $key => $rfn($opts));
+                    yield $key => $client->sendAsync($rfn, $opts);
+                } elseif (is_callable($rfn)) {
+                    yield $key => $rfn($opts);
                 } else {
-                    throw new \InvalidArgumentException('Each value yielded by ' . 'the iterator must be a Psr7\\Http\\Message\\RequestInterface ' . 'or a callable that returns a promise that fulfills ' . 'with a Psr7\\Message\\Http\\ResponseInterface object.');
+                    throw new \InvalidArgumentException('Each value yielded by ' . 'the iterator must be a Psr7\Http\Message\RequestInterface ' . 'or a callable that returns a promise that fulfills ' . 'with a Psr7\Message\Http\ResponseInterface object.');
                 }
             }
         };
@@ -92,7 +92,7 @@ class Pool implements PromisorInterface
         self::cmpCallback($options, 'rejected', $res);
         $pool = new static($client, $requests, $options);
         $pool->promise()->wait();
-        \ksort($res);
+        ksort($res);
         return $res;
     }
     /**
@@ -103,12 +103,12 @@ class Pool implements PromisorInterface
     private static function cmpCallback(array &$options, $name, array &$results)
     {
         if (!isset($options[$name])) {
-            $options[$name] = function ($v, $k) use(&$results) {
+            $options[$name] = function ($v, $k) use (&$results) {
                 $results[$k] = $v;
             };
         } else {
             $currentFn = $options[$name];
-            $options[$name] = function ($v, $k) use(&$results, $currentFn) {
+            $options[$name] = function ($v, $k) use (&$results, $currentFn) {
                 $currentFn($v, $k);
                 $results[$k] = $v;
             };

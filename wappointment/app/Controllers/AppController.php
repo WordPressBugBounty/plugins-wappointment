@@ -41,7 +41,7 @@ class AppController extends \Wappointment\Controllers\RestController
         }
         foreach ($addonsRequiringUpdate as $addon_details) {
             try {
-                \call_user_func($addon_details['namespace'] . '::runDbMigrate');
+                call_user_func($addon_details['namespace'] . '::runDbMigrate');
             } catch (\Throwable $th) {
                 throw new \WappointmentValidationException("Could not update addon db", 1, null, [$th->getMessage()]);
             }

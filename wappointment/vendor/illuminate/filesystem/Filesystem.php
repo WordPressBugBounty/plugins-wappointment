@@ -23,7 +23,7 @@ class Filesystem
      */
     public function exists($path)
     {
-        return \file_exists($path);
+        return file_exists($path);
     }
     /**
      * Determine if a file or directory is missing.
@@ -47,7 +47,7 @@ class Filesystem
     public function get($path, $lock = \false)
     {
         if ($this->isFile($path)) {
-            return $lock ? $this->sharedGet($path) : \file_get_contents($path);
+            return $lock ? $this->sharedGet($path) : file_get_contents($path);
         }
         throw new FileNotFoundException("File does not exist at path {$path}.");
     }
@@ -60,16 +60,16 @@ class Filesystem
     public function sharedGet($path)
     {
         $contents = '';
-        $handle = \fopen($path, 'rb');
+        $handle = fopen($path, 'rb');
         if ($handle) {
             try {
-                if (\flock($handle, \LOCK_SH)) {
-                    \clearstatcache(\true, $path);
-                    $contents = \fread($handle, $this->size($path) ?: 1);
-                    \flock($handle, \LOCK_UN);
+                if (flock($handle, \LOCK_SH)) {
+                    clearstatcache(\true, $path);
+                    $contents = fread($handle, $this->size($path) ?: 1);
+                    flock($handle, \LOCK_UN);
                 }
             } finally {
-                \fclose($handle);
+                fclose($handle);
             }
         }
         return $contents;
@@ -88,8 +88,8 @@ class Filesystem
         if ($this->isFile($path)) {
             $__path = $path;
             $__data = $data;
-            return (static function () use($__path, $__data) {
-                \extract($__data, \EXTR_SKIP);
+            return (static function () use ($__path, $__data) {
+                extract($__data, \EXTR_SKIP);
                 return require $__path;
             })();
         }
@@ -109,8 +109,8 @@ class Filesystem
         if ($this->isFile($path)) {
             $__path = $path;
             $__data = $data;
-            return (static function () use($__path, $__data) {
-                \extract($__data, \EXTR_SKIP);
+            return (static function () use ($__path, $__data) {
+                extract($__data, \EXTR_SKIP);
                 return require_once $__path;
             })();
         }
@@ -129,11 +129,11 @@ class Filesystem
         if (!$this->isFile($path)) {
             throw new FileNotFoundException("File does not exist at path {$path}.");
         }
-        return LazyCollection::make(function () use($path) {
+        return LazyCollection::make(function () use ($path) {
             $file = new SplFileObject($path);
             $file->setFlags(SplFileObject::DROP_NEW_LINE);
             while (!$file->eof()) {
-                (yield $file->fgets());
+                yield $file->fgets();
             }
         });
     }
@@ -145,7 +145,7 @@ class Filesystem
      */
     public function hash($path)
     {
-        return \md5_file($path);
+        return md5_file($path);
     }
     /**
      * Write the contents of a file.
@@ -157,7 +157,7 @@ class Filesystem
      */
     public function put($path, $contents, $lock = \false)
     {
-        return \file_put_contents($path, $contents, $lock ? \LOCK_EX : 0);
+        return file_put_contents($path, $contents, $lock ? \LOCK_EX : 0);
     }
     /**
      * Write the contents of a file, replacing it atomically if it already exists.
@@ -169,13 +169,13 @@ class Filesystem
     public function replace($path, $content)
     {
         // If the path already exists and is a symlink, get the real path...
-        \clearstatcache(\true, $path);
-        $path = \realpath($path) ?: $path;
-        $tempPath = \tempnam(\dirname($path), \basename($path));
+        clearstatcache(\true, $path);
+        $path = realpath($path) ?: $path;
+        $tempPath = tempnam(dirname($path), basename($path));
         // Fix permissions of tempPath because `tempnam()` creates it with permissions set to 0600...
-        \chmod($tempPath, 0777 - \umask());
-        \file_put_contents($tempPath, $content);
-        \rename($tempPath, $path);
+        chmod($tempPath, 0777 - umask());
+        file_put_contents($tempPath, $content);
+        rename($tempPath, $path);
     }
     /**
      * Replace a given string within a given file.
@@ -187,7 +187,7 @@ class Filesystem
      */
     public function replaceInFile($search, $replace, $path)
     {
-        \file_put_contents($path, \str_replace($search, $replace, \file_get_contents($path)));
+        file_put_contents($path, str_replace($search, $replace, file_get_contents($path)));
     }
     /**
      * Prepend to a file.
@@ -212,7 +212,7 @@ class Filesystem
      */
     public function append($path, $data)
     {
-        return \file_put_contents($path, $data, \FILE_APPEND);
+        return file_put_contents($path, $data, \FILE_APPEND);
     }
     /**
      * Get or set UNIX mode of a file or directory.
@@ -224,9 +224,9 @@ class Filesystem
     public function chmod($path, $mode = null)
     {
         if ($mode) {
-            return \chmod($path, $mode);
+            return chmod($path, $mode);
         }
-        return \substr(\sprintf('%o', \fileperms($path)), -4);
+        return substr(sprintf('%o', fileperms($path)), -4);
     }
     /**
      * Delete the file at a given path.
@@ -236,12 +236,12 @@ class Filesystem
      */
     public function delete($paths)
     {
-        $paths = \is_array($paths) ? $paths : \func_get_args();
+        $paths = is_array($paths) ? $paths : func_get_args();
         $success = \true;
         foreach ($paths as $path) {
             try {
-                if (@\unlink($path)) {
-                    \clearstatcache(\false, $path);
+                if (@unlink($path)) {
+                    clearstatcache(\false, $path);
                 } else {
                     $success = \false;
                 }
@@ -260,7 +260,7 @@ class Filesystem
      */
     public function move($path, $target)
     {
-        return \rename($path, $target);
+        return rename($path, $target);
     }
     /**
      * Copy a file to a new location.
@@ -271,7 +271,7 @@ class Filesystem
      */
     public function copy($path, $target)
     {
-        return \copy($path, $target);
+        return copy($path, $target);
     }
     /**
      * Create a symlink to the target file or directory. On Windows, a hard link is created if the target is a file.
@@ -283,10 +283,10 @@ class Filesystem
     public function link($target, $link)
     {
         if (!\WappointmentLv::windows_os()) {
-            return \symlink($target, $link);
+            return symlink($target, $link);
         }
         $mode = $this->isDirectory($target) ? 'J' : 'H';
-        \exec("mklink /{$mode} " . \escapeshellarg($link) . ' ' . \escapeshellarg($target));
+        exec("mklink /{$mode} " . escapeshellarg($link) . ' ' . escapeshellarg($target));
     }
     /**
      * Create a relative symlink to the target file or directory.
@@ -299,10 +299,10 @@ class Filesystem
      */
     public function relativeLink($target, $link)
     {
-        if (!\class_exists(SymfonyFilesystem::class)) {
+        if (!class_exists(SymfonyFilesystem::class)) {
             throw new RuntimeException('To enable support for relative links, please install the symfony/filesystem package.');
         }
-        $relativeTarget = (new SymfonyFilesystem())->makePathRelative($target, \dirname($link));
+        $relativeTarget = (new SymfonyFilesystem())->makePathRelative($target, dirname($link));
         $this->link($relativeTarget, $link);
     }
     /**
@@ -313,7 +313,7 @@ class Filesystem
      */
     public function name($path)
     {
-        return \pathinfo($path, \PATHINFO_FILENAME);
+        return pathinfo($path, \PATHINFO_FILENAME);
     }
     /**
      * Extract the trailing name component from a file path.
@@ -323,7 +323,7 @@ class Filesystem
      */
     public function basename($path)
     {
-        return \pathinfo($path, \PATHINFO_BASENAME);
+        return pathinfo($path, \PATHINFO_BASENAME);
     }
     /**
      * Extract the parent directory from a file path.
@@ -333,7 +333,7 @@ class Filesystem
      */
     public function dirname($path)
     {
-        return \pathinfo($path, \PATHINFO_DIRNAME);
+        return pathinfo($path, \PATHINFO_DIRNAME);
     }
     /**
      * Extract the file extension from a file path.
@@ -343,7 +343,7 @@ class Filesystem
      */
     public function extension($path)
     {
-        return \pathinfo($path, \PATHINFO_EXTENSION);
+        return pathinfo($path, \PATHINFO_EXTENSION);
     }
     /**
      * Guess the file extension from the mime-type of a given file.
@@ -355,7 +355,7 @@ class Filesystem
      */
     public function guessExtension($path)
     {
-        if (!\class_exists(MimeTypes::class)) {
+        if (!class_exists(MimeTypes::class)) {
             throw new RuntimeException('To enable support for guessing extensions, please install the symfony/mime package.');
         }
         return (new MimeTypes())->getExtensions($this->mimeType($path))[0] ?? null;
@@ -368,7 +368,7 @@ class Filesystem
      */
     public function type($path)
     {
-        return \filetype($path);
+        return filetype($path);
     }
     /**
      * Get the mime-type of a given file.
@@ -378,7 +378,7 @@ class Filesystem
      */
     public function mimeType($path)
     {
-        return \finfo_file(\finfo_open(\FILEINFO_MIME_TYPE), $path);
+        return finfo_file(finfo_open(\FILEINFO_MIME_TYPE), $path);
     }
     /**
      * Get the file size of a given file.
@@ -388,7 +388,7 @@ class Filesystem
      */
     public function size($path)
     {
-        return \filesize($path);
+        return filesize($path);
     }
     /**
      * Get the file's last modification time.
@@ -398,7 +398,7 @@ class Filesystem
      */
     public function lastModified($path)
     {
-        return \filemtime($path);
+        return filemtime($path);
     }
     /**
      * Determine if the given path is a directory.
@@ -408,7 +408,7 @@ class Filesystem
      */
     public function isDirectory($directory)
     {
-        return \is_dir($directory);
+        return is_dir($directory);
     }
     /**
      * Determine if the given path is readable.
@@ -418,7 +418,7 @@ class Filesystem
      */
     public function isReadable($path)
     {
-        return \is_readable($path);
+        return is_readable($path);
     }
     /**
      * Determine if the given path is writable.
@@ -428,7 +428,7 @@ class Filesystem
      */
     public function isWritable($path)
     {
-        return \is_writable($path);
+        return is_writable($path);
     }
     /**
      * Determine if the given path is a file.
@@ -438,7 +438,7 @@ class Filesystem
      */
     public function isFile($file)
     {
-        return \is_file($file);
+        return is_file($file);
     }
     /**
      * Find path names matching a given pattern.
@@ -449,7 +449,7 @@ class Filesystem
      */
     public function glob($pattern, $flags = 0)
     {
-        return \glob($pattern, $flags);
+        return glob($pattern, $flags);
     }
     /**
      * Get an array of all files in a directory.
@@ -460,7 +460,7 @@ class Filesystem
      */
     public function files($directory, $hidden = \false)
     {
-        return \iterator_to_array(Finder::create()->files()->ignoreDotFiles(!$hidden)->in($directory)->depth(0)->sortByName(), \false);
+        return iterator_to_array(Finder::create()->files()->ignoreDotFiles(!$hidden)->in($directory)->depth(0)->sortByName(), \false);
     }
     /**
      * Get all of the files from the given directory (recursive).
@@ -471,7 +471,7 @@ class Filesystem
      */
     public function allFiles($directory, $hidden = \false)
     {
-        return \iterator_to_array(Finder::create()->files()->ignoreDotFiles(!$hidden)->in($directory)->sortByName(), \false);
+        return iterator_to_array(Finder::create()->files()->ignoreDotFiles(!$hidden)->in($directory)->sortByName(), \false);
     }
     /**
      * Get all of the directories within a given directory.
@@ -513,9 +513,9 @@ class Filesystem
     public function makeDirectory($path, $mode = 0755, $recursive = \false, $force = \false)
     {
         if ($force) {
-            return @\mkdir($path, $mode, $recursive);
+            return @mkdir($path, $mode, $recursive);
         }
-        return \mkdir($path, $mode, $recursive);
+        return mkdir($path, $mode, $recursive);
     }
     /**
      * Move a directory.
@@ -530,7 +530,7 @@ class Filesystem
         if ($overwrite && $this->isDirectory($to) && !$this->deleteDirectory($to)) {
             return \false;
         }
-        return @\rename($from, $to) === \true;
+        return @rename($from, $to) === \true;
     }
     /**
      * Copy a directory from one location to another.
@@ -561,10 +561,8 @@ class Filesystem
                 if (!$this->copyDirectory($path, $target, $options)) {
                     return \false;
                 }
-            } else {
-                if (!$this->copy($item->getPathname(), $target)) {
-                    return \false;
-                }
+            } else if (!$this->copy($item->getPathname(), $target)) {
+                return \false;
             }
         }
         return \true;
@@ -595,7 +593,7 @@ class Filesystem
             }
         }
         if (!$preserve) {
-            @\rmdir($directory);
+            @rmdir($directory);
         }
         return \true;
     }

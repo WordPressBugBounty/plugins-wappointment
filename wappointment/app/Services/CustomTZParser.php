@@ -9,7 +9,7 @@ trait CustomTZParser
     protected $customTZ = null;
     public function isCustomTZ()
     {
-        return !\is_null($this->customTZ);
+        return !is_null($this->customTZ);
     }
     /**
      * Fixes issue with exchange and non standard timezone id
@@ -19,18 +19,18 @@ trait CustomTZParser
     private function isCustomTimezone($vcalObject)
     {
         $found_customtimezone = \false;
-        if (!empty($vcalObject->VTIMEZONE) && \method_exists($vcalObject->VTIMEZONE, 'children')) {
+        if (!empty($vcalObject->VTIMEZONE) && method_exists($vcalObject->VTIMEZONE, 'children')) {
             foreach ($vcalObject->VTIMEZONE->children() as $childrenTZ) {
                 if ($childrenTZ->name === 'TZID' && $childrenTZ->getValue() === 'Customized Time Zone') {
                     $found_customtimezone = \true;
                     $this->initCustomTZ($childrenTZ);
                 }
-                if (\in_array($childrenTZ->name, ['STANDARD', 'DAYLIGHT']) && $found_customtimezone) {
+                if (in_array($childrenTZ->name, ['STANDARD', 'DAYLIGHT']) && $found_customtimezone) {
                     $this->setCustomTZProps($childrenTZ);
                 }
             }
         }
-        return !\is_null($this->customTZ);
+        return !is_null($this->customTZ);
     }
     protected function initCustomTz($childrenTZ)
     {
@@ -40,7 +40,7 @@ trait CustomTZParser
     protected function setCustomTZProps($childrenTZ)
     {
         foreach ($childrenTZ->children() as $subproperty) {
-            if (\in_array($subproperty->name, ['TZOFFSETFROM', 'TZOFFSETTO', 'RRULE'])) {
+            if (in_array($subproperty->name, ['TZOFFSETFROM', 'TZOFFSETTO', 'RRULE'])) {
                 $standardOrDST = $childrenTZ->name;
                 if (!isset($this->customTZ->{$standardOrDST})) {
                     $this->customTZ->{$standardOrDST} = new stdClass();
@@ -65,11 +65,11 @@ trait CustomTZParser
     }
     public function tnameFromOFfset($offset, $dst)
     {
-        $sign = \substr($offset, 0, 1);
-        $hours = \substr($offset, 1, 2);
-        $minutes = \substr($offset, 3, 2);
+        $sign = substr($offset, 0, 1);
+        $hours = substr($offset, 1, 2);
+        $minutes = substr($offset, 3, 2);
         $seconds = $hours * 3600 + $minutes * 60;
-        return \timezone_name_from_abbr('', \intval($sign . (string) $seconds), $dst);
+        return timezone_name_from_abbr('', intval($sign . (string) $seconds), $dst);
     }
     public function getOffsetCustomTZ($vcalDateTimeString)
     {
@@ -77,8 +77,8 @@ trait CustomTZParser
     }
     public function getDataFromRule($rule)
     {
-        foreach (\explode(';', $rule) as $part) {
-            $keyval = \explode('=', $part);
+        foreach (explode(';', $rule) as $part) {
+            $keyval = explode('=', $part);
             if ($keyval[0] == 'BYDAY') {
                 $data['day'] = $this->convertDayCodeToString($keyval[1]);
             }
@@ -97,7 +97,7 @@ trait CustomTZParser
     }
     public function convertMonthCodeToString($monthcode)
     {
-        return \strlen($monthcode) === 1 ? '0' . $monthcode : $monthcode;
+        return strlen($monthcode) === 1 ? '0' . $monthcode : $monthcode;
         switch ($monthcode) {
             case '3':
                 return 'march';

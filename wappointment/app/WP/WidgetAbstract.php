@@ -6,7 +6,7 @@ abstract class WidgetAbstract extends \WP_Widget
 {
     protected static function getDefaultInstance()
     {
-        return \array_map(function ($field) {
+        return array_map(function ($field) {
             return $field['default'];
         }, static::formDefinition());
     }

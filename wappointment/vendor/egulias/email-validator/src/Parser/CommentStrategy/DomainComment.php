@@ -9,7 +9,7 @@ use WappoVendor\Egulias\EmailValidator\Result\InvalidEmail;
 use WappoVendor\Egulias\EmailValidator\Result\Reason\ExpectingATEXT;
 class DomainComment implements CommentStrategy
 {
-    public function exitCondition(EmailLexer $lexer, int $openedParenthesis) : bool
+    public function exitCondition(EmailLexer $lexer, int $openedParenthesis): bool
     {
         if ($openedParenthesis === 0 && $lexer->isNextToken(EmailLexer::S_DOT)) {
             // || !$internalLexer->moveNext()) {
@@ -17,7 +17,7 @@ class DomainComment implements CommentStrategy
         }
         return \true;
     }
-    public function endOfLoopValidations(EmailLexer $lexer) : Result
+    public function endOfLoopValidations(EmailLexer $lexer): Result
     {
         //test for end of string
         if (!$lexer->isNextToken(EmailLexer::S_DOT)) {
@@ -27,7 +27,7 @@ class DomainComment implements CommentStrategy
         //Address is valid within the message but cannot be used unmodified for the envelope
         return new ValidEmail();
     }
-    public function getWarnings() : array
+    public function getWarnings(): array
     {
         return [];
     }

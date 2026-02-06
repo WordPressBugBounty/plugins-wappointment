@@ -33,7 +33,7 @@ trait ManagesTransactions
                 if ($this->transactions == 1) {
                     $this->getPdo()->commit();
                 }
-                $this->transactions = \max(0, $this->transactions - 1);
+                $this->transactions = max(0, $this->transactions - 1);
                 if ($this->transactions == 0) {
                     optional($this->transactionsManager)->commit($this->getName());
                 }
@@ -148,7 +148,7 @@ trait ManagesTransactions
         if ($this->transactions == 1) {
             $this->getPdo()->commit();
         }
-        $this->transactions = \max(0, $this->transactions - 1);
+        $this->transactions = max(0, $this->transactions - 1);
         if ($this->transactions == 0) {
             optional($this->transactionsManager)->commit($this->getName());
         }
@@ -166,7 +166,7 @@ trait ManagesTransactions
      */
     protected function handleCommitTransactionException(Throwable $e, $currentAttempt, $maxAttempts)
     {
-        $this->transactions = \max(0, $this->transactions - 1);
+        $this->transactions = max(0, $this->transactions - 1);
         if ($this->causedByConcurrencyError($e) && $currentAttempt < $maxAttempts) {
             return;
         }
@@ -188,7 +188,7 @@ trait ManagesTransactions
         // We allow developers to rollback to a certain transaction level. We will verify
         // that this given transaction level is valid before attempting to rollback to
         // that level. If it's not we will just return out and not attempt anything.
-        $toLevel = \is_null($toLevel) ? $this->transactions - 1 : $toLevel;
+        $toLevel = is_null($toLevel) ? $this->transactions - 1 : $toLevel;
         if ($toLevel < 0 || $toLevel >= $this->transactions) {
             return;
         }

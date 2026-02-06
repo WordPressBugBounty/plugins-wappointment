@@ -31,7 +31,7 @@ class Service extends Model
     }
     public function locations()
     {
-        return $this->belongsToMany('Wappointment\\Models\\Location', 'wappo_service_location');
+        return $this->belongsToMany('Wappointment\Models\Location', 'wappo_service_location');
     }
     public function isSold()
     {

@@ -78,8 +78,8 @@ class ProfilerListener implements EventSubscriberInterface
             return;
         }
         $request = $event->getRequest();
-        if (null !== $this->collectParameter && null !== ($collectParameterValue = $request->get($this->collectParameter))) {
-            \true === $collectParameterValue || \filter_var($collectParameterValue, \FILTER_VALIDATE_BOOLEAN) ? $this->profiler->enable() : $this->profiler->disable();
+        if (null !== $this->collectParameter && null !== $collectParameterValue = $request->get($this->collectParameter)) {
+            \true === $collectParameterValue || filter_var($collectParameterValue, \FILTER_VALIDATE_BOOLEAN) ? $this->profiler->enable() : $this->profiler->disable();
         }
         $exception = $this->exception;
         $this->exception = null;
@@ -92,7 +92,7 @@ class ProfilerListener implements EventSubscriberInterface
             $usageIndexReference = \PHP_INT_MIN;
         }
         try {
-            if (!($profile = $this->profiler->collect($request, $event->getResponse(), $exception))) {
+            if (!$profile = $this->profiler->collect($request, $event->getResponse(), $exception)) {
                 return;
             }
         } finally {
@@ -107,7 +107,7 @@ class ProfilerListener implements EventSubscriberInterface
     {
         // attach children to parents
         foreach ($this->profiles as $request) {
-            if (null !== ($parentRequest = $this->parents[$request])) {
+            if (null !== $parentRequest = $this->parents[$request]) {
                 if (isset($this->profiles[$parentRequest])) {
                     $this->profiles[$parentRequest]->addChild($this->profiles[$request]);
                 }
@@ -120,7 +120,7 @@ class ProfilerListener implements EventSubscriberInterface
         $this->profiles = new \SplObjectStorage();
         $this->parents = new \SplObjectStorage();
     }
-    public static function getSubscribedEvents() : array
+    public static function getSubscribedEvents(): array
     {
         return [KernelEvents::RESPONSE => ['onKernelResponse', -100], KernelEvents::EXCEPTION => ['onKernelException', 0], KernelEvents::TERMINATE => ['onKernelTerminate', -1024]];
     }

@@ -42,7 +42,7 @@ final class Driver extends AbstractPostgreSQLDriver
      *
      * @param mixed[] $params
      */
-    private function constructPdoDsn(array $params) : string
+    private function constructPdoDsn(array $params): string
     {
         $dsn = 'pgsql:';
         if (isset($params['host']) && $params['host'] !== '') {

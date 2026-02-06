@@ -36,7 +36,7 @@ class AuthenticateSession
             return $next($request);
         }
         if ($this->guard()->viaRemember()) {
-            $passwordHash = \explode('|', $request->cookies->get($this->auth->getRecallerName()))[2] ?? null;
+            $passwordHash = explode('|', $request->cookies->get($this->auth->getRecallerName()))[2] ?? null;
             if (!$passwordHash || $passwordHash != $request->user()->getAuthPassword()) {
                 $this->logout($request);
             }
@@ -47,8 +47,8 @@ class AuthenticateSession
         if ($request->session()->get('password_hash_' . $this->auth->getDefaultDriver()) !== $request->user()->getAuthPassword()) {
             $this->logout($request);
         }
-        return \WappointmentLv::tap($next($request), function () use($request) {
-            if (!\is_null($this->guard()->user())) {
+        return \WappointmentLv::tap($next($request), function () use ($request) {
+            if (!is_null($this->guard()->user())) {
                 $this->storePasswordHashInSession($request);
             }
         });

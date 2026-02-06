@@ -16,11 +16,11 @@ trait ManipulateCancelReschedule
     }
     public function getRescheduleUntilTextAttribute()
     {
-        return \sprintf(__('Reschedule (until %1$s): &#10; %2$s', 'wappointment'), $this->rescheduleLimit(), $this->getLinkRescheduleEvent());
+        return sprintf(__('Reschedule (until %1$s): &#10; %2$s', 'wappointment'), $this->rescheduleLimit(), $this->getLinkRescheduleEvent());
     }
     public function getCancelUntilTextAttribute()
     {
-        return \sprintf(__('Cancel (until %1$s): &#10; %2$s', 'wappointment'), $this->cancelLimit(), $this->getLinkCancelEvent());
+        return sprintf(__('Cancel (until %1$s): &#10; %2$s', 'wappointment'), $this->cancelLimit(), $this->getLinkCancelEvent());
     }
     public function getCanCancelUntilAttribute()
     {
@@ -38,11 +38,11 @@ trait ManipulateCancelReschedule
     }
     public function canStillReschedule()
     {
-        return $this->canRescheduleUntilTimestamp() - \time() > 0;
+        return $this->canRescheduleUntilTimestamp() - time() > 0;
     }
     public function canStillCancel()
     {
-        return !$this->isConfirmed() || $this->canCancelUntilTimestamp() - \time() > 0;
+        return !$this->isConfirmed() || $this->canCancelUntilTimestamp() - time() > 0;
     }
     public function cancelLimit()
     {

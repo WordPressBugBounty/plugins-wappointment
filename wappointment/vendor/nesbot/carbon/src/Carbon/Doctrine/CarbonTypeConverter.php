@@ -24,7 +24,7 @@ trait CarbonTypeConverter
     /**
      * @return class-string<T>
      */
-    protected function getCarbonClassName() : string
+    protected function getCarbonClassName(): string
     {
         return Carbon::class;
     }
@@ -44,11 +44,11 @@ trait CarbonTypeConverter
         if (!$precision) {
             return $type;
         }
-        if (\str_contains($type, '(')) {
-            return \preg_replace('/\\(\\d+\\)/', "({$precision})", $type);
+        if (str_contains($type, '(')) {
+            return preg_replace('/\(\d+\)/', "({$precision})", $type);
         }
-        [$before, $after] = \explode(' ', "{$type} ");
-        return \trim("{$before}({$precision}) {$after}");
+        [$before, $after] = explode(' ', "{$type} ");
+        return trim("{$before}({$precision}) {$after}");
     }
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
@@ -58,7 +58,7 @@ trait CarbonTypeConverter
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
         $class = $this->getCarbonClassName();
-        if ($value === null || \is_a($value, $class)) {
+        if ($value === null || is_a($value, $class)) {
             return $value;
         }
         if ($value instanceof DateTimeInterface) {

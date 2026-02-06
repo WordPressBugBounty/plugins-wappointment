@@ -31,7 +31,7 @@ final class CharacterStream
      */
     public function __construct($input, ?string $charset = 'utf-8')
     {
-        $charset = \strtolower(\trim($charset)) ?: 'utf-8';
+        $charset = strtolower(trim($charset)) ?: 'utf-8';
         if ('utf-8' === $charset || 'utf8' === $charset) {
             $this->fixedWidth = 0;
             $this->map = ['p' => [], 'i' => []];
@@ -60,14 +60,14 @@ final class CharacterStream
         }
         if (\is_resource($input)) {
             $blocks = 16372;
-            while (\false !== ($read = \fread($input, $blocks))) {
+            while (\false !== $read = fread($input, $blocks)) {
                 $this->write($read);
             }
         } else {
             $this->write($input);
         }
     }
-    public function read(int $length) : ?string
+    public function read(int $length): ?string
     {
         if ($this->currentPos >= $this->charCount) {
             return null;
@@ -75,7 +75,7 @@ final class CharacterStream
         $length = $this->currentPos + $length > $this->charCount ? $this->charCount - $this->currentPos : $length;
         if ($this->fixedWidth > 0) {
             $len = $length * $this->fixedWidth;
-            $ret = \substr($this->data, $this->currentPos * $this->fixedWidth, $len);
+            $ret = substr($this->data, $this->currentPos * $this->fixedWidth, $len);
             $this->currentPos += $length;
         } else {
             $end = $this->currentPos + $length;
@@ -88,45 +88,45 @@ final class CharacterStream
             $to = $start;
             for (; $this->currentPos < $end; ++$this->currentPos) {
                 if (isset($this->map['i'][$this->currentPos])) {
-                    $ret .= \substr($this->data, $start, $to - $start) . '?';
+                    $ret .= substr($this->data, $start, $to - $start) . '?';
                     $start = $this->map['p'][$this->currentPos];
                 } else {
                     $to = $this->map['p'][$this->currentPos];
                 }
             }
-            $ret .= \substr($this->data, $start, $to - $start);
+            $ret .= substr($this->data, $start, $to - $start);
         }
         return $ret;
     }
-    public function readBytes(int $length) : ?array
+    public function readBytes(int $length): ?array
     {
-        if (null !== ($read = $this->read($length))) {
-            return \array_map('ord', \str_split($read, 1));
+        if (null !== $read = $this->read($length)) {
+            return array_map('ord', str_split($read, 1));
         }
         return null;
     }
-    public function setPointer(int $charOffset) : void
+    public function setPointer(int $charOffset): void
     {
         if ($this->charCount < $charOffset) {
             $charOffset = $this->charCount;
         }
         $this->currentPos = $charOffset;
     }
-    public function write(string $chars) : void
+    public function write(string $chars): void
     {
         $ignored = '';
         $this->data .= $chars;
         if ($this->fixedWidth > 0) {
             $strlen = \strlen($chars);
             $ignoredL = $strlen % $this->fixedWidth;
-            $ignored = $ignoredL ? \substr($chars, -$ignoredL) : '';
+            $ignored = $ignoredL ? substr($chars, -$ignoredL) : '';
             $this->charCount += ($strlen - $ignoredL) / $this->fixedWidth;
         } else {
             $this->charCount += $this->getUtf8CharPositions($chars, $this->dataSize, $ignored);
         }
         $this->dataSize = \strlen($this->data) - \strlen($ignored);
     }
-    private function getUtf8CharPositions(string $string, int $startOffset, string &$ignoredChars) : int
+    private function getUtf8CharPositions(string $string, int $startOffset, string &$ignoredChars): int
     {
         $strlen = \strlen($string);
         $charPos = \count($this->map['p']);
@@ -148,7 +148,7 @@ final class CharacterStream
                 $invalid = \false;
             }
             if ($i + $size > $strlen) {
-                $ignoredChars = \substr($string, $i);
+                $ignoredChars = substr($string, $i);
                 break;
             }
             for ($j = 1; $j < $size; ++$j) {

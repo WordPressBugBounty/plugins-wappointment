@@ -115,7 +115,7 @@ class AppendStream implements StreamInterface
     }
     public function eof()
     {
-        return !$this->streams || $this->current >= \count($this->streams) - 1 && $this->streams[$this->current]->eof();
+        return !$this->streams || $this->current >= count($this->streams) - 1 && $this->streams[$this->current]->eof();
     }
     public function rewind()
     {
@@ -144,7 +144,7 @@ class AppendStream implements StreamInterface
         }
         // Seek to the actual position by reading from each stream
         while ($this->pos < $offset && !$this->eof()) {
-            $result = $this->read(\min(8096, $offset - $this->pos));
+            $result = $this->read(min(8096, $offset - $this->pos));
             if ($result === '') {
                 break;
             }
@@ -158,7 +158,7 @@ class AppendStream implements StreamInterface
     public function read($length)
     {
         $buffer = '';
-        $total = \count($this->streams) - 1;
+        $total = count($this->streams) - 1;
         $remaining = $length;
         $progressToNext = \false;
         while ($remaining > 0) {
@@ -177,9 +177,9 @@ class AppendStream implements StreamInterface
                 continue;
             }
             $buffer .= $result;
-            $remaining = $length - \strlen($buffer);
+            $remaining = $length - strlen($buffer);
         }
-        $this->pos += \strlen($buffer);
+        $this->pos += strlen($buffer);
         return $buffer;
     }
     public function isReadable()

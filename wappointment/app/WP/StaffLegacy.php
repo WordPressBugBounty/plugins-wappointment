@@ -16,6 +16,7 @@ class StaffLegacy
     //staffname
     public $timezone = null;
     //staff timezon
+    public $gravatar = '';
     public function __construct($staff_id = \false)
     {
         if ($staff_id === \false) {
@@ -33,6 +34,9 @@ class StaffLegacy
         $dname = Settings::getStaff('display_name');
         $this->name = !empty($dname) ? $dname : $this->getUserDisplayName();
         $this->timezone = Settings::getStaff('timezone', $staff_id);
+        if (empty($this->timezone)) {
+            $this->timezone = 'UTC';
+        }
     }
     public function fullData()
     {

@@ -44,15 +44,15 @@ class Helpers
     }
     public static function getOption($option_name, $default = \false)
     {
-        return self::getWPOption(self::$option_prefix . '_' . \strtolower($option_name), $default);
+        return self::getWPOption(self::$option_prefix . '_' . strtolower($option_name), $default);
     }
     public static function setOption($option_name, $value, $autoload = \false)
     {
-        return update_option(self::$option_prefix . '_' . \strtolower($option_name), $value, $autoload);
+        return update_option(self::$option_prefix . '_' . strtolower($option_name), $value, $autoload);
     }
     public static function deleteOption($option_name)
     {
-        return delete_option(self::$option_prefix . '_' . \strtolower($option_name));
+        return delete_option(self::$option_prefix . '_' . strtolower($option_name));
     }
     public static function auth()
     {
@@ -77,7 +77,7 @@ class Helpers
         $wp_user = self::currentUser();
         $data = ['email' => $wp_user->user_email, 'name' => $wp_user->display_name, 'autofill' => Settings::get('autofill'), 'forceemail' => Settings::get('forceemail')];
         if ($permission) {
-            $data['permissions'] = \array_keys($wp_user->allcaps);
+            $data['permissions'] = array_keys($wp_user->allcaps);
         }
         return apply_filters('wappointment_wpauth', $data);
     }
@@ -113,7 +113,7 @@ class Helpers
         if ($staff_id === \false) {
             $staff_id = Settings::get('activeStaffId');
         }
-        $setting = get_user_option(self::$option_prefix . '_' . \strtolower($option_name), $staff_id);
+        $setting = get_user_option(self::$option_prefix . '_' . strtolower($option_name), $staff_id);
         return empty($setting) ? $default : $setting;
     }
     public static function setStaffOption($option_name, $value, $staff_id = \false, $global = \false)
@@ -121,7 +121,7 @@ class Helpers
         if ($staff_id === \false) {
             $staff_id = Settings::get('activeStaffId');
         }
-        return update_user_option($staff_id, self::$option_prefix . '_' . \strtolower($option_name), $value, $global);
+        return update_user_option($staff_id, self::$option_prefix . '_' . strtolower($option_name), $value, $global);
     }
     public static function transferStaffOptions($old_staff_id, $new_staff_id)
     {
@@ -144,7 +144,7 @@ class Helpers
         if ($staff_id === \false) {
             $staff_id = Settings::get('activeStaffId');
         }
-        return delete_user_option($staff_id, self::$option_prefix . '_' . \strtolower($option_name));
+        return delete_user_option($staff_id, self::$option_prefix . '_' . strtolower($option_name));
     }
     public static function adminUrl($link = \false)
     {
@@ -166,7 +166,7 @@ class Helpers
     }
     public static function requestCapture($is_installed)
     {
-        if (!$is_installed && !\extension_loaded('mbstring')) {
+        if (!$is_installed && !extension_loaded('mbstring')) {
             static::restError('Wappointment requires the PHP module "mbstring" to work.');
             global $wappo_mb_missing;
             $wappo_mb_missing = \true;

@@ -39,7 +39,7 @@ class FlatText extends Text
      */
     public function setQuotedPrintableValue($val)
     {
-        $val = \quoted_printable_decode($val);
+        $val = quoted_printable_decode($val);
         $this->setValue($val);
     }
 }

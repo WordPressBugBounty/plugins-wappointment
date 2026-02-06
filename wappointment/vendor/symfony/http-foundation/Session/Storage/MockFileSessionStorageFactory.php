@@ -12,7 +12,7 @@ namespace WappoVendor\Symfony\Component\HttpFoundation\Session\Storage;
 
 use WappoVendor\Symfony\Component\HttpFoundation\Request;
 // Help opcache.preload discover always-needed symbols
-\class_exists(MockFileSessionStorage::class);
+class_exists(MockFileSessionStorage::class);
 /**
  * @author Jérémy Derussé <jeremy@derusse.com>
  */
@@ -30,7 +30,7 @@ class MockFileSessionStorageFactory implements SessionStorageFactoryInterface
         $this->name = $name;
         $this->metaBag = $metaBag;
     }
-    public function createStorage(?Request $request) : SessionStorageInterface
+    public function createStorage(?Request $request): SessionStorageInterface
     {
         return new MockFileSessionStorage($this->savePath, $this->name, $this->metaBag);
     }

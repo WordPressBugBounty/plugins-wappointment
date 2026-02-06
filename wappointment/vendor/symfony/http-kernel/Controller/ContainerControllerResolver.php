@@ -29,8 +29,8 @@ class ContainerControllerResolver extends ControllerResolver
     }
     protected function createController(string $controller)
     {
-        if (1 === \substr_count($controller, ':')) {
-            $controller = \str_replace(':', '::', $controller);
+        if (1 === substr_count($controller, ':')) {
+            $controller = str_replace(':', '::', $controller);
             trigger_deprecation('symfony/http-kernel', '5.1', 'Referencing controllers with a single colon is deprecated. Use "%s" instead.', $controller);
         }
         return parent::createController($controller);
@@ -40,7 +40,7 @@ class ContainerControllerResolver extends ControllerResolver
      */
     protected function instantiateController(string $class)
     {
-        $class = \ltrim($class, '\\');
+        $class = ltrim($class, '\\');
         if ($this->container->has($class)) {
             return $this->container->get($class);
         }
@@ -50,14 +50,14 @@ class ContainerControllerResolver extends ControllerResolver
         }
         $this->throwExceptionIfControllerWasRemoved($class, $e);
         if ($e instanceof \ArgumentCountError) {
-            throw new \InvalidArgumentException(\sprintf('Controller "%s" has required constructor arguments and does not exist in the container. Did you forget to define the controller as a service?', $class), 0, $e);
+            throw new \InvalidArgumentException(sprintf('Controller "%s" has required constructor arguments and does not exist in the container. Did you forget to define the controller as a service?', $class), 0, $e);
         }
-        throw new \InvalidArgumentException(\sprintf('Controller "%s" does neither exist as service nor as class.', $class), 0, $e);
+        throw new \InvalidArgumentException(sprintf('Controller "%s" does neither exist as service nor as class.', $class), 0, $e);
     }
     private function throwExceptionIfControllerWasRemoved(string $controller, \Throwable $previous)
     {
         if ($this->container instanceof Container && isset($this->container->getRemovedIds()[$controller])) {
-            throw new \InvalidArgumentException(\sprintf('Controller "%s" cannot be fetched from the container because it is private. Did you forget to tag the service with "controller.service_arguments"?', $controller), 0, $previous);
+            throw new \InvalidArgumentException(sprintf('Controller "%s" cannot be fetched from the container because it is private. Did you forget to tag the service with "controller.service_arguments"?', $controller), 0, $previous);
         }
     }
 }

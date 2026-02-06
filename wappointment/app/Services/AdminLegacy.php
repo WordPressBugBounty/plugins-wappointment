@@ -13,7 +13,7 @@ class AdminLegacy
         if ($client_id > 0) {
             $client = MClient::find($client_id);
         } else {
-            if (\is_array($booking->get('email'))) {
+            if (is_array($booking->get('email'))) {
                 throw new \WappointmentException(__('Malformed parameter', 'wappointment'), 1);
             }
             $client = MClient::where('email', $booking->get('email'))->first();
@@ -22,9 +22,6 @@ class AdminLegacy
         if (!empty($booking->get('phone'))) {
             $dataClient['options']['phone'] = $booking->get('phone');
         }
-        if (!empty($booking->get('skype'))) {
-            $dataClient['options']['skype'] = $booking->get('skype');
-        }
         if (empty($client)) {
             $dataClient['email'] = $booking->get('email');
             $client = MClient::create($dataClient);
@@ -32,9 +29,6 @@ class AdminLegacy
             $options = $client->options;
             if (!empty($booking->get('phone'))) {
                 $options['phone'] = $booking->get('phone');
-            }
-            if (!empty($booking->get('skype'))) {
-                $options['skype'] = $booking->get('skype');
             }
             $client->options = $options;
             $client->save();
@@ -48,10 +42,10 @@ class AdminLegacy
             $service = \Wappointment\Services\Service::get();
         }
         //test type is allowed
-        if (!\in_array($type, $service['type'])) {
+        if (!in_array($type, $service['type'])) {
             throw new \WappointmentException('Error booking type not allowed', 1);
         }
-        $type = (int) \call_user_func('Wappointment\\Models\\Appointment::getType' . \ucfirst($type));
+        $type = (int) call_user_func('Wappointment\Models\Appointment::getType' . ucfirst($type));
         //test that this is bookable
         $hasBeenBooked = \Wappointment\Services\Appointment::adminBook($client, $start, $end, $type, $service);
         if (!$hasBeenBooked) {

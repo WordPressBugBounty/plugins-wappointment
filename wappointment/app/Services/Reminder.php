@@ -38,7 +38,7 @@ class Reminder
     {
         $reminder = MReminder::find($id);
         $transport = apply_filters('wappointment_reminder_transport', ['email' => [__CLASS__, 'sendPreview']]);
-        return \call_user_func_array($transport[$reminder->getTypeLabel()], [$reminder, $recipient]);
+        return call_user_func_array($transport[$reminder->getTypeLabel()], [$reminder, $recipient]);
     }
     public static function sendPreview($reminder, $recipient)
     {
@@ -61,9 +61,9 @@ class Reminder
         $email_type = MReminder::getType('email');
         $arraySeeds[] = ['type' => $email_type, 'event' => MReminder::APPOINTMENT_PENDING, 'subject' => __('Your appointment is pending', 'wappointment'), 'published' => 1, 'locked' => 1, 'options' => ['body' => TipTap::simpleArrayToTipTap([
             /* translators: %s - client's first name. */
-            ['p' => \sprintf(__('Dear %s,', 'wappointment'), '[client:name]')],
+            ['p' => sprintf(__('Dear %s,', 'wappointment'), '[client:name]')],
             ['p' => ''],
-            ['p' => \vsprintf(__('You have booked a %1$s of %2$s long on %3$s', 'wappointment'), ['[service:name]', '[appointment:duration]', '[appointment:starts]'])],
+            ['p' => vsprintf(__('You have booked a %1$s of %2$s long on %3$s', 'wappointment'), ['[service:name]', '[appointment:duration]', '[appointment:starts]'])],
             ['p' => __('It will be confirmed shortly, you will receive the confirmation by email.', 'wappointment')],
             ['p' => ''],
             ['p' => __('Best,', 'wappointment')],
@@ -71,23 +71,23 @@ class Reminder
         ])]];
         $arraySeeds[] = ['type' => $email_type, 'event' => MReminder::APPOINTMENT_RESCHEDULED, 'subject' => __('Your appointment has been rescheduled', 'wappointment'), 'published' => 1, 'locked' => 1, 'options' => ['body' => TipTap::simpleArrayToTipTap([
             /* translators: %s - client's first name. */
-            ['p' => \sprintf(__('Dear %s,', 'wappointment'), '[client:name]')],
+            ['p' => sprintf(__('Dear %s,', 'wappointment'), '[client:name]')],
             ['p' => ''],
             ['p' => __('Your appointment has been rescheduled.', 'wappointment')],
             /* translators: %s - appointment starts date. */
-            ['p' => \sprintf(__('Your new appointment will start on %s', 'wappointment'), '[appointment:starts]')],
+            ['p' => sprintf(__('Your new appointment will start on %s', 'wappointment'), '[appointment:starts]')],
             ['p' => ''],
             ['p' => __('We look forward to seeing you!', 'wappointment')],
             ['p' => \WappointmentLv::blogname()],
         ])]];
         $arraySeeds[] = ['type' => $email_type, 'event' => MReminder::APPOINTMENT_CANCELLED, 'subject' => __('Your appointment has been cancelled', 'wappointment'), 'published' => 1, 'locked' => 1, 'options' => ['body' => TipTap::simpleArrayToTipTap([
             /* translators: %s - client's first name. */
-            ['p' => \sprintf(__('Dear %s,', 'wappointment'), '[client:name]')],
+            ['p' => sprintf(__('Dear %s,', 'wappointment'), '[client:name]')],
             ['p' => ''],
             /* translators: %s - appointment starts date. */
-            ['p' => \sprintf(__('Your appointment taking place the %s has been cancelled.', 'wappointment'), '[appointment:starts]')],
+            ['p' => sprintf(__('Your appointment taking place the %s has been cancelled.', 'wappointment'), '[appointment:starts]')],
             /* translators: %s - a "click here" link will be added. */
-            ['p' => \sprintf(__('If you want to book a new appointment with us, %s.', 'wappointment'), '[ label="' . __('click here', 'wappointment') . '" link="linkNew"]')],
+            ['p' => sprintf(__('If you want to book a new appointment with us, %s.', 'wappointment'), '[ label="' . __('click here', 'wappointment') . '" link="linkNew"]')],
             ['p' => ''],
             ['p' => __('We hope to see you soon!', 'wappointment')],
             ['p' => \WappointmentLv::blogname()],
@@ -99,34 +99,31 @@ class Reminder
         $footer = [['p' => ''], ['p' => __('Best,', 'wappointment')], ['p' => \WappointmentLv::blogname()]];
         $email_confirmed = [
             /* translators: %s - client's first name. */
-            ['p' => \sprintf(__('Dear %s,', 'wappointment'), '[client:name]')],
+            ['p' => sprintf(__('Dear %s,', 'wappointment'), '[client:name]')],
             ['p' => ''],
             /* translators: %1$s is the service name, %2$s is the appointment duration, %3$s is appointment start date */
-            ['p' => \vsprintf(__('You have booked a %1$s of %2$s long on %3$s', 'wappointment'), ['[service:name]', '[appointment:duration]', '[appointment:starts]'])],
+            ['p' => vsprintf(__('You have booked a %1$s of %2$s long on %3$s', 'wappointment'), ['[service:name]', '[appointment:duration]', '[appointment:starts]'])],
         ];
         $email_reminder = [
             /* translators: %s - client's first name. */
-            ['p' => \sprintf(__('Dear %s,', 'wappointment'), '[client:name]')],
+            ['p' => sprintf(__('Dear %s,', 'wappointment'), '[client:name]')],
             ['p' => ''],
             /* translators: %s - appointment starts date */
-            ['p' => \sprintf(__('We remind you that you have an appointment on %s', 'wappointment'), '[appointment:starts]')],
+            ['p' => sprintf(__('We remind you that you have an appointment on %s', 'wappointment'), '[appointment:starts]')],
         ];
         $messageService = ['physical' => [
             /* translators: %s - service address */
-            ['p' => \sprintf(__('It will take place at this address: %s', 'wappointment'), '[service:address]')],
+            ['p' => sprintf(__('It will take place at this address: %s', 'wappointment'), '[service:address]')],
         ], 'phone' => [
             /* translators: %s - client's phone number */
-            ['p' => \sprintf(__('It will take place over the phone, we will call you on this number: %s', 'wappointment'), '[client:phone]')],
-        ], 'skype' => [
-            /* translators: %s - client's skype username */
-            ['p' => \sprintf(__('It will take place on Skype, we will call you on this account: %s', 'wappointment'), '[client:skype]')],
+            ['p' => sprintf(__('It will take place over the phone, we will call you on this number: %s', 'wappointment'), '[client:phone]')],
         ], 'zoom' => [
             ['p' => __('It will take place by video online.', 'wappointment')],
             /* translators: %s - a "here" link is added. */
-            ['h3' => \sprintf(__('Click %s to begin the meeting', 'wappointment'), '[ label="' . __('here', 'wappointment') . '" link="linkView"]')],
+            ['h3' => sprintf(__('Click %s to begin the meeting', 'wappointment'), '[ label="' . __('here', 'wappointment') . '" link="linkView"]')],
         ]];
-        if (!\is_array($types)) {
-            $types = ['physical', 'phone', 'skype', 'zoom'];
+        if (!is_array($types)) {
+            $types = ['physical', 'phone', 'zoom'];
         }
         foreach ($types as $type) {
             $email_confirmed[] = [$type => $messageService[$type]];

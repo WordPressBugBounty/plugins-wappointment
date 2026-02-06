@@ -22,7 +22,7 @@ class WizardController extends \Wappointment\Controllers\RestController
         if ($request->input('step') == 1) {
             new \Wappointment\Installation\Process();
         }
-        if (\in_array($request->input('step'), [2, 3])) {
+        if (in_array($request->input('step'), [2, 3])) {
             Reset::refreshCache();
         }
         WPHelpers::setOption('wizard_step', $request->input('step'));

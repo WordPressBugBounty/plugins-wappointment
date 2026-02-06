@@ -36,7 +36,7 @@ class AcceptHeaderItem
     public static function fromString(?string $itemValue)
     {
         $parts = HeaderUtils::split($itemValue ?? '', ';=');
-        $part = \array_shift($parts);
+        $part = array_shift($parts);
         $attributes = HeaderUtils::combine($parts);
         return new self($part[0], $attributes);
     }

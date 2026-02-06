@@ -113,7 +113,7 @@ abstract class AbstractPlatform
      *
      * @return string
      */
-    public abstract function getBooleanTypeDeclarationSQL(array $column);
+    abstract public function getBooleanTypeDeclarationSQL(array $column);
     /**
      * Returns the SQL snippet that declares a 4 byte integer column.
      *
@@ -121,7 +121,7 @@ abstract class AbstractPlatform
      *
      * @return string
      */
-    public abstract function getIntegerTypeDeclarationSQL(array $column);
+    abstract public function getIntegerTypeDeclarationSQL(array $column);
     /**
      * Returns the SQL snippet that declares an 8 byte integer column.
      *
@@ -129,7 +129,7 @@ abstract class AbstractPlatform
      *
      * @return string
      */
-    public abstract function getBigIntTypeDeclarationSQL(array $column);
+    abstract public function getBigIntTypeDeclarationSQL(array $column);
     /**
      * Returns the SQL snippet that declares a 2 byte integer column.
      *
@@ -137,7 +137,7 @@ abstract class AbstractPlatform
      *
      * @return string
      */
-    public abstract function getSmallIntTypeDeclarationSQL(array $column);
+    abstract public function getSmallIntTypeDeclarationSQL(array $column);
     /**
      * Returns the SQL snippet that declares common properties of an integer column.
      *
@@ -145,18 +145,18 @@ abstract class AbstractPlatform
      *
      * @return string
      */
-    protected abstract function _getCommonIntegerTypeDeclarationSQL(array $column);
+    abstract protected function _getCommonIntegerTypeDeclarationSQL(array $column);
     /**
      * Lazy load Doctrine Type Mappings.
      *
      * @return void
      */
-    protected abstract function initializeDoctrineTypeMappings();
+    abstract protected function initializeDoctrineTypeMappings();
     /**
      * Initializes Doctrine Type Mappings with the platform defaults
      * and with all additional type mappings.
      */
-    private function initializeAllDoctrineTypeMappings() : void
+    private function initializeAllDoctrineTypeMappings(): void
     {
         $this->initializeDoctrineTypeMappings();
         foreach (Type::getTypesMap() as $typeName => $className) {
@@ -171,7 +171,7 @@ abstract class AbstractPlatform
      *
      * @param mixed[] $column
      */
-    public function getAsciiStringTypeDeclarationSQL(array $column) : string
+    public function getAsciiStringTypeDeclarationSQL(array $column): string
     {
         return $this->getVarcharTypeDeclarationSQL($column);
     }
@@ -279,7 +279,7 @@ abstract class AbstractPlatform
      *
      * @return string
      */
-    public abstract function getClobTypeDeclarationSQL(array $column);
+    abstract public function getClobTypeDeclarationSQL(array $column);
     /**
      * Returns the SQL Snippet used to declare a BLOB column type.
      *
@@ -287,7 +287,7 @@ abstract class AbstractPlatform
      *
      * @return string
      */
-    public abstract function getBlobTypeDeclarationSQL(array $column);
+    abstract public function getBlobTypeDeclarationSQL(array $column);
     /**
      * Gets the name of the platform.
      *
@@ -295,7 +295,7 @@ abstract class AbstractPlatform
      *
      * @return string
      */
-    public abstract function getName();
+    abstract public function getName();
     /**
      * Registers a doctrine type to be used in conjunction with a column type of this platform.
      *
@@ -467,7 +467,7 @@ abstract class AbstractPlatform
      *
      * @deprecated
      */
-    public function getCharMaxLength() : int
+    public function getCharMaxLength(): int
     {
         Deprecation::triggerIfCalledFromOutside('doctrine/dbal', 'https://github.com/doctrine/dbal/issues/3263', 'AbstractPlatform::getCharMaxLength() is deprecated.');
         return $this->getVarcharMaxLength();
@@ -1241,7 +1241,7 @@ abstract class AbstractPlatform
     /**
      * Returns the SQL expression which represents the currently selected database.
      */
-    public abstract function getCurrentDatabaseExpression() : string;
+    abstract public function getCurrentDatabaseExpression(): string;
     /**
      * Returns the FOR UPDATE expression.
      *
@@ -1259,7 +1259,7 @@ abstract class AbstractPlatform
      * @param int    $lockMode   One of the Doctrine\DBAL\LockMode::* constants
      * @psalm-param LockMode::* $lockMode
      */
-    public function appendLockHint(string $fromClause, int $lockMode) : string
+    public function appendLockHint(string $fromClause, int $lockMode): string
     {
         switch ($lockMode) {
             case LockMode::NONE:
@@ -1400,7 +1400,7 @@ abstract class AbstractPlatform
     /**
      * Returns the SQL to drop a unique constraint.
      */
-    public function getDropUniqueConstraintSQL(string $name, string $tableName) : string
+    public function getDropUniqueConstraintSQL(string $name, string $tableName): string
     {
         return $this->getDropConstraintSQL($name, $tableName);
     }
@@ -1486,7 +1486,7 @@ abstract class AbstractPlatform
         }
         return array_merge($sql, $columnSql);
     }
-    protected function getCommentOnTableSQL(string $tableName, ?string $comment) : string
+    protected function getCommentOnTableSQL(string $tableName, ?string $comment): string
     {
         $tableName = new Identifier($tableName);
         return sprintf('COMMENT ON TABLE %s IS %s', $tableName->getQuotedName($this), $this->quoteStringLiteral((string) $comment));
@@ -1724,7 +1724,7 @@ abstract class AbstractPlatform
     /**
      * Returns the SQL to create a unique constraint on a table on this platform.
      */
-    public function getCreateUniqueConstraintSQL(UniqueConstraint $constraint, string $tableName) : string
+    public function getCreateUniqueConstraintSQL(UniqueConstraint $constraint, string $tableName): string
     {
         return $this->getCreateConstraintSQL($constraint, $tableName);
     }
@@ -1733,7 +1733,7 @@ abstract class AbstractPlatform
      *
      * @throws Exception If not supported on this platform.
      */
-    public function getDropSchemaSQL(string $schemaName) : string
+    public function getDropSchemaSQL(string $schemaName): string
     {
         if (!$this->supportsSchemas()) {
             throw Exception::notSupported(__METHOD__);
@@ -2184,7 +2184,7 @@ abstract class AbstractPlatform
      * Obtains DBMS specific SQL code portion needed to set an index
      * declaration to be used in statements like CREATE TABLE.
      */
-    public function getIndexFieldDeclarationListSQL(Index $index) : string
+    public function getIndexFieldDeclarationListSQL(Index $index): string
     {
         return implode(', ', $index->getQuotedColumns($this));
     }
@@ -2194,7 +2194,7 @@ abstract class AbstractPlatform
      *
      * @param mixed[] $columns
      */
-    public function getColumnsFieldDeclarationListSQL(array $columns) : string
+    public function getColumnsFieldDeclarationListSQL(array $columns): string
     {
         $ret = [];
         foreach ($columns as $column => $definition) {
@@ -2822,7 +2822,7 @@ abstract class AbstractPlatform
     /**
      * Whether the platform supports indexes with column length definitions.
      */
-    public function supportsColumnLengthIndexes() : bool
+    public function supportsColumnLengthIndexes(): bool
     {
         return \false;
     }
@@ -3053,7 +3053,7 @@ abstract class AbstractPlatform
      *
      * @throws Exception
      */
-    public final function modifyLimitQuery($query, $limit, $offset = 0) : string
+    final public function modifyLimitQuery($query, $limit, $offset = 0): string
     {
         if ($offset < 0) {
             throw new Exception(sprintf('Offset must be a positive integer or zero, %d given', $offset));
@@ -3182,7 +3182,7 @@ abstract class AbstractPlatform
      *
      * @throws Exception If no keyword list is specified.
      */
-    public final function getReservedKeywordsList() : KeywordList
+    final public function getReservedKeywordsList(): KeywordList
     {
         // Check for an existing instantiation of the keywords class.
         if ($this->_keywords === null) {
@@ -3198,7 +3198,7 @@ abstract class AbstractPlatform
      *
      * @throws Exception
      */
-    protected function createReservedKeywordsList() : KeywordList
+    protected function createReservedKeywordsList(): KeywordList
     {
         $class = $this->getReservedKeywordsClass();
         $keywords = new $class();
@@ -3254,7 +3254,7 @@ abstract class AbstractPlatform
      * @param string $escapeChar  should be reused by the caller in the LIKE
      *                            expression.
      */
-    public final function escapeStringForLike(string $inputString, string $escapeChar) : string
+    final public function escapeStringForLike(string $inputString, string $escapeChar): string
     {
         return preg_replace('~([' . preg_quote($this->getLikeWildcardCharacters() . $escapeChar, '~') . '])~u', addcslashes($escapeChar, '\\') . '$1', $inputString);
     }
@@ -3262,7 +3262,7 @@ abstract class AbstractPlatform
      * @return array<string,mixed> An associative array with the name of the properties
      *                             of the column being declared as array indexes.
      */
-    private function columnToArray(Column $column) : array
+    private function columnToArray(Column $column): array
     {
         $name = $column->getQuotedName($this);
         $columnData = array_merge($column->toArray(), ['name' => $name, 'version' => $column->hasPlatformOption('version') ? $column->getPlatformOption('version') : \false, 'comment' => $this->getColumnComment($column)]);
@@ -3274,11 +3274,11 @@ abstract class AbstractPlatform
     /**
      * @internal
      */
-    public function createSQLParser() : Parser
+    public function createSQLParser(): Parser
     {
         return new Parser(\false);
     }
-    protected function getLikeWildcardCharacters() : string
+    protected function getLikeWildcardCharacters(): string
     {
         return '%_';
     }
@@ -3287,7 +3287,7 @@ abstract class AbstractPlatform
      *
      * @throws Exception
      */
-    public function columnsEqual(Column $column1, Column $column2) : bool
+    public function columnsEqual(Column $column1, Column $column2): bool
     {
         $column1Array = $this->columnToArray($column1);
         $column2Array = $this->columnToArray($column2);

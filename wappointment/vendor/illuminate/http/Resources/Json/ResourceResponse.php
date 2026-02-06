@@ -31,7 +31,7 @@ class ResourceResponse implements Responsable
      */
     public function toResponse($request)
     {
-        return \WappointmentLv::tap(response()->json($this->wrap($this->resource->resolve($request), $this->resource->with($request), $this->resource->additional), $this->calculateStatus(), [], $this->resource->jsonOptions()), function ($response) use($request) {
+        return \WappointmentLv::tap(response()->json($this->wrap($this->resource->resolve($request), $this->resource->with($request), $this->resource->additional), $this->calculateStatus(), [], $this->resource->jsonOptions()), function ($response) use ($request) {
             $response->original = $this->resource->resource;
             $this->resource->withResponse($request, $response);
         });
@@ -54,7 +54,7 @@ class ResourceResponse implements Responsable
         } elseif ($this->haveAdditionalInformationAndDataIsUnwrapped($data, $with, $additional)) {
             $data = [$this->wrapper() ?? 'data' => $data];
         }
-        return \array_merge_recursive($data, $with, $additional);
+        return array_merge_recursive($data, $with, $additional);
     }
     /**
      * Determine if we have a default wrapper and the given data is unwrapped.
@@ -64,7 +64,7 @@ class ResourceResponse implements Responsable
      */
     protected function haveDefaultWrapperAndDataIsUnwrapped($data)
     {
-        return $this->wrapper() && !\array_key_exists($this->wrapper(), $data);
+        return $this->wrapper() && !array_key_exists($this->wrapper(), $data);
     }
     /**
      * Determine if "with" data has been added and our data is unwrapped.
@@ -76,7 +76,7 @@ class ResourceResponse implements Responsable
      */
     protected function haveAdditionalInformationAndDataIsUnwrapped($data, $with, $additional)
     {
-        return (!empty($with) || !empty($additional)) && (!$this->wrapper() || !\array_key_exists($this->wrapper(), $data));
+        return (!empty($with) || !empty($additional)) && (!$this->wrapper() || !array_key_exists($this->wrapper(), $data));
     }
     /**
      * Get the default data wrapper for the resource.
@@ -85,7 +85,7 @@ class ResourceResponse implements Responsable
      */
     protected function wrapper()
     {
-        return \get_class($this->resource)::$wrap;
+        return get_class($this->resource)::$wrap;
     }
     /**
      * Calculate the appropriate status code for the response.

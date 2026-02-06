@@ -19,7 +19,7 @@ final class EasyConnectString
     {
         $this->string = $string;
     }
-    public function __toString() : string
+    public function __toString(): string
     {
         return $this->string;
     }
@@ -28,7 +28,7 @@ final class EasyConnectString
      *
      * @param mixed[] $params
      */
-    public static function fromArray(array $params) : self
+    public static function fromArray(array $params): self
     {
         return new self(self::renderParams($params));
     }
@@ -37,7 +37,7 @@ final class EasyConnectString
      *
      * @param mixed[] $params
      */
-    public static function fromConnectionParameters(array $params) : self
+    public static function fromConnectionParameters(array $params): self
     {
         if (isset($params['connectstring'])) {
             return new self($params['connectstring']);
@@ -65,7 +65,7 @@ final class EasyConnectString
     /**
      * @param mixed[] $params
      */
-    private static function renderParams(array $params) : string
+    private static function renderParams(array $params): string
     {
         $chunks = [];
         foreach ($params as $key => $value) {
@@ -80,7 +80,7 @@ final class EasyConnectString
     /**
      * @param mixed $value
      */
-    private static function renderValue($value) : string
+    private static function renderValue($value): string
     {
         if (is_array($value)) {
             return self::renderParams($value);

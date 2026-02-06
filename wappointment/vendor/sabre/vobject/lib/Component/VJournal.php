@@ -62,6 +62,6 @@ class VJournal extends VObject\Component
      */
     protected function getDefaults()
     {
-        return ['UID' => 'sabre-vobject-' . VObject\UUIDUtil::getUUID(), 'DTSTAMP' => \gmdate('Ymd\\THis\\Z')];
+        return ['UID' => 'sabre-vobject-' . VObject\UUIDUtil::getUUID(), 'DTSTAMP' => gmdate('Ymd\THis\Z')];
     }
 }

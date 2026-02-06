@@ -26,7 +26,7 @@ class Staff
         if (empty($staff_data)) {
             throw new \WappointmentException("Can't load staff information", 1);
         }
-        if (!\is_array($staff_data)) {
+        if (!is_array($staff_data)) {
             try {
                 $calendar = Calendar::findOrFail($staff_data);
                 $staff_data = $calendar->toArray();
@@ -71,7 +71,7 @@ class Staff
     }
     protected function getRoles()
     {
-        return !empty($this->wp_user) ? \array_values($this->wp_user->roles) : [];
+        return !empty($this->wp_user) ? array_values($this->wp_user->roles) : [];
     }
     public function getServicesId($services)
     {

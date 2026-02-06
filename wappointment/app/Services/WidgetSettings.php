@@ -55,7 +55,7 @@ class WidgetSettings
     {
         if (\Wappointment\Services\VersionDB::canServices()) {
             unset($this->fields['form']['categories'][0]);
-            $this->fields['form']['categories'] = \array_values($this->fields['form']['categories']);
+            $this->fields['form']['categories'] = array_values($this->fields['form']['categories']);
         }
         return $this->fields;
     }
@@ -70,7 +70,7 @@ class WidgetSettings
     }
     public function getSetting($settingName)
     {
-        $find = \explode('.', $settingName);
+        $find = explode('.', $settingName);
         if (empty($this->merged_settings[$find[0]])) {
             return 'undefined';
         }
@@ -97,19 +97,19 @@ class WidgetSettings
     }
     public function filterSettings($settings)
     {
-        $accepted = \array_keys($this->defaultSettings());
-        return \WappointmentLv::collect($settings)->reject(function ($value, $key) use($accepted) {
-            return !\in_array($key, $accepted);
+        $accepted = array_keys($this->defaultSettings());
+        return \WappointmentLv::collect($settings)->reject(function ($value, $key) use ($accepted) {
+            return !in_array($key, $accepted);
         })->toArray();
     }
     private function merge($array1, $array2)
     {
         $merged = $array1;
         foreach ($array2 as $key => &$value) {
-            if (\is_array($value) && isset($merged[$key]) && \is_array($merged[$key])) {
+            if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
                 $merged[$key] = $this->merge($merged[$key], $value);
-            } elseif (\is_numeric($key)) {
-                if (!\in_array($value, $merged)) {
+            } elseif (is_numeric($key)) {
+                if (!in_array($value, $merged)) {
                     $merged[] = $value;
                 }
             } else {

@@ -29,7 +29,7 @@ trait CanIgnore
     }
     protected static function executeQuery($command, array $attributes, $upsert = \false)
     {
-        if (!\count($attributes)) {
+        if (!count($attributes)) {
             return \true;
         }
         $model = new static();
@@ -38,7 +38,7 @@ trait CanIgnore
         }
         $attributes = \WappointmentLv::collect($attributes);
         $first = $attributes->first();
-        if (!\is_array($first)) {
+        if (!is_array($first)) {
             $attributes = \WappointmentLv::collect([$attributes->toArray()]);
         }
         $keys = \WappointmentLv::collect($attributes->first())->keys()->transform(function ($key) {
@@ -52,19 +52,19 @@ trait CanIgnore
             foreach ($data as $attrib => $value) {
                 $qs[] = '?';
                 if ($attrib == 'title') {
-                    $bindings[] = \substr($value, 0, 100);
+                    $bindings[] = substr($value, 0, 100);
                 } else {
                     $bindings[] = $value;
                 }
             }
-            $inserts[] = '(' . \implode(',', $qs) . ')';
+            $inserts[] = '(' . implode(',', $qs) . ')';
         }
-        $query .= \implode(',', $inserts);
+        $query .= implode(',', $inserts);
         if ($upsert) {
             $query .= ' ON DUPLICATE KEY UPDATE ';
             foreach ($keys as $i => $key) {
                 $query .= " {$key} = VALUES({$key}) ";
-                if ($i < \count($keys) - 1) {
+                if ($i < count($keys) - 1) {
                     $query .= ',';
                 }
             }

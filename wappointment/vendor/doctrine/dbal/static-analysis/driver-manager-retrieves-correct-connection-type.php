@@ -8,7 +8,7 @@ use WappoVendor\Doctrine\DBAL\DriverManager;
 final class MyConnection extends Connection
 {
 }
-function makeMeACustomConnection() : MyConnection
+function makeMeACustomConnection(): MyConnection
 {
     return DriverManager::getConnection(['wrapperClass' => MyConnection::class]);
 }

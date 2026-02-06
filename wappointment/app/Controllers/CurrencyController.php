@@ -14,7 +14,7 @@ class CurrencyController extends \Wappointment\Controllers\RestController
     }
     public function save(Request $request)
     {
-        if (\strlen($request->input('currency')) > 3) {
+        if (strlen($request->input('currency')) > 3) {
             throw new \WappointmentException('Currency is not correct', 1);
         }
         Settings::save('currency', $request->input('currency'));

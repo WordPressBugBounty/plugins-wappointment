@@ -88,13 +88,13 @@ class Cli
         // @codeCoverageIgnoreStart
         // We cannot easily test this, so we'll skip it. Pretty basic anyway.
         if (!$this->stderr) {
-            $this->stderr = \fopen('php://stderr', 'w');
+            $this->stderr = fopen('php://stderr', 'w');
         }
         if (!$this->stdout) {
-            $this->stdout = \fopen('php://stdout', 'w');
+            $this->stdout = fopen('php://stdout', 'w');
         }
         if (!$this->stdin) {
-            $this->stdin = \fopen('php://stdin', 'r');
+            $this->stdin = fopen('php://stdin', 'r');
         }
         // @codeCoverageIgnoreEnd
         try {
@@ -136,7 +136,7 @@ class Cli
                         }
                         break;
                     case 'pretty':
-                        if (\version_compare(\PHP_VERSION, '5.4.0') >= 0) {
+                        if (version_compare(\PHP_VERSION, '5.4.0') >= 0) {
                             $this->pretty = \true;
                         }
                         break;
@@ -169,17 +169,17 @@ class Cli
                         throw new InvalidArgumentException('Unknown option: ' . $name);
                 }
             }
-            if (0 === \count($positional)) {
+            if (0 === count($positional)) {
                 $this->showHelp();
                 return 1;
             }
-            if (1 === \count($positional)) {
+            if (1 === count($positional)) {
                 throw new InvalidArgumentException('Inputfile is a required argument');
             }
-            if (\count($positional) > 3) {
+            if (count($positional) > 3) {
                 throw new InvalidArgumentException('Too many arguments');
             }
-            if (!\in_array($positional[0], ['validate', 'repair', 'convert', 'color'])) {
+            if (!in_array($positional[0], ['validate', 'repair', 'convert', 'color'])) {
                 throw new InvalidArgumentException('Unknown command: ' . $positional[0]);
             }
         } catch (InvalidArgumentException $e) {
@@ -191,17 +191,17 @@ class Cli
         $this->inputPath = $positional[1];
         $this->outputPath = isset($positional[2]) ? $positional[2] : '-';
         if ('-' !== $this->outputPath) {
-            $this->stdout = \fopen($this->outputPath, 'w');
+            $this->stdout = fopen($this->outputPath, 'w');
         }
         if (!$this->inputFormat) {
-            if ('.json' === \substr($this->inputPath, -5)) {
+            if ('.json' === substr($this->inputPath, -5)) {
                 $this->inputFormat = 'json';
             } else {
                 $this->inputFormat = 'mimedir';
             }
         }
         if (!$this->format) {
-            if ('.json' === \substr($this->outputPath, -5)) {
+            if ('.json' === substr($this->outputPath, -5)) {
                 $this->format = 'json';
             } else {
                 $this->format = 'mimedir';
@@ -240,7 +240,7 @@ class Cli
         $this->log($this->colorize('green', '  --inputformat ') . 'If the input format cannot be guessed from the extension, it');
         $this->log('                must be specified here.');
         // Only PHP 5.4 and up
-        if (\version_compare(\PHP_VERSION, '5.4.0') >= 0) {
+        if (version_compare(\PHP_VERSION, '5.4.0') >= 0) {
             $this->log($this->colorize('green', '  --pretty      ') . 'json pretty-print.');
         }
         $this->log('');
@@ -282,7 +282,7 @@ HELP
                 break;
         }
         $warnings = $vObj->validate();
-        if (!\count($warnings)) {
+        if (!count($warnings)) {
             $this->log('  No warnings!');
         } else {
             $levels = [1 => 'REPAIRED', 2 => 'WARNING', 3 => 'ERROR'];
@@ -314,7 +314,7 @@ HELP
                 break;
         }
         $warnings = $vObj->validate(Node::REPAIR);
-        if (!\count($warnings)) {
+        if (!count($warnings)) {
             $this->log('  No warnings!');
         } else {
             $levels = [1 => 'REPAIRED', 2 => 'WARNING', 3 => 'ERROR'];
@@ -327,7 +327,7 @@ HELP
                 $this->log('  [' . $levels[$warn['level']] . '] ' . $warn['message'] . $extra);
             }
         }
-        \fwrite($this->stdout, $vObj->serialize());
+        fwrite($this->stdout, $vObj->serialize());
         return $returnCode;
     }
     /**
@@ -374,7 +374,7 @@ HELP
                 break;
         }
         if ($forceInput && $vObj->name !== $forceInput) {
-            throw new \Exception('You cannot convert a ' . \strtolower($vObj->name) . ' to ' . $this->format);
+            throw new \Exception('You cannot convert a ' . strtolower($vObj->name) . ' to ' . $this->format);
         }
         if ($convertVersion) {
             $vObj = $vObj->convert($convertVersion);
@@ -384,9 +384,9 @@ HELP
             if ($this->pretty) {
                 $jsonOptions = \JSON_PRETTY_PRINT;
             }
-            \fwrite($this->stdout, \json_encode($vObj->jsonSerialize(), $jsonOptions));
+            fwrite($this->stdout, json_encode($vObj->jsonSerialize(), $jsonOptions));
         } else {
-            \fwrite($this->stdout, $vObj->serialize());
+            fwrite($this->stdout, $vObj->serialize());
         }
         return 0;
     }
@@ -419,7 +419,7 @@ HELP
      */
     protected function cWrite($color, $str)
     {
-        \fwrite($this->stdout, $this->colorize($color, $str));
+        fwrite($this->stdout, $this->colorize($color, $str));
     }
     protected function serializeComponent(Component $vObj)
     {
@@ -452,24 +452,20 @@ HELP
                     $score = 400000000;
                     return $score + $key;
                 }
-            } else {
-                // Properties get encoded first
-                // VCARD version 4.0 wants the VERSION property to appear first
-                if ($array[$key] instanceof Property) {
-                    if ('VERSION' === $array[$key]->name) {
-                        $score = 100000000;
-                        return $score + $key;
-                    } else {
-                        // All other properties
-                        $score = 200000000;
-                        return $score + $key;
-                    }
+            } else if ($array[$key] instanceof Property) {
+                if ('VERSION' === $array[$key]->name) {
+                    $score = 100000000;
+                    return $score + $key;
+                } else {
+                    // All other properties
+                    $score = 200000000;
+                    return $score + $key;
                 }
             }
         };
         $children = $vObj->children();
         $tmp = $children;
-        \uksort($children, function ($a, $b) use($sortScore, $tmp) {
+        uksort($children, function ($a, $b) use ($sortScore, $tmp) {
             $sA = $sortScore($a, $tmp);
             $sB = $sortScore($b, $tmp);
             return $sA - $sB;
@@ -501,7 +497,7 @@ HELP
         }
         $this->cWrite('red', ':');
         if ($property instanceof Property\Binary) {
-            $this->cWrite('default', 'embedded binary stripped. (' . \strlen($property->getValue()) . ' bytes)');
+            $this->cWrite('default', 'embedded binary stripped. (' . strlen($property->getValue()) . ' bytes)');
         } else {
             $parts = $property->getParts();
             $first1 = \true;
@@ -521,7 +517,7 @@ HELP
                         // The sub-value delimiter is always comma
                         $this->cWrite('red', ',');
                     }
-                    $subPart = \strtr($subPart, ['\\' => $this->colorize('purple', '\\\\', 'green'), ';' => $this->colorize('purple', '\\;', 'green'), ',' => $this->colorize('purple', '\\,', 'green'), "\n" => $this->colorize('purple', "\\n\n\t", 'green'), "\r" => '']);
+                    $subPart = strtr($subPart, ['\\' => $this->colorize('purple', '\\\\', 'green'), ';' => $this->colorize('purple', '\;', 'green'), ',' => $this->colorize('purple', '\,', 'green'), "\n" => $this->colorize('purple', "\\n\n\t", 'green'), "\r" => '']);
                     $this->cWrite('green', $subPart);
                 }
             }
@@ -535,23 +531,23 @@ HELP
     {
         $positional = [];
         $options = [];
-        for ($ii = 0; $ii < \count($argv); ++$ii) {
+        for ($ii = 0; $ii < count($argv); ++$ii) {
             // Skipping the first argument.
             if (0 === $ii) {
                 continue;
             }
             $v = $argv[$ii];
-            if ('--' === \substr($v, 0, 2)) {
+            if ('--' === substr($v, 0, 2)) {
                 // This is a long-form option.
-                $optionName = \substr($v, 2);
+                $optionName = substr($v, 2);
                 $optionValue = \true;
-                if (\strpos($optionName, '=')) {
-                    list($optionName, $optionValue) = \explode('=', $optionName);
+                if (strpos($optionName, '=')) {
+                    list($optionName, $optionValue) = explode('=', $optionName);
                 }
                 $options[$optionName] = $optionValue;
-            } elseif ('-' === \substr($v, 0, 1) && \strlen($v) > 1) {
+            } elseif ('-' === substr($v, 0, 1) && strlen($v) > 1) {
                 // This is a short-form option.
-                foreach (\str_split(\substr($v, 1)) as $option) {
+                foreach (str_split(substr($v, 1)) as $option) {
                     $options[$option] = \true;
                 }
             } else {
@@ -570,7 +566,7 @@ HELP
     {
         if (!$this->parser) {
             if ('-' !== $this->inputPath) {
-                $this->stdin = \fopen($this->inputPath, 'r');
+                $this->stdin = fopen($this->inputPath, 'r');
             }
             if ('mimedir' === $this->inputFormat) {
                 $this->parser = new Parser\MimeDir($this->stdin, $this->forgiving ? Reader::OPTION_FORGIVING : 0);
@@ -591,7 +587,7 @@ HELP
             if ('default' !== $color) {
                 $msg = $this->colorize($color, $msg);
             }
-            \fwrite($this->stderr, $msg . "\n");
+            fwrite($this->stderr, $msg . "\n");
         }
     }
 }

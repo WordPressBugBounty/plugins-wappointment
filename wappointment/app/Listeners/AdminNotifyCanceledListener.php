@@ -4,7 +4,7 @@ namespace Wappointment\Listeners;
 
 class AdminNotifyCanceledListener extends \Wappointment\Listeners\AbstractJobRecordListener
 {
-    protected $jobClass = '\\Wappointment\\Jobs\\AdminEmailCanceledAppointment';
+    protected $jobClass = '\Wappointment\Jobs\AdminEmailCanceledAppointment';
     protected function addToJobs($event)
     {
         $appointment = $event->getAppointment();

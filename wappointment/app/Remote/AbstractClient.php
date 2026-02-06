@@ -29,7 +29,7 @@ abstract class AbstractClient
     public function headerIsEqual($headerName, $valueTest)
     {
         $headerValue = $this->hasHeader($headerName);
-        return !empty($headerValue) && \strpos($headerValue, $valueTest) !== \false;
+        return !empty($headerValue) && strpos($headerValue, $valueTest) !== \false;
     }
     public function hasHeader($headerName)
     {

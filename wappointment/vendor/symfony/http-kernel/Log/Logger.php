@@ -50,12 +50,12 @@ class Logger extends AbstractLogger
             }
         }
         if (!isset(self::LEVELS[$minLevel])) {
-            throw new InvalidArgumentException(\sprintf('The log level "%s" does not exist.', $minLevel));
+            throw new InvalidArgumentException(sprintf('The log level "%s" does not exist.', $minLevel));
         }
         $this->minLevelIndex = self::LEVELS[$minLevel];
         $this->formatter = $formatter ?: [$this, 'format'];
-        if ($output && \false === ($this->handle = \is_resource($output) ? $output : @\fopen($output, 'a'))) {
-            throw new InvalidArgumentException(\sprintf('Unable to open "%s".', $output));
+        if ($output && \false === $this->handle = \is_resource($output) ? $output : @fopen($output, 'a')) {
+            throw new InvalidArgumentException(sprintf('Unable to open "%s".', $output));
         }
     }
     /**
@@ -66,24 +66,24 @@ class Logger extends AbstractLogger
     public function log($level, $message, array $context = [])
     {
         if (!isset(self::LEVELS[$level])) {
-            throw new InvalidArgumentException(\sprintf('The log level "%s" does not exist.', $level));
+            throw new InvalidArgumentException(sprintf('The log level "%s" does not exist.', $level));
         }
         if (self::LEVELS[$level] < $this->minLevelIndex) {
             return;
         }
         $formatter = $this->formatter;
         if ($this->handle) {
-            @\fwrite($this->handle, $formatter($level, $message, $context) . \PHP_EOL);
+            @fwrite($this->handle, $formatter($level, $message, $context) . \PHP_EOL);
         } else {
-            \error_log($formatter($level, $message, $context, \false));
+            error_log($formatter($level, $message, $context, \false));
         }
     }
-    private function format(string $level, string $message, array $context, bool $prefixDate = \true) : string
+    private function format(string $level, string $message, array $context, bool $prefixDate = \true): string
     {
-        if (\str_contains($message, '{')) {
+        if (str_contains($message, '{')) {
             $replacements = [];
             foreach ($context as $key => $val) {
-                if (null === $val || \is_scalar($val) || \is_object($val) && \method_exists($val, '__toString')) {
+                if (null === $val || \is_scalar($val) || \is_object($val) && method_exists($val, '__toString')) {
                     $replacements["{{$key}}"] = $val;
                 } elseif ($val instanceof \DateTimeInterface) {
                     $replacements["{{$key}}"] = $val->format(\DateTime::RFC3339);
@@ -93,11 +93,11 @@ class Logger extends AbstractLogger
                     $replacements["{{$key}}"] = '[' . \gettype($val) . ']';
                 }
             }
-            $message = \strtr($message, $replacements);
+            $message = strtr($message, $replacements);
         }
-        $log = \sprintf('[%s] %s', $level, $message);
+        $log = sprintf('[%s] %s', $level, $message);
         if ($prefixDate) {
-            $log = \date(\DateTime::RFC3339) . ' ' . $log;
+            $log = date(\DateTime::RFC3339) . ' ' . $log;
         }
         return $log;
     }

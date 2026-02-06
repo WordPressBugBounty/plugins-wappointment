@@ -127,7 +127,7 @@ class Table extends AbstractAsset
      *
      * @return self
      */
-    public function addUniqueConstraint(array $columnNames, ?string $indexName = null, array $flags = [], array $options = []) : Table
+    public function addUniqueConstraint(array $columnNames, ?string $indexName = null, array $flags = [], array $options = []): Table
     {
         if ($indexName === null) {
             $indexName = $this->_generateIdentifierName(array_merge([$this->getName()], $columnNames), 'uniq', $this->_getMaxIdentifierLength());
@@ -244,7 +244,7 @@ class Table extends AbstractAsset
      *
      * @throws SchemaException
      */
-    private function _createIndex(array $columnNames, $indexName, $isUnique, $isPrimary, array $flags = [], array $options = []) : Index
+    private function _createIndex(array $columnNames, $indexName, $isUnique, $isPrimary, array $flags = [], array $options = []): Index
     {
         if (preg_match('(([^a-zA-Z0-9_]+))', $this->normalizeIdentifier($indexName)) === 1) {
             throw SchemaException::indexNameInvalid($indexName);
@@ -393,7 +393,7 @@ class Table extends AbstractAsset
     /**
      * @return self
      */
-    protected function _addUniqueConstraint(UniqueConstraint $constraint) : Table
+    protected function _addUniqueConstraint(UniqueConstraint $constraint): Table
     {
         $mergedNames = array_merge([$this->getName()], $constraint->getColumns());
         $name = strlen($constraint->getName()) > 0 ? $constraint->getName() : $this->_generateIdentifierName($mergedNames, 'fk', $this->_getMaxIdentifierLength());
@@ -492,7 +492,7 @@ class Table extends AbstractAsset
     /**
      * Returns whether this table has a unique constraint with the given name.
      */
-    public function hasUniqueConstraint(string $name) : bool
+    public function hasUniqueConstraint(string $name): bool
     {
         $name = $this->normalizeIdentifier($name);
         return isset($this->uniqueConstraints[$name]);
@@ -502,7 +502,7 @@ class Table extends AbstractAsset
      *
      * @throws SchemaException If the unique constraint does not exist.
      */
-    public function getUniqueConstraint(string $name) : UniqueConstraint
+    public function getUniqueConstraint(string $name): UniqueConstraint
     {
         $name = $this->normalizeIdentifier($name);
         if (!$this->hasUniqueConstraint($name)) {
@@ -515,7 +515,7 @@ class Table extends AbstractAsset
      *
      * @throws SchemaException If the unique constraint does not exist.
      */
-    public function removeUniqueConstraint(string $name) : void
+    public function removeUniqueConstraint(string $name): void
     {
         $name = $this->normalizeIdentifier($name);
         if (!$this->hasUniqueConstraint($name)) {
@@ -555,9 +555,9 @@ class Table extends AbstractAsset
      *
      * @return Column[]
      */
-    private function filterColumns(array $columnNames, bool $reverse = \false) : array
+    private function filterColumns(array $columnNames, bool $reverse = \false): array
     {
-        return array_filter($this->_columns, static function (string $columnName) use($columnNames, $reverse) : bool {
+        return array_filter($this->_columns, static function (string $columnName) use ($columnNames, $reverse): bool {
             return in_array($columnName, $columnNames, \true) !== $reverse;
         }, ARRAY_FILTER_USE_KEY);
     }
@@ -667,7 +667,7 @@ class Table extends AbstractAsset
      *
      * @return UniqueConstraint[]
      */
-    public function getUniqueConstraints() : array
+    public function getUniqueConstraints(): array
     {
         return $this->uniqueConstraints;
     }
@@ -748,7 +748,7 @@ class Table extends AbstractAsset
      *
      * @throws SchemaException
      */
-    private function _createUniqueConstraint(array $columnNames, string $indexName, array $flags = [], array $options = []) : UniqueConstraint
+    private function _createUniqueConstraint(array $columnNames, string $indexName, array $flags = [], array $options = []): UniqueConstraint
     {
         if (preg_match('(([^a-zA-Z0-9_]+))', $this->normalizeIdentifier($indexName)) === 1) {
             throw SchemaException::indexNameInvalid($indexName);
@@ -767,20 +767,20 @@ class Table extends AbstractAsset
      *
      * @return string The normalized identifier.
      */
-    private function normalizeIdentifier(?string $identifier) : string
+    private function normalizeIdentifier(?string $identifier): string
     {
         if ($identifier === null) {
             return '';
         }
         return $this->trimQuotes(strtolower($identifier));
     }
-    public function setComment(?string $comment) : self
+    public function setComment(?string $comment): self
     {
         // For keeping backward compatibility with MySQL in previous releases, table comments are stored as options.
         $this->addOption('comment', $comment);
         return $this;
     }
-    public function getComment() : ?string
+    public function getComment(): ?string
     {
         return $this->_options['comment'] ?? null;
     }

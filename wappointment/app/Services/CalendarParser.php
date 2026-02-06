@@ -27,7 +27,7 @@ class CalendarParser
     public function __construct($url, $content, $staff_id = 0)
     {
         $this->url = $url;
-        $this->source = \md5($this->url);
+        $this->source = md5($this->url);
         $this->content = $content;
         $this->staff_id = $staff_id;
         $this->handles_free = \Wappointment\Services\Settings::get('calendar_handles_free');
@@ -35,14 +35,14 @@ class CalendarParser
     }
     public function handle()
     {
-        $start = \microtime(\true);
+        $start = microtime(\true);
         if (empty($this->content)) {
             throw new \Exception('Calendar is not accessible (' . $this->url . ')', 1);
         }
         $this->statusEvents = \WappointmentLv::collect([]);
         $vcalendar = \Wappointment\Services\VcardReader::read($this->content, \Wappointment\Services\VcardReader::OPTION_IGNORE_INVALID_LINES);
         // skip calendar that has no events
-        if (!isset($vcalendar) || !\is_object($vcalendar->VEVENT) || \count($vcalendar->VEVENT) <= 0) {
+        if (!isset($vcalendar) || !is_object($vcalendar->VEVENT) || count($vcalendar->VEVENT) <= 0) {
             return \false;
         }
         $this->setTimezone($vcalendar);
@@ -66,20 +66,16 @@ class CalendarParser
                     continue;
                 }
                 $recur = $this->getRecur($vevent);
-            } else {
-                //punctual events
-                // skip events that are passed since yesterday
-                if ($carbon_end->lt(Carbon::yesterday())) {
-                    continue;
-                }
+            } else if ($carbon_end->lt(Carbon::yesterday())) {
+                continue;
             }
             $start_at_record = $this->getFormatedDate($carbon_start);
             $end_at_record = $this->getFormatedDate($carbon_end);
-            $dataInsert = ['start_at' => $start_at_record, 'end_at' => $end_at_record, 'recur' => $recur, 'source' => $this->source, 'type' => $this->getStatus($vevent), 'eventkey' => \md5($this->source . (string) $vevent->UID . (string) $vevent->DTSTART), 'options' => $this->getOptions($vevent, $until, $recur), 'staff_id' => $this->staff_id];
+            $dataInsert = ['start_at' => $start_at_record, 'end_at' => $end_at_record, 'recur' => $recur, 'source' => $this->source, 'type' => $this->getStatus($vevent), 'eventkey' => md5($this->source . (string) $vevent->UID . (string) $vevent->DTSTART), 'options' => $this->getOptions($vevent, $until, $recur), 'staff_id' => $this->staff_id];
             $this->statusEvents->push($dataInsert);
             $uids->push((string) $vevent->UID);
         }
-        return ['detected' => \count($this->statusEvents), 'deleted' => $this->deleteRemovedEvents($uids), 'inserted' => $this->insertIgnoreOrUpsert($this->statusEvents->toArray()), 'duration' => \round(\microtime(\true) - $start, 2)];
+        return ['detected' => count($this->statusEvents), 'deleted' => $this->deleteRemovedEvents($uids), 'inserted' => $this->insertIgnoreOrUpsert($this->statusEvents->toArray()), 'duration' => round(microtime(\true) - $start, 2)];
     }
     public function isFreeOutlook($vevent)
     {
@@ -101,12 +97,12 @@ class CalendarParser
     }
     private function insertIgnoreOrUpsert($array)
     {
-        return \version_compare(SystemStatus::dbVersion(), '2.0.3') >= 0 ? Status::upsert($array) : Status::insertIgnore($array);
+        return version_compare(SystemStatus::dbVersion(), '2.0.3') >= 0 ? Status::upsert($array) : Status::insertIgnore($array);
     }
     private function deleteRemovedEvents($uids)
     {
         $deleted = 0;
-        if (\count($uids->unique()) === \count($uids)) {
+        if (count($uids->unique()) === count($uids)) {
             $deleted = Status::where('source', $this->source)->whereNotIn('eventkey', $this->statusEvents->pluck('eventkey'))->delete();
         }
         return $deleted;
@@ -194,7 +190,7 @@ class CalendarParser
     }
     private function getFrequency($frequency)
     {
-        switch (\strtoupper($frequency)) {
+        switch (strtoupper($frequency)) {
             case 'DAILY':
                 return STATUS::RECUR_DAILY;
             case 'WEEKLY':
@@ -240,13 +236,13 @@ class CalendarParser
     }
     private function convertDays($days)
     {
-        if (!\is_array($days)) {
+        if (!is_array($days)) {
             $days = [$days];
         }
         $newArray = [];
         foreach ($days as $day) {
             $dayconverted = $this->getDayNumber($day);
-            if (\is_array($dayconverted) && \count($days) == 1) {
+            if (is_array($dayconverted) && count($days) == 1) {
                 return $dayconverted;
             }
             $newArray[] = $dayconverted;
@@ -276,10 +272,10 @@ class CalendarParser
     }
     private function convertDayPrefix($dayPrefix)
     {
-        if (\strlen($dayPrefix) === 3) {
-            return ['each' => (int) \substr($dayPrefix, 0, 1), 'day' => $this->getDayNumber(\substr($dayPrefix, -2, 2))];
-        } elseif (\strlen($dayPrefix) === 4) {
-            return ['each' => 'last', 'day' => $this->getDayNumber(\substr($dayPrefix, -2, 2))];
+        if (strlen($dayPrefix) === 3) {
+            return ['each' => (int) substr($dayPrefix, 0, 1), 'day' => $this->getDayNumber(substr($dayPrefix, -2, 2))];
+        } elseif (strlen($dayPrefix) === 4) {
+            return ['each' => 'last', 'day' => $this->getDayNumber(substr($dayPrefix, -2, 2))];
         }
     }
 }

@@ -41,9 +41,9 @@ class Time extends Text
     public function setJsonValue(array $value)
     {
         // Removing colons from value.
-        $value = \str_replace(':', '', $value);
-        if (1 === \count($value)) {
-            $this->setValue(\reset($value));
+        $value = str_replace(':', '', $value);
+        if (1 === count($value)) {
+            $this->setValue(reset($value));
         } else {
             $this->setValue($value);
         }
@@ -60,9 +60,9 @@ class Time extends Text
         $parts = DateTimeParser::parseVCardTime($this->getValue());
         $timeStr = '';
         // Hour
-        if (!\is_null($parts['hour'])) {
+        if (!is_null($parts['hour'])) {
             $timeStr .= $parts['hour'];
-            if (!\is_null($parts['minute'])) {
+            if (!is_null($parts['minute'])) {
                 $timeStr .= ':';
             }
         } else {
@@ -71,27 +71,25 @@ class Time extends Text
             $timeStr .= '-';
         }
         // Minute
-        if (!\is_null($parts['minute'])) {
+        if (!is_null($parts['minute'])) {
             $timeStr .= $parts['minute'];
-            if (!\is_null($parts['second'])) {
+            if (!is_null($parts['second'])) {
                 $timeStr .= ':';
             }
-        } else {
-            if (isset($parts['second'])) {
-                // Dash for empty minute
-                $timeStr .= '-';
-            }
+        } else if (isset($parts['second'])) {
+            // Dash for empty minute
+            $timeStr .= '-';
         }
         // Second
-        if (!\is_null($parts['second'])) {
+        if (!is_null($parts['second'])) {
             $timeStr .= $parts['second'];
         }
         // Timezone
-        if (!\is_null($parts['timezone'])) {
+        if (!is_null($parts['timezone'])) {
             if ('Z' === $parts['timezone']) {
                 $timeStr .= 'Z';
             } else {
-                $timeStr .= \preg_replace('/([0-9]{2})([0-9]{2})$/', '$1:$2', $parts['timezone']);
+                $timeStr .= preg_replace('/([0-9]{2})([0-9]{2})$/', '$1:$2', $parts['timezone']);
             }
         }
         return [$timeStr];
@@ -102,8 +100,8 @@ class Time extends Text
      */
     public function setXmlValue(array $value)
     {
-        $value = \array_map(function ($value) {
-            return \str_replace(':', '', $value);
+        $value = array_map(function ($value) {
+            return str_replace(':', '', $value);
         }, $value);
         parent::setXmlValue($value);
     }

@@ -6,10 +6,10 @@ class AbstractEvent extends \WappoVendor\Symfony\Component\EventDispatcher\Gener
 {
     protected function getWPAction()
     {
-        if (empty(\get_called_class()::NAME)) {
+        if (empty(get_called_class()::NAME)) {
             return \false;
         }
-        return \strtolower('wappointment_' . \str_replace('.', '_', \get_called_class()::NAME));
+        return strtolower('wappointment_' . str_replace('.', '_', get_called_class()::NAME));
     }
     public function callWPAction()
     {

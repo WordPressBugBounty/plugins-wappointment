@@ -27,7 +27,7 @@ class SQLServerSchemaManager extends AbstractSchemaManager
     /**
      * {@inheritDoc}
      */
-    public function listSchemaNames() : array
+    public function listSchemaNames(): array
     {
         return $this->_conn->fetchFirstColumn(<<<'SQL'
 SELECT name
@@ -94,9 +94,9 @@ SQL
         }
         return $column;
     }
-    private function parseDefaultExpression(string $value) : ?string
+    private function parseDefaultExpression(string $value): ?string
     {
-        while (preg_match('/^\\((.*)\\)$/s', $value, $matches)) {
+        while (preg_match('/^\((.*)\)$/s', $value, $matches)) {
             $value = $matches[1];
         }
         if ($value === 'NULL') {
@@ -218,7 +218,7 @@ SQL
      *
      * @throws Exception
      */
-    private function getColumnConstraints(string $table, string $column) : iterable
+    private function getColumnConstraints(string $table, string $column): iterable
     {
         return $this->_conn->iterateColumn(<<<'SQL'
 SELECT o.name
@@ -241,7 +241,7 @@ SQL
      *
      * @throws Exception
      */
-    public function listTableDetails($name) : Table
+    public function listTableDetails($name): Table
     {
         $table = parent::listTableDetails($name);
         $sql = $this->_platform->getListTableMetadataSQL($name);
@@ -254,14 +254,14 @@ SQL
     /**
      * @throws Exception
      */
-    public function createComparator() : Comparator
+    public function createComparator(): Comparator
     {
         return new SQLServer\Comparator($this->getDatabasePlatform(), $this->getDatabaseCollation());
     }
     /**
      * @throws Exception
      */
-    private function getDatabaseCollation() : string
+    private function getDatabaseCollation(): string
     {
         if ($this->databaseCollation === null) {
             $databaseCollation = $this->_conn->fetchOne('SELECT collation_name FROM sys.databases WHERE name = ' . $this->_platform->getCurrentDatabaseExpression());

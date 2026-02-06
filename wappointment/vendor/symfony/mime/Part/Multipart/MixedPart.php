@@ -16,7 +16,7 @@ use WappoVendor\Symfony\Component\Mime\Part\AbstractMultipartPart;
  */
 final class MixedPart extends AbstractMultipartPart
 {
-    public function getMediaSubtype() : string
+    public function getMediaSubtype(): string
     {
         return 'mixed';
     }

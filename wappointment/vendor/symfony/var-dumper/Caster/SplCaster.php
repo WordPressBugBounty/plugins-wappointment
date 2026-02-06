@@ -31,7 +31,7 @@ class SplCaster
     }
     public static function castHeap(\Iterator $c, array $a, Stub $stub, bool $isNested)
     {
-        $a += [Caster::PREFIX_VIRTUAL . 'heap' => \iterator_to_array(clone $c)];
+        $a += [Caster::PREFIX_VIRTUAL . 'heap' => iterator_to_array(clone $c)];
         return $a;
     }
     public static function castDoublyLinkedList(\SplDoublyLinkedList $c, array $a, Stub $stub, bool $isNested)
@@ -39,7 +39,7 @@ class SplCaster
         $prefix = Caster::PREFIX_VIRTUAL;
         $mode = $c->getIteratorMode();
         $c->setIteratorMode(\SplDoublyLinkedList::IT_MODE_KEEP | $mode & ~\SplDoublyLinkedList::IT_MODE_DELETE);
-        $a += [$prefix . 'mode' => new ConstStub(($mode & \SplDoublyLinkedList::IT_MODE_LIFO ? 'IT_MODE_LIFO' : 'IT_MODE_FIFO') . ' | ' . ($mode & \SplDoublyLinkedList::IT_MODE_DELETE ? 'IT_MODE_DELETE' : 'IT_MODE_KEEP'), $mode), $prefix . 'dllist' => \iterator_to_array($c)];
+        $a += [$prefix . 'mode' => new ConstStub(($mode & \SplDoublyLinkedList::IT_MODE_LIFO ? 'IT_MODE_LIFO' : 'IT_MODE_FIFO') . ' | ' . ($mode & \SplDoublyLinkedList::IT_MODE_DELETE ? 'IT_MODE_DELETE' : 'IT_MODE_KEEP'), $mode), $prefix . 'dllist' => iterator_to_array($c)];
         $c->setIteratorMode($mode);
         return $a;
     }
@@ -81,12 +81,12 @@ class SplCaster
             $a[$prefix . 'realPath'] = new LinkStub($a[$prefix . 'realPath']);
         }
         if (isset($a[$prefix . 'perms'])) {
-            $a[$prefix . 'perms'] = new ConstStub(\sprintf('0%o', $a[$prefix . 'perms']), $a[$prefix . 'perms']);
+            $a[$prefix . 'perms'] = new ConstStub(sprintf('0%o', $a[$prefix . 'perms']), $a[$prefix . 'perms']);
         }
         static $mapDate = ['aTime', 'mTime', 'cTime'];
         foreach ($mapDate as $key) {
             if (isset($a[$prefix . $key])) {
-                $a[$prefix . $key] = new ConstStub(\date('Y-m-d H:i:s', $a[$prefix . $key]), $a[$prefix . $key]);
+                $a[$prefix . $key] = new ConstStub(date('Y-m-d H:i:s', $a[$prefix . $key]), $a[$prefix . $key]);
             }
         }
         return $a;
@@ -108,7 +108,7 @@ class SplCaster
                     $flagsArray[] = $name;
                 }
             }
-            $a[$prefix . 'flags'] = new ConstStub(\implode('|', $flagsArray), $a[$prefix . 'flags']);
+            $a[$prefix . 'flags'] = new ConstStub(implode('|', $flagsArray), $a[$prefix . 'flags']);
         }
         if (isset($a[$prefix . 'fstat'])) {
             $a[$prefix . 'fstat'] = new CutArrayStub($a[$prefix . 'fstat'], ['dev', 'ino', 'nlink', 'rdev', 'blksize', 'blocks']);
@@ -138,13 +138,13 @@ class SplCaster
         $a[Caster::PREFIX_VIRTUAL . 'object'] = $c->get();
         return $a;
     }
-    private static function castSplArray($c, array $a, Stub $stub, bool $isNested) : array
+    private static function castSplArray($c, array $a, Stub $stub, bool $isNested): array
     {
         $prefix = Caster::PREFIX_VIRTUAL;
         $flags = $c->getFlags();
         if (!($flags & \ArrayObject::STD_PROP_LIST)) {
             $c->setFlags(\ArrayObject::STD_PROP_LIST);
-            $a = Caster::castObject($c, \get_class($c), \method_exists($c, '__debugInfo'), $stub->class);
+            $a = Caster::castObject($c, \get_class($c), method_exists($c, '__debugInfo'), $stub->class);
             $c->setFlags($flags);
         }
         if (\PHP_VERSION_ID < 70400) {

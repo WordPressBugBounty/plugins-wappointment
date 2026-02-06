@@ -23,7 +23,7 @@ final class Connection implements ServerInfoAwareConnection
         $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->connection = $connection;
     }
-    public function exec(string $sql) : int
+    public function exec(string $sql): int
     {
         try {
             $result = $this->connection->exec($sql);
@@ -45,7 +45,7 @@ final class Connection implements ServerInfoAwareConnection
      *
      * @return Statement
      */
-    public function prepare(string $sql) : StatementInterface
+    public function prepare(string $sql): StatementInterface
     {
         try {
             $stmt = $this->connection->prepare($sql);
@@ -55,7 +55,7 @@ final class Connection implements ServerInfoAwareConnection
             throw Exception::new($exception);
         }
     }
-    public function query(string $sql) : ResultInterface
+    public function query(string $sql): ResultInterface
     {
         try {
             $stmt = $this->connection->query($sql);
@@ -87,26 +87,26 @@ final class Connection implements ServerInfoAwareConnection
             throw Exception::new($exception);
         }
     }
-    public function beginTransaction() : bool
+    public function beginTransaction(): bool
     {
         return $this->connection->beginTransaction();
     }
-    public function commit() : bool
+    public function commit(): bool
     {
         return $this->connection->commit();
     }
-    public function rollBack() : bool
+    public function rollBack(): bool
     {
         return $this->connection->rollBack();
     }
-    public function getNativeConnection() : PDO
+    public function getNativeConnection(): PDO
     {
         return $this->connection;
     }
     /**
      * @deprecated Call {@see getNativeConnection()} instead.
      */
-    public function getWrappedConnection() : PDO
+    public function getWrappedConnection(): PDO
     {
         Deprecation::triggerIfCalledFromOutside('doctrine/dbal', 'https://github.com/doctrine/dbal/pull/5037', '%s is deprecated, call getNativeConnection() instead.', __METHOD__);
         return $this->getNativeConnection();

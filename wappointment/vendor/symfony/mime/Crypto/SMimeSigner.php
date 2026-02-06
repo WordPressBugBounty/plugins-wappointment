@@ -40,15 +40,15 @@ final class SMimeSigner extends SMime
             $this->signPrivateKey = $this->normalizeFilePath($privateKey);
         }
         $this->signOptions = $signOptions ?? \PKCS7_DETACHED;
-        $this->extraCerts = $extraCerts ? \realpath($extraCerts) : null;
+        $this->extraCerts = $extraCerts ? realpath($extraCerts) : null;
     }
-    public function sign(Message $message) : Message
+    public function sign(Message $message): Message
     {
-        $bufferFile = \tmpfile();
-        $outputFile = \tmpfile();
+        $bufferFile = tmpfile();
+        $outputFile = tmpfile();
         $this->iteratorToFile($message->getBody()->toIterable(), $bufferFile);
-        if (!@\openssl_pkcs7_sign(\stream_get_meta_data($bufferFile)['uri'], \stream_get_meta_data($outputFile)['uri'], $this->signCertificate, $this->signPrivateKey, [], $this->signOptions, $this->extraCerts)) {
-            throw new RuntimeException(\sprintf('Failed to sign S/Mime message. Error: "%s".', \openssl_error_string()));
+        if (!@openssl_pkcs7_sign(stream_get_meta_data($bufferFile)['uri'], stream_get_meta_data($outputFile)['uri'], $this->signCertificate, $this->signPrivateKey, [], $this->signOptions, $this->extraCerts)) {
+            throw new RuntimeException(sprintf('Failed to sign S/Mime message. Error: "%s".', openssl_error_string()));
         }
         return new Message($message->getHeaders(), $this->convertMessageToSMimePart($outputFile, 'multipart', 'signed'));
     }

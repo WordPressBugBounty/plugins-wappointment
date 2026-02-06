@@ -32,7 +32,7 @@ final class Driver extends AbstractMySQLDriver
      *
      * @param mixed[] $params
      */
-    private function constructPdoDsn(array $params) : string
+    private function constructPdoDsn(array $params): string
     {
         $dsn = 'mysql:';
         if (isset($params['host']) && $params['host'] !== '') {

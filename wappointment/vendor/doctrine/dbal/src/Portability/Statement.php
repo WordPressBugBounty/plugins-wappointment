@@ -23,7 +23,7 @@ final class Statement extends AbstractStatementMiddleware
     /**
      * {@inheritdoc}
      */
-    public function execute($params = null) : ResultInterface
+    public function execute($params = null): ResultInterface
     {
         return new Result(parent::execute($params), $this->converter);
     }

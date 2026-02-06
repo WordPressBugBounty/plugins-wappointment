@@ -49,7 +49,7 @@ class CompositeExpression implements Countable
      * @param self|string $part
      * @param self|string ...$parts
      */
-    public static function and($part, ...$parts) : self
+    public static function and($part, ...$parts): self
     {
         return new self(self::TYPE_AND, array_merge([$part], $parts));
     }
@@ -57,7 +57,7 @@ class CompositeExpression implements Countable
      * @param self|string $part
      * @param self|string ...$parts
      */
-    public static function or($part, ...$parts) : self
+    public static function or($part, ...$parts): self
     {
         return new self(self::TYPE_OR, array_merge([$part], $parts));
     }
@@ -105,7 +105,7 @@ class CompositeExpression implements Countable
      * @param self|string $part
      * @param self|string ...$parts
      */
-    public function with($part, ...$parts) : self
+    public function with($part, ...$parts): self
     {
         $that = clone $this;
         $that->parts = array_merge($that->parts, [$part], $parts);

@@ -69,5 +69,5 @@ interface Statement
      *
      * @throws Exception
      */
-    public function execute($params = null) : Result;
+    public function execute($params = null): Result;
 }

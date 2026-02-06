@@ -12,7 +12,7 @@ use WappoVendor\Egulias\EmailValidator\Result\Reason\UnclosedQuotedString;
 use WappoVendor\Egulias\EmailValidator\Result\Result;
 class DoubleQuote extends PartParser
 {
-    public function parse() : Result
+    public function parse(): Result
     {
         $validQuotedString = $this->checkDQUOTE();
         if ($validQuotedString->isInvalid()) {
@@ -47,7 +47,7 @@ class DoubleQuote extends PartParser
         }
         return new ValidEmail();
     }
-    protected function checkDQUOTE() : Result
+    protected function checkDQUOTE(): Result
     {
         $previous = $this->lexer->getPrevious();
         if ($this->lexer->isNextToken(EmailLexer::GENERIC) && $previous['type'] === EmailLexer::GENERIC) {

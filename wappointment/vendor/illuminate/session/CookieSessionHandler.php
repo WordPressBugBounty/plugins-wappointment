@@ -68,7 +68,7 @@ class CookieSessionHandler implements SessionHandlerInterface
     public function read($sessionId)
     {
         $value = $this->request->cookies->get($sessionId) ?: '';
-        if (!\is_null($decoded = \json_decode($value, \true)) && \is_array($decoded)) {
+        if (!is_null($decoded = json_decode($value, \true)) && is_array($decoded)) {
             if (isset($decoded['expires']) && $this->currentTime() <= $decoded['expires']) {
                 return $decoded['data'];
             }
@@ -83,7 +83,7 @@ class CookieSessionHandler implements SessionHandlerInterface
     #[\ReturnTypeWillChange]
     public function write($sessionId, $data)
     {
-        $this->cookie->queue($sessionId, \json_encode(['data' => $data, 'expires' => $this->availableAt($this->minutes * 60)]), $this->minutes);
+        $this->cookie->queue($sessionId, json_encode(['data' => $data, 'expires' => $this->availableAt($this->minutes * 60)]), $this->minutes);
         return \true;
     }
     /**

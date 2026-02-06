@@ -31,21 +31,21 @@ class Interval
     /**
      * @return string
      */
-    public function __toString() : string
+    public function __toString(): string
     {
         return $this->getLeftBracket() . $this->getLeft()->getValue() . self::STRING_DELIMITER . ' ' . $this->getRight()->getValue() . $this->getRightBracket();
     }
     /**
      * @return Boundary
      */
-    public function getLeft() : \Wappointment\Achse\Math\Interval\Boundary
+    public function getLeft(): \Wappointment\Achse\Math\Interval\Boundary
     {
         return $this->left;
     }
     /**
      * @return Boundary
      */
-    public function getRight() : \Wappointment\Achse\Math\Interval\Boundary
+    public function getRight(): \Wappointment\Achse\Math\Interval\Boundary
     {
         return $this->right;
     }
@@ -53,7 +53,7 @@ class Interval
      * @param Boundary $left
      * @return static
      */
-    public function withLeft(\Wappointment\Achse\Math\Interval\Boundary $left) : \Wappointment\Achse\Math\Interval\Interval
+    public function withLeft(\Wappointment\Achse\Math\Interval\Boundary $left): \Wappointment\Achse\Math\Interval\Interval
     {
         return new static($left, $this->right);
     }
@@ -61,14 +61,14 @@ class Interval
      * @param Boundary $right
      * @return static
      */
-    public function withRight(\Wappointment\Achse\Math\Interval\Boundary $right) : \Wappointment\Achse\Math\Interval\Interval
+    public function withRight(\Wappointment\Achse\Math\Interval\Boundary $right): \Wappointment\Achse\Math\Interval\Interval
     {
         return new static($this->left, $right);
     }
     /**
      * @return bool
      */
-    public function isEmpty() : bool
+    public function isEmpty(): bool
     {
         return $this->isLeftOpened() && $this->left->getValue()->isEqual($this->right->getValue());
     }
@@ -77,56 +77,56 @@ class Interval
      *
      * @return bool
      */
-    public function isDegenerate() : bool
+    public function isDegenerate(): bool
     {
         return $this->isClosed() && $this->left->isEqual($this->right);
     }
     /**
      * @return bool
      */
-    public function isProper() : bool
+    public function isProper(): bool
     {
         return !$this->isEmpty() && !$this->isDegenerate();
     }
     /**
      * @return bool
      */
-    public function isOpened() : bool
+    public function isOpened(): bool
     {
         return $this->isLeftOpened() && $this->isRightOpened();
     }
     /**
      * @return bool
      */
-    public function isLeftOpened() : bool
+    public function isLeftOpened(): bool
     {
         return $this->getLeft()->isOpened();
     }
     /**
      * @return bool
      */
-    public function isRightOpened() : bool
+    public function isRightOpened(): bool
     {
         return $this->getRight()->isOpened();
     }
     /**
      * @return bool
      */
-    public function isClosed() : bool
+    public function isClosed(): bool
     {
         return $this->isLeftClosed() && $this->isRightClosed();
     }
     /**
      * @return bool
      */
-    public function isLeftClosed() : bool
+    public function isLeftClosed(): bool
     {
         return $this->getLeft()->isClosed();
     }
     /**
      * @return bool
      */
-    public function isRightClosed() : bool
+    public function isRightClosed(): bool
     {
         return $this->getRight()->isClosed();
     }
@@ -134,7 +134,7 @@ class Interval
      * @param IComparable $element
      * @return bool
      */
-    public function isContainingElement(\Wappointment\Achse\Comparable\IComparable $element) : bool
+    public function isContainingElement(\Wappointment\Achse\Comparable\IComparable $element): bool
     {
         return $this->isContainingElementLeftCheck($element) && $this->isContainingElementRightCheck($element);
     }
@@ -155,7 +155,7 @@ class Interval
      * @param Interval $other
      * @return bool
      */
-    public function isContaining(\Wappointment\Achse\Math\Interval\Interval $other) : bool
+    public function isContaining(\Wappointment\Achse\Math\Interval\Interval $other): bool
     {
         return ($this->isContainingElement($other->getLeft()->getValue()) || $other->isLeftOpened() && $this->isElementLeftOpenedBorder($other->getLeft()->getValue())) && ($this->isContainingElement($other->getRight()->getValue()) || $other->isRightOpened() && $this->isElementRightOpenedBorder($other->getRight()->getValue()));
     }
@@ -176,7 +176,7 @@ class Interval
      * @param Interval $other
      * @return bool
      */
-    public function isOverlappedFromRightBy(\Wappointment\Achse\Math\Interval\Interval $other) : bool
+    public function isOverlappedFromRightBy(\Wappointment\Achse\Math\Interval\Interval $other): bool
     {
         return $this->isContainingElement($other->getLeft()->getValue()) && $other->isContainingElement($this->getRight()->getValue());
     }
@@ -229,7 +229,7 @@ class Interval
      * @param Interval $other
      * @return bool
      */
-    public function isColliding(\Wappointment\Achse\Math\Interval\Interval $other) : bool
+    public function isColliding(\Wappointment\Achse\Math\Interval\Interval $other): bool
     {
         return $this->isOverlappedFromRightBy($other) || $other->isOverlappedFromRightBy($this);
     }
@@ -237,7 +237,7 @@ class Interval
      * @param Interval $other
      * @return Interval[]
      */
-    public function difference(\Wappointment\Achse\Math\Interval\Interval $other) : array
+    public function difference(\Wappointment\Achse\Math\Interval\Interval $other): array
     {
         if (($other = $this->intersection($other)) === NULL) {
             return [$this];
@@ -257,7 +257,7 @@ class Interval
      * @param Interval $other
      * @return bool
      */
-    public function isFollowedBy(\Wappointment\Achse\Math\Interval\Interval $other) : bool
+    public function isFollowedBy(\Wappointment\Achse\Math\Interval\Interval $other): bool
     {
         return $this->right->getValue()->isEqual($other->left->getValue()) && ($this->right->isClosed() || $other->getLeft()->isClosed());
     }
@@ -265,7 +265,7 @@ class Interval
      * @param Interval $other
      * @return Interval[]
      */
-    public function union(\Wappointment\Achse\Math\Interval\Interval $other) : array
+    public function union(\Wappointment\Achse\Math\Interval\Interval $other): array
     {
         if ($this->isOverlappedFromRightBy($other) || $this->isFollowedBy($other)) {
             return [new static($this->left, $other->getRight())];
@@ -279,7 +279,7 @@ class Interval
      * @param bool $state
      * @return Boundary
      */
-    protected function buildBoundary(\Wappointment\Achse\Comparable\IComparable $element, bool $state) : \Wappointment\Achse\Math\Interval\Boundary
+    protected function buildBoundary(\Wappointment\Achse\Comparable\IComparable $element, bool $state): \Wappointment\Achse\Math\Interval\Boundary
     {
         return new \Wappointment\Achse\Math\Interval\Boundary($element, $state);
     }
@@ -300,14 +300,14 @@ class Interval
     /**
      * @return string
      */
-    protected function getLeftBracket() : string
+    protected function getLeftBracket(): string
     {
         return $this->isLeftOpened() ? \Wappointment\Achse\Math\Interval\Boundary::STRING_OPENED_LEFT : \Wappointment\Achse\Math\Interval\Boundary::STRING_CLOSED_LEFT;
     }
     /**
      * @return string
      */
-    protected function getRightBracket() : string
+    protected function getRightBracket(): string
     {
         return $this->isRightOpened() ? \Wappointment\Achse\Math\Interval\Boundary::STRING_OPENED_RIGHT : \Wappointment\Achse\Math\Interval\Boundary::STRING_CLOSED_RIGHT;
     }
@@ -315,7 +315,7 @@ class Interval
      * @param IComparable $element
      * @return bool
      */
-    protected function isContainingElementLeftCheck(\Wappointment\Achse\Comparable\IComparable $element) : bool
+    protected function isContainingElementLeftCheck(\Wappointment\Achse\Comparable\IComparable $element): bool
     {
         return $this->isLeftOpened() && $this->getLeft()->getValue()->isLessThan($element) || $this->isLeftClosed() && $this->getLeft()->getValue()->isLessThanOrEqual($element);
     }
@@ -323,7 +323,7 @@ class Interval
      * @param IComparable $element
      * @return bool
      */
-    protected function isContainingElementRightCheck(\Wappointment\Achse\Comparable\IComparable $element) : bool
+    protected function isContainingElementRightCheck(\Wappointment\Achse\Comparable\IComparable $element): bool
     {
         return $this->isRightOpened() && $this->getRight()->getValue()->isGreaterThan($element) || $this->isRightClosed() && $this->getRight()->getValue()->isGreaterThanOrEqual($element);
     }
@@ -331,7 +331,7 @@ class Interval
      * @param IComparable $element
      * @return bool
      */
-    private function isElementLeftOpenedBorder(\Wappointment\Achse\Comparable\IComparable $element) : bool
+    private function isElementLeftOpenedBorder(\Wappointment\Achse\Comparable\IComparable $element): bool
     {
         return $this->isLeftOpened() && $this->getLeft()->getValue()->isEqual($element);
     }
@@ -339,7 +339,7 @@ class Interval
      * @param IComparable $element
      * @return bool
      */
-    private function isElementRightOpenedBorder(\Wappointment\Achse\Comparable\IComparable $element) : bool
+    private function isElementRightOpenedBorder(\Wappointment\Achse\Comparable\IComparable $element): bool
     {
         return $this->isRightOpened() && $this->getRight()->getValue()->isEqual($element);
     }

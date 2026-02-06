@@ -22,18 +22,18 @@ class Service
     }
     public static function hasZoom($service)
     {
-        if (!\method_exists(\Wappointment\Managers\Central::get('Service'), 'hasZoom')) {
+        if (!method_exists(\Wappointment\Managers\Central::get('Service'), 'hasZoom')) {
             return \false;
         }
         return \Wappointment\Managers\Central::get('Service')::hasZoom($service);
     }
     public static function extractDurations($services)
     {
-        if (\is_array($services)) {
+        if (is_array($services)) {
             $services = \WappointmentLv::collect($services);
         }
         //'durations' => [Service::get()['duration']],
-        if (\count($services) == 1 && !empty($services[0]['duration'])) {
+        if (count($services) == 1 && !empty($services[0]['duration'])) {
             return [$services[0]['duration']];
         }
         $durations = $services->map(function ($item, $key) {
@@ -43,8 +43,8 @@ class Service
             }
             return $innerdur;
         });
-        $durations_filtered = \array_filter($durations->flatten()->unique()->toArray());
-        \sort($durations_filtered);
+        $durations_filtered = array_filter($durations->flatten()->unique()->toArray());
+        sort($durations_filtered);
         return $durations_filtered;
     }
 }

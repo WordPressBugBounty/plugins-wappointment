@@ -12,7 +12,7 @@ final class IntegerIntervalFactory
      * @param bool $rightState
      * @return IntegerInterval
      */
-    public static function create(int $leftElement, bool $leftState, int $rightElement, bool $rightState) : \Wappointment\Achse\Math\Interval\Integer\IntegerInterval
+    public static function create(int $leftElement, bool $leftState, int $rightElement, bool $rightState): \Wappointment\Achse\Math\Interval\Integer\IntegerInterval
     {
         return new \Wappointment\Achse\Math\Interval\Integer\IntegerInterval(\Wappointment\Achse\Math\Interval\Integer\IntegerBoundaryFactory::create($leftElement, $leftState), \Wappointment\Achse\Math\Interval\Integer\IntegerBoundaryFactory::create($rightElement, $rightState));
     }

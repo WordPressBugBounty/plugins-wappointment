@@ -93,12 +93,12 @@ class NamespacedAttributeBag extends AttributeBag
     protected function &resolveAttributePath(string $name, bool $writeContext = \false)
     {
         $array =& $this->attributes;
-        $name = \str_starts_with($name, $this->namespaceCharacter) ? \substr($name, 1) : $name;
+        $name = str_starts_with($name, $this->namespaceCharacter) ? substr($name, 1) : $name;
         // Check if there is anything to do, else return
         if (!$name) {
             return $array;
         }
-        $parts = \explode($this->namespaceCharacter, $name);
+        $parts = explode($this->namespaceCharacter, $name);
         if (\count($parts) < 2) {
             if (!$writeContext) {
                 return $array;
@@ -128,8 +128,8 @@ class NamespacedAttributeBag extends AttributeBag
      */
     protected function resolveKey(string $name)
     {
-        if (\false !== ($pos = \strrpos($name, $this->namespaceCharacter))) {
-            $name = \substr($name, $pos + 1);
+        if (\false !== $pos = strrpos($name, $this->namespaceCharacter)) {
+            $name = substr($name, $pos + 1);
         }
         return $name;
     }

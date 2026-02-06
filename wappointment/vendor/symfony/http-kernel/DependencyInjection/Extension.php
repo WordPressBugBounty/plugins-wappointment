@@ -35,6 +35,6 @@ abstract class Extension extends BaseExtension
      */
     public function addAnnotatedClassesToCompile(array $annotatedClasses)
     {
-        $this->annotatedClasses = \array_merge($this->annotatedClasses, $annotatedClasses);
+        $this->annotatedClasses = array_merge($this->annotatedClasses, $annotatedClasses);
     }
 }

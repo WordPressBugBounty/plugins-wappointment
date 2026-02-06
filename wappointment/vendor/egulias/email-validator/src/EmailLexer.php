@@ -63,21 +63,21 @@ class EmailLexer extends AbstractLexer
      *
      * @var array
      */
-    protected $charValue = ['{' => self::S_OPENCURLYBRACES, '}' => self::S_CLOSECURLYBRACES, '(' => self::S_OPENPARENTHESIS, ')' => self::S_CLOSEPARENTHESIS, '<' => self::S_LOWERTHAN, '>' => self::S_GREATERTHAN, '[' => self::S_OPENBRACKET, ']' => self::S_CLOSEBRACKET, ':' => self::S_COLON, ';' => self::S_SEMICOLON, '@' => self::S_AT, '\\' => self::S_BACKSLASH, '/' => self::S_SLASH, ',' => self::S_COMMA, '.' => self::S_DOT, "'" => self::S_SQUOTE, "`" => self::S_BACKTICK, '"' => self::S_DQUOTE, '-' => self::S_HYPHEN, '::' => self::S_DOUBLECOLON, ' ' => self::S_SP, "\t" => self::S_HTAB, "\r" => self::S_CR, "\n" => self::S_LF, "\r\n" => self::CRLF, 'IPv6' => self::S_IPV6TAG, '' => self::S_EMPTY, '\\0' => self::C_NUL, '*' => self::ASTERISK, '!' => self::EXCLAMATION, '&' => self::AMPERSAND, '^' => self::CARET, '$' => self::DOLLAR, '%' => self::PERCENTAGE, '~' => self::S_TILDE, '|' => self::S_PIPE, '_' => self::S_UNDERSCORE, '=' => self::S_EQUAL, '+' => self::S_PLUS, '¿' => self::INVERT_QUESTIONMARK, '?' => self::QUESTIONMARK, '#' => self::NUMBER_SIGN, '¡' => self::INVERT_EXCLAMATION];
+    protected $charValue = ['{' => self::S_OPENCURLYBRACES, '}' => self::S_CLOSECURLYBRACES, '(' => self::S_OPENPARENTHESIS, ')' => self::S_CLOSEPARENTHESIS, '<' => self::S_LOWERTHAN, '>' => self::S_GREATERTHAN, '[' => self::S_OPENBRACKET, ']' => self::S_CLOSEBRACKET, ':' => self::S_COLON, ';' => self::S_SEMICOLON, '@' => self::S_AT, '\\' => self::S_BACKSLASH, '/' => self::S_SLASH, ',' => self::S_COMMA, '.' => self::S_DOT, "'" => self::S_SQUOTE, "`" => self::S_BACKTICK, '"' => self::S_DQUOTE, '-' => self::S_HYPHEN, '::' => self::S_DOUBLECOLON, ' ' => self::S_SP, "\t" => self::S_HTAB, "\r" => self::S_CR, "\n" => self::S_LF, "\r\n" => self::CRLF, 'IPv6' => self::S_IPV6TAG, '' => self::S_EMPTY, '\0' => self::C_NUL, '*' => self::ASTERISK, '!' => self::EXCLAMATION, '&' => self::AMPERSAND, '^' => self::CARET, '$' => self::DOLLAR, '%' => self::PERCENTAGE, '~' => self::S_TILDE, '|' => self::S_PIPE, '_' => self::S_UNDERSCORE, '=' => self::S_EQUAL, '+' => self::S_PLUS, '¿' => self::INVERT_QUESTIONMARK, '?' => self::QUESTIONMARK, '#' => self::NUMBER_SIGN, '¡' => self::INVERT_EXCLAMATION];
     public const INVALID_CHARS_REGEX = "/[^\\p{S}\\p{C}\\p{Cc}]+/iu";
-    public const VALID_UTF8_REGEX = '/\\p{Cc}+/u';
+    public const VALID_UTF8_REGEX = '/\p{Cc}+/u';
     public const CATCHABLE_PATTERNS = [
         '[a-zA-Z]+[46]?',
         //ASCII and domain literal
-        '[^\\x00-\\x7F]',
+        '[^\x00-\x7F]',
         //UTF-8
         '[0-9]+',
-        'WappoVendor\\r\\n',
+        'WappoVendor\r\n',
         '::',
-        '\\s+?',
+        '\s+?',
         '.',
     ];
-    public const NON_CATCHABLE_PATTERNS = ['[\\xA0-\\xff]+'];
+    public const NON_CATCHABLE_PATTERNS = ['[\xA0-\xff]+'];
     public const MODIFIERS = 'iu';
     /** @var bool */
     protected $hasInvalidTokens = \false;
@@ -116,7 +116,7 @@ class EmailLexer extends AbstractLexer
         $this->previous = $this->token = self::$nullToken;
         $this->lookahead = null;
     }
-    public function reset() : void
+    public function reset(): void
     {
         $this->hasInvalidTokens = \false;
         parent::reset();
@@ -129,7 +129,7 @@ class EmailLexer extends AbstractLexer
      *
      * @psalm-suppress InvalidScalarArgument
      */
-    public function find($type) : bool
+    public function find($type): bool
     {
         $search = clone $this;
         $search->skipUntil($type);
@@ -143,7 +143,7 @@ class EmailLexer extends AbstractLexer
      *
      * @return boolean
      */
-    public function moveNext() : bool
+    public function moveNext(): bool
     {
         if ($this->hasToRecord && $this->previous === self::$nullToken) {
             $this->accumulator .= $this->token['value'];
@@ -168,8 +168,8 @@ class EmailLexer extends AbstractLexer
     protected function getType(&$value)
     {
         $encoded = $value;
-        if (\mb_detect_encoding($value, 'auto', \true) !== 'UTF-8') {
-            $encoded = \mb_convert_encoding($value, 'UTF-8', 'Windows-1252');
+        if (mb_detect_encoding($value, 'auto', \true) !== 'UTF-8') {
+            $encoded = mb_convert_encoding($value, 'UTF-8', 'Windows-1252');
         }
         if ($this->isValid($encoded)) {
             return $this->charValue[$encoded];
@@ -183,23 +183,23 @@ class EmailLexer extends AbstractLexer
         }
         return self::GENERIC;
     }
-    protected function isValid(string $value) : bool
+    protected function isValid(string $value): bool
     {
         return isset($this->charValue[$value]);
     }
-    protected function isNullType(string $value) : bool
+    protected function isNullType(string $value): bool
     {
         return $value === "\x00";
     }
-    protected function isInvalidChar(string $value) : bool
+    protected function isInvalidChar(string $value): bool
     {
-        return !\preg_match(self::INVALID_CHARS_REGEX, $value);
+        return !preg_match(self::INVALID_CHARS_REGEX, $value);
     }
-    protected function isUTF8Invalid(string $value) : bool
+    protected function isUTF8Invalid(string $value): bool
     {
-        return \preg_match(self::VALID_UTF8_REGEX, $value) !== \false;
+        return preg_match(self::VALID_UTF8_REGEX, $value) !== \false;
     }
-    public function hasInvalidTokens() : bool
+    public function hasInvalidTokens(): bool
     {
         return $this->hasInvalidTokens;
     }
@@ -208,7 +208,7 @@ class EmailLexer extends AbstractLexer
      *
      * @return array
      */
-    public function getPrevious() : array
+    public function getPrevious(): array
     {
         return $this->previous;
     }
@@ -217,7 +217,7 @@ class EmailLexer extends AbstractLexer
      *
      * @return string[]
      */
-    protected function getCatchablePatterns() : array
+    protected function getCatchablePatterns(): array
     {
         return self::CATCHABLE_PATTERNS;
     }
@@ -226,27 +226,27 @@ class EmailLexer extends AbstractLexer
      *
      * @return string[]
      */
-    protected function getNonCatchablePatterns() : array
+    protected function getNonCatchablePatterns(): array
     {
         return self::NON_CATCHABLE_PATTERNS;
     }
-    protected function getModifiers() : string
+    protected function getModifiers(): string
     {
         return self::MODIFIERS;
     }
-    public function getAccumulatedValues() : string
+    public function getAccumulatedValues(): string
     {
         return $this->accumulator;
     }
-    public function startRecording() : void
+    public function startRecording(): void
     {
         $this->hasToRecord = \true;
     }
-    public function stopRecording() : void
+    public function stopRecording(): void
     {
         $this->hasToRecord = \false;
     }
-    public function clearRecorded() : void
+    public function clearRecorded(): void
     {
         $this->accumulator = '';
     }

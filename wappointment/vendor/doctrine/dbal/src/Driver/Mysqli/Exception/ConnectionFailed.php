@@ -15,13 +15,13 @@ use function assert;
  */
 final class ConnectionFailed extends AbstractException
 {
-    public static function new(mysqli $connection) : self
+    public static function new(mysqli $connection): self
     {
         $error = $connection->connect_error;
         assert($error !== null);
         return new self($error, 'HY000', $connection->connect_errno);
     }
-    public static function upcast(mysqli_sql_exception $exception) : self
+    public static function upcast(mysqli_sql_exception $exception): self
     {
         $p = new ReflectionProperty(mysqli_sql_exception::class, 'sqlstate');
         $p->setAccessible(\true);

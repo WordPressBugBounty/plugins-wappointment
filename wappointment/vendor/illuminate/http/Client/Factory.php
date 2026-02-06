@@ -106,12 +106,12 @@ class Factory
      */
     public static function response($body = null, $status = 200, $headers = [])
     {
-        if (\is_array($body)) {
-            $body = \json_encode($body);
+        if (is_array($body)) {
+            $body = json_encode($body);
             $headers['Content-Type'] = 'application/json';
         }
         $response = new Psr7Response($status, $headers, $body);
-        return \class_exists(\WappoVendor\GuzzleHttp\Promise\Create::class) ? \WappoVendor\GuzzleHttp\Promise\Create::promiseFor($response) : \WappoVendor\GuzzleHttp\Promise\promise_for($response);
+        return class_exists(\WappoVendor\GuzzleHttp\Promise\Create::class) ? \WappoVendor\GuzzleHttp\Promise\Create::promiseFor($response) : \WappoVendor\GuzzleHttp\Promise\promise_for($response);
     }
     /**
      * Get an invokable object that returns a sequence of responses in order for use during stubbing.
@@ -133,18 +133,18 @@ class Factory
     {
         $this->record();
         $this->recorded = [];
-        if (\is_null($callback)) {
+        if (is_null($callback)) {
             $callback = function () {
                 return static::response();
             };
         }
-        if (\is_array($callback)) {
+        if (is_array($callback)) {
             foreach ($callback as $url => $callable) {
                 $this->stubUrl($url, $callable);
             }
             return $this;
         }
-        $this->stubCallbacks = $this->stubCallbacks->merge(\WappointmentLv::collect([function ($request, $options) use($callback) {
+        $this->stubCallbacks = $this->stubCallbacks->merge(\WappointmentLv::collect([function ($request, $options) use ($callback) {
             $response = $callback instanceof Closure ? $callback($request, $options) : $callback;
             if ($response instanceof PromiseInterface) {
                 $options['on_stats'](new TransferStats($request->toPsrRequest(), $response->wait()));
@@ -161,7 +161,7 @@ class Factory
      */
     public function fakeSequence($url = '*')
     {
-        return \WappointmentLv::tap($this->sequence(), function ($sequence) use($url) {
+        return \WappointmentLv::tap($this->sequence(), function ($sequence) use ($url) {
             $this->fake([$url => $sequence]);
         });
     }
@@ -174,7 +174,7 @@ class Factory
      */
     public function stubUrl($url, $callback)
     {
-        return $this->fake(function ($request, $options) use($url, $callback) {
+        return $this->fake(function ($request, $options) use ($url, $callback) {
             if (!Str::is(Str::start($url, '*'), $request->url())) {
                 return;
             }
@@ -222,9 +222,9 @@ class Factory
      */
     public function assertSentInOrder($callbacks)
     {
-        $this->assertSentCount(\count($callbacks));
+        $this->assertSentCount(count($callbacks));
         foreach ($callbacks as $index => $url) {
-            $callback = \is_callable($url) ? $url : function ($request) use($url) {
+            $callback = is_callable($url) ? $url : function ($request) use ($url) {
                 return $request->url() == $url;
             };
             PHPUnit::assertTrue($callback($this->recorded[$index][0], $this->recorded[$index][1]), 'An expected request (#' . ($index + 1) . ') was not recorded.');
@@ -284,7 +284,7 @@ class Factory
         $callback = $callback ?: function () {
             return \true;
         };
-        return \WappointmentLv::collect($this->recorded)->filter(function ($pair) use($callback) {
+        return \WappointmentLv::collect($this->recorded)->filter(function ($pair) use ($callback) {
             return $callback($pair[0], $pair[1]);
         });
     }

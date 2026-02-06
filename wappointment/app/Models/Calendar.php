@@ -21,7 +21,7 @@ class Calendar extends Model
     }
     public function services()
     {
-        return $this->belongsToMany('Wappointment\\Models\\Service', 'wappo_calendar_service');
+        return $this->belongsToMany('Wappointment\Models\Service', 'wappo_calendar_service');
     }
     public function getCalendarUrls()
     {

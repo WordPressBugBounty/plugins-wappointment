@@ -53,7 +53,7 @@ class RequestException extends TransferException
         if (!$response) {
             return new self('Error completing request', $request, null, $previous, $ctx);
         }
-        $level = (int) \floor($response->getStatusCode() / 100);
+        $level = (int) floor($response->getStatusCode() / 100);
         if ($level === 4) {
             $label = 'Client error';
             $className = ClientException::class;
@@ -68,7 +68,7 @@ class RequestException extends TransferException
         $uri = static::obfuscateUri($uri);
         // Client Error: `GET /` resulted in a `404 Not Found` response:
         // <html> ... (truncated)
-        $message = \sprintf('%s: `%s %s` resulted in a `%s %s` response', $label, $request->getMethod(), $uri, $response->getStatusCode(), $response->getReasonPhrase());
+        $message = sprintf('%s: `%s %s` resulted in a `%s %s` response', $label, $request->getMethod(), $uri, $response->getStatusCode(), $response->getReasonPhrase());
         $summary = static::getResponseBodySummary($response);
         if ($summary !== null) {
             $message .= ":\n{$summary}\n";
@@ -98,8 +98,8 @@ class RequestException extends TransferException
     private static function obfuscateUri(UriInterface $uri)
     {
         $userInfo = $uri->getUserInfo();
-        if (\false !== ($pos = \strpos($userInfo, ':'))) {
-            return $uri->withUserInfo(\substr($userInfo, 0, $pos), '***');
+        if (\false !== $pos = strpos($userInfo, ':')) {
+            return $uri->withUserInfo(substr($userInfo, 0, $pos), '***');
         }
         return $uri;
     }

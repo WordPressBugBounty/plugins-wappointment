@@ -18,19 +18,19 @@ class ControllerDoesNotReturnResponseException extends \LogicException
     public function __construct(string $message, callable $controller, string $file, int $line)
     {
         parent::__construct($message);
-        if (!($controllerDefinition = $this->parseControllerDefinition($controller))) {
+        if (!$controllerDefinition = $this->parseControllerDefinition($controller)) {
             return;
         }
         $this->file = $controllerDefinition['file'];
         $this->line = $controllerDefinition['line'];
         $r = new \ReflectionProperty(\Exception::class, 'trace');
         $r->setAccessible(\true);
-        $r->setValue($this, \array_merge([['line' => $line, 'file' => $file]], $this->getTrace()));
+        $r->setValue($this, array_merge([['line' => $line, 'file' => $file]], $this->getTrace()));
     }
-    private function parseControllerDefinition(callable $controller) : ?array
+    private function parseControllerDefinition(callable $controller): ?array
     {
-        if (\is_string($controller) && \str_contains($controller, '::')) {
-            $controller = \explode('::', $controller);
+        if (\is_string($controller) && str_contains($controller, '::')) {
+            $controller = explode('::', $controller);
         }
         if (\is_array($controller)) {
             try {

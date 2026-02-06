@@ -48,15 +48,15 @@ class Reader extends XMLReader
      * This function will also disable the standard libxml error handler (which
      * usually just results in PHP errors), and throw exceptions instead.
      */
-    public function parse() : array
+    public function parse(): array
     {
-        $previousEntityState = \libxml_disable_entity_loader(\true);
-        $previousSetting = \libxml_use_internal_errors(\true);
+        $previousEntityState = libxml_disable_entity_loader(\true);
+        $previousSetting = libxml_use_internal_errors(\true);
         try {
             while (self::ELEMENT !== $this->nodeType) {
                 if (!$this->read()) {
-                    $errors = \libxml_get_errors();
-                    \libxml_clear_errors();
+                    $errors = libxml_get_errors();
+                    libxml_clear_errors();
                     if ($errors) {
                         throw new LibXMLException($errors);
                     }
@@ -64,14 +64,14 @@ class Reader extends XMLReader
             }
             $result = $this->parseCurrentElement();
             // last line of defense in case errors did occur above
-            $errors = \libxml_get_errors();
-            \libxml_clear_errors();
+            $errors = libxml_get_errors();
+            libxml_clear_errors();
             if ($errors) {
                 throw new LibXMLException($errors);
             }
         } finally {
-            \libxml_use_internal_errors($previousSetting);
-            \libxml_disable_entity_loader($previousEntityState);
+            libxml_use_internal_errors($previousSetting);
+            libxml_disable_entity_loader($previousEntityState);
         }
         return $result;
     }
@@ -88,10 +88,10 @@ class Reader extends XMLReader
      * If the $elementMap argument is specified, the existing elementMap will
      * be overridden while parsing the tree, and restored after this process.
      */
-    public function parseGetElements(array $elementMap = null) : array
+    public function parseGetElements(array $elementMap = null): array
     {
         $result = $this->parseInnerTree($elementMap);
-        if (!\is_array($result)) {
+        if (!is_array($result)) {
             return [];
         }
         return $result;
@@ -118,14 +118,14 @@ class Reader extends XMLReader
             $this->next();
             return null;
         }
-        if (!\is_null($elementMap)) {
+        if (!is_null($elementMap)) {
             $this->pushContext();
             $this->elementMap = $elementMap;
         }
         try {
             if (!$this->read()) {
-                $errors = \libxml_get_errors();
-                \libxml_clear_errors();
+                $errors = libxml_get_errors();
+                libxml_clear_errors();
                 if ($errors) {
                     throw new LibXMLException($errors);
                 }
@@ -133,9 +133,9 @@ class Reader extends XMLReader
             }
             while (\true) {
                 if (!$this->isValid()) {
-                    $errors = \libxml_get_errors();
+                    $errors = libxml_get_errors();
                     if ($errors) {
-                        \libxml_clear_errors();
+                        libxml_clear_errors();
                         throw new LibXMLException($errors);
                     }
                 }
@@ -161,7 +161,7 @@ class Reader extends XMLReader
                 }
             }
         } finally {
-            if (!\is_null($elementMap)) {
+            if (!is_null($elementMap)) {
                 $this->popContext();
             }
         }
@@ -170,12 +170,12 @@ class Reader extends XMLReader
     /**
      * Reads all text below the current element, and returns this as a string.
      */
-    public function readText() : string
+    public function readText(): string
     {
         $result = '';
         $previousDepth = $this->depth;
         while ($this->read() && $this->depth != $previousDepth) {
-            if (\in_array($this->nodeType, [XMLReader::TEXT, XMLReader::CDATA, XMLReader::WHITESPACE])) {
+            if (in_array($this->nodeType, [XMLReader::TEXT, XMLReader::CDATA, XMLReader::WHITESPACE])) {
                 $result .= $this->value;
             }
         }
@@ -189,14 +189,14 @@ class Reader extends XMLReader
      *   * value - The parsed value.
      *   * attributes - A key-value list of attributes.
      */
-    public function parseCurrentElement() : array
+    public function parseCurrentElement(): array
     {
         $name = $this->getClark();
         $attributes = [];
         if ($this->hasAttributes) {
             $attributes = $this->parseAttributes();
         }
-        $value = \call_user_func($this->getDeserializerForElementName($name), $this);
+        $value = call_user_func($this->getDeserializerForElementName($name), $this);
         return ['name' => $name, 'value' => $value, 'attributes' => $attributes];
     }
     /**
@@ -207,7 +207,7 @@ class Reader extends XMLReader
      * short keys. If they are defined on a different namespace, the attribute
      * name will be retured in clark-notation.
      */
-    public function parseAttributes() : array
+    public function parseAttributes(): array
     {
         $attributes = [];
         while ($this->moveToNextAttribute()) {
@@ -229,27 +229,27 @@ class Reader extends XMLReader
      * Returns the function that should be used to parse the element identified
      * by it's clark-notation name.
      */
-    public function getDeserializerForElementName(string $name) : callable
+    public function getDeserializerForElementName(string $name): callable
     {
-        if (!\array_key_exists($name, $this->elementMap)) {
-            if ('{}' == \substr($name, 0, 2) && \array_key_exists(\substr($name, 2), $this->elementMap)) {
-                $name = \substr($name, 2);
+        if (!array_key_exists($name, $this->elementMap)) {
+            if ('{}' == substr($name, 0, 2) && array_key_exists(substr($name, 2), $this->elementMap)) {
+                $name = substr($name, 2);
             } else {
-                return ['WappoVendor\\Sabre\\Xml\\Element\\Base', 'xmlDeserialize'];
+                return ['WappoVendor\Sabre\Xml\Element\Base', 'xmlDeserialize'];
             }
         }
         $deserializer = $this->elementMap[$name];
-        if (\is_subclass_of($deserializer, 'WappoVendor\\Sabre\\Xml\\XmlDeserializable')) {
+        if (is_subclass_of($deserializer, 'WappoVendor\Sabre\Xml\XmlDeserializable')) {
             return [$deserializer, 'xmlDeserialize'];
         }
-        if (\is_callable($deserializer)) {
+        if (is_callable($deserializer)) {
             return $deserializer;
         }
-        $type = \gettype($deserializer);
+        $type = gettype($deserializer);
         if ('string' === $type) {
             $type .= ' (' . $deserializer . ')';
         } elseif ('object' === $type) {
-            $type .= ' (' . \get_class($deserializer) . ')';
+            $type .= ' (' . get_class($deserializer) . ')';
         }
         throw new \LogicException('Could not use this type as a deserializer: ' . $type . ' for element: ' . $name);
     }

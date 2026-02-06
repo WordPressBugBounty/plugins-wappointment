@@ -23,7 +23,7 @@ use WappoVendor\Symfony\Component\VarDumper\Cloner\Stub;
  */
 class DsCaster
 {
-    public static function castCollection(Collection $c, array $a, Stub $stub, bool $isNested) : array
+    public static function castCollection(Collection $c, array $a, Stub $stub, bool $isNested): array
     {
         $a[Caster::PREFIX_VIRTUAL . 'count'] = $c->count();
         $a[Caster::PREFIX_VIRTUAL . 'capacity'] = $c->capacity();
@@ -32,21 +32,21 @@ class DsCaster
         }
         return $a;
     }
-    public static function castMap(Map $c, array $a, Stub $stub, bool $isNested) : array
+    public static function castMap(Map $c, array $a, Stub $stub, bool $isNested): array
     {
         foreach ($c as $k => $v) {
             $a[] = new DsPairStub($k, $v);
         }
         return $a;
     }
-    public static function castPair(Pair $c, array $a, Stub $stub, bool $isNested) : array
+    public static function castPair(Pair $c, array $a, Stub $stub, bool $isNested): array
     {
         foreach ($c->toArray() as $k => $v) {
             $a[Caster::PREFIX_VIRTUAL . $k] = $v;
         }
         return $a;
     }
-    public static function castPairStub(DsPairStub $c, array $a, Stub $stub, bool $isNested) : array
+    public static function castPairStub(DsPairStub $c, array $a, Stub $stub, bool $isNested): array
     {
         if ($isNested) {
             $stub->class = Pair::class;

@@ -10,5 +10,5 @@ interface Initializer
     /**
      * @throws Exception
      */
-    public function initialize(mysqli $connection) : void;
+    public function initialize(mysqli $connection): void;
 }

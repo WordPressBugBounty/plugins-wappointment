@@ -39,7 +39,7 @@ class AddAnnotatedClassesToCachePass implements CompilerPassInterface
                 $annotatedClasses[] = $extension->getAnnotatedClassesToCompile();
             }
         }
-        $annotatedClasses = \array_merge($this->kernel->getAnnotatedClassesToCompile(), ...$annotatedClasses);
+        $annotatedClasses = array_merge($this->kernel->getAnnotatedClassesToCompile(), ...$annotatedClasses);
         $existingClasses = $this->getClassesInComposerClassMaps();
         $annotatedClasses = $container->getParameterBag()->resolveValue($annotatedClasses);
         $this->kernel->setAnnotatedClassCache($this->expandClasses($annotatedClasses, $existingClasses));
@@ -50,30 +50,30 @@ class AddAnnotatedClassesToCachePass implements CompilerPassInterface
      * @param array $patterns The class patterns to expand
      * @param array $classes  The existing classes to match against the patterns
      */
-    private function expandClasses(array $patterns, array $classes) : array
+    private function expandClasses(array $patterns, array $classes): array
     {
         $expanded = [];
         // Explicit classes declared in the patterns are returned directly
         foreach ($patterns as $key => $pattern) {
-            if (!\str_ends_with($pattern, '\\') && !\str_contains($pattern, '*')) {
+            if (!str_ends_with($pattern, '\\') && !str_contains($pattern, '*')) {
                 unset($patterns[$key]);
-                $expanded[] = \ltrim($pattern, '\\');
+                $expanded[] = ltrim($pattern, '\\');
             }
         }
         // Match patterns with the classes list
         $regexps = $this->patternsToRegexps($patterns);
         foreach ($classes as $class) {
-            $class = \ltrim($class, '\\');
+            $class = ltrim($class, '\\');
             if ($this->matchAnyRegexps($class, $regexps)) {
                 $expanded[] = $class;
             }
         }
-        return \array_unique($expanded);
+        return array_unique($expanded);
     }
-    private function getClassesInComposerClassMaps() : array
+    private function getClassesInComposerClassMaps(): array
     {
         $classes = [];
-        foreach (\spl_autoload_functions() as $function) {
+        foreach (spl_autoload_functions() as $function) {
             if (!\is_array($function)) {
                 continue;
             }
@@ -81,35 +81,35 @@ class AddAnnotatedClassesToCachePass implements CompilerPassInterface
                 $function = $function[0]->getClassLoader();
             }
             if (\is_array($function) && $function[0] instanceof ClassLoader) {
-                $classes += \array_filter($function[0]->getClassMap());
+                $classes += array_filter($function[0]->getClassMap());
             }
         }
-        return \array_keys($classes);
+        return array_keys($classes);
     }
-    private function patternsToRegexps(array $patterns) : array
+    private function patternsToRegexps(array $patterns): array
     {
         $regexps = [];
         foreach ($patterns as $pattern) {
             // Escape user input
-            $regex = \preg_quote(\ltrim($pattern, '\\'));
+            $regex = preg_quote(ltrim($pattern, '\\'));
             // Wildcards * and **
-            $regex = \strtr($regex, ['\\*\\*' => '.*?', '\\*' => '[^\\\\]*?']);
+            $regex = strtr($regex, ['\*\*' => '.*?', '\*' => '[^\\\\]*?']);
             // If this class does not end by a slash, anchor the end
-            if ('\\' !== \substr($regex, -1)) {
+            if ('\\' !== substr($regex, -1)) {
                 $regex .= '$';
             }
             $regexps[] = '{^\\\\' . $regex . '}';
         }
         return $regexps;
     }
-    private function matchAnyRegexps(string $class, array $regexps) : bool
+    private function matchAnyRegexps(string $class, array $regexps): bool
     {
-        $isTest = \str_contains($class, 'Test');
+        $isTest = str_contains($class, 'Test');
         foreach ($regexps as $regex) {
-            if ($isTest && !\str_contains($regex, 'Test')) {
+            if ($isTest && !str_contains($regex, 'Test')) {
                 continue;
             }
-            if (\preg_match($regex, '\\' . $class)) {
+            if (preg_match($regex, '\\' . $class)) {
                 return \true;
             }
         }

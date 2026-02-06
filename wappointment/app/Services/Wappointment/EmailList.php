@@ -30,8 +30,8 @@ class EmailList extends \Wappointment\Services\Wappointment\API
         if ($emailStatus === \false) {
             $emailStatus['status'] = ['email' => $email, 'lists' => []];
             $this->statuses[] = $emailStatus['status'];
-            \end($this->statuses);
-            $emailStatus['key'] = \key($this->statuses);
+            end($this->statuses);
+            $emailStatus['key'] = key($this->statuses);
         }
         $emailStatus['status']['lists'][$list] = \true;
         $this->statuses[$emailStatus['key']] = $emailStatus['status'];

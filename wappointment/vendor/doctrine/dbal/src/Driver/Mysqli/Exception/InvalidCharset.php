@@ -15,11 +15,11 @@ use function sprintf;
  */
 final class InvalidCharset extends AbstractException
 {
-    public static function fromCharset(mysqli $connection, string $charset) : self
+    public static function fromCharset(mysqli $connection, string $charset): self
     {
         return new self(sprintf('Failed to set charset "%s": %s', $charset, $connection->error), $connection->sqlstate, $connection->errno);
     }
-    public static function upcast(mysqli_sql_exception $exception, string $charset) : self
+    public static function upcast(mysqli_sql_exception $exception, string $charset): self
     {
         $p = new ReflectionProperty(mysqli_sql_exception::class, 'sqlstate');
         $p->setAccessible(\true);

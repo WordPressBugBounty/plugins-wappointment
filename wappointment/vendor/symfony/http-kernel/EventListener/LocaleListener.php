@@ -52,7 +52,7 @@ class LocaleListener implements EventSubscriberInterface
     }
     public function onKernelFinishRequest(FinishRequestEvent $event)
     {
-        if (null !== ($parentRequest = $this->requestStack->getParentRequest())) {
+        if (null !== $parentRequest = $this->requestStack->getParentRequest()) {
             $this->setRouterContext($parentRequest);
         }
     }
@@ -60,7 +60,7 @@ class LocaleListener implements EventSubscriberInterface
     {
         if ($locale = $request->attributes->get('_locale')) {
             $request->setLocale($locale);
-        } elseif ($this->useAcceptLanguageHeader && $this->enabledLocales && ($preferredLanguage = $request->getPreferredLanguage($this->enabledLocales))) {
+        } elseif ($this->useAcceptLanguageHeader && $this->enabledLocales && $preferredLanguage = $request->getPreferredLanguage($this->enabledLocales)) {
             $request->setLocale($preferredLanguage);
             $request->attributes->set('_vary_by_language', \true);
         }
@@ -71,7 +71,7 @@ class LocaleListener implements EventSubscriberInterface
             $this->router->getContext()->setParameter('_locale', $request->getLocale());
         }
     }
-    public static function getSubscribedEvents() : array
+    public static function getSubscribedEvents(): array
     {
         return [KernelEvents::REQUEST => [
             ['setDefaultLocale', 100],

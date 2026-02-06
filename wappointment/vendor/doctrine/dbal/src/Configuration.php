@@ -51,21 +51,21 @@ class Configuration
     /**
      * Sets the SQL logger to use. Defaults to NULL which means SQL logging is disabled.
      */
-    public function setSQLLogger(?SQLLogger $logger = null) : void
+    public function setSQLLogger(?SQLLogger $logger = null): void
     {
         $this->sqlLogger = $logger;
     }
     /**
      * Gets the SQL logger that is used.
      */
-    public function getSQLLogger() : ?SQLLogger
+    public function getSQLLogger(): ?SQLLogger
     {
         return $this->sqlLogger;
     }
     /**
      * Gets the cache driver implementation that is used for query result caching.
      */
-    public function getResultCache() : ?CacheItemPoolInterface
+    public function getResultCache(): ?CacheItemPoolInterface
     {
         return $this->resultCache;
     }
@@ -74,7 +74,7 @@ class Configuration
      *
      * @deprecated Use {@see getResultCache()} instead.
      */
-    public function getResultCacheImpl() : ?Cache
+    public function getResultCacheImpl(): ?Cache
     {
         Deprecation::trigger('doctrine/dbal', 'https://github.com/doctrine/dbal/pull/4620', '%s is deprecated, call getResultCache() instead.', __METHOD__);
         return $this->resultCacheImpl;
@@ -82,7 +82,7 @@ class Configuration
     /**
      * Sets the cache driver implementation that is used for query result caching.
      */
-    public function setResultCache(CacheItemPoolInterface $cache) : void
+    public function setResultCache(CacheItemPoolInterface $cache): void
     {
         $this->resultCacheImpl = DoctrineProvider::wrap($cache);
         $this->resultCache = $cache;
@@ -92,7 +92,7 @@ class Configuration
      *
      * @deprecated Use {@see setResultCache()} instead.
      */
-    public function setResultCacheImpl(Cache $cacheImpl) : void
+    public function setResultCacheImpl(Cache $cacheImpl): void
     {
         Deprecation::trigger('doctrine/dbal', 'https://github.com/doctrine/dbal/pull/4620', '%s is deprecated, call setResultCache() instead.', __METHOD__);
         $this->resultCacheImpl = $cacheImpl;
@@ -101,14 +101,14 @@ class Configuration
     /**
      * Sets the callable to use to filter schema assets.
      */
-    public function setSchemaAssetsFilter(?callable $callable = null) : void
+    public function setSchemaAssetsFilter(?callable $callable = null): void
     {
         $this->schemaAssetsFilter = $callable;
     }
     /**
      * Returns the callable to use to filter schema assets.
      */
-    public function getSchemaAssetsFilter() : ?callable
+    public function getSchemaAssetsFilter(): ?callable
     {
         return $this->schemaAssetsFilter;
     }
@@ -123,7 +123,7 @@ class Configuration
      *
      * @param bool $autoCommit True to enable auto-commit mode; false to disable it
      */
-    public function setAutoCommit(bool $autoCommit) : void
+    public function setAutoCommit(bool $autoCommit): void
     {
         $this->autoCommit = $autoCommit;
     }
@@ -134,7 +134,7 @@ class Configuration
      *
      * @return bool True if auto-commit mode is enabled by default for connections, false otherwise.
      */
-    public function getAutoCommit() : bool
+    public function getAutoCommit(): bool
     {
         return $this->autoCommit;
     }
@@ -143,7 +143,7 @@ class Configuration
      *
      * @return $this
      */
-    public function setMiddlewares(array $middlewares) : self
+    public function setMiddlewares(array $middlewares): self
     {
         $this->middlewares = $middlewares;
         return $this;
@@ -151,7 +151,7 @@ class Configuration
     /**
      * @return Middleware[]
      */
-    public function getMiddlewares() : array
+    public function getMiddlewares(): array
     {
         return $this->middlewares;
     }

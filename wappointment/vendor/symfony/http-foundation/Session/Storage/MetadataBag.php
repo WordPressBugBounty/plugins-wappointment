@@ -62,7 +62,7 @@ class MetadataBag implements SessionBagInterface
         $this->meta =& $array;
         if (isset($array[self::CREATED])) {
             $this->lastUsed = $this->meta[self::UPDATED];
-            $timeStamp = \time();
+            $timeStamp = time();
             if ($timeStamp - $array[self::UPDATED] >= $this->updateThreshold) {
                 $this->meta[self::UPDATED] = $timeStamp;
             }
@@ -138,9 +138,9 @@ class MetadataBag implements SessionBagInterface
     {
         $this->name = $name;
     }
-    private function stampCreated(int $lifetime = null) : void
+    private function stampCreated(int $lifetime = null): void
     {
-        $timeStamp = \time();
+        $timeStamp = time();
         $this->meta[self::CREATED] = $this->meta[self::UPDATED] = $this->lastUsed = $timeStamp;
         $this->meta[self::LIFETIME] = $lifetime ?? (int) \ini_get('session.cookie_lifetime');
     }

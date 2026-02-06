@@ -14,11 +14,11 @@ use ReflectionProperty;
  */
 final class StatementError extends AbstractException
 {
-    public static function new(mysqli_stmt $statement) : self
+    public static function new(mysqli_stmt $statement): self
     {
         return new self($statement->error, $statement->sqlstate, $statement->errno);
     }
-    public static function upcast(mysqli_sql_exception $exception) : self
+    public static function upcast(mysqli_sql_exception $exception): self
     {
         $p = new ReflectionProperty(mysqli_sql_exception::class, 'sqlstate');
         $p->setAccessible(\true);

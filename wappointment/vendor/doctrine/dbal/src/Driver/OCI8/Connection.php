@@ -41,20 +41,20 @@ final class Connection implements ServerInfoAwareConnection
         $this->parser = new Parser(\false);
         $this->executionMode = new ExecutionMode();
     }
-    public function getServerVersion() : string
+    public function getServerVersion(): string
     {
         $version = oci_server_version($this->connection);
         if ($version === \false) {
             throw Error::new($this->connection);
         }
-        $result = preg_match('/\\s+(\\d+\\.\\d+\\.\\d+\\.\\d+\\.\\d+)\\s+/', $version, $matches);
+        $result = preg_match('/\s+(\d+\.\d+\.\d+\.\d+\.\d+)\s+/', $version, $matches);
         assert($result === 1);
         return $matches[1];
     }
     /**
      * @throws Parser\Exception
      */
-    public function prepare(string $sql) : DriverStatement
+    public function prepare(string $sql): DriverStatement
     {
         $visitor = new ConvertPositionalToNamedPlaceholders();
         $this->parser->parse($sql, $visitor);
@@ -66,7 +66,7 @@ final class Connection implements ServerInfoAwareConnection
      * @throws Exception
      * @throws Parser\Exception
      */
-    public function query(string $sql) : ResultInterface
+    public function query(string $sql): ResultInterface
     {
         return $this->prepare($sql)->execute();
     }
@@ -85,7 +85,7 @@ final class Connection implements ServerInfoAwareConnection
      * @throws Exception
      * @throws Parser\Exception
      */
-    public function exec(string $sql) : int
+    public function exec(string $sql): int
     {
         return $this->prepare($sql)->execute()->rowCount();
     }
@@ -110,12 +110,12 @@ final class Connection implements ServerInfoAwareConnection
         }
         return (int) $result;
     }
-    public function beginTransaction() : bool
+    public function beginTransaction(): bool
     {
         $this->executionMode->disableAutoCommit();
         return \true;
     }
-    public function commit() : bool
+    public function commit(): bool
     {
         if (!oci_commit($this->connection)) {
             throw Error::new($this->connection);
@@ -123,7 +123,7 @@ final class Connection implements ServerInfoAwareConnection
         $this->executionMode->enableAutoCommit();
         return \true;
     }
-    public function rollBack() : bool
+    public function rollBack(): bool
     {
         if (!oci_rollback($this->connection)) {
             throw Error::new($this->connection);

@@ -12,7 +12,7 @@ final class DateTimeImmutableIntervalStringParser extends \Wappointment\Achse\Ma
      * @param string $string
      * @return DateTimeImmutableInterval
      */
-    public static function parse(string $string) : \Wappointment\Achse\Math\Interval\Interval
+    public static function parse(string $string): \Wappointment\Achse\Math\Interval\Interval
     {
         list($left, $right) = self::parseBoundariesStringsFromString($string);
         return new \Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutableInterval(self::parseBoundary($left), self::parseBoundary($right));
@@ -21,7 +21,7 @@ final class DateTimeImmutableIntervalStringParser extends \Wappointment\Achse\Ma
      * @param string $string
      * @return DateTimeImmutableBoundary
      */
-    protected static function parseBoundary(string $input) : \Wappointment\Achse\Math\Interval\Boundary
+    protected static function parseBoundary(string $input): \Wappointment\Achse\Math\Interval\Boundary
     {
         list($elementString, $state) = self::parseBoundaryDataFromString($input);
         /** @var DateTimeImmutable $dateTime */

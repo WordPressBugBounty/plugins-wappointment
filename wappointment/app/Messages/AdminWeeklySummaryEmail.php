@@ -26,7 +26,7 @@ class AdminWeeklySummaryEmail extends \Wappointment\Messages\AdminDailySummaryEm
         $this->date_start_string = $this->startWeek()->toDateString();
         $this->date_end_string = $this->endWeek()->toDateString();
         /* translators: %1$s - start of the week's date %2$s end of the week's date. */
-        $this->subject = \sprintf(__('Weekly summary  %1$s - %2$s', 'wappointment'), $this->date_start_string, $this->date_end_string);
+        $this->subject = sprintf(__('Weekly summary  %1$s - %2$s', 'wappointment'), $this->date_start_string, $this->date_end_string);
         $this->sections = new Sections($this->startWeek()->timestamp, $this->endWeek()->timestamp, $this->staff, $this->isLegacy());
     }
     public function loadContent()
@@ -38,23 +38,23 @@ class AdminWeeklySummaryEmail extends \Wappointment\Messages\AdminDailySummaryEm
         $coverage = $this->sections->getCoverage($serviceDurationInSeconds);
         $lines = [
             /* translators: %s - client's first name. */
-            \sprintf(__('Hi %s,', 'wappointment'), $this->staff->getFirstName()),
+            sprintf(__('Hi %s,', 'wappointment'), $this->staff->getFirstName()),
             /* translators: %1$s - start of the week's date %2$s end of the week's date. */
-            \sprintf(__('Here is a summary of your appointments for this week: %1$s - %2$s', 'wappointment'), $this->date_start_string, $this->date_end_string),
+            sprintf(__('Here is a summary of your appointments for this week: %1$s - %2$s', 'wappointment'), $this->date_start_string, $this->date_end_string),
         ];
         if (!empty($coverage)) {
             $newlines = [
                 /* translators: %s - number of appointments. */
-                \sprintf(__('New Appointments: %s', 'wappointment'), \count($this->sections->appointments)),
+                sprintf(__('New Appointments: %s', 'wappointment'), count($this->sections->appointments)),
                 /* translators: %1$s - numbers of slots, %2$s slots duration. */
-                \sprintf(__('Available slots: %1$s (duration %2$s min)', 'wappointment'), $this->sections->getFreeSlots($serviceDurationInSeconds), Service::get()['duration']),
+                sprintf(__('Available slots: %1$s (duration %2$s min)', 'wappointment'), $this->sections->getFreeSlots($serviceDurationInSeconds), Service::get()['duration']),
                 /* translators: %s - percentage. */
-                \sprintf(__('Coverage: %s', 'wappointment'), $coverage),
+                sprintf(__('Coverage: %s', 'wappointment'), $coverage),
             ];
         } else {
             $newlines = [__('No availabilities for this week', 'wappointment')];
         }
-        $this->addLines(\array_merge($lines, $newlines));
+        $this->addLines(array_merge($lines, $newlines));
         if ($this->sections->getFreeSlots($serviceDurationInSeconds) == 0) {
             $this->addButton(__('Open new slots', 'wappointment'), WPHelpers::adminUrl('wappointment_calendar'), \false);
         }
@@ -66,7 +66,7 @@ class AdminWeeklySummaryEmail extends \Wappointment\Messages\AdminDailySummaryEm
     {
         $appointmentSumarry = [];
         $tz = $this->tz;
-        $appointmentGroupedByDay = $this->sections->appointments->mapToGroups(function ($item, $key) use($tz) {
+        $appointmentGroupedByDay = $this->sections->appointments->mapToGroups(function ($item, $key) use ($tz) {
             return [$item->start_at->setTimezone($tz)->toDateString() => $item];
         });
         while ($startingDay->lessThanOrEqualTo($endDay)) {

@@ -46,12 +46,12 @@ class LimitStream implements StreamInterface
      */
     public function getSize()
     {
-        if (null === ($length = $this->stream->getSize())) {
+        if (null === $length = $this->stream->getSize()) {
             return null;
         } elseif ($this->limit == -1) {
             return $length - $this->offset;
         } else {
-            return \min($this->limit, $length - $this->offset);
+            return min($this->limit, $length - $this->offset);
         }
     }
     /**
@@ -61,7 +61,7 @@ class LimitStream implements StreamInterface
     public function seek($offset, $whence = \SEEK_SET)
     {
         if ($whence !== \SEEK_SET || $offset < 0) {
-            throw new \RuntimeException(\sprintf('Cannot seek to offset %s with whence %s', $offset, $whence));
+            throw new \RuntimeException(sprintf('Cannot seek to offset %s with whence %s', $offset, $whence));
         }
         $offset += $this->offset;
         if ($this->limit !== -1) {
@@ -123,7 +123,7 @@ class LimitStream implements StreamInterface
         if ($remaining > 0) {
             // Only return the amount of requested data, ensuring that the byte
             // limit is not exceeded
-            return $this->stream->read(\min($remaining, $length));
+            return $this->stream->read(min($remaining, $length));
         }
         return '';
     }

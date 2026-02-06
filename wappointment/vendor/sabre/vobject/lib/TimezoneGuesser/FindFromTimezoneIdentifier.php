@@ -10,7 +10,7 @@ use Exception;
  */
 class FindFromTimezoneIdentifier implements TimezoneFinder
 {
-    public function find(string $tzid, bool $failIfUncertain = \false) : ?DateTimeZone
+    public function find(string $tzid, bool $failIfUncertain = \false): ?DateTimeZone
     {
         // First we will just see if the tzid is a support timezone identifier.
         //
@@ -37,7 +37,7 @@ class FindFromTimezoneIdentifier implements TimezoneFinder
         // and catch the exception.
         $tzIdentifiers = DateTimeZone::listIdentifiers();
         try {
-            if (\in_array($tzid, $tzIdentifiers) || \preg_match('/^GMT(\\+|-)([0-9]{4})$/', $tzid, $matches) || \in_array($tzid, $this->getIdentifiersBC())) {
+            if (in_array($tzid, $tzIdentifiers) || preg_match('/^GMT(\+|-)([0-9]{4})$/', $tzid, $matches) || in_array($tzid, $this->getIdentifiersBC())) {
                 return new DateTimeZone($tzid);
             }
         } catch (Exception $e) {

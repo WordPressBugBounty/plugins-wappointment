@@ -6,7 +6,7 @@ use Wappointment\Services\Queue;
 use Wappointment\Services\Settings;
 class AdminEmailDailySummary extends \Wappointment\Jobs\AbstractEmailJob
 {
-    const CONTENT = '\\Wappointment\\Messages\\AdminDailySummaryEmail';
+    const CONTENT = '\Wappointment\Messages\AdminDailySummaryEmail';
     public function afterHandled()
     {
         Queue::queueDailyJob(!empty($this->params['staff_id']) ? $this->params['staff_id'] : \false);
@@ -22,7 +22,7 @@ class AdminEmailDailySummary extends \Wappointment\Jobs\AbstractEmailJob
         } else {
             $email_staff = (new \Wappointment\WP\Staff($this->params['staff_id']))->emailAddress();
         }
-        if (!\in_array($email_staff, $notifications_emails)) {
+        if (!in_array($email_staff, $notifications_emails)) {
             $this->transport->to($email_staff);
         }
         return $this->generateContent();

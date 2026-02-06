@@ -10,6 +10,6 @@ class TempFile extends \Wappointment\Services\AbstractFile
     }
     protected function setName($name)
     {
-        return empty($name) ? \uniqid('temp') . '.txt' : $name;
+        return empty($name) ? uniqid('temp') . '.txt' : $name;
     }
 }

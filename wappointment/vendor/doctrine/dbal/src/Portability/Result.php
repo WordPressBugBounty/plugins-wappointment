@@ -41,21 +41,21 @@ final class Result extends AbstractResultMiddleware
     /**
      * {@inheritDoc}
      */
-    public function fetchAllNumeric() : array
+    public function fetchAllNumeric(): array
     {
         return $this->converter->convertAllNumeric(parent::fetchAllNumeric());
     }
     /**
      * {@inheritDoc}
      */
-    public function fetchAllAssociative() : array
+    public function fetchAllAssociative(): array
     {
         return $this->converter->convertAllAssociative(parent::fetchAllAssociative());
     }
     /**
      * {@inheritDoc}
      */
-    public function fetchFirstColumn() : array
+    public function fetchFirstColumn(): array
     {
         return $this->converter->convertFirstColumn(parent::fetchFirstColumn());
     }

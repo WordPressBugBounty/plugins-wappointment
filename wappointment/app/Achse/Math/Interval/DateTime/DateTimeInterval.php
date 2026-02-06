@@ -38,7 +38,7 @@ final class DateTimeInterval extends \Wappointment\Achse\Math\Interval\Interval
      * @param string $precision
      * @return bool
      */
-    public function isFollowedByWithPrecision(\Wappointment\Achse\Math\Interval\DateTime\DateTimeInterval $other, string $precision) : bool
+    public function isFollowedByWithPrecision(\Wappointment\Achse\Math\Interval\DateTime\DateTimeInterval $other, string $precision): bool
     {
         if ($this->getLeft() > $other->getRight()) {
             // intentionally compares boundaries
@@ -55,14 +55,14 @@ final class DateTimeInterval extends \Wappointment\Achse\Math\Interval\Interval
     /**
      * @return DateTimeBoundary
      */
-    public function getLeft() : \Wappointment\Achse\Math\Interval\Boundary
+    public function getLeft(): \Wappointment\Achse\Math\Interval\Boundary
     {
         return parent::getLeft();
     }
     /**
      * @return DateTimeBoundary
      */
-    public function getRight() : \Wappointment\Achse\Math\Interval\Boundary
+    public function getRight(): \Wappointment\Achse\Math\Interval\Boundary
     {
         return parent::getRight();
     }
@@ -76,7 +76,7 @@ final class DateTimeInterval extends \Wappointment\Achse\Math\Interval\Interval
      * @param DateTimeInterval $other
      * @return bool
      */
-    public function isFollowedByAtMidnight(\Wappointment\Achse\Math\Interval\DateTime\DateTimeInterval $other) : bool
+    public function isFollowedByAtMidnight(\Wappointment\Achse\Math\Interval\DateTime\DateTimeInterval $other): bool
     {
         $left = clone $other->getLeft()->getValue();
         return \Wappointment\Achse\Math\Interval\Utils::isSameDate($this->getRight()->getValue(), $left->modify('-1 day')) && $this->getRight()->getValue()->format('H:i:s') === '23:59:59' && $other->getLeft()->getValue()->format('H:i:s') === '00:00:00';
@@ -84,7 +84,7 @@ final class DateTimeInterval extends \Wappointment\Achse\Math\Interval\Interval
     /**
      * @return string
      */
-    public function __toString() : string
+    public function __toString(): string
     {
         /** @var DateTime $left */
         $left = $this->getLeft()->getValue();
@@ -97,7 +97,7 @@ final class DateTimeInterval extends \Wappointment\Achse\Math\Interval\Interval
      * @param bool $state
      * @return DateTimeBoundary
      */
-    protected function buildBoundary(\Wappointment\Achse\Comparable\IComparable $element, bool $state) : \Wappointment\Achse\Math\Interval\Boundary
+    protected function buildBoundary(\Wappointment\Achse\Comparable\IComparable $element, bool $state): \Wappointment\Achse\Math\Interval\Boundary
     {
         return new \Wappointment\Achse\Math\Interval\DateTime\DateTimeBoundary($element, $state);
     }

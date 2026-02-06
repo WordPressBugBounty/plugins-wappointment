@@ -24,16 +24,16 @@ final class Connection extends AbstractConnectionMiddleware
     {
         $this->logger->info('Disconnecting');
     }
-    public function prepare(string $sql) : DriverStatement
+    public function prepare(string $sql): DriverStatement
     {
         return new Statement(parent::prepare($sql), $this->logger, $sql);
     }
-    public function query(string $sql) : Result
+    public function query(string $sql): Result
     {
         $this->logger->debug('Executing query: {sql}', ['sql' => $sql]);
         return parent::query($sql);
     }
-    public function exec(string $sql) : int
+    public function exec(string $sql): int
     {
         $this->logger->debug('Executing statement: {sql}', ['sql' => $sql]);
         return parent::exec($sql);

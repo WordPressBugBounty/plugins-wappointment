@@ -129,12 +129,12 @@ final class UriNormalizer
             $uri = $uri->withPath(UriResolver::removeDotSegments($uri->getPath()));
         }
         if ($flags & self::REMOVE_DUPLICATE_SLASHES) {
-            $uri = $uri->withPath(\preg_replace('#//++#', '/', $uri->getPath()));
+            $uri = $uri->withPath(preg_replace('#//++#', '/', $uri->getPath()));
         }
         if ($flags & self::SORT_QUERY_PARAMETERS && $uri->getQuery() !== '') {
-            $queryKeyValues = \explode('&', $uri->getQuery());
-            \sort($queryKeyValues);
-            $uri = $uri->withQuery(\implode('&', $queryKeyValues));
+            $queryKeyValues = explode('&', $uri->getQuery());
+            sort($queryKeyValues);
+            $uri = $uri->withQuery(implode('&', $queryKeyValues));
         }
         return $uri;
     }
@@ -162,17 +162,17 @@ final class UriNormalizer
     {
         $regex = '/(?:%[A-Fa-f0-9]{2})++/';
         $callback = function (array $match) {
-            return \strtoupper($match[0]);
+            return strtoupper($match[0]);
         };
-        return $uri->withPath(\preg_replace_callback($regex, $callback, $uri->getPath()))->withQuery(\preg_replace_callback($regex, $callback, $uri->getQuery()));
+        return $uri->withPath(preg_replace_callback($regex, $callback, $uri->getPath()))->withQuery(preg_replace_callback($regex, $callback, $uri->getQuery()));
     }
     private static function decodeUnreservedCharacters(UriInterface $uri)
     {
         $regex = '/%(?:2D|2E|5F|7E|3[0-9]|[46][1-9A-F]|[57][0-9A])/i';
         $callback = function (array $match) {
-            return \rawurldecode($match[0]);
+            return rawurldecode($match[0]);
         };
-        return $uri->withPath(\preg_replace_callback($regex, $callback, $uri->getPath()))->withQuery(\preg_replace_callback($regex, $callback, $uri->getQuery()));
+        return $uri->withPath(preg_replace_callback($regex, $callback, $uri->getPath()))->withQuery(preg_replace_callback($regex, $callback, $uri->getQuery()));
     }
     private function __construct()
     {

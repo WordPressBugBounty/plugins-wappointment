@@ -80,7 +80,7 @@ abstract class AbstractEmail extends \Wappointment\Messages\AbstractMessage
     }
     public function finalWrap()
     {
-        if (\method_exists($this, 'footerLinks')) {
+        if (method_exists($this, 'footerLinks')) {
             $this->body .= $this->footerLinks();
         }
         $this->body = $this->renderer->wrapRow($this->body) . $this->renderer->wrapFooter('');
@@ -103,7 +103,7 @@ abstract class AbstractEmail extends \Wappointment\Messages\AbstractMessage
     }
     protected function createAttachmentFromPath($file)
     {
-        if (!\file_exists($file)) {
+        if (!file_exists($file)) {
             throw new \WappointmentException("Error Processing Request", 1);
         }
         return \WappoSwift_Attachment::fromPath($file);

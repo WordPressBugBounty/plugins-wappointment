@@ -47,7 +47,7 @@ final class Connection implements ServerInfoAwareConnection
         assert($serverInfo instanceof stdClass);
         return $serverInfo->DBMS_VER;
     }
-    public function prepare(string $sql) : DriverStatement
+    public function prepare(string $sql): DriverStatement
     {
         $stmt = @db2_prepare($this->connection, $sql);
         if ($stmt === \false) {
@@ -55,7 +55,7 @@ final class Connection implements ServerInfoAwareConnection
         }
         return new Statement($stmt);
     }
-    public function query(string $sql) : ResultInterface
+    public function query(string $sql): ResultInterface
     {
         return $this->prepare($sql)->execute();
     }
@@ -70,7 +70,7 @@ final class Connection implements ServerInfoAwareConnection
         }
         return "'" . $value . "'";
     }
-    public function exec(string $sql) : int
+    public function exec(string $sql): int
     {
         $stmt = @db2_exec($this->connection, $sql);
         if ($stmt === \false) {
@@ -88,13 +88,13 @@ final class Connection implements ServerInfoAwareConnection
         }
         return db2_last_insert_id($this->connection) ?? \false;
     }
-    public function beginTransaction() : bool
+    public function beginTransaction(): bool
     {
         $result = db2_autocommit($this->connection, DB2_AUTOCOMMIT_OFF);
         assert(is_bool($result));
         return $result;
     }
-    public function commit() : bool
+    public function commit(): bool
     {
         if (!db2_commit($this->connection)) {
             throw ConnectionError::new($this->connection);
@@ -103,7 +103,7 @@ final class Connection implements ServerInfoAwareConnection
         assert(is_bool($result));
         return $result;
     }
-    public function rollBack() : bool
+    public function rollBack(): bool
     {
         if (!db2_rollback($this->connection)) {
             throw ConnectionError::new($this->connection);

@@ -13,7 +13,7 @@ class Service implements \Wappointment\Services\ServiceInterface
         $validator = new RakitValidator();
         $validation_messages = ['type' => __('Please select how do you perform the service', 'wappointment'), 'options.countries' => __('You need to select countries you will cover for the phone service', 'wappointment')];
         $validator->setMessages(apply_filters('wappointment_service_validation_messages', $validation_messages));
-        $validationRules = ['name' => 'required|is_adv_string|max:100', 'duration' => 'required|numeric', 'type' => 'required|array|hasvalues:physical,phone,skype,zoom', 'address' => 'required_if_has:type,physical', 'options' => '', 'options.countries' => 'required_if_has:type,phone|array', 'options.video' => 'required_if_has:type,zoom'];
+        $validationRules = ['name' => 'required|is_adv_string|max:100', 'duration' => 'required|numeric', 'type' => 'required|array|hasvalues:physical,phone,zoom', 'address' => 'required_if_has:type,physical', 'options' => '', 'options.countries' => 'required_if_has:type,phone|array', 'options.video' => 'required_if_has:type,zoom'];
         $validationRules = apply_filters('wappointment_service_validation_rules', $validationRules);
         $validation = $validator->make($serviceData, $validationRules);
         $validation->validate();
@@ -27,7 +27,7 @@ class Service implements \Wappointment\Services\ServiceInterface
     {
         $service = static::get('service');
         // to test the existing service
-        $serviceData['options'] = \array_merge($service['options'], $serviceData['options']);
+        $serviceData['options'] = array_merge($service['options'], $serviceData['options']);
         $serviceData = apply_filters('wappointment_service_before_saved', $serviceData, $service);
         //  return $serviceData;
         $resultSave = (bool) \Wappointment\Services\Settings::save('service', $serviceData);
@@ -40,8 +40,8 @@ class Service implements \Wappointment\Services\ServiceInterface
     public static function patch($service_id, $data)
     {
         $serviceDB = static::get('service');
-        $data['options'] = \array_merge($serviceDB['options'], $data['options']);
-        $serviceDB = \array_merge($serviceDB, $data);
+        $data['options'] = array_merge($serviceDB['options'], $data['options']);
+        $serviceDB = array_merge($serviceDB, $data);
         \Wappointment\Services\Settings::save('service', $serviceDB);
     }
     public static function get($service_id = \false)
@@ -58,7 +58,7 @@ class Service implements \Wappointment\Services\ServiceInterface
     }
     public static function hasZoom($service)
     {
-        return \in_array('zoom', $service['type']);
+        return in_array('zoom', $service['type']);
     }
     private static function createdService($types)
     {
@@ -88,9 +88,6 @@ class Service implements \Wappointment\Services\ServiceInterface
                 $optionsTemp['countries'] = $options['countries'];
                 $types[] = 'phone';
             }
-            if ($location->type == Location::TYPE_SKYPE) {
-                $types[] = 'skype';
-            }
             $location->options = $optionsTemp;
             $location->save();
         }
@@ -108,9 +105,6 @@ class Service implements \Wappointment\Services\ServiceInterface
     }
     public static function getLocationTypeId($type_name)
     {
-        if ($type_name == 'skype') {
-            return Location::TYPE_SKYPE;
-        }
         if ($type_name == 'zoom') {
             return Location::TYPE_ZOOM;
         }

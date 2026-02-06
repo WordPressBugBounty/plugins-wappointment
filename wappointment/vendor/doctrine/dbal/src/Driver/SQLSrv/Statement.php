@@ -72,7 +72,7 @@ final class Statement implements StatementInterface
     /**
      * {@inheritdoc}
      */
-    public function bindValue($param, $value, $type = ParameterType::STRING) : bool
+    public function bindValue($param, $value, $type = ParameterType::STRING): bool
     {
         assert(is_int($param));
         $this->variables[$param] = $value;
@@ -82,7 +82,7 @@ final class Statement implements StatementInterface
     /**
      * {@inheritdoc}
      */
-    public function bindParam($param, &$variable, $type = ParameterType::STRING, $length = null) : bool
+    public function bindParam($param, &$variable, $type = ParameterType::STRING, $length = null): bool
     {
         assert(is_int($param));
         $this->variables[$param] =& $variable;
@@ -94,7 +94,7 @@ final class Statement implements StatementInterface
     /**
      * {@inheritdoc}
      */
-    public function execute($params = null) : ResultInterface
+    public function execute($params = null): ResultInterface
     {
         if ($params !== null) {
             foreach ($params as $key => $val) {

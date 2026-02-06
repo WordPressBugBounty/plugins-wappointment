@@ -21,8 +21,8 @@ class Widget extends \Wappointment\WP\WidgetAbstract
         \Wappointment\WP\Helpers::enqueueFrontScripts();
         $htmlAttributes = '';
         foreach ($instance as $attr => $val) {
-            if (!empty($val) && !\in_array($attr, ['title']) && (!\is_bool($val) || \is_bool($val) && $val === \true)) {
-                $htmlAttributes .= ' data-' . \str_replace('_', '-', \strtolower($attr)) . '="' . esc_attr($val) . '"';
+            if (!empty($val) && !in_array($attr, ['title']) && (!is_bool($val) || is_bool($val) && $val === \true)) {
+                $htmlAttributes .= ' data-' . str_replace('_', '-', strtolower($attr)) . '="' . esc_attr($val) . '"';
             }
         }
         $button_title = !empty($instance['button_title']) ? esc_html($instance['button_title']) : __('Book now!', 'wappointment');

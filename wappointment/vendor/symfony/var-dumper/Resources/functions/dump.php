@@ -11,7 +11,7 @@ namespace WappoVendor;
  * file that was distributed with this source code.
  */
 use WappoVendor\Symfony\Component\VarDumper\VarDumper;
-if (!\function_exists('WappoVendor\\dump')) {
+if (!\function_exists('WappoVendor\dump')) {
     /**
      * @author Nicolas Grekas <p@tchwork.com>
      */
@@ -27,7 +27,7 @@ if (!\function_exists('WappoVendor\\dump')) {
         return $var;
     }
 }
-if (!\function_exists('WappoVendor\\dd')) {
+if (!\function_exists('WappoVendor\dd')) {
     /**
      * @return never
      */

@@ -20,16 +20,16 @@ class Ping
     }
     public function run()
     {
-        $starttime = \microtime(\true);
-        $file = \fsockopen($this->domain, $this->port, $this->errno, $this->errstr, $this->timeout);
-        $stoptime = \microtime(\true);
+        $starttime = microtime(\true);
+        $file = @fsockopen($this->domain, $this->port, $this->errno, $this->errstr, $this->timeout);
+        $stoptime = microtime(\true);
         $status = 0;
         if (!$file) {
             $status = -1;
         } else {
-            \fclose($file);
+            fclose($file);
             $status = ($stoptime - $starttime) * 1000;
-            $status = \floor($status);
+            $status = floor($status);
         }
         return $status;
     }

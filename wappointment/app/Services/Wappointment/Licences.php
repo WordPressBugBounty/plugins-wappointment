@@ -34,10 +34,10 @@ class Licences extends \Wappointment\Services\Wappointment\API
     }
     public function canUseAddon($addon_name)
     {
-        $site_options = \json_decode(WPHelpers::getOption('site_details'));
-        if (!empty($site_options) && \count($site_options) > 0) {
+        $site_options = json_decode(WPHelpers::getOption('site_details'));
+        if (!empty($site_options) && count($site_options) > 0) {
             foreach ($site_options as $option) {
-                if ($option->namekey == \str_replace('_', '-', $addon_name)) {
+                if ($option->namekey == str_replace('_', '-', $addon_name)) {
                     return \true;
                 }
             }
@@ -50,8 +50,8 @@ class Licences extends \Wappointment\Services\Wappointment\API
     }
     protected function recordSiteKey($data)
     {
-        if (!\is_object($data) || empty($data->sitekey)) {
-            throw new \WappointmentException("Cannot record site's key" . \print_r($data));
+        if (!is_object($data) || empty($data->sitekey)) {
+            throw new \WappointmentException("Cannot record site's key" . print_r($data));
         }
         if (!empty($data->details)) {
             WPHelpers::setOption('site_details', wp_json_encode($data->details));

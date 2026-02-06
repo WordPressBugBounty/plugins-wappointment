@@ -30,7 +30,7 @@ abstract class AbstractStatementMiddleware implements Statement
     /**
      * {@inheritdoc}
      */
-    public function execute($params = null) : Result
+    public function execute($params = null): Result
     {
         return $this->wrappedStatement->execute($params);
     }

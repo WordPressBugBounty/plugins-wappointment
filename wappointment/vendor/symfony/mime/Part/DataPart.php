@@ -34,7 +34,7 @@ class DataPart extends TextPart
         if (null === $contentType) {
             $contentType = 'application/octet-stream';
         }
-        [$this->mediaType, $subtype] = \explode('/', $contentType);
+        [$this->mediaType, $subtype] = explode('/', $contentType);
         parent::__construct($body, null, $subtype, $encoding);
         if (null !== $filename) {
             $this->filename = $filename;
@@ -42,27 +42,27 @@ class DataPart extends TextPart
         }
         $this->setDisposition('attachment');
     }
-    public static function fromPath(string $path, string $name = null, string $contentType = null) : self
+    public static function fromPath(string $path, string $name = null, string $contentType = null): self
     {
         if (null === $contentType) {
-            $ext = \strtolower(\substr($path, \strrpos($path, '.') + 1));
+            $ext = strtolower(substr($path, strrpos($path, '.') + 1));
             if (null === self::$mimeTypes) {
                 self::$mimeTypes = new MimeTypes();
             }
             $contentType = self::$mimeTypes->getMimeTypes($ext)[0] ?? 'application/octet-stream';
         }
-        if (\is_file($path) && !\is_readable($path) || \is_dir($path)) {
-            throw new InvalidArgumentException(\sprintf('Path "%s" is not readable.', $path));
+        if (is_file($path) && !is_readable($path) || is_dir($path)) {
+            throw new InvalidArgumentException(sprintf('Path "%s" is not readable.', $path));
         }
-        if (\false === ($handle = @\fopen($path, 'r', \false))) {
-            throw new InvalidArgumentException(\sprintf('Unable to open path "%s".', $path));
+        if (\false === $handle = @fopen($path, 'r', \false)) {
+            throw new InvalidArgumentException(sprintf('Unable to open path "%s".', $path));
         }
-        if (!\is_file($path)) {
-            $cache = \fopen('php://temp', 'r+');
-            \stream_copy_to_stream($handle, $cache);
+        if (!is_file($path)) {
+            $cache = fopen('php://temp', 'r+');
+            stream_copy_to_stream($handle, $cache);
             $handle = $cache;
         }
-        $p = new self($handle, $name ?: \basename($path), $contentType);
+        $p = new self($handle, $name ?: basename($path), $contentType);
         $p->handle = $handle;
         return $p;
     }
@@ -73,19 +73,19 @@ class DataPart extends TextPart
     {
         return $this->setDisposition('inline');
     }
-    public function getContentId() : string
+    public function getContentId(): string
     {
-        return $this->cid ?: ($this->cid = $this->generateContentId());
+        return $this->cid ?: $this->cid = $this->generateContentId();
     }
-    public function hasContentId() : bool
+    public function hasContentId(): bool
     {
         return null !== $this->cid;
     }
-    public function getMediaType() : string
+    public function getMediaType(): string
     {
         return $this->mediaType;
     }
-    public function getPreparedHeaders() : Headers
+    public function getPreparedHeaders(): Headers
     {
         $headers = parent::getPreparedHeaders();
         if (null !== $this->cid) {
@@ -96,7 +96,7 @@ class DataPart extends TextPart
         }
         return $headers;
     }
-    public function asDebugString() : string
+    public function asDebugString(): string
     {
         $str = parent::asDebugString();
         if (null !== $this->filename) {
@@ -104,14 +104,14 @@ class DataPart extends TextPart
         }
         return $str;
     }
-    private function generateContentId() : string
+    private function generateContentId(): string
     {
-        return \bin2hex(\random_bytes(16)) . '@symfony';
+        return bin2hex(random_bytes(16)) . '@symfony';
     }
     public function __destruct()
     {
         if (null !== $this->handle && \is_resource($this->handle)) {
-            \fclose($this->handle);
+            fclose($this->handle);
         }
     }
     /**

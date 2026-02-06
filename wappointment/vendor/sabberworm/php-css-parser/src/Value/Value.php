@@ -35,11 +35,11 @@ abstract class Value implements Renderable
         $oParserState->consumeWhiteSpace();
         //Build a list of delimiters and parsed values
         while (!($oParserState->comes('}') || $oParserState->comes(';') || $oParserState->comes('!') || $oParserState->comes(')') || $oParserState->comes('\\'))) {
-            if (\count($aStack) > 0) {
+            if (count($aStack) > 0) {
                 $bFoundDelimiter = \false;
                 foreach ($aListDelimiters as $sDelimiter) {
                     if ($oParserState->comes($sDelimiter)) {
-                        \array_push($aStack, $oParserState->consume($sDelimiter));
+                        array_push($aStack, $oParserState->consume($sDelimiter));
                         $oParserState->consumeWhiteSpace();
                         $bFoundDelimiter = \true;
                         break;
@@ -47,22 +47,22 @@ abstract class Value implements Renderable
                 }
                 if (!$bFoundDelimiter) {
                     //Whitespace was the list delimiter
-                    \array_push($aStack, ' ');
+                    array_push($aStack, ' ');
                 }
             }
-            \array_push($aStack, self::parsePrimitiveValue($oParserState));
+            array_push($aStack, self::parsePrimitiveValue($oParserState));
             $oParserState->consumeWhiteSpace();
         }
         // Convert the list to list objects
         foreach ($aListDelimiters as $sDelimiter) {
-            if (\count($aStack) === 1) {
+            if (count($aStack) === 1) {
                 return $aStack[0];
             }
             $iStartPosition = null;
-            while (($iStartPosition = \array_search($sDelimiter, $aStack, \true)) !== \false) {
+            while (($iStartPosition = array_search($sDelimiter, $aStack, \true)) !== \false) {
                 $iLength = 2;
                 //Number of elements to be joined
-                for ($i = $iStartPosition + 2; $i < \count($aStack); $i += 2, ++$iLength) {
+                for ($i = $iStartPosition + 2; $i < count($aStack); $i += 2, ++$iLength) {
                     if ($sDelimiter !== $aStack[$i]) {
                         break;
                     }
@@ -71,7 +71,7 @@ abstract class Value implements Renderable
                 for ($i = $iStartPosition - 1; $i - $iStartPosition + 1 < $iLength * 2; $i += 2) {
                     $oList->addListComponent($aStack[$i]);
                 }
-                \array_splice($aStack, $iStartPosition - 1, $iLength * 2 - 1, [$oList]);
+                array_splice($aStack, $iStartPosition - 1, $iLength * 2 - 1, [$oList]);
             }
         }
         if (!isset($aStack[0])) {
@@ -109,7 +109,7 @@ abstract class Value implements Renderable
     {
         $oValue = null;
         $oParserState->consumeWhiteSpace();
-        if (\is_numeric($oParserState->peek()) || $oParserState->comes('-.') && \is_numeric($oParserState->peek(1, 2)) || ($oParserState->comes('-') || $oParserState->comes('.')) && \is_numeric($oParserState->peek(1, 1))) {
+        if (is_numeric($oParserState->peek()) || $oParserState->comes('-.') && is_numeric($oParserState->peek(1, 2)) || ($oParserState->comes('-') || $oParserState->comes('.')) && is_numeric($oParserState->peek(1, 1))) {
             $oValue = Size::parse($oParserState);
         } elseif ($oParserState->comes('#') || $oParserState->comes('rgb', \true) || $oParserState->comes('hsl', \true)) {
             $oValue = Color::parse($oParserState);
@@ -161,7 +161,7 @@ abstract class Value implements Renderable
                 // Max length is 2 six digit code points + the dash(-) between them
             }
             $sRange .= $oParserState->consume(1);
-        } while (\strlen($sRange) < $iCodepointMaxLength && \preg_match("/[A-Fa-f0-9\\?-]/", $oParserState->peek()));
+        } while (strlen($sRange) < $iCodepointMaxLength && preg_match("/[A-Fa-f0-9\\?-]/", $oParserState->peek()));
         return "U+{$sRange}";
     }
     /**

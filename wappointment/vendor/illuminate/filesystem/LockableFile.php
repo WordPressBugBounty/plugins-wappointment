@@ -45,8 +45,8 @@ class LockableFile
      */
     protected function ensureDirectoryExists($path)
     {
-        if (!\file_exists(\dirname($path))) {
-            @\mkdir(\dirname($path), 0777, \true);
+        if (!file_exists(dirname($path))) {
+            @mkdir(dirname($path), 0777, \true);
         }
     }
     /**
@@ -60,7 +60,7 @@ class LockableFile
      */
     protected function createResource($path, $mode)
     {
-        $this->handle = @\fopen($path, $mode);
+        $this->handle = @fopen($path, $mode);
         if (!$this->handle) {
             throw new Exception('Unable to create lockable file: ' . $path . '. Please ensure you have permission to create files in this location.');
         }
@@ -73,8 +73,8 @@ class LockableFile
      */
     public function read($length = null)
     {
-        \clearstatcache(\true, $this->path);
-        return \fread($this->handle, $length ?? ($this->size() ?: 1));
+        clearstatcache(\true, $this->path);
+        return fread($this->handle, $length ?? ($this->size() ?: 1));
     }
     /**
      * Get the file size.
@@ -83,7 +83,7 @@ class LockableFile
      */
     public function size()
     {
-        return \filesize($this->path);
+        return filesize($this->path);
     }
     /**
      * Write to the file.
@@ -93,8 +93,8 @@ class LockableFile
      */
     public function write($contents)
     {
-        \fwrite($this->handle, $contents);
-        \fflush($this->handle);
+        fwrite($this->handle, $contents);
+        fflush($this->handle);
         return $this;
     }
     /**
@@ -104,8 +104,8 @@ class LockableFile
      */
     public function truncate()
     {
-        \rewind($this->handle);
-        \ftruncate($this->handle, 0);
+        rewind($this->handle);
+        ftruncate($this->handle, 0);
         return $this;
     }
     /**
@@ -118,7 +118,7 @@ class LockableFile
      */
     public function getSharedLock($block = \false)
     {
-        if (!\flock($this->handle, \LOCK_SH | ($block ? 0 : \LOCK_NB))) {
+        if (!flock($this->handle, \LOCK_SH | ($block ? 0 : \LOCK_NB))) {
             throw new LockTimeoutException("Unable to acquire file lock at path [{$this->path}].");
         }
         $this->isLocked = \true;
@@ -134,7 +134,7 @@ class LockableFile
      */
     public function getExclusiveLock($block = \false)
     {
-        if (!\flock($this->handle, \LOCK_EX | ($block ? 0 : \LOCK_NB))) {
+        if (!flock($this->handle, \LOCK_EX | ($block ? 0 : \LOCK_NB))) {
             throw new LockTimeoutException("Unable to acquire file lock at path [{$this->path}].");
         }
         $this->isLocked = \true;
@@ -147,7 +147,7 @@ class LockableFile
      */
     public function releaseLock()
     {
-        \flock($this->handle, \LOCK_UN);
+        flock($this->handle, \LOCK_UN);
         $this->isLocked = \false;
         return $this;
     }
@@ -161,6 +161,6 @@ class LockableFile
         if ($this->isLocked) {
             $this->releaseLock();
         }
-        return \fclose($this->handle);
+        return fclose($this->handle);
     }
 }

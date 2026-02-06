@@ -21,7 +21,7 @@ final class DateTimeBoundary extends \Wappointment\Achse\Math\Interval\Boundary
     /**
      * @return DateTime
      */
-    public function getValue() : \Wappointment\Achse\Comparable\IComparable
+    public function getValue(): \Wappointment\Achse\Comparable\IComparable
     {
         return parent::getValue();
     }

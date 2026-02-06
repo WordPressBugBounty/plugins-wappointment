@@ -69,7 +69,7 @@ class RequestMatcher implements RequestMatcherInterface
      */
     public function matchScheme($scheme)
     {
-        $this->schemes = null !== $scheme ? \array_map('strtolower', (array) $scheme) : [];
+        $this->schemes = null !== $scheme ? array_map('strtolower', (array) $scheme) : [];
     }
     /**
      * Adds a check for the URL host name.
@@ -111,8 +111,8 @@ class RequestMatcher implements RequestMatcherInterface
     public function matchIps($ips)
     {
         $ips = null !== $ips ? (array) $ips : [];
-        $this->ips = \array_reduce($ips, static function (array $ips, string $ip) {
-            return \array_merge($ips, \preg_split('/\\s*,\\s*/', $ip));
+        $this->ips = array_reduce($ips, static function (array $ips, string $ip) {
+            return array_merge($ips, preg_split('/\s*,\s*/', $ip));
         }, []);
     }
     /**
@@ -122,7 +122,7 @@ class RequestMatcher implements RequestMatcherInterface
      */
     public function matchMethod($method)
     {
-        $this->methods = null !== $method ? \array_map('strtoupper', (array) $method) : [];
+        $this->methods = null !== $method ? array_map('strtoupper', (array) $method) : [];
     }
     /**
      * Adds a check for request attribute.
@@ -147,14 +147,14 @@ class RequestMatcher implements RequestMatcherInterface
             if (!\is_string($requestAttribute)) {
                 return \false;
             }
-            if (!\preg_match('{' . $pattern . '}', $requestAttribute)) {
+            if (!preg_match('{' . $pattern . '}', $requestAttribute)) {
                 return \false;
             }
         }
-        if (null !== $this->path && !\preg_match('{' . $this->path . '}', \rawurldecode($request->getPathInfo()))) {
+        if (null !== $this->path && !preg_match('{' . $this->path . '}', rawurldecode($request->getPathInfo()))) {
             return \false;
         }
-        if (null !== $this->host && !\preg_match('{' . $this->host . '}i', $request->getHost())) {
+        if (null !== $this->host && !preg_match('{' . $this->host . '}i', $request->getHost())) {
             return \false;
         }
         if (null !== $this->port && 0 < $this->port && $request->getPort() !== $this->port) {

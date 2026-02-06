@@ -26,7 +26,7 @@ final class FetchUtils
      *
      * @throws Exception
      */
-    public static function fetchAllNumeric(Result $result) : array
+    public static function fetchAllNumeric(Result $result): array
     {
         $rows = [];
         while (($row = $result->fetchNumeric()) !== \false) {
@@ -39,7 +39,7 @@ final class FetchUtils
      *
      * @throws Exception
      */
-    public static function fetchAllAssociative(Result $result) : array
+    public static function fetchAllAssociative(Result $result): array
     {
         $rows = [];
         while (($row = $result->fetchAssociative()) !== \false) {
@@ -52,7 +52,7 @@ final class FetchUtils
      *
      * @throws Exception
      */
-    public static function fetchFirstColumn(Result $result) : array
+    public static function fetchFirstColumn(Result $result): array
     {
         $rows = [];
         while (($row = $result->fetchOne()) !== \false) {

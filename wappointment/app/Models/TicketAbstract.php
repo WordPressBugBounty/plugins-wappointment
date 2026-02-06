@@ -10,7 +10,7 @@ abstract class TicketAbstract extends Model
     public $is_participant = \false;
     public function hydrateService($services)
     {
-        $this->services = !\is_array($services) ? [$services] : $services;
+        $this->services = !is_array($services) ? [$services] : $services;
     }
     public function getAppointment()
     {
@@ -30,7 +30,7 @@ abstract class TicketAbstract extends Model
     }
     public function getDurationTicket()
     {
-        return \is_null($this->stored_appointment) ? $this->getDurationInSec() : $this->stored_appointment->getDurationInSec();
+        return is_null($this->stored_appointment) ? $this->getDurationInSec() : $this->stored_appointment->getDurationInSec();
     }
     public function getDurationsPriceIds()
     {
@@ -58,12 +58,12 @@ abstract class TicketAbstract extends Model
     }
     public function queryPrices($query, $price_ids, $staff_id = \false)
     {
-        $query->where(function ($query) use($price_ids) {
+        $query->where(function ($query) use ($price_ids) {
             $query->whereIn('parent', $price_ids);
             $query->orWhereIn('id', $price_ids);
         });
         $staff_id = $staff_id === \false ? $this->staff_id : $staff_id;
-        return $query->where(function ($query) use($staff_id) {
+        return $query->where(function ($query) use ($staff_id) {
             $query->whereNull('staff_id');
             $query->orWhere('staff_id', $staff_id);
         })->get();
@@ -76,9 +76,9 @@ abstract class TicketAbstract extends Model
         })->map(function ($e) {
             return $e->parent;
         });
-        $overridedIds = \array_values($getOverridedIds->toArray());
-        return $prices->filter(function ($e) use($overridedIds) {
-            return !\in_array($e->id, $overridedIds);
+        $overridedIds = array_values($getOverridedIds->toArray());
+        return $prices->filter(function ($e) use ($overridedIds) {
+            return !in_array($e->id, $overridedIds);
         });
     }
     public function recordOrderReference(\Wappointment\Models\Order $order)

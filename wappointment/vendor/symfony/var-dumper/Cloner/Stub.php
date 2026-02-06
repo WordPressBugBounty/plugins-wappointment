@@ -38,11 +38,11 @@ class Stub
     /**
      * @internal
      */
-    public function __sleep() : array
+    public function __sleep(): array
     {
         $properties = [];
         if (!isset(self::$defaultProperties[$c = static::class])) {
-            self::$defaultProperties[$c] = \get_class_vars($c);
+            self::$defaultProperties[$c] = get_class_vars($c);
             foreach ((new \ReflectionClass($c))->getStaticProperties() as $k => $v) {
                 unset(self::$defaultProperties[$c][$k]);
             }

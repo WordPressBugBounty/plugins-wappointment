@@ -31,7 +31,7 @@ final class Driver extends AbstractDriverMiddleware
      *
      * @return array<string,mixed>
      */
-    private function maskPassword(array $params) : array
+    private function maskPassword(array $params): array
     {
         if (isset($params['password'])) {
             $params['password'] = '<redacted>';

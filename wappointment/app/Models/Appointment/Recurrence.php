@@ -29,7 +29,7 @@ class Recurrence
         $start_temp = $this->start->copy();
         $start_temp->addDay();
         while ($start_temp->timestamp < $this->end->timestamp) {
-            //if is a day
+            //if is a day 
             if ($this->needsGeneration($start_temp)) {
                 $this->generateForDay($start_temp);
             }
@@ -38,7 +38,7 @@ class Recurrence
     }
     public function generateEditKey($start_at)
     {
-        return \md5($start_at);
+        return md5($start_at);
     }
     private function generateForDay(Carbon $start_temp)
     {
@@ -49,7 +49,7 @@ class Recurrence
         $start_temp->hour = $copy->hour;
         $start_temp->minute = $copy->minute;
         $start_temp->second = 0;
-        //generate new key
+        //generate new key 
         $data_new['edit_key'] = $this->generateEditKey($start_temp->timestamp . $this->master->staff_id);
         $data_new['start_at'] = AppointmentNew::unixToDb($start_temp->timestamp);
         $data_new['end_at'] = AppointmentNew::unixToDb($start_temp->timestamp + $this->master->getFullDurationInSec());
@@ -70,7 +70,7 @@ class Recurrence
     }
     private function needsGeneration(Carbon $start_temp)
     {
-        if ($this->check_days && $this->isDayAllowed($this->check_days, \strtolower($start_temp->englishDayOfWeek))) {
+        if ($this->check_days && $this->isDayAllowed($this->check_days, strtolower($start_temp->englishDayOfWeek))) {
             return \true;
         }
         return \false;

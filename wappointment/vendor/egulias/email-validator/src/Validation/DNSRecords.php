@@ -17,11 +17,11 @@ class DNSRecords
         $this->records = $records;
         $this->error = $error;
     }
-    public function getRecords() : array
+    public function getRecords(): array
     {
         return $this->records;
     }
-    public function withError() : bool
+    public function withError(): bool
     {
         return $this->error;
     }

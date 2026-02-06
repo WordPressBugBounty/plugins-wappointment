@@ -40,7 +40,7 @@ final class Driver extends AbstractSQLiteDriver
      *
      * @param mixed[] $params
      */
-    private function constructPdoDsn(array $params) : string
+    private function constructPdoDsn(array $params): string
     {
         $dsn = 'sqlite:';
         if (isset($params['path'])) {

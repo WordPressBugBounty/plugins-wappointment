@@ -25,12 +25,12 @@ final class UrlHelper
         $this->requestStack = $requestStack;
         $this->requestContext = $requestContext;
     }
-    public function getAbsoluteUrl(string $path) : string
+    public function getAbsoluteUrl(string $path): string
     {
-        if (\str_contains($path, '://') || '//' === \substr($path, 0, 2)) {
+        if (str_contains($path, '://') || '//' === substr($path, 0, 2)) {
             return $path;
         }
-        if (null === ($request = $this->requestStack->getMainRequest())) {
+        if (null === $request = $this->requestStack->getMainRequest()) {
             return $this->getAbsoluteUrlFromContext($path);
         }
         if ('#' === $path[0]) {
@@ -41,26 +41,26 @@ final class UrlHelper
         if (!$path || '/' !== $path[0]) {
             $prefix = $request->getPathInfo();
             $last = \strlen($prefix) - 1;
-            if ($last !== ($pos = \strrpos($prefix, '/'))) {
-                $prefix = \substr($prefix, 0, $pos) . '/';
+            if ($last !== $pos = strrpos($prefix, '/')) {
+                $prefix = substr($prefix, 0, $pos) . '/';
             }
             return $request->getUriForPath($prefix . $path);
         }
         return $request->getSchemeAndHttpHost() . $path;
     }
-    public function getRelativePath(string $path) : string
+    public function getRelativePath(string $path): string
     {
-        if (\str_contains($path, '://') || '//' === \substr($path, 0, 2)) {
+        if (str_contains($path, '://') || '//' === substr($path, 0, 2)) {
             return $path;
         }
-        if (null === ($request = $this->requestStack->getMainRequest())) {
+        if (null === $request = $this->requestStack->getMainRequest()) {
             return $path;
         }
         return $request->getRelativeUriForPath($path);
     }
-    private function getAbsoluteUrlFromContext(string $path) : string
+    private function getAbsoluteUrlFromContext(string $path): string
     {
-        if (null === $this->requestContext || '' === ($host = $this->requestContext->getHost())) {
+        if (null === $this->requestContext || '' === $host = $this->requestContext->getHost()) {
             return $path;
         }
         $scheme = $this->requestContext->getScheme();
@@ -77,7 +77,7 @@ final class UrlHelper
             $path = $this->requestContext->getPathInfo() . $path;
         }
         if ('/' !== $path[0]) {
-            $path = \rtrim($this->requestContext->getBaseUrl(), '/') . '/' . $path;
+            $path = rtrim($this->requestContext->getBaseUrl(), '/') . '/' . $path;
         }
         return $scheme . '://' . $host . $port . $path;
     }

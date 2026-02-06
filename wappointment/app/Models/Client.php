@@ -36,11 +36,11 @@ class Client extends Model
     }
     public function generateEditKey($start_at)
     {
-        return \md5($this->id . $start_at);
+        return md5($this->id . $start_at);
     }
     public function getFirstName()
     {
-        return \strpos($this->name, ' ') !== \false ? \substr($this->name, 0, \strpos($this->name, ' ')) : $this->name;
+        return strpos($this->name, ' ') !== \false ? substr($this->name, 0, strpos($this->name, ' ')) : $this->name;
     }
     public function getAvatarAttribute()
     {
@@ -48,7 +48,7 @@ class Client extends Model
     }
     public function getLastName()
     {
-        return \strpos($this->name, ' ') !== \false ? \substr($this->name, \strpos($this->name, ' ')) : '';
+        return strpos($this->name, ' ') !== \false ? substr($this->name, strpos($this->name, ' ')) : '';
     }
     public function getEmailForDotcom()
     {
@@ -62,10 +62,6 @@ class Client extends Model
     {
         return empty($this->options['phone']) ? '' : $this->options['phone'];
     }
-    public function getSkype()
-    {
-        return empty($this->options['skype']) ? '' : $this->options['skype'];
-    }
     public function getTimezone($defaultTz = 'UTC')
     {
         return empty($this->options['tz']) ? $defaultTz : $this->options['tz'];
@@ -76,7 +72,7 @@ class Client extends Model
     }
     private function getCfReadableValue($tag)
     {
-        if (\class_exists('\\WappointmentAddonServices\\Services\\CustomFields')) {
+        if (class_exists('\WappointmentAddonServices\Services\CustomFields')) {
             return $this->getCustomFieldFormattedValue($tag);
         }
         return $this->options[$tag['key']];
@@ -93,7 +89,7 @@ class Client extends Model
     {
         $pendingOrder = \Wappointment\Models\Order::where('client_id', $this->id)->pending()->first();
         if (empty($pendingOrder)) {
-            $pendingOrder = \Wappointment\Models\Order::create(['client_id' => $this->id, 'transaction_id' => \uniqid('onsite_' . $this->id), 'tax_percent' => $this->getTaxPercentage()]);
+            $pendingOrder = \Wappointment\Models\Order::create(['client_id' => $this->id, 'transaction_id' => uniqid('onsite_' . $this->id), 'tax_percent' => $this->getTaxPercentage()]);
         }
         return $pendingOrder;
     }

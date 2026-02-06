@@ -33,13 +33,13 @@ class LocaleAwareListener implements EventSubscriberInterface
         $this->localeAwareServices = $localeAwareServices;
         $this->requestStack = $requestStack;
     }
-    public function onKernelRequest(RequestEvent $event) : void
+    public function onKernelRequest(RequestEvent $event): void
     {
         $this->setLocale($event->getRequest()->getLocale(), $event->getRequest()->getDefaultLocale());
     }
-    public function onKernelFinishRequest(FinishRequestEvent $event) : void
+    public function onKernelFinishRequest(FinishRequestEvent $event): void
     {
-        if (null === ($parentRequest = $this->requestStack->getParentRequest())) {
+        if (null === $parentRequest = $this->requestStack->getParentRequest()) {
             foreach ($this->localeAwareServices as $service) {
                 $service->setLocale($event->getRequest()->getDefaultLocale());
             }
@@ -55,7 +55,7 @@ class LocaleAwareListener implements EventSubscriberInterface
             KernelEvents::FINISH_REQUEST => [['onKernelFinishRequest', -15]],
         ];
     }
-    private function setLocale(string $locale, string $defaultLocale) : void
+    private function setLocale(string $locale, string $defaultLocale): void
     {
         foreach ($this->localeAwareServices as $service) {
             try {

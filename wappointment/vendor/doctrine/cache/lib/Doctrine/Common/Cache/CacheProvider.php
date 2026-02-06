@@ -147,7 +147,7 @@ abstract class CacheProvider implements Cache, FlushableCache, ClearableCache, M
      *
      * @return string The namespaced id.
      */
-    private function getNamespacedId(string $id) : string
+    private function getNamespacedId(string $id): string
     {
         $namespaceVersion = $this->getNamespaceVersion();
         return sprintf('%s[%s][%s]', $this->namespace, $id, $namespaceVersion);
@@ -155,14 +155,14 @@ abstract class CacheProvider implements Cache, FlushableCache, ClearableCache, M
     /**
      * Returns the namespace cache key.
      */
-    private function getNamespaceCacheKey() : string
+    private function getNamespaceCacheKey(): string
     {
         return sprintf(self::DOCTRINE_NAMESPACE_CACHEKEY, $this->namespace);
     }
     /**
      * Returns the namespace version.
      */
-    private function getNamespaceVersion() : int
+    private function getNamespaceVersion(): int
     {
         if ($this->namespaceVersion !== null) {
             return $this->namespaceVersion;
@@ -197,7 +197,7 @@ abstract class CacheProvider implements Cache, FlushableCache, ClearableCache, M
      *
      * @return mixed|false The cached data or FALSE, if no cache entry exists for the given id.
      */
-    protected abstract function doFetch($id);
+    abstract protected function doFetch($id);
     /**
      * Tests if an entry exists in the cache.
      *
@@ -205,7 +205,7 @@ abstract class CacheProvider implements Cache, FlushableCache, ClearableCache, M
      *
      * @return bool TRUE if a cache entry exists for the given cache id, FALSE otherwise.
      */
-    protected abstract function doContains($id);
+    abstract protected function doContains($id);
     /**
      * Default implementation of doSaveMultiple. Each driver that supports multi-put should override it.
      *
@@ -236,7 +236,7 @@ abstract class CacheProvider implements Cache, FlushableCache, ClearableCache, M
      *
      * @return bool TRUE if the entry was successfully stored in the cache, FALSE otherwise.
      */
-    protected abstract function doSave($id, $data, $lifeTime = 0);
+    abstract protected function doSave($id, $data, $lifeTime = 0);
     /**
      * Default implementation of doDeleteMultiple. Each driver that supports multi-delete should override it.
      *
@@ -262,17 +262,17 @@ abstract class CacheProvider implements Cache, FlushableCache, ClearableCache, M
      *
      * @return bool TRUE if the cache entry was successfully deleted, FALSE otherwise.
      */
-    protected abstract function doDelete($id);
+    abstract protected function doDelete($id);
     /**
      * Flushes all cache entries.
      *
      * @return bool TRUE if the cache entries were successfully flushed, FALSE otherwise.
      */
-    protected abstract function doFlush();
+    abstract protected function doFlush();
     /**
      * Retrieves cached information from the data store.
      *
      * @return mixed[]|null An associative array with server's statistics if available, NULL otherwise.
      */
-    protected abstract function doGetStats();
+    abstract protected function doGetStats();
 }

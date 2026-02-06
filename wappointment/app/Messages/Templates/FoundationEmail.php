@@ -82,7 +82,7 @@ class FoundationEmail
     }
     public function replaceSeparators($content_lines)
     {
-        if (!\is_array($content_lines)) {
+        if (!is_array($content_lines)) {
             $content_lines = [$content_lines];
         }
         $content_string = '';

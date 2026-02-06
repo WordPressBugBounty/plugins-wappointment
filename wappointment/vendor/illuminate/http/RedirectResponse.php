@@ -37,7 +37,7 @@ class RedirectResponse extends BaseRedirectResponse
      */
     public function with($key, $value = null)
     {
-        $key = \is_array($key) ? $key : [$key => $value];
+        $key = is_array($key) ? $key : [$key => $value];
         foreach ($key as $k => $v) {
             $this->session->flash($k, $v);
         }
@@ -64,7 +64,7 @@ class RedirectResponse extends BaseRedirectResponse
      */
     public function withInput(array $input = null)
     {
-        $this->session->flashInput($this->removeFilesFromInput(!\is_null($input) ? $input : $this->request->input()));
+        $this->session->flashInput($this->removeFilesFromInput(!is_null($input) ? $input : $this->request->input()));
         return $this;
     }
     /**
@@ -76,7 +76,7 @@ class RedirectResponse extends BaseRedirectResponse
     protected function removeFilesFromInput(array $input)
     {
         foreach ($input as $key => $value) {
-            if (\is_array($value)) {
+            if (is_array($value)) {
                 $input[$key] = $this->removeFilesFromInput($value);
             }
             if ($value instanceof SymfonyUploadedFile) {
@@ -92,7 +92,7 @@ class RedirectResponse extends BaseRedirectResponse
      */
     public function onlyInput()
     {
-        return $this->withInput($this->request->only(\func_get_args()));
+        return $this->withInput($this->request->only(func_get_args()));
     }
     /**
      * Flash an array of input to the session.
@@ -101,7 +101,7 @@ class RedirectResponse extends BaseRedirectResponse
      */
     public function exceptInput()
     {
-        return $this->withInput($this->request->except(\func_get_args()));
+        return $this->withInput($this->request->except(func_get_args()));
     }
     /**
      * Flash a container of errors to the session.
@@ -214,7 +214,7 @@ class RedirectResponse extends BaseRedirectResponse
             return $this->macroCall($method, $parameters);
         }
         if (Str::startsWith($method, 'with')) {
-            return $this->with(Str::snake(\substr($method, 4)), $parameters[0]);
+            return $this->with(Str::snake(substr($method, 4)), $parameters[0]);
         }
         static::throwBadMethodCallException($method);
     }

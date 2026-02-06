@@ -16,7 +16,7 @@ class AdminPendingAppointmentEmail extends \Wappointment\Messages\AbstractAdminE
         $buttonConfirm = apply_filters('wappointment_appointment_pending_email_button', \true, $this->params['appointment']->options);
         $lines = [
             /* translators: %s - client's first name. */
-            \sprintf(__('Hi %s,', 'wappointment'), $this->params['appointment']->getStaff()->getFirstName()),
+            sprintf(__('Hi %s,', 'wappointment'), $this->params['appointment']->getStaff()->getFirstName()),
             __('A new appointment is pending!', 'wappointment'),
         ];
         if ($buttonConfirm === \true) {
@@ -25,7 +25,7 @@ class AdminPendingAppointmentEmail extends \Wappointment\Messages\AbstractAdminE
         $this->addLines($lines);
         $this->addRoundedSquare($this->getEmailContent($this->params['client'], $this->params['appointment']));
         $this->addBr();
-        $formatString = 'Y-m-d\\T00:00:00';
+        $formatString = 'Y-m-d\T00:00:00';
         $st = $this->params['appointment']->start_at->startOfWeek()->format($formatString);
         $end = $this->params['appointment']->start_at->addDays(7)->format($formatString);
         if ($buttonConfirm === \true) {

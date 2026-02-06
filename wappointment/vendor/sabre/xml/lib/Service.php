@@ -59,7 +59,7 @@ class Service
     /**
      * Returns a fresh XML Reader.
      */
-    public function getReader() : Reader
+    public function getReader(): Reader
     {
         $r = new Reader();
         $r->elementMap = $this->elementMap;
@@ -68,7 +68,7 @@ class Service
     /**
      * Returns a fresh xml writer.
      */
-    public function getWriter() : Writer
+    public function getWriter(): Writer
     {
         $w = new Writer();
         $w->namespaceMap = $this->namespaceMap;
@@ -96,10 +96,10 @@ class Service
      */
     public function parse($input, string $contextUri = null, string &$rootElementName = null)
     {
-        if (\is_resource($input)) {
+        if (is_resource($input)) {
             // Unfortunately the XMLReader doesn't support streams. When it
             // does, we can optimize this.
-            $input = \stream_get_contents($input);
+            $input = stream_get_contents($input);
             // If input is an empty string, then its safe to throw exception
             if ('' === $input) {
                 throw new ParseException('The input element to parse is empty. Do not attempt to parse');
@@ -136,10 +136,10 @@ class Service
      */
     public function expect($rootElementName, $input, string $contextUri = null)
     {
-        if (\is_resource($input)) {
+        if (is_resource($input)) {
             // Unfortunately the XMLReader doesn't support streams. When it
             // does, we can optimize this.
-            $input = \stream_get_contents($input);
+            $input = stream_get_contents($input);
             // If input is empty string, then its safe to throw exception
             if ('' === $input) {
                 throw new ParseException('The input element to parse is empty. Do not attempt to parse');
@@ -155,8 +155,8 @@ class Service
             }
         }
         $result = $r->parse();
-        if (!\in_array($result['name'], $rootElementName, \true)) {
-            throw new ParseException('Expected ' . \implode(' or ', (array) $rootElementName) . ' but received ' . $result['name'] . ' as the root element');
+        if (!in_array($result['name'], $rootElementName, \true)) {
+            throw new ParseException('Expected ' . implode(' or ', (array) $rootElementName) . ' but received ' . $result['name'] . ' as the root element');
         }
         return $result['value'];
     }
@@ -215,10 +215,10 @@ class Service
     public function mapValueObject(string $elementName, string $className)
     {
         list($namespace) = self::parseClarkNotation($elementName);
-        $this->elementMap[$elementName] = function (Reader $reader) use($className, $namespace) {
+        $this->elementMap[$elementName] = function (Reader $reader) use ($className, $namespace) {
             return \WappoVendor\Sabre\Xml\Deserializer\valueObject($reader, $className, $namespace);
         };
-        $this->classMap[$className] = function (Writer $writer, $valueObject) use($namespace) {
+        $this->classMap[$className] = function (Writer $writer, $valueObject) use ($namespace) {
             return \WappoVendor\Sabre\Xml\Serializer\valueObject($writer, $valueObject, $namespace);
         };
         $this->valueObjectMap[$className] = $elementName;
@@ -238,10 +238,10 @@ class Service
      */
     public function writeValueObject($object, string $contextUri = null)
     {
-        if (!isset($this->valueObjectMap[\get_class($object)])) {
-            throw new \InvalidArgumentException('"' . \get_class($object) . '" is not a registered value object class. Register your class with mapValueObject.');
+        if (!isset($this->valueObjectMap[get_class($object)])) {
+            throw new \InvalidArgumentException('"' . get_class($object) . '" is not a registered value object class. Register your class with mapValueObject.');
         }
-        return $this->write($this->valueObjectMap[\get_class($object)], $object, $contextUri);
+        return $this->write($this->valueObjectMap[get_class($object)], $object, $contextUri);
     }
     /**
      * Parses a clark-notation string, and returns the namespace and element
@@ -251,11 +251,11 @@ class Service
      *
      * @throws \InvalidArgumentException
      */
-    public static function parseClarkNotation(string $str) : array
+    public static function parseClarkNotation(string $str): array
     {
         static $cache = [];
         if (!isset($cache[$str])) {
-            if (!\preg_match('/^{([^}]*)}(.*)$/', $str, $matches)) {
+            if (!preg_match('/^{([^}]*)}(.*)$/', $str, $matches)) {
                 throw new \InvalidArgumentException('\'' . $str . '\' is not a valid clark-notation formatted string');
             }
             $cache[$str] = [$matches[1], $matches[2]];

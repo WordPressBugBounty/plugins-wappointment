@@ -74,7 +74,7 @@ class ForeignKeyConstraint extends AbstractAsset implements Constraint
      *
      * @return Identifier[]
      */
-    private function createIdentifierMap(array $names) : array
+    private function createIdentifierMap(array $names): array
     {
         $identifiers = [];
         foreach ($names as $name) {
@@ -324,7 +324,7 @@ class ForeignKeyConstraint extends AbstractAsset implements Constraint
      *
      * @param string $event Name of the database operation/event to return the referential action for.
      */
-    private function onEvent($event) : ?string
+    private function onEvent($event): ?string
     {
         if (isset($this->_options[$event])) {
             $onEvent = strtoupper($this->_options[$event]);

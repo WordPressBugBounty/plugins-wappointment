@@ -59,7 +59,7 @@ class RDateIterator implements Iterator
     #[\ReturnTypeWillChange]
     public function valid()
     {
-        return $this->counter <= \count($this->dates);
+        return $this->counter <= count($this->dates);
     }
     /**
      * Resets the iterator.
@@ -138,8 +138,8 @@ class RDateIterator implements Iterator
      */
     protected function parseRDate($rdate)
     {
-        if (\is_string($rdate)) {
-            $rdate = \explode(',', $rdate);
+        if (is_string($rdate)) {
+            $rdate = explode(',', $rdate);
         }
         $this->dates = $rdate;
     }

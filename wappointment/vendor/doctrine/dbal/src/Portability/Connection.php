@@ -23,11 +23,11 @@ final class Connection extends AbstractConnectionMiddleware
         parent::__construct($connection);
         $this->converter = $converter;
     }
-    public function prepare(string $sql) : DriverStatement
+    public function prepare(string $sql): DriverStatement
     {
         return new Statement(parent::prepare($sql), $this->converter);
     }
-    public function query(string $sql) : DriverResult
+    public function query(string $sql): DriverResult
     {
         return new Result(parent::query($sql), $this->converter);
     }

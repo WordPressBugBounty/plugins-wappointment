@@ -29,7 +29,7 @@ trait InteractsWithInput
      */
     public function hasHeader($key)
     {
-        return !\is_null($this->header($key));
+        return !is_null($this->header($key));
     }
     /**
      * Retrieve a header from the request.
@@ -50,10 +50,10 @@ trait InteractsWithInput
     public function bearerToken()
     {
         $header = $this->header('Authorization', '');
-        $position = \strrpos($header, 'Bearer ');
+        $position = strrpos($header, 'Bearer ');
         if ($position !== \false) {
-            $header = \substr($header, $position + 7);
-            return \strpos($header, ',') !== \false ? \strstr($header, ',', \true) : $header;
+            $header = substr($header, $position + 7);
+            return strpos($header, ',') !== \false ? strstr($header, ',', \true) : $header;
         }
     }
     /**
@@ -74,7 +74,7 @@ trait InteractsWithInput
      */
     public function has($key)
     {
-        $keys = \is_array($key) ? $key : \func_get_args();
+        $keys = is_array($key) ? $key : func_get_args();
         $input = $this->all();
         foreach ($keys as $value) {
             if (!Arr::has($input, $value)) {
@@ -91,7 +91,7 @@ trait InteractsWithInput
      */
     public function hasAny($keys)
     {
-        $keys = \is_array($keys) ? $keys : \func_get_args();
+        $keys = is_array($keys) ? $keys : func_get_args();
         $input = $this->all();
         return Arr::hasAny($input, $keys);
     }
@@ -121,7 +121,7 @@ trait InteractsWithInput
      */
     public function filled($key)
     {
-        $keys = \is_array($key) ? $key : \func_get_args();
+        $keys = is_array($key) ? $key : func_get_args();
         foreach ($keys as $value) {
             if ($this->isEmptyString($value)) {
                 return \false;
@@ -137,7 +137,7 @@ trait InteractsWithInput
      */
     public function isNotFilled($key)
     {
-        $keys = \is_array($key) ? $key : \func_get_args();
+        $keys = is_array($key) ? $key : func_get_args();
         foreach ($keys as $value) {
             if (!$this->isEmptyString($value)) {
                 return \false;
@@ -153,7 +153,7 @@ trait InteractsWithInput
      */
     public function anyFilled($keys)
     {
-        $keys = \is_array($keys) ? $keys : \func_get_args();
+        $keys = is_array($keys) ? $keys : func_get_args();
         foreach ($keys as $key) {
             if ($this->filled($key)) {
                 return \true;
@@ -187,7 +187,7 @@ trait InteractsWithInput
      */
     public function missing($key)
     {
-        $keys = \is_array($key) ? $key : \func_get_args();
+        $keys = is_array($key) ? $key : func_get_args();
         return !$this->has($keys);
     }
     /**
@@ -199,7 +199,7 @@ trait InteractsWithInput
     protected function isEmptyString($key)
     {
         $value = $this->input($key);
-        return !\is_bool($value) && !\is_array($value) && \trim((string) $value) === '';
+        return !is_bool($value) && !is_array($value) && trim((string) $value) === '';
     }
     /**
      * Get the keys for all of the input and files.
@@ -208,7 +208,7 @@ trait InteractsWithInput
      */
     public function keys()
     {
-        return \array_merge(\array_keys($this->input()), $this->files->keys());
+        return array_merge(array_keys($this->input()), $this->files->keys());
     }
     /**
      * Get all of the input and files for the request.
@@ -218,12 +218,12 @@ trait InteractsWithInput
      */
     public function all($keys = null)
     {
-        $input = \array_replace_recursive($this->input(), $this->allFiles());
+        $input = array_replace_recursive($this->input(), $this->allFiles());
         if (!$keys) {
             return $input;
         }
         $results = [];
-        foreach (\is_array($keys) ? $keys : \func_get_args() as $key) {
+        foreach (is_array($keys) ? $keys : func_get_args() as $key) {
             Arr::set($results, $key, Arr::get($input, $key));
         }
         return $results;
@@ -250,7 +250,7 @@ trait InteractsWithInput
      */
     public function boolean($key = null, $default = \false)
     {
-        return \filter_var($this->input($key, $default), \FILTER_VALIDATE_BOOLEAN);
+        return filter_var($this->input($key, $default), \FILTER_VALIDATE_BOOLEAN);
     }
     /**
      * Retrieve input from the request as a Carbon instance.
@@ -265,7 +265,7 @@ trait InteractsWithInput
         if ($this->isNotFilled($key)) {
             return null;
         }
-        if (\is_null($format)) {
+        if (is_null($format)) {
             return Date::parse($this->input($key), $tz);
         }
         return Date::createFromFormat($format, $this->input($key), $tz);
@@ -278,7 +278,7 @@ trait InteractsWithInput
      */
     public function collect($key = null)
     {
-        return \WappointmentLv::collect(\is_array($key) ? $this->only($key) : $this->input($key));
+        return \WappointmentLv::collect(is_array($key) ? $this->only($key) : $this->input($key));
     }
     /**
      * Get a subset containing the provided keys with values from the input data.
@@ -291,7 +291,7 @@ trait InteractsWithInput
         $results = [];
         $input = $this->all();
         $placeholder = new stdClass();
-        foreach (\is_array($keys) ? $keys : \func_get_args() as $key) {
+        foreach (is_array($keys) ? $keys : func_get_args() as $key) {
             $value = \WappointmentLv::data_get($input, $key, $placeholder);
             if ($value !== $placeholder) {
                 Arr::set($results, $key, $value);
@@ -307,7 +307,7 @@ trait InteractsWithInput
      */
     public function except($keys)
     {
-        $keys = \is_array($keys) ? $keys : \func_get_args();
+        $keys = is_array($keys) ? $keys : func_get_args();
         $results = $this->all();
         Arr::forget($results, $keys);
         return $results;
@@ -342,7 +342,7 @@ trait InteractsWithInput
      */
     public function hasCookie($key)
     {
-        return !\is_null($this->cookie($key));
+        return !is_null($this->cookie($key));
     }
     /**
      * Retrieve a cookie from the request.
@@ -373,11 +373,11 @@ trait InteractsWithInput
      */
     protected function convertUploadedFiles(array $files)
     {
-        return \array_map(function ($file) {
-            if (\is_null($file) || \is_array($file) && empty(\array_filter($file))) {
+        return array_map(function ($file) {
+            if (is_null($file) || is_array($file) && empty(array_filter($file))) {
                 return $file;
             }
-            return \is_array($file) ? $this->convertUploadedFiles($file) : UploadedFile::createFromBase($file);
+            return is_array($file) ? $this->convertUploadedFiles($file) : UploadedFile::createFromBase($file);
         }, $files);
     }
     /**
@@ -388,7 +388,7 @@ trait InteractsWithInput
      */
     public function hasFile($key)
     {
-        if (!\is_array($files = $this->file($key))) {
+        if (!is_array($files = $this->file($key))) {
             $files = [$files];
         }
         foreach ($files as $file) {
@@ -429,7 +429,7 @@ trait InteractsWithInput
      */
     protected function retrieveItem($source, $key, $default)
     {
-        if (\is_null($key)) {
+        if (is_null($key)) {
             return $this->{$source}->all();
         }
         return $this->{$source}->get($key, $default);
@@ -453,8 +453,8 @@ trait InteractsWithInput
      */
     public function dump($keys = [])
     {
-        $keys = \is_array($keys) ? $keys : \func_get_args();
-        VarDumper::dump(\count($keys) > 0 ? $this->only($keys) : $this->all());
+        $keys = is_array($keys) ? $keys : func_get_args();
+        VarDumper::dump(count($keys) > 0 ? $this->only($keys) : $this->all());
         return $this;
     }
 }

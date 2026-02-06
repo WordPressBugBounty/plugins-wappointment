@@ -7,7 +7,7 @@ class Lock extends \Wappointment\Services\AbstractFile
     protected $timeout = 60;
     public function alreadySet()
     {
-        return \file_exists($this->path) && \time() < \filemtime($this->path) + $this->timeout;
+        return file_exists($this->path) && time() < filemtime($this->path) + $this->timeout;
     }
     public function set()
     {

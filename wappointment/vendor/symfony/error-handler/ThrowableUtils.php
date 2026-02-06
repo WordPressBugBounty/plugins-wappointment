@@ -19,7 +19,7 @@ class ThrowableUtils
     /**
      * @param SilencedErrorContext|\Throwable
      */
-    public static function getSeverity($throwable) : int
+    public static function getSeverity($throwable): int
     {
         if ($throwable instanceof \ErrorException || $throwable instanceof SilencedErrorContext) {
             return $throwable->getSeverity();

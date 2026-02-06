@@ -145,7 +145,7 @@ class OutputFormat
     {
         $aVarPrefixes = ['a', 's', 'm', 'b', 'f', 'o', 'c', 'i'];
         foreach ($aVarPrefixes as $sPrefix) {
-            $sFieldName = $sPrefix . \ucfirst($sName);
+            $sFieldName = $sPrefix . ucfirst($sName);
             if (isset($this->{$sFieldName})) {
                 return $this->{$sFieldName};
             }
@@ -161,15 +161,15 @@ class OutputFormat
     public function set($aNames, $mValue)
     {
         $aVarPrefixes = ['a', 's', 'm', 'b', 'f', 'o', 'c', 'i'];
-        if (\is_string($aNames) && \strpos($aNames, '*') !== \false) {
-            $aNames = [\str_replace('*', 'Before', $aNames), \str_replace('*', 'Between', $aNames), \str_replace('*', 'After', $aNames)];
-        } elseif (!\is_array($aNames)) {
+        if (is_string($aNames) && strpos($aNames, '*') !== \false) {
+            $aNames = [str_replace('*', 'Before', $aNames), str_replace('*', 'Between', $aNames), str_replace('*', 'After', $aNames)];
+        } elseif (!is_array($aNames)) {
             $aNames = [$aNames];
         }
         foreach ($aVarPrefixes as $sPrefix) {
             $bDidReplace = \false;
             foreach ($aNames as $sName) {
-                $sFieldName = $sPrefix . \ucfirst($sName);
+                $sFieldName = $sPrefix . ucfirst($sName);
                 if (isset($this->{$sFieldName})) {
                     $this->{$sFieldName} = $mValue;
                     $bDidReplace = \true;
@@ -192,12 +192,12 @@ class OutputFormat
      */
     public function __call($sMethodName, array $aArguments)
     {
-        if (\strpos($sMethodName, 'set') === 0) {
-            return $this->set(\substr($sMethodName, 3), $aArguments[0]);
-        } elseif (\strpos($sMethodName, 'get') === 0) {
-            return $this->get(\substr($sMethodName, 3));
-        } elseif (\method_exists(OutputFormatter::class, $sMethodName)) {
-            return \call_user_func_array([$this->getFormatter(), $sMethodName], $aArguments);
+        if (strpos($sMethodName, 'set') === 0) {
+            return $this->set(substr($sMethodName, 3), $aArguments[0]);
+        } elseif (strpos($sMethodName, 'get') === 0) {
+            return $this->get(substr($sMethodName, 3));
+        } elseif (method_exists(OutputFormatter::class, $sMethodName)) {
+            return call_user_func_array([$this->getFormatter(), $sMethodName], $aArguments);
         } else {
             throw new \Exception('Unknown OutputFormat method called: ' . $sMethodName);
         }
@@ -209,7 +209,7 @@ class OutputFormat
      */
     public function indentWithTabs($iNumber = 1)
     {
-        return $this->setIndentation(\str_repeat("\t", $iNumber));
+        return $this->setIndentation(str_repeat("\t", $iNumber));
     }
     /**
      * @param int $iNumber
@@ -218,7 +218,7 @@ class OutputFormat
      */
     public function indentWithSpaces($iNumber = 2)
     {
-        return $this->setIndentation(\str_repeat(" ", $iNumber));
+        return $this->setIndentation(str_repeat(" ", $iNumber));
     }
     /**
      * @return OutputFormat

@@ -27,11 +27,11 @@ class StaffHistory extends \Wappointment\WP\AppointmentHistory
     }
     public function clientLabel()
     {
-        return empty($this->atts['client_label']) ? __('Client', 'wappointment') : $this->atts['client_label'];
+        return empty($this->atts['client_label']) ? esc_html__('Client', 'wappointment') : esc_html($this->atts['client_label']);
     }
     public function locationLabel()
     {
-        return empty($this->atts['location_label']) ? __('Location', 'wappointment') : $this->atts['location_label'];
+        return empty($this->atts['location_label']) ? esc_html__('Location', 'wappointment') : esc_html($this->atts['location_label']);
     }
     public function renderHeader()
     {
@@ -40,7 +40,7 @@ class StaffHistory extends \Wappointment\WP\AppointmentHistory
     public function renderRow($appointment)
     {
         $row = '<tr>';
-        $row .= '<td>' . '<div>' . $appointment->getStartsDayAndTime($this->timezone) . '</div>' . '<div>' . $this->renderCancelRescheduleLink($appointment) . '</div>' . '</td>';
+        $row .= '<td>' . '<div>' . esc_html($appointment->getStartsDayAndTime($this->timezone)) . '</div>' . '<div>' . $this->renderCancelRescheduleLink($appointment) . '</div>' . '</td>';
         $row .= '<td>' . esc_html($appointment->getServiceName()) . '<br/>' . esc_html($appointment->getLocation()) . '</td>';
         $row .= '<td>' . $this->getClientData($appointment) . '</td>';
         $row .= '</tr>';
@@ -59,12 +59,9 @@ class StaffHistory extends \Wappointment\WP\AppointmentHistory
         if (empty($client)) {
             return [];
         }
-        $data = ['name' => ['label' => __('Name', 'wappointment'), 'value' => $client->name], 'email' => ['label' => __('Email', 'wappointment'), 'value' => $client->email]];
+        $data = ['name' => ['label' => esc_html__('Name', 'wappointment'), 'value' => $client->name], 'email' => ['label' => esc_html__('Email', 'wappointment'), 'value' => $client->email]];
         if (!empty($client->getPhone())) {
-            $data['phone'] = ['label' => __('Phone', 'wappointment'), 'value' => $client->getPhone()];
-        }
-        if (!empty($client->getSkype())) {
-            $data['skype'] = ['label' => 'Skype', 'value' => $client->getSkype()];
+            $data['phone'] = ['label' => esc_html__('Phone', 'wappointment'), 'value' => $client->getPhone()];
         }
         $cfs = Central::get('CustomFields')::get();
         foreach ($cfs as $cf) {
@@ -80,7 +77,7 @@ class StaffHistory extends \Wappointment\WP\AppointmentHistory
     public function getCfValue($cf, $client)
     {
         $value = !empty($client->options[$cf['namekey']]) ? $client->options[$cf['namekey']] : \false;
-        if ($value !== \false && \strpos($value, 'inp-') !== \false) {
+        if ($value !== \false && strpos($value, 'inp-') !== \false) {
             foreach ($cf['values'] as $cfvalue) {
                 if ($cfvalue['value'] == $value) {
                     return $cfvalue['label'];

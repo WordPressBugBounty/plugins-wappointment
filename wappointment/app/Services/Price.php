@@ -24,7 +24,7 @@ class Price
     // we convert into an int
     public function setPrice($price)
     {
-        $this->price = \strpos($price, '.') !== \false ? \str_replace('.', '', $price) : (int) $price * 100;
+        $this->price = strpos($price, '.') !== \false ? str_replace('.', '', $price) : (int) $price * 100;
     }
     public function setData($data)
     {
@@ -32,7 +32,7 @@ class Price
     }
     public function getData()
     {
-        return \array_merge($this->data, ['type' => $this->type, 'price' => (int) $this->price]);
+        return array_merge($this->data, ['type' => $this->type, 'price' => (int) $this->price]);
     }
     public function save()
     {

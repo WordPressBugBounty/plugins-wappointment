@@ -32,7 +32,7 @@ trait InteractsWithFlashData
      */
     public function flashOnly($keys)
     {
-        $this->session()->flashInput($this->only(\is_array($keys) ? $keys : \func_get_args()));
+        $this->session()->flashInput($this->only(is_array($keys) ? $keys : func_get_args()));
     }
     /**
      * Flash only some of the input to the session.
@@ -42,7 +42,7 @@ trait InteractsWithFlashData
      */
     public function flashExcept($keys)
     {
-        $this->session()->flashInput($this->except(\is_array($keys) ? $keys : \func_get_args()));
+        $this->session()->flashInput($this->except(is_array($keys) ? $keys : func_get_args()));
     }
     /**
      * Flush all of the old input from the session.

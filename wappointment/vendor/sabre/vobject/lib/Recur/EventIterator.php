@@ -92,11 +92,11 @@ class EventIterator implements \Iterator
      */
     public function __construct($input, $uid = null, DateTimeZone $timeZone = null)
     {
-        if (\is_null($timeZone)) {
+        if (is_null($timeZone)) {
             $timeZone = new DateTimeZone('UTC');
         }
         $this->timeZone = $timeZone;
-        if (\is_array($input)) {
+        if (is_array($input)) {
             $events = $input;
         } elseif ($input instanceof VEvent) {
             // Single instance mode.
@@ -127,10 +127,10 @@ class EventIterator implements \Iterator
             // In this particular case, we're just going to grab the first
             // event and use that instead. This may not always give the
             // desired result.
-            if (!\count($this->overriddenEvents)) {
+            if (!count($this->overriddenEvents)) {
                 throw new InvalidArgumentException('This VCALENDAR did not have an event with UID: ' . $uid);
             }
-            $this->masterEvent = \array_shift($this->overriddenEvents);
+            $this->masterEvent = array_shift($this->overriddenEvents);
         }
         $this->startDate = $this->masterEvent->DTSTART->getDateTime($this->timeZone);
         $this->allDay = !$this->masterEvent->DTSTART->hasTime();
@@ -278,7 +278,7 @@ class EventIterator implements \Iterator
             $stamp = $event->DTSTART->getDateTime($this->timeZone)->getTimeStamp();
             $index[$stamp][] = $key;
         }
-        \krsort($index);
+        krsort($index);
         $this->counter = 0;
         $this->overriddenEventsIndex = $index;
         $this->currentOverriddenEvent = null;
@@ -316,9 +316,9 @@ class EventIterator implements \Iterator
         // $nextDate now contains what rrule thinks is the next one, but an
         // overridden event may cut ahead.
         if ($this->overriddenEventsIndex) {
-            $offsets = \end($this->overriddenEventsIndex);
-            $timestamp = \key($this->overriddenEventsIndex);
-            $offset = \end($offsets);
+            $offsets = end($this->overriddenEventsIndex);
+            $timestamp = key($this->overriddenEventsIndex);
+            $offset = end($offsets);
             if (!$nextDate || $timestamp < $nextDate->getTimeStamp()) {
                 // Overridden event comes first.
                 $this->currentOverriddenEvent = $this->overriddenEvents[$offset];
@@ -326,9 +326,9 @@ class EventIterator implements \Iterator
                 $this->nextDate = $nextDate;
                 $this->currentDate = $this->currentOverriddenEvent->DTSTART->getDateTime($this->timeZone);
                 // Ensuring that this item will only be used once.
-                \array_pop($this->overriddenEventsIndex[$timestamp]);
+                array_pop($this->overriddenEventsIndex[$timestamp]);
                 if (!$this->overriddenEventsIndex[$timestamp]) {
-                    \array_pop($this->overriddenEventsIndex);
+                    array_pop($this->overriddenEventsIndex);
                 }
                 // Exit point!
                 return;

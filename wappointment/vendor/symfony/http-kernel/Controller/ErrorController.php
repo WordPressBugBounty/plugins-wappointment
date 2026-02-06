@@ -32,12 +32,12 @@ class ErrorController
         $this->controller = $controller;
         $this->errorRenderer = $errorRenderer;
     }
-    public function __invoke(\Throwable $exception) : Response
+    public function __invoke(\Throwable $exception): Response
     {
         $exception = $this->errorRenderer->render($exception);
         return new Response($exception->getAsString(), $exception->getStatusCode(), $exception->getHeaders());
     }
-    public function preview(Request $request, int $code) : Response
+    public function preview(Request $request, int $code): Response
     {
         /*
          * This Request mimics the parameters set by

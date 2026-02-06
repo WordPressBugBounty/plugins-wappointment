@@ -126,26 +126,26 @@ if (!\defined('IDNA_ERROR_CONTEXTJ')) {
     \define('IDNA_ERROR_CONTEXTJ', 4096);
 }
 if (\PHP_VERSION_ID < 70400) {
-    if (!\function_exists('idn_to_ascii')) {
+    if (!\function_exists('idn_to_ascii') && !\function_exists('WappoVendor\idn_to_ascii')) {
         function idn_to_ascii($domain, $flags = 0, $variant = \INTL_IDNA_VARIANT_2003, &$idna_info = null)
         {
             return p\Idn::idn_to_ascii($domain, $flags, $variant, $idna_info);
         }
     }
-    if (!\function_exists('idn_to_utf8')) {
+    if (!\function_exists('idn_to_utf8') && !\function_exists('WappoVendor\idn_to_utf8')) {
         function idn_to_utf8($domain, $flags = 0, $variant = \INTL_IDNA_VARIANT_2003, &$idna_info = null)
         {
             return p\Idn::idn_to_utf8($domain, $flags, $variant, $idna_info);
         }
     }
 } else {
-    if (!\function_exists('idn_to_ascii')) {
+    if (!\function_exists('idn_to_ascii') && !\function_exists('WappoVendor\idn_to_ascii')) {
         function idn_to_ascii($domain, $flags = 0, $variant = \INTL_IDNA_VARIANT_UTS46, &$idna_info = null)
         {
             return p\Idn::idn_to_ascii($domain, $flags, $variant, $idna_info);
         }
     }
-    if (!\function_exists('idn_to_utf8')) {
+    if (!\function_exists('idn_to_utf8') && !\function_exists('WappoVendor\idn_to_utf8')) {
         function idn_to_utf8($domain, $flags = 0, $variant = \INTL_IDNA_VARIANT_UTS46, &$idna_info = null)
         {
             return p\Idn::idn_to_utf8($domain, $flags, $variant, $idna_info);

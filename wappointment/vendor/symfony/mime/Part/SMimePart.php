@@ -29,23 +29,23 @@ class SMimePart extends AbstractPart
     {
         unset($this->_headers);
         parent::__construct();
-        if (!\is_string($body) && !\is_iterable($body)) {
-            throw new \TypeError(\sprintf('The body of "%s" must be a string or a iterable (got "%s").', self::class, \get_debug_type($body)));
+        if (!\is_string($body) && !is_iterable($body)) {
+            throw new \TypeError(sprintf('The body of "%s" must be a string or a iterable (got "%s").', self::class, get_debug_type($body)));
         }
         $this->body = $body;
         $this->type = $type;
         $this->subtype = $subtype;
         $this->parameters = $parameters;
     }
-    public function getMediaType() : string
+    public function getMediaType(): string
     {
         return $this->type;
     }
-    public function getMediaSubtype() : string
+    public function getMediaSubtype(): string
     {
         return $this->subtype;
     }
-    public function bodyToString() : string
+    public function bodyToString(): string
     {
         if (\is_string($this->body)) {
             return $this->body;
@@ -57,20 +57,20 @@ class SMimePart extends AbstractPart
         $this->body = $body;
         return $body;
     }
-    public function bodyToIterable() : iterable
+    public function bodyToIterable(): iterable
     {
         if (\is_string($this->body)) {
-            (yield $this->body);
+            yield $this->body;
             return;
         }
         $body = '';
         foreach ($this->body as $chunk) {
             $body .= $chunk;
-            (yield $chunk);
+            yield $chunk;
         }
         $this->body = $body;
     }
-    public function getPreparedHeaders() : Headers
+    public function getPreparedHeaders(): Headers
     {
         $headers = clone parent::getHeaders();
         $headers->setHeaderBody('Parameterized', 'Content-Type', $this->getMediaType() . '/' . $this->getMediaSubtype());
@@ -79,16 +79,16 @@ class SMimePart extends AbstractPart
         }
         return $headers;
     }
-    public function __sleep() : array
+    public function __sleep(): array
     {
         // convert iterables to strings for serialization
-        if (\is_iterable($this->body)) {
+        if (is_iterable($this->body)) {
             $this->body = $this->bodyToString();
         }
         $this->_headers = $this->getHeaders();
         return ['_headers', 'body', 'type', 'subtype', 'parameters'];
     }
-    public function __wakeup() : void
+    public function __wakeup(): void
     {
         $r = new \ReflectionProperty(AbstractPart::class, 'headers');
         $r->setAccessible(\true);

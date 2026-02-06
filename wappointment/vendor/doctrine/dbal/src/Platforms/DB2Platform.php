@@ -21,7 +21,7 @@ use function sprintf;
 use function strpos;
 class DB2Platform extends AbstractPlatform
 {
-    public function getCharMaxLength() : int
+    public function getCharMaxLength(): int
     {
         return 254;
     }
@@ -409,7 +409,7 @@ class DB2Platform extends AbstractPlatform
      * @param string[]   $sql        The sequence of table alteration statements to fill.
      * @param mixed[]    $queryParts The sequence of column alteration clauses to fill.
      */
-    private function gatherAlterColumnSQL(Identifier $table, ColumnDiff $columnDiff, array &$sql, array &$queryParts) : void
+    private function gatherAlterColumnSQL(Identifier $table, ColumnDiff $columnDiff, array &$sql, array &$queryParts): void
     {
         $alterColumnClauses = $this->getAlterColumnClausesSQL($columnDiff);
         if (empty($alterColumnClauses)) {
@@ -432,7 +432,7 @@ class DB2Platform extends AbstractPlatform
      *
      * @return string[]
      */
-    private function getAlterColumnClausesSQL(ColumnDiff $columnDiff) : array
+    private function getAlterColumnClausesSQL(ColumnDiff $columnDiff): array
     {
         $column = $columnDiff->column->toArray();
         $alterClause = 'ALTER COLUMN ' . $columnDiff->column->getQuotedName($this);
@@ -577,7 +577,7 @@ class DB2Platform extends AbstractPlatform
     {
         return 'LENGTH(' . $column . ', CODEUNITS32)';
     }
-    public function getCurrentDatabaseExpression() : string
+    public function getCurrentDatabaseExpression(): string
     {
         return 'CURRENT_USER';
     }
@@ -634,7 +634,7 @@ class DB2Platform extends AbstractPlatform
         Deprecation::triggerIfCalledFromOutside('doctrine/dbal', 'https://github.com/doctrine/dbal/issues/4510', 'DB2Platform::getReservedKeywordsClass() is deprecated,' . ' use DB2Platform::createReservedKeywordsList() instead.');
         return Keywords\DB2Keywords::class;
     }
-    public function getListTableCommentsSQL(string $table) : string
+    public function getListTableCommentsSQL(string $table): string
     {
         return sprintf(<<<'SQL'
 SELECT REMARKS

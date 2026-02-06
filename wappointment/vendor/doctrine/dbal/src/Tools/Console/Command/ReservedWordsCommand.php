@@ -44,7 +44,7 @@ class ReservedWordsCommand extends Command
     /**
      * Add or replace a keyword list.
      */
-    public function setKeywordList(string $name, KeywordList $keywordList) : void
+    public function setKeywordList(string $name, KeywordList $keywordList): void
     {
         $this->keywordLists[$name] = $keywordList;
     }
@@ -133,7 +133,7 @@ EOT
         $output->write('No reserved keywords violations have been found!', \true);
         return 0;
     }
-    private function getConnection(InputInterface $input) : Connection
+    private function getConnection(InputInterface $input): Connection
     {
         $connectionName = $input->getOption('connection');
         assert(is_string($connectionName) || $connectionName === null);

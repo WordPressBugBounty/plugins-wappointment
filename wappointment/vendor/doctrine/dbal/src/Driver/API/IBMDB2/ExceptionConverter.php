@@ -23,7 +23,7 @@ use WappoVendor\Doctrine\DBAL\Query;
  */
 final class ExceptionConverter implements ExceptionConverterInterface
 {
-    public function convert(Exception $exception, ?Query $query) : DriverException
+    public function convert(Exception $exception, ?Query $query): DriverException
     {
         switch ($exception->getCode()) {
             case -104:

@@ -66,9 +66,9 @@ class UploadedFile implements UploadedFileInterface
      */
     private function setStreamOrFile($streamOrFile)
     {
-        if (\is_string($streamOrFile)) {
+        if (is_string($streamOrFile)) {
             $this->file = $streamOrFile;
-        } elseif (\is_resource($streamOrFile)) {
+        } elseif (is_resource($streamOrFile)) {
             $this->stream = new Stream($streamOrFile);
         } elseif ($streamOrFile instanceof StreamInterface) {
             $this->stream = $streamOrFile;
@@ -83,10 +83,10 @@ class UploadedFile implements UploadedFileInterface
      */
     private function setError($error)
     {
-        if (\false === \is_int($error)) {
+        if (\false === is_int($error)) {
             throw new InvalidArgumentException('Upload file error status must be an integer');
         }
-        if (\false === \in_array($error, UploadedFile::$errors)) {
+        if (\false === in_array($error, UploadedFile::$errors)) {
             throw new InvalidArgumentException('Invalid error status for UploadedFile');
         }
         $this->error = $error;
@@ -98,7 +98,7 @@ class UploadedFile implements UploadedFileInterface
      */
     private function setSize($size)
     {
-        if (\false === \is_int($size)) {
+        if (\false === is_int($size)) {
             throw new InvalidArgumentException('Upload file size must be an integer');
         }
         $this->size = $size;
@@ -110,7 +110,7 @@ class UploadedFile implements UploadedFileInterface
      */
     private function isStringOrNull($param)
     {
-        return \in_array(\gettype($param), ['string', 'NULL']);
+        return in_array(gettype($param), ['string', 'NULL']);
     }
     /**
      * @param mixed $param
@@ -119,7 +119,7 @@ class UploadedFile implements UploadedFileInterface
      */
     private function isStringNotEmpty($param)
     {
-        return \is_string($param) && \false === empty($param);
+        return is_string($param) && \false === empty($param);
     }
     /**
      * @param string|null $clientFilename
@@ -206,13 +206,13 @@ class UploadedFile implements UploadedFileInterface
             throw new InvalidArgumentException('Invalid path provided for move operation; must be a non-empty string');
         }
         if ($this->file) {
-            $this->moved = \php_sapi_name() == 'cli' ? \rename($this->file, $targetPath) : \move_uploaded_file($this->file, $targetPath);
+            $this->moved = php_sapi_name() == 'cli' ? rename($this->file, $targetPath) : move_uploaded_file($this->file, $targetPath);
         } else {
             Utils::copyToStream($this->getStream(), new LazyOpenStream($targetPath, 'w'));
             $this->moved = \true;
         }
         if (\false === $this->moved) {
-            throw new RuntimeException(\sprintf('Uploaded file could not be moved to %s', $targetPath));
+            throw new RuntimeException(sprintf('Uploaded file could not be moved to %s', $targetPath));
         }
     }
     /**

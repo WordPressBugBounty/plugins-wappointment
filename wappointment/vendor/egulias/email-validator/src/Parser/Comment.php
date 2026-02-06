@@ -25,7 +25,7 @@ class Comment extends PartParser
         $this->lexer = $lexer;
         $this->commentStrategy = $commentStrategy;
     }
-    public function parse() : Result
+    public function parse(): Result
     {
         if ($this->lexer->token['type'] === EmailLexer::S_OPENPARENTHESIS) {
             $this->openedParenthesis++;
@@ -55,13 +55,13 @@ class Comment extends PartParser
             return new InvalidEmail(new UnOpenedComment(), $this->lexer->token['value']);
         }
         $finalValidations = $this->commentStrategy->endOfLoopValidations($this->lexer);
-        $this->warnings = \array_merge($this->warnings, $this->commentStrategy->getWarnings());
+        $this->warnings = array_merge($this->warnings, $this->commentStrategy->getWarnings());
         return $finalValidations;
     }
     /**
      * @return bool
      */
-    private function warnEscaping() : bool
+    private function warnEscaping(): bool
     {
         //Backslash found
         if ($this->lexer->token['type'] !== EmailLexer::S_BACKSLASH) {
@@ -73,7 +73,7 @@ class Comment extends PartParser
         $this->warnings[QuotedPart::CODE] = new QuotedPart($this->lexer->getPrevious()['type'], $this->lexer->token['type']);
         return \true;
     }
-    private function noClosingParenthesis() : bool
+    private function noClosingParenthesis(): bool
     {
         try {
             $this->lexer->find(EmailLexer::S_CLOSEPARENTHESIS);

@@ -68,7 +68,7 @@ class Reminder extends Model
     public function getReminderLabel()
     {
         /* translators: %1$s is replaced with a number of %2$s which are either, minutes, hours or days */
-        return empty($this->options['when_number']) ? '' : \sprintf(__('Sent before appointment takes place.(sent %1$s %2$s before)', 'wappointment'), $this->options['when_number'], $this->convertUnit($this->options['when_unit']));
+        return empty($this->options['when_number']) ? '' : sprintf(__('Sent before appointment takes place.(sent %1$s %2$s before)', 'wappointment'), $this->options['when_number'], $this->convertUnit($this->options['when_unit']));
     }
     public function convertUnit($unit)
     {
@@ -119,14 +119,10 @@ class Reminder extends Model
             if ($appointment !== null && \WappointmentLv::starts_with($rowContent['type'], 'cblock')) {
                 if ($appointment->isPhysical() && $rowContent['type'] == 'cblockphysical') {
                     $newBodyEmailContent[] = $rowContent;
-                } else {
-                    if ($appointment->isPhone() && $rowContent['type'] == 'cblockphone') {
-                        $newBodyEmailContent[] = $rowContent;
-                    } elseif ($appointment->isSkype() && $rowContent['type'] == 'cblockskype') {
-                        $newBodyEmailContent[] = $rowContent;
-                    } elseif ($appointment->isZoom() && $rowContent['type'] == 'cblockzoom') {
-                        $newBodyEmailContent[] = $rowContent;
-                    }
+                } else if ($appointment->isPhone() && $rowContent['type'] == 'cblockphone') {
+                    $newBodyEmailContent[] = $rowContent;
+                } elseif ($appointment->isZoom() && $rowContent['type'] == 'cblockzoom') {
+                    $newBodyEmailContent[] = $rowContent;
                 }
             } else {
                 $newBodyEmailContent[] = $rowContent;

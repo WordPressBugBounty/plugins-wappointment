@@ -42,25 +42,25 @@ final class Result implements ResultInterface
     /**
      * {@inheritDoc}
      */
-    public function fetchAllNumeric() : array
+    public function fetchAllNumeric(): array
     {
         return $this->fetchAll(PDO::FETCH_NUM);
     }
     /**
      * {@inheritDoc}
      */
-    public function fetchAllAssociative() : array
+    public function fetchAllAssociative(): array
     {
         return $this->fetchAll(PDO::FETCH_ASSOC);
     }
     /**
      * {@inheritDoc}
      */
-    public function fetchFirstColumn() : array
+    public function fetchFirstColumn(): array
     {
         return $this->fetchAll(PDO::FETCH_COLUMN);
     }
-    public function rowCount() : int
+    public function rowCount(): int
     {
         try {
             return $this->statement->rowCount();
@@ -68,7 +68,7 @@ final class Result implements ResultInterface
             throw Exception::new($exception);
         }
     }
-    public function columnCount() : int
+    public function columnCount(): int
     {
         try {
             return $this->statement->columnCount();
@@ -76,7 +76,7 @@ final class Result implements ResultInterface
             throw Exception::new($exception);
         }
     }
-    public function free() : void
+    public function free(): void
     {
         $this->statement->closeCursor();
     }
@@ -98,7 +98,7 @@ final class Result implements ResultInterface
      *
      * @throws Exception
      */
-    private function fetchAll(int $mode) : array
+    private function fetchAll(int $mode): array
     {
         try {
             return $this->statement->fetchAll($mode);

@@ -31,7 +31,7 @@ class AmqpCaster
             return $a;
         }
         // BC layer in the amqp lib
-        if (\method_exists($c, 'getReadTimeout')) {
+        if (method_exists($c, 'getReadTimeout')) {
             $timeout = $c->getReadTimeout();
         } else {
             $timeout = $c->getTimeout();
@@ -89,7 +89,7 @@ class AmqpCaster
         $a += [$prefix . 'delivery_tag' => $c->getDeliveryTag(), $prefix . 'is_redelivery' => $c->isRedelivery(), $prefix . 'exchange_name' => $c->getExchangeName(), $prefix . 'routing_key' => $c->getRoutingKey(), $prefix . 'content_type' => $c->getContentType(), $prefix . 'content_encoding' => $c->getContentEncoding(), $prefix . 'headers' => $c->getHeaders(), $prefix . 'delivery_mode' => $deliveryMode, $prefix . 'priority' => $c->getPriority(), $prefix . 'correlation_id' => $c->getCorrelationId(), $prefix . 'reply_to' => $c->getReplyTo(), $prefix . 'expiration' => $c->getExpiration(), $prefix . 'message_id' => $c->getMessageId(), $prefix . 'timestamp' => $c->getTimeStamp(), $prefix . 'type' => $c->getType(), $prefix . 'user_id' => $c->getUserId(), $prefix . 'app_id' => $c->getAppId()];
         return $a;
     }
-    private static function extractFlags(int $flags) : ConstStub
+    private static function extractFlags(int $flags): ConstStub
     {
         $flagsArray = [];
         foreach (self::FLAGS as $value => $name) {
@@ -100,6 +100,6 @@ class AmqpCaster
         if (!$flagsArray) {
             $flagsArray = ['AMQP_NOPARAM'];
         }
-        return new ConstStub(\implode('|', $flagsArray), $flags);
+        return new ConstStub(implode('|', $flagsArray), $flags);
     }
 }

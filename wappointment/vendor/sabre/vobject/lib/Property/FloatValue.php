@@ -33,7 +33,7 @@ class FloatValue extends Property
      */
     public function setRawMimeDirValue($val)
     {
-        $val = \explode($this->delimiter, $val);
+        $val = explode($this->delimiter, $val);
         foreach ($val as &$item) {
             $item = (float) $item;
         }
@@ -46,7 +46,7 @@ class FloatValue extends Property
      */
     public function getRawMimeDirValue()
     {
-        return \implode($this->delimiter, $this->getParts());
+        return implode($this->delimiter, $this->getParts());
     }
     /**
      * Returns the type of value.
@@ -69,7 +69,7 @@ class FloatValue extends Property
      */
     public function getJsonValue()
     {
-        $val = \array_map('floatval', $this->getParts());
+        $val = array_map('floatval', $this->getParts());
         // Special-casing the GEO property.
         //
         // See:
@@ -85,7 +85,7 @@ class FloatValue extends Property
      */
     public function setXmlValue(array $value)
     {
-        $value = \array_map('floatval', $value);
+        $value = array_map('floatval', $value);
         parent::setXmlValue($value);
     }
     /**
@@ -101,7 +101,7 @@ class FloatValue extends Property
         // See:
         // http://tools.ietf.org/html/rfc6321#section-3.4.1.2
         if ('GEO' === $this->name) {
-            $value = \array_map('floatval', $this->getParts());
+            $value = array_map('floatval', $this->getParts());
             $writer->writeElement('latitude', $value[0]);
             $writer->writeElement('longitude', $value[1]);
         } else {

@@ -20,7 +20,7 @@ class VersionCheck extends \Wappointment\Services\Wappointment\API
             $plugin_file = $plugin . '/index.php';
             if (Plugins::wp()->active($plugin_file) && !isset($transient->response[$plugin_file])) {
                 $latestVersion = $this->latestVersion($plugin);
-                if ($latestVersion !== \false && \version_compare($latestVersion, $this->getActivePluginVersion($plugin), '>')) {
+                if ($latestVersion !== \false && version_compare($latestVersion, $this->getActivePluginVersion($plugin), '>')) {
                     //then there needs to be an update on that plugin
                     $transient->response[$plugin_file] = $this->pluginData($plugin, $latestVersion);
                 }
@@ -31,15 +31,15 @@ class VersionCheck extends \Wappointment\Services\Wappointment\API
     protected function getWappointmentActiveSlugs()
     {
         $plugins_slugs = [];
-        foreach (\array_keys(\Wappointment\Services\Addons::getActive()) as $plugin_key) {
-            $plugins_slugs[] = \str_replace('_', '-', $plugin_key);
+        foreach (array_keys(\Wappointment\Services\Addons::getActive()) as $plugin_key) {
+            $plugins_slugs[] = str_replace('_', '-', $plugin_key);
         }
         return $plugins_slugs;
     }
     public function getActivePluginVersion($plugin)
     {
-        $version_constant = \strtoupper(\str_replace('-', '_', $plugin)) . '_VERSION';
-        return \defined($version_constant) ? \constant($version_constant) : 0;
+        $version_constant = strtoupper(str_replace('-', '_', $plugin)) . '_VERSION';
+        return defined($version_constant) ? constant($version_constant) : 0;
     }
     public function pluginData($plugin_slug = null, $new_version = \false)
     {

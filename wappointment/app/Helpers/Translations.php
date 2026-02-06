@@ -14,7 +14,7 @@ class Translations
     public static function get($key, $params = [])
     {
         $translation = static::fetchTranslations()[$key];
-        return \is_array($params) && !empty($params) ? \vsprintf($translation, $params) : $translation;
+        return is_array($params) && !empty($params) ? vsprintf($translation, $params) : $translation;
     }
     public static function fetchTranslations()
     {

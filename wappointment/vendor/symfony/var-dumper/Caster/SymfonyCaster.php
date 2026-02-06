@@ -36,7 +36,7 @@ class SymfonyCaster
     }
     public static function castHttpClient($client, array $a, Stub $stub, bool $isNested)
     {
-        $multiKey = \sprintf("\x00%s\x00multi", \get_class($client));
+        $multiKey = sprintf("\x00%s\x00multi", \get_class($client));
         if (isset($a[$multiKey])) {
             $a[$multiKey] = new CutStub($a[$multiKey]);
         }
@@ -56,8 +56,8 @@ class SymfonyCaster
         $a[Caster::PREFIX_VIRTUAL . 'toBase58'] = $uuid->toBase58();
         $a[Caster::PREFIX_VIRTUAL . 'toBase32'] = $uuid->toBase32();
         // symfony/uid >= 5.3
-        if (\method_exists($uuid, 'getDateTime')) {
-            $a[Caster::PREFIX_VIRTUAL . 'time'] = $uuid->getDateTime()->format('WappoVendor\\Y-m-d H:i:s.u \\U\\T\\C');
+        if (method_exists($uuid, 'getDateTime')) {
+            $a[Caster::PREFIX_VIRTUAL . 'time'] = $uuid->getDateTime()->format('Y-m-d H:i:s.u \U\T\C');
         }
         return $a;
     }
@@ -66,8 +66,8 @@ class SymfonyCaster
         $a[Caster::PREFIX_VIRTUAL . 'toBase58'] = $ulid->toBase58();
         $a[Caster::PREFIX_VIRTUAL . 'toRfc4122'] = $ulid->toRfc4122();
         // symfony/uid >= 5.3
-        if (\method_exists($ulid, 'getDateTime')) {
-            $a[Caster::PREFIX_VIRTUAL . 'time'] = $ulid->getDateTime()->format('WappoVendor\\Y-m-d H:i:s.v \\U\\T\\C');
+        if (method_exists($ulid, 'getDateTime')) {
+            $a[Caster::PREFIX_VIRTUAL . 'time'] = $ulid->getDateTime()->format('Y-m-d H:i:s.v \U\T\C');
         }
         return $a;
     }

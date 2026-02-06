@@ -38,7 +38,7 @@ class XmlFragment implements Element
     /**
      * Returns the inner XML document.
      */
-    public function getXml() : string
+    public function getXml(): string
     {
         return $this->xml;
     }

@@ -25,6 +25,6 @@ class RateLimiter extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'WappoVendor\\Illuminate\\Cache\\RateLimiter';
+        return 'WappoVendor\Illuminate\Cache\RateLimiter';
     }
 }

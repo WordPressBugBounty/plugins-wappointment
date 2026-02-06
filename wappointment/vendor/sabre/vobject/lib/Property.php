@@ -69,7 +69,7 @@ abstract class Property extends Node
         foreach ($parameters as $k => $v) {
             $this->add($k, $v);
         }
-        if (!\is_null($value)) {
+        if (!is_null($value)) {
             $this->setValue($value);
         }
     }
@@ -97,10 +97,10 @@ abstract class Property extends Node
      */
     public function getValue()
     {
-        if (\is_array($this->value)) {
-            if (0 == \count($this->value)) {
+        if (is_array($this->value)) {
+            if (0 == count($this->value)) {
                 return;
-            } elseif (1 === \count($this->value)) {
+            } elseif (1 === count($this->value)) {
                 return $this->value[0];
             } else {
                 return $this->getRawMimeDirValue();
@@ -126,9 +126,9 @@ abstract class Property extends Node
      */
     public function getParts()
     {
-        if (\is_null($this->value)) {
+        if (is_null($this->value)) {
             return [];
-        } elseif (\is_array($this->value)) {
+        } elseif (is_array($this->value)) {
             return $this->value;
         } else {
             return [$this->value];
@@ -151,8 +151,8 @@ abstract class Property extends Node
             $name = Parameter::guessParameterNameByValue($value);
             $noName = \true;
         }
-        if (isset($this->parameters[\strtoupper($name)])) {
-            $this->parameters[\strtoupper($name)]->addValue($value);
+        if (isset($this->parameters[strtoupper($name)])) {
+            $this->parameters[strtoupper($name)]->addValue($value);
         } else {
             $param = new Parameter($this->root, $name, $value);
             $param->noName = $noName;
@@ -176,7 +176,7 @@ abstract class Property extends Node
      *
      * @return string
      */
-    public abstract function getValueType();
+    abstract public function getValueType();
     /**
      * Sets a raw value coming from a mimedir (iCalendar/vCard) file.
      *
@@ -185,13 +185,13 @@ abstract class Property extends Node
      *
      * @param string $val
      */
-    public abstract function setRawMimeDirValue($val);
+    abstract public function setRawMimeDirValue($val);
     /**
      * Returns a raw mime-dir representation of the value.
      *
      * @return string
      */
-    public abstract function getRawMimeDirValue();
+    abstract public function getRawMimeDirValue();
     /**
      * Turns the object back into a serialized blob.
      *
@@ -210,7 +210,7 @@ abstract class Property extends Node
         $str = \preg_replace('/(
                 (?:^.)?         # 1 additional byte in first line because of missing single space (see next line)
                 .{1,74}         # max 75 bytes per line (1 byte is used for a single space added after every CRLF)
-                (?![\\x80-\\xbf]) # prevent splitting multibyte characters
+                (?![\x80-\xbf]) # prevent splitting multibyte characters
             )/x', "\$1\r\n ", $str);
         // remove single space after last CRLF
         return \substr($str, 0, -1);
@@ -233,8 +233,8 @@ abstract class Property extends Node
      */
     public function setJsonValue(array $value)
     {
-        if (1 === \count($value)) {
-            $this->setValue(\reset($value));
+        if (1 === count($value)) {
+            $this->setValue(reset($value));
         } else {
             $this->setValue($value);
         }
@@ -253,14 +253,14 @@ abstract class Property extends Node
             if ('VALUE' === $parameter->name) {
                 continue;
             }
-            $parameters[\strtolower($parameter->name)] = $parameter->jsonSerialize();
+            $parameters[strtolower($parameter->name)] = $parameter->jsonSerialize();
         }
         // In jCard, we need to encode the property-group as a separate 'group'
         // parameter.
         if ($this->group) {
             $parameters['group'] = $this->group;
         }
-        return \array_merge([\strtolower($this->name), (object) $parameters, \strtolower($this->getValueType())], $this->getJsonValue());
+        return array_merge([strtolower($this->name), (object) $parameters, strtolower($this->getValueType())], $this->getJsonValue());
     }
     /**
      * Hydrate data from a XML subtree, as it would appear in a xCard or xCal
@@ -276,7 +276,7 @@ abstract class Property extends Node
      *
      * @param Xml\Writer $writer XML writer
      */
-    public function xmlSerialize(Xml\Writer $writer) : void
+    public function xmlSerialize(Xml\Writer $writer): void
     {
         $parameters = [];
         foreach ($this->parameters as $parameter) {
@@ -285,11 +285,11 @@ abstract class Property extends Node
             }
             $parameters[] = $parameter;
         }
-        $writer->startElement(\strtolower($this->name));
+        $writer->startElement(strtolower($this->name));
         if (!empty($parameters)) {
             $writer->startElement('parameters');
             foreach ($parameters as $parameter) {
-                $writer->startElement(\strtolower($parameter->name));
+                $writer->startElement(strtolower($parameter->name));
                 $writer->write($parameter);
                 $writer->endElement();
             }
@@ -306,7 +306,7 @@ abstract class Property extends Node
      */
     protected function xmlSerializeValue(Xml\Writer $writer)
     {
-        $valueType = \strtolower($this->getValueType());
+        $valueType = strtolower($this->getValueType());
         foreach ($this->getJsonValue() as $values) {
             foreach ((array) $values as $value) {
                 $writer->writeElement($valueType, $value);
@@ -337,10 +337,10 @@ abstract class Property extends Node
     #[\ReturnTypeWillChange]
     public function offsetExists($name)
     {
-        if (\is_int($name)) {
+        if (is_int($name)) {
             return parent::offsetExists($name);
         }
-        $name = \strtoupper($name);
+        $name = strtoupper($name);
         foreach ($this->parameters as $parameter) {
             if ($parameter->name == $name) {
                 return \true;
@@ -360,10 +360,10 @@ abstract class Property extends Node
     #[\ReturnTypeWillChange]
     public function offsetGet($name)
     {
-        if (\is_int($name)) {
+        if (is_int($name)) {
             return parent::offsetGet($name);
         }
-        $name = \strtoupper($name);
+        $name = strtoupper($name);
         if (!isset($this->parameters[$name])) {
             return;
         }
@@ -378,7 +378,7 @@ abstract class Property extends Node
     #[\ReturnTypeWillChange]
     public function offsetSet($name, $value)
     {
-        if (\is_int($name)) {
+        if (is_int($name)) {
             parent::offsetSet($name, $value);
             // @codeCoverageIgnoreStart
             // This will never be reached, because an exception is always
@@ -397,7 +397,7 @@ abstract class Property extends Node
     #[\ReturnTypeWillChange]
     public function offsetUnset($name)
     {
-        if (\is_int($name)) {
+        if (is_int($name)) {
             parent::offsetUnset($name);
             // @codeCoverageIgnoreStart
             // This will never be reached, because an exception is always
@@ -405,7 +405,7 @@ abstract class Property extends Node
             return;
             // @codeCoverageIgnoreEnd
         }
-        unset($this->parameters[\strtoupper($name)]);
+        unset($this->parameters[strtoupper($name)]);
     }
     /* }}} */
     /**
@@ -451,21 +451,21 @@ abstract class Property extends Node
                     $level = 1;
                 }
             }
-            if (\preg_match('%([\\x00-\\x08\\x0B-\\x0C\\x0E-\\x1F\\x7F])%', $oldValue, $matches)) {
-                $message = 'Property contained a control character (0x' . \bin2hex($matches[1]) . ')';
+            if (preg_match('%([\x00-\x08\x0B-\x0C\x0E-\x1F\x7F])%', $oldValue, $matches)) {
+                $message = 'Property contained a control character (0x' . bin2hex($matches[1]) . ')';
             } else {
                 $message = 'Property is not valid UTF-8! ' . $oldValue;
             }
             $warnings[] = ['level' => $level, 'message' => $message, 'node' => $this];
         }
         // Checking if the propertyname does not contain any invalid bytes.
-        if (!\preg_match('/^([A-Z0-9-]+)$/', $this->name)) {
+        if (!preg_match('/^([A-Z0-9-]+)$/', $this->name)) {
             $warnings[] = ['level' => $options & self::REPAIR ? 1 : 3, 'message' => 'The propertyname: ' . $this->name . ' contains invalid characters. Only A-Z, 0-9 and - are allowed', 'node' => $this];
             if ($options & self::REPAIR) {
                 // Uppercasing and converting underscores to dashes.
-                $this->name = \strtoupper(\str_replace('_', '-', $this->name));
+                $this->name = strtoupper(str_replace('_', '-', $this->name));
                 // Removing every other invalid character
-                $this->name = \preg_replace('/([^A-Z0-9-])/u', '', $this->name);
+                $this->name = preg_replace('/([^A-Z0-9-])/u', '', $this->name);
             }
         }
         if ($encoding = $this->offsetGet('ENCODING')) {
@@ -485,7 +485,7 @@ abstract class Property extends Node
                         $allowedEncoding = ['B'];
                         //Repair vCard30 that use BASE64 encoding
                         if ($options & self::REPAIR) {
-                            if ('BASE64' === \strtoupper($encoding)) {
+                            if ('BASE64' === strtoupper($encoding)) {
                                 $encoding = 'B';
                                 $this['ENCODING'] = $encoding;
                                 $warnings[] = ['level' => 1, 'message' => 'ENCODING=BASE64 has been transformed to ENCODING=B.', 'node' => $this];
@@ -493,14 +493,14 @@ abstract class Property extends Node
                         }
                         break;
                 }
-                if ($allowedEncoding && !\in_array(\strtoupper($encoding), $allowedEncoding)) {
-                    $warnings[] = ['level' => 3, 'message' => 'ENCODING=' . \strtoupper($encoding) . ' is not valid for this document type.', 'node' => $this];
+                if ($allowedEncoding && !in_array(strtoupper($encoding), $allowedEncoding)) {
+                    $warnings[] = ['level' => 3, 'message' => 'ENCODING=' . strtoupper($encoding) . ' is not valid for this document type.', 'node' => $this];
                 }
             }
         }
         // Validating inner parameters
         foreach ($this->parameters as $param) {
-            $warnings = \array_merge($warnings, $param->validate($options));
+            $warnings = array_merge($warnings, $param->validate($options));
         }
         return $warnings;
     }

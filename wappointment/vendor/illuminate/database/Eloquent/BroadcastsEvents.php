@@ -18,7 +18,7 @@ trait BroadcastsEvents
         static::updated(function ($model) {
             $model->broadcastUpdated();
         });
-        if (\method_exists(static::class, 'bootSoftDeletes')) {
+        if (method_exists(static::class, 'bootSoftDeletes')) {
             static::softDeleted(function ($model) {
                 $model->broadcastTrashed();
             });
@@ -106,9 +106,9 @@ trait BroadcastsEvents
     public function newBroadcastableModelEvent($event)
     {
         return \WappointmentLv::tap($this->newBroadcastableEvent($event), function ($event) {
-            $event->connection = \property_exists($this, 'broadcastConnection') ? $this->broadcastConnection : $this->broadcastConnection();
-            $event->queue = \property_exists($this, 'broadcastQueue') ? $this->broadcastQueue : $this->broadcastQueue();
-            $event->afterCommit = \property_exists($this, 'broadcastAfterCommit') ? $this->broadcastAfterCommit : $this->broadcastAfterCommit();
+            $event->connection = property_exists($this, 'broadcastConnection') ? $this->broadcastConnection : $this->broadcastConnection();
+            $event->queue = property_exists($this, 'broadcastQueue') ? $this->broadcastQueue : $this->broadcastQueue();
+            $event->afterCommit = property_exists($this, 'broadcastAfterCommit') ? $this->broadcastAfterCommit : $this->broadcastAfterCommit();
         });
     }
     /**

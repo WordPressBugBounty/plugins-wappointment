@@ -35,33 +35,33 @@ abstract class AbstractResultMiddleware implements Result
     /**
      * {@inheritdoc}
      */
-    public function fetchAllNumeric() : array
+    public function fetchAllNumeric(): array
     {
         return $this->wrappedResult->fetchAllNumeric();
     }
     /**
      * {@inheritdoc}
      */
-    public function fetchAllAssociative() : array
+    public function fetchAllAssociative(): array
     {
         return $this->wrappedResult->fetchAllAssociative();
     }
     /**
      * {@inheritdoc}
      */
-    public function fetchFirstColumn() : array
+    public function fetchFirstColumn(): array
     {
         return $this->wrappedResult->fetchFirstColumn();
     }
-    public function rowCount() : int
+    public function rowCount(): int
     {
         return $this->wrappedResult->rowCount();
     }
-    public function columnCount() : int
+    public function columnCount(): int
     {
         return $this->wrappedResult->columnCount();
     }
-    public function free() : void
+    public function free(): void
     {
         $this->wrappedResult->free();
     }

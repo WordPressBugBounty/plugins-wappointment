@@ -39,9 +39,9 @@ class QpEncoder implements EncoderInterface
             $this->safeMap = self::$safeMapShare[$id];
         }
     }
-    protected function initSafeMap() : void
+    protected function initSafeMap(): void
     {
-        foreach (\array_merge([0x9, 0x20], \range(0x21, 0x3c), \range(0x3e, 0x7e)) as $byte) {
+        foreach (array_merge([0x9, 0x20], range(0x21, 0x3c), range(0x3e, 0x7e)) as $byte) {
             $this->safeMap[$byte] = \chr($byte);
         }
     }
@@ -54,7 +54,7 @@ class QpEncoder implements EncoderInterface
      * If the first line needs to be shorter, indicate the difference with
      * $firstLineOffset.
      */
-    public function encodeString(string $string, ?string $charset = 'utf-8', int $firstLineOffset = 0, int $maxLineLength = 0) : string
+    public function encodeString(string $string, ?string $charset = 'utf-8', int $firstLineOffset = 0, int $maxLineLength = 0): string
     {
         if ($maxLineLength > 76 || $maxLineLength <= 0) {
             $maxLineLength = 76;
@@ -69,9 +69,9 @@ class QpEncoder implements EncoderInterface
         // Fetching more than 4 chars at one is slower, as is fetching fewer bytes
         // Conveniently 4 chars is the UTF-8 safe number since UTF-8 has up to 6
         // bytes per char and (6 * 4 * 3 = 72 chars per line) * =NN is 3 bytes
-        while (null !== ($bytes = $charStream->readBytes(4))) {
+        while (null !== $bytes = $charStream->readBytes(4)) {
             $enc = $this->encodeByteSequence($bytes, $size);
-            $i = \strpos($enc, '=0D=0A');
+            $i = strpos($enc, '=0D=0A');
             $newLineLength = $lineLen + (\false === $i ? $size : $i);
             if ($currentLine && $newLineLength >= $thisLineLength) {
                 $lines[$lNo] = '';
@@ -84,15 +84,15 @@ class QpEncoder implements EncoderInterface
                 $lineLen += $size;
             } else {
                 // 6 is the length of '=0D=0A'.
-                $lineLen = $size - \strrpos($enc, '=0D=0A') - 6;
+                $lineLen = $size - strrpos($enc, '=0D=0A') - 6;
             }
         }
-        return $this->standardize(\implode("=\r\n", $lines));
+        return $this->standardize(implode("=\r\n", $lines));
     }
     /**
      * Encode the given byte array into a verbatim QP form.
      */
-    private function encodeByteSequence(array $bytes, int &$size) : string
+    private function encodeByteSequence(array $bytes, int &$size): string
     {
         $ret = '';
         $size = 0;
@@ -110,13 +110,13 @@ class QpEncoder implements EncoderInterface
     /**
      * Make sure CRLF is correct and HT/SPACE are in valid places.
      */
-    private function standardize(string $string) : string
+    private function standardize(string $string): string
     {
-        $string = \str_replace(["\t=0D=0A", ' =0D=0A', '=0D=0A'], ["=09\r\n", "=20\r\n", "\r\n"], $string);
-        switch ($end = \ord(\substr($string, -1))) {
+        $string = str_replace(["\t=0D=0A", ' =0D=0A', '=0D=0A'], ["=09\r\n", "=20\r\n", "\r\n"], $string);
+        switch ($end = \ord(substr($string, -1))) {
             case 0x9:
             case 0x20:
-                $string = \substr_replace($string, self::QP_MAP[$end], -1);
+                $string = substr_replace($string, self::QP_MAP[$end], -1);
         }
         return $string;
     }

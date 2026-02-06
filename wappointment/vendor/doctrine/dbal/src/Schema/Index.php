@@ -63,7 +63,7 @@ class Index extends AbstractAsset implements Constraint
     /**
      * @throws InvalidArgumentException
      */
-    protected function _addColumn(string $column) : void
+    protected function _addColumn(string $column): void
     {
         $this->_columns[$column] = new Identifier($column);
     }
@@ -276,7 +276,7 @@ class Index extends AbstractAsset implements Constraint
     /**
      * Return whether the two indexes have the same partial index
      */
-    private function samePartialIndex(Index $other) : bool
+    private function samePartialIndex(Index $other): bool
     {
         if ($this->hasOption('where') && $other->hasOption('where') && $this->getOption('where') === $other->getOption('where')) {
             return \true;
@@ -286,9 +286,9 @@ class Index extends AbstractAsset implements Constraint
     /**
      * Returns whether the index has the same column lengths as the other
      */
-    private function hasSameColumnLengths(self $other) : bool
+    private function hasSameColumnLengths(self $other): bool
     {
-        $filter = static function (?int $length) : bool {
+        $filter = static function (?int $length): bool {
             return $length !== null;
         };
         return array_filter($this->options['lengths'] ?? [], $filter) === array_filter($other->options['lengths'] ?? [], $filter);

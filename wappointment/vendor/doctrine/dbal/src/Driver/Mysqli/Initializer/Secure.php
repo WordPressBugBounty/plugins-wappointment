@@ -25,7 +25,7 @@ final class Secure implements Initializer
         $this->capath = $capath;
         $this->cipher = $cipher;
     }
-    public function initialize(mysqli $connection) : void
+    public function initialize(mysqli $connection): void
     {
         $connection->ssl_set($this->key, $this->cert, $this->ca, $this->capath, $this->cipher);
     }

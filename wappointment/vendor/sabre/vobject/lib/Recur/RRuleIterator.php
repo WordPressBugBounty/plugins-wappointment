@@ -72,10 +72,10 @@ class RRuleIterator implements Iterator
         if (null === $this->currentDate) {
             return \false;
         }
-        if (!\is_null($this->count)) {
+        if (!is_null($this->count)) {
             return $this->counter < $this->count;
         }
-        return \is_null($this->until) || $this->currentDate <= $this->until;
+        return is_null($this->until) || $this->currentDate <= $this->until;
     }
     /**
      * Resets the iterator.
@@ -331,7 +331,7 @@ class RRuleIterator implements Iterator
                 $this->currentDate = null;
                 return;
             }
-        } while ($this->byDay && !\in_array($currentDay, $recurrenceDays) || $this->byHour && !\in_array($currentHour, $recurrenceHours) || $this->byMonth && !\in_array($currentMonth, $recurrenceMonths));
+        } while ($this->byDay && !in_array($currentDay, $recurrenceDays) || $this->byHour && !in_array($currentHour, $recurrenceHours) || $this->byMonth && !in_array($currentMonth, $recurrenceMonths));
     }
     /**
      * Does the processing for advancing the iterator for weekly frequency.
@@ -372,7 +372,7 @@ class RRuleIterator implements Iterator
                 }
             }
             // We have a match
-        } while ($this->byDay && !\in_array($currentDay, $recurrenceDays) || $this->byHour && !\in_array($currentHour, $recurrenceHours));
+        } while ($this->byDay && !in_array($currentDay, $recurrenceDays) || $this->byHour && !in_array($currentHour, $recurrenceHours));
     }
     /**
      * Does the processing for advancing the iterator for monthly frequency.
@@ -488,8 +488,8 @@ class RRuleIterator implements Iterator
                             }
                         }
                     }
-                    if (\count($checkDates) > 0) {
-                        $this->currentDate = \min($checkDates);
+                    if (count($checkDates) > 0) {
+                        $this->currentDate = min($checkDates);
                         return;
                     }
                     // if there is no date found, check the next year
@@ -518,14 +518,14 @@ class RRuleIterator implements Iterator
                             $date = $date->add(new \DateInterval('P' . ($byYearDay - 1) . 'D'));
                         } else {
                             $date = $date->setDate($currentYear, 12, 31);
-                            $date = $date->sub(new \DateInterval('P' . \abs($byYearDay + 1) . 'D'));
+                            $date = $date->sub(new \DateInterval('P' . abs($byYearDay + 1) . 'D'));
                         }
-                        if ($date > $this->currentDate && \in_array($date->format('N'), $dayOffsets)) {
+                        if ($date > $this->currentDate && in_array($date->format('N'), $dayOffsets)) {
                             $checkDates[] = $date;
                         }
                     }
-                    if (\count($checkDates) > 0) {
-                        $this->currentDate = \min($checkDates);
+                    if (count($checkDates) > 0) {
+                        $this->currentDate = min($checkDates);
                         return;
                     }
                     // if there is no date found, check the next year
@@ -565,7 +565,7 @@ class RRuleIterator implements Iterator
                         $currentYear += $this->interval;
                         $currentMonth = 1;
                     }
-                } while (!\in_array($currentMonth, $this->byMonth));
+                } while (!in_array($currentMonth, $this->byMonth));
                 $this->currentDate = $this->currentDate->setDate((int) $currentYear, (int) $currentMonth, (int) $currentDayOfMonth);
                 // To prevent running this forever (better: until we hit the max date of DateTimeImmutable) we simply
                 // stop at 9999-12-31. Looks like the year 10000 problem is not solved in php ....
@@ -586,7 +586,7 @@ class RRuleIterator implements Iterator
                     $currentYear += $this->interval;
                     $currentMonth = 1;
                 }
-            } while (!\in_array($currentMonth, $this->byMonth));
+            } while (!in_array($currentMonth, $this->byMonth));
             $this->currentDate = $this->currentDate->setDate((int) $currentYear, (int) $currentMonth, (int) $currentDayOfMonth);
             return;
         }
@@ -600,16 +600,16 @@ class RRuleIterator implements Iterator
      */
     protected function parseRRule($rrule)
     {
-        if (\is_string($rrule)) {
+        if (is_string($rrule)) {
             $rrule = Property\ICalendar\Recur::stringToArray($rrule);
         }
         foreach ($rrule as $key => $value) {
-            $key = \strtoupper($key);
+            $key = strtoupper($key);
             switch ($key) {
                 case 'FREQ':
-                    $value = \strtolower($value);
-                    if (!\in_array($value, ['secondly', 'minutely', 'hourly', 'daily', 'weekly', 'monthly', 'yearly'])) {
-                        throw new InvalidDataException('Unknown value for FREQ=' . \strtoupper($value));
+                    $value = strtolower($value);
+                    if (!in_array($value, ['secondly', 'minutely', 'hourly', 'daily', 'weekly', 'monthly', 'yearly'])) {
+                        throw new InvalidDataException('Unknown value for FREQ=' . strtoupper($value));
                     }
                     $this->frequency = $value;
                     break;
@@ -631,9 +631,9 @@ class RRuleIterator implements Iterator
                 case 'COUNT':
                     $val = (int) $value;
                     if ($val < 1) {
-                        throw new InvalidDataException(\strtoupper($key) . ' in RRULE must be a positive integer!');
+                        throw new InvalidDataException(strtoupper($key) . ' in RRULE must be a positive integer!');
                     }
-                    $key = \strtolower($key);
+                    $key = strtolower($key);
                     $this->{$key} = $val;
                     break;
                 case 'BYSECOND':
@@ -648,7 +648,7 @@ class RRuleIterator implements Iterator
                 case 'BYDAY':
                     $value = (array) $value;
                     foreach ($value as $part) {
-                        if (!\preg_match('#^  (-|\\+)? ([1-5])? (MO|TU|WE|TH|FR|SA|SU) $# xi', $part)) {
+                        if (!preg_match('#^  (-|\+)? ([1-5])? (MO|TU|WE|TH|FR|SA|SU) $# xi', $part)) {
                             throw new InvalidDataException('Invalid part in BYDAY clause: ' . $part);
                         }
                     }
@@ -660,7 +660,7 @@ class RRuleIterator implements Iterator
                 case 'BYYEARDAY':
                     $this->byYearDay = (array) $value;
                     foreach ($this->byYearDay as $byYearDay) {
-                        if (!\is_numeric($byYearDay) || (int) $byYearDay < -366 || 0 == (int) $byYearDay || (int) $byYearDay > 366) {
+                        if (!is_numeric($byYearDay) || (int) $byYearDay < -366 || 0 == (int) $byYearDay || (int) $byYearDay > 366) {
                             throw new InvalidDataException('BYYEARDAY in RRULE must have value(s) from 1 to 366, or -366 to -1!');
                         }
                     }
@@ -668,7 +668,7 @@ class RRuleIterator implements Iterator
                 case 'BYWEEKNO':
                     $this->byWeekNo = (array) $value;
                     foreach ($this->byWeekNo as $byWeekNo) {
-                        if (!\is_numeric($byWeekNo) || (int) $byWeekNo < -53 || 0 == (int) $byWeekNo || (int) $byWeekNo > 53) {
+                        if (!is_numeric($byWeekNo) || (int) $byWeekNo < -53 || 0 == (int) $byWeekNo || (int) $byWeekNo > 53) {
                             throw new InvalidDataException('BYWEEKNO in RRULE must have value(s) from 1 to 53, or -53 to -1!');
                         }
                     }
@@ -676,7 +676,7 @@ class RRuleIterator implements Iterator
                 case 'BYMONTH':
                     $this->byMonth = (array) $value;
                     foreach ($this->byMonth as $byMonth) {
-                        if (!\is_numeric($byMonth) || (int) $byMonth < 1 || (int) $byMonth > 12) {
+                        if (!is_numeric($byMonth) || (int) $byMonth < 1 || (int) $byMonth > 12) {
                             throw new InvalidDataException('BYMONTH in RRULE must have value(s) between 1 and 12!');
                         }
                     }
@@ -685,10 +685,10 @@ class RRuleIterator implements Iterator
                     $this->bySetPos = (array) $value;
                     break;
                 case 'WKST':
-                    $this->weekStart = \strtoupper($value);
+                    $this->weekStart = strtoupper($value);
                     break;
                 default:
-                    throw new InvalidDataException('Not supported: ' . \strtoupper($key));
+                    throw new InvalidDataException('Not supported: ' . strtoupper($key));
             }
         }
     }
@@ -714,7 +714,7 @@ class RRuleIterator implements Iterator
         // that point and add it to the results.
         if ($this->byDay) {
             foreach ($this->byDay as $day) {
-                $dayName = $this->dayNames[$this->dayMap[\substr($day, -2)]];
+                $dayName = $this->dayNames[$this->dayMap[substr($day, -2)]];
                 // Dayname will be something like 'wednesday'. Now we need to find
                 // all wednesdays in this month.
                 $dayHits = [];
@@ -731,25 +731,21 @@ class RRuleIterator implements Iterator
                 // So now we have 'all wednesdays' for month. It is however
                 // possible that the user only really wanted the 1st, 2nd or last
                 // wednesday.
-                if (\strlen($day) > 2) {
-                    $offset = (int) \substr($day, 0, -2);
+                if (strlen($day) > 2) {
+                    $offset = (int) substr($day, 0, -2);
                     if ($offset > 0) {
                         // It is possible that the day does not exist, such as a
                         // 5th or 6th wednesday of the month.
                         if (isset($dayHits[$offset - 1])) {
                             $byDayResults[] = $dayHits[$offset - 1];
                         }
-                    } else {
-                        // if it was negative we count from the end of the array
-                        // might not exist, fx. -5th tuesday
-                        if (isset($dayHits[\count($dayHits) + $offset])) {
-                            $byDayResults[] = $dayHits[\count($dayHits) + $offset];
-                        }
+                    } else if (isset($dayHits[count($dayHits) + $offset])) {
+                        $byDayResults[] = $dayHits[count($dayHits) + $offset];
                     }
                 } else {
                     // There was no counter (first, second, last wednesdays), so we
                     // just need to add the all to the list).
-                    $byDayResults = \array_merge($byDayResults, $dayHits);
+                    $byDayResults = array_merge($byDayResults, $dayHits);
                 }
             }
         }
@@ -772,14 +768,14 @@ class RRuleIterator implements Iterator
         // (almost) final list. If both were provided, then byDay limits the
         // list.
         if ($this->byMonthDay && $this->byDay) {
-            $result = \array_intersect($byMonthDayResults, $byDayResults);
+            $result = array_intersect($byMonthDayResults, $byDayResults);
         } elseif ($this->byMonthDay) {
             $result = $byMonthDayResults;
         } else {
             $result = $byDayResults;
         }
-        $result = \array_unique($result);
-        \sort($result, \SORT_NUMERIC);
+        $result = array_unique($result);
+        sort($result, \SORT_NUMERIC);
         // The last thing that needs checking is the BYSETPOS. If it's set, it
         // means only certain items in the set survive the filter.
         if (!$this->bySetPos) {
@@ -788,13 +784,13 @@ class RRuleIterator implements Iterator
         $filteredResult = [];
         foreach ($this->bySetPos as $setPos) {
             if ($setPos < 0) {
-                $setPos = \count($result) + ($setPos + 1);
+                $setPos = count($result) + ($setPos + 1);
             }
             if (isset($result[$setPos - 1])) {
                 $filteredResult[] = $result[$setPos - 1];
             }
         }
-        \sort($filteredResult, \SORT_NUMERIC);
+        sort($filteredResult, \SORT_NUMERIC);
         return $filteredResult;
     }
     /**
@@ -818,7 +814,7 @@ class RRuleIterator implements Iterator
             // The day may be preceded with a positive (+n) or
             // negative (-n) integer. However, this does not make
             // sense in 'weekly' so we ignore it here.
-            $recurrenceDays[] = $this->dayMap[\substr($byDay, -2)];
+            $recurrenceDays[] = $this->dayMap[substr($byDay, -2)];
         }
         return $recurrenceDays;
     }

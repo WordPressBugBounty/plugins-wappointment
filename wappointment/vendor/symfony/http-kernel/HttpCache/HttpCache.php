@@ -81,8 +81,8 @@ class HttpCache implements HttpKernelInterface, TerminableInterface
         $this->kernel = $kernel;
         $this->surrogate = $surrogate;
         // needed in case there is a fatal error because the backend is too slow to respond
-        \register_shutdown_function([$this->store, 'cleanup']);
-        $this->options = \array_merge(['debug' => \false, 'default_ttl' => 0, 'private_headers' => ['Authorization', 'Cookie'], 'allow_reload' => \false, 'allow_revalidate' => \false, 'stale_while_revalidate' => 2, 'stale_if_error' => 60, 'trace_level' => 'none', 'trace_header' => 'X-Symfony-Cache'], $options);
+        register_shutdown_function([$this->store, 'cleanup']);
+        $this->options = array_merge(['debug' => \false, 'default_ttl' => 0, 'private_headers' => ['Authorization', 'Cookie'], 'allow_reload' => \false, 'allow_revalidate' => \false, 'stale_while_revalidate' => 2, 'stale_if_error' => 60, 'trace_level' => 'none', 'trace_header' => 'X-Symfony-Cache'], $options);
         if (!isset($options['trace_level'])) {
             $this->options['trace_level'] = $this->options['debug'] ? 'full' : 'none';
         }
@@ -111,8 +111,8 @@ class HttpCache implements HttpKernelInterface, TerminableInterface
         if ('full' === $this->options['trace_level']) {
             $traceString = $this->getLog();
         }
-        if ('short' === $this->options['trace_level'] && ($masterId = \array_key_first($this->traces))) {
-            $traceString = \implode('/', $this->traces[$masterId]);
+        if ('short' === $this->options['trace_level'] && $masterId = array_key_first($this->traces)) {
+            $traceString = implode('/', $this->traces[$masterId]);
         }
         if (null !== $traceString) {
             $response->headers->add([$this->options['trace_header'] => $traceString]);
@@ -127,9 +127,9 @@ class HttpCache implements HttpKernelInterface, TerminableInterface
     {
         $log = [];
         foreach ($this->traces as $request => $traces) {
-            $log[] = \sprintf('%s: %s', $request, \implode(', ', $traces));
+            $log[] = sprintf('%s: %s', $request, implode(', ', $traces));
         }
-        return \implode('; ', $log);
+        return implode('; ', $log);
     }
     /**
      * Gets the Request instance associated with the main request.
@@ -330,8 +330,8 @@ class HttpCache implements HttpKernelInterface, TerminableInterface
         // has a different private valid entry which is not cached here.
         $cachedEtags = $entry->getEtag() ? [$entry->getEtag()] : [];
         $requestEtags = $request->getETags();
-        if ($etags = \array_unique(\array_merge($cachedEtags, $requestEtags))) {
-            $subRequest->headers->set('If-None-Match', \implode(', ', $etags));
+        if ($etags = array_unique(array_merge($cachedEtags, $requestEtags))) {
+            $subRequest->headers->set('If-None-Match', implode(', ', $etags));
         }
         $response = $this->forward($subRequest, $catch, $entry);
         if (304 == $response->getStatusCode()) {
@@ -416,7 +416,7 @@ class HttpCache implements HttpKernelInterface, TerminableInterface
          * stale-if-error case even if they have a `s-maxage` Cache-Control directive.
          */
         if (null !== $entry && \in_array($response->getStatusCode(), [500, 502, 503, 504]) && !$entry->headers->hasCacheControlDirective('no-cache') && !$entry->mustRevalidate()) {
-            if (null === ($age = $entry->headers->getCacheControlDirective('stale-if-error'))) {
+            if (null === $age = $entry->headers->getCacheControlDirective('stale-if-error')) {
                 $age = $this->options['stale_if_error'];
             }
             /*
@@ -437,7 +437,7 @@ class HttpCache implements HttpKernelInterface, TerminableInterface
             Anyway, a client that received a message without a "Date" header MUST add it.
         */
         if (!$response->headers->has('Date')) {
-            $response->setDate(\DateTime::createFromFormat('U', \time()));
+            $response->setDate(\DateTime::createFromFormat('U', time()));
         }
         $this->processResponseBody($request, $response);
         if ($this->isPrivateRequest($request) && !$response->headers->hasCacheControlDirective('public')) {
@@ -457,7 +457,7 @@ class HttpCache implements HttpKernelInterface, TerminableInterface
         if (!$entry->isFresh()) {
             return $this->lock($request, $entry);
         }
-        if ($this->options['allow_revalidate'] && null !== ($maxAge = $request->headers->getCacheControlDirective('max-age'))) {
+        if ($this->options['allow_revalidate'] && null !== $maxAge = $request->headers->getCacheControlDirective('max-age')) {
             return $maxAge > 0 && $maxAge >= $entry->getAge();
         }
         return \true;
@@ -526,13 +526,13 @@ class HttpCache implements HttpKernelInterface, TerminableInterface
     private function restoreResponseBody(Request $request, Response $response)
     {
         if ($response->headers->has('X-Body-Eval')) {
-            \ob_start();
+            ob_start();
             if ($response->headers->has('X-Body-File')) {
                 include $response->headers->get('X-Body-File');
             } else {
                 eval('; ?>' . $response->getContent() . '<?php ;');
             }
-            $response->setContent(\ob_get_clean());
+            $response->setContent(ob_get_clean());
             $response->headers->remove('X-Body-Eval');
             if (!$response->headers->has('Transfer-Encoding')) {
                 $response->headers->set('Content-Length', \strlen($response->getContent()));
@@ -541,7 +541,7 @@ class HttpCache implements HttpKernelInterface, TerminableInterface
             // Response does not include possibly dynamic content (ESI, SSI), so we need
             // not handle the content for HEAD requests
             if (!$request->isMethod('HEAD')) {
-                $response->setContent(\file_get_contents($response->headers->get('X-Body-File')));
+                $response->setContent(file_get_contents($response->headers->get('X-Body-File')));
             }
         } else {
             return;
@@ -558,10 +558,10 @@ class HttpCache implements HttpKernelInterface, TerminableInterface
      * Checks if the Request includes authorization or other sensitive information
      * that should cause the Response to be considered private by default.
      */
-    private function isPrivateRequest(Request $request) : bool
+    private function isPrivateRequest(Request $request): bool
     {
         foreach ($this->options['private_headers'] as $key) {
-            $key = \strtolower(\str_replace('HTTP_', '', $key));
+            $key = strtolower(str_replace('HTTP_', '', $key));
             if ('cookie' === $key) {
                 if (\count($request->cookies->all())) {
                     return \true;
@@ -582,7 +582,7 @@ class HttpCache implements HttpKernelInterface, TerminableInterface
     /**
      * Calculates the key we use in the "trace" array for a given request.
      */
-    private function getTraceKey(Request $request) : string
+    private function getTraceKey(Request $request): string
     {
         $path = $request->getPathInfo();
         if ($qs = $request->getQueryString()) {
@@ -594,7 +594,7 @@ class HttpCache implements HttpKernelInterface, TerminableInterface
      * Checks whether the given (cached) response may be served as "stale" when a revalidation
      * is currently in progress.
      */
-    private function mayServeStaleWhileRevalidate(Response $entry) : bool
+    private function mayServeStaleWhileRevalidate(Response $entry): bool
     {
         $timeout = $entry->headers->getCacheControlDirective('stale-while-revalidate');
         if (null === $timeout) {
@@ -603,16 +603,16 @@ class HttpCache implements HttpKernelInterface, TerminableInterface
         $age = $entry->getAge();
         $maxAge = $entry->getMaxAge() ?? 0;
         $ttl = $maxAge - $age;
-        return \abs($ttl) < $timeout;
+        return abs($ttl) < $timeout;
     }
     /**
      * Waits for the store to release a locked entry.
      */
-    private function waitForLock(Request $request) : bool
+    private function waitForLock(Request $request): bool
     {
         $wait = 0;
         while ($this->store->isLocked($request) && $wait < 100) {
-            \usleep(50000);
+            usleep(50000);
             ++$wait;
         }
         return $wait < 100;

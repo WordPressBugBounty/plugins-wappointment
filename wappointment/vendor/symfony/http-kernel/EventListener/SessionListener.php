@@ -36,7 +36,7 @@ class SessionListener extends AbstractSessionListener
             $storage->setOptions(['cookie_secure' => \true]);
         }
     }
-    protected function getSession() : ?SessionInterface
+    protected function getSession(): ?SessionInterface
     {
         if ($this->container->has('session')) {
             return $this->container->get('session');

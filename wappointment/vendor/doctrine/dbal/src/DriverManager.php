@@ -164,7 +164,7 @@ final class DriverManager
      *
      * @template T of Connection
      */
-    public static function getConnection(array $params, ?Configuration $config = null, ?EventManager $eventManager = null) : Connection
+    public static function getConnection(array $params, ?Configuration $config = null, ?EventManager $eventManager = null): Connection
     {
         // create default config and event manager, if not set
         if ($config === null) {
@@ -202,7 +202,7 @@ final class DriverManager
      *
      * @return string[]
      */
-    public static function getAvailableDrivers() : array
+    public static function getAvailableDrivers(): array
     {
         return array_keys(self::DRIVER_MAP);
     }
@@ -213,7 +213,7 @@ final class DriverManager
      *
      * @throws Exception
      */
-    private static function createDriver(array $params) : Driver
+    private static function createDriver(array $params): Driver
     {
         if (isset($params['driverClass'])) {
             $interfaces = class_implements($params['driverClass']);
@@ -236,7 +236,7 @@ final class DriverManager
      *
      * @return string The normalized connection URL path
      */
-    private static function normalizeDatabaseUrlPath(string $urlPath) : string
+    private static function normalizeDatabaseUrlPath(string $urlPath): string
     {
         // Trim leading slash from URL path.
         return substr($urlPath, 1);
@@ -256,7 +256,7 @@ final class DriverManager
      *
      * @throws Exception
      */
-    private static function parseDatabaseUrl(array $params) : array
+    private static function parseDatabaseUrl(array $params): array
     {
         if (!isset($params['url'])) {
             return $params;
@@ -303,7 +303,7 @@ final class DriverManager
      *
      * @return mixed[] The resolved connection parameters.
      */
-    private static function parseDatabaseUrlPath(array $url, array $params) : array
+    private static function parseDatabaseUrlPath(array $url, array $params): array
     {
         if (!isset($url['path'])) {
             return $params;
@@ -327,7 +327,7 @@ final class DriverManager
      *
      * @return mixed[] The resolved connection parameters.
      */
-    private static function parseDatabaseUrlQuery(array $url, array $params) : array
+    private static function parseDatabaseUrlQuery(array $url, array $params): array
     {
         if (!isset($url['query'])) {
             return $params;
@@ -350,7 +350,7 @@ final class DriverManager
      *
      * @return mixed[] The resolved connection parameters.
      */
-    private static function parseRegularDatabaseUrlPath(array $url, array $params) : array
+    private static function parseRegularDatabaseUrlPath(array $url, array $params): array
     {
         $params['dbname'] = $url['path'];
         return $params;
@@ -367,7 +367,7 @@ final class DriverManager
      *
      * @return mixed[] The resolved connection parameters.
      */
-    private static function parseSqliteDatabaseUrlPath(array $url, array $params) : array
+    private static function parseSqliteDatabaseUrlPath(array $url, array $params): array
     {
         if ($url['path'] === ':memory:') {
             $params['memory'] = \true;
@@ -387,7 +387,7 @@ final class DriverManager
      *
      * @throws Exception If parsing failed or resolution is not possible.
      */
-    private static function parseDatabaseUrlScheme(?string $scheme, array $params) : array
+    private static function parseDatabaseUrlScheme(?string $scheme, array $params): array
     {
         if ($scheme !== null) {
             // The requested driver from the URL scheme takes precedence

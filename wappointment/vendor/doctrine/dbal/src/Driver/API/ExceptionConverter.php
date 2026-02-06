@@ -19,5 +19,5 @@ interface ExceptionConverter
      *
      * @return DriverException An instance of {@see DriverException} or one of its subclasses.
      */
-    public function convert(Exception $exception, ?Query $query) : DriverException;
+    public function convert(Exception $exception, ?Query $query): DriverException;
 }

@@ -55,7 +55,7 @@ class Order
         foreach ($rows as $key => $row) {
             $rowContent = empty($row['cells']) ? $row : $row['cells'];
             $rowClass = empty($row['class']) ? '' : $row['class'];
-            $html .= static::row($rowContent, $key, $rowClass, \count($rows) == $key + 1);
+            $html .= static::row($rowContent, $key, $rowClass, count($rows) == $key + 1);
         }
         return $html;
     }

@@ -88,7 +88,7 @@ class FreeBusyGenerator
         if ($objects) {
             $this->setObjects($objects);
         }
-        if (\is_null($timeZone)) {
+        if (is_null($timeZone)) {
             $timeZone = new DateTimeZone('UTC');
         }
         $this->setTimeZone($timeZone);
@@ -123,17 +123,17 @@ class FreeBusyGenerator
      */
     public function setObjects($objects)
     {
-        if (!\is_array($objects)) {
+        if (!is_array($objects)) {
             $objects = [$objects];
         }
         $this->objects = [];
         foreach ($objects as $object) {
-            if (\is_string($object) || \is_resource($object)) {
+            if (is_string($object) || is_resource($object)) {
                 $this->objects[] = Reader::read($object);
             } elseif ($object instanceof Component) {
                 $this->objects[] = $object;
             } else {
-                throw new \InvalidArgumentException('You can only pass strings or \\Sabre\\VObject\\Component arguments to setObjects');
+                throw new \InvalidArgumentException('You can only pass strings or \Sabre\VObject\Component arguments to setObjects');
             }
         }
     }
@@ -184,8 +184,8 @@ class FreeBusyGenerator
      */
     protected function calculateAvailability(FreeBusyData $fbData, VCalendar $vavailability)
     {
-        $vavailComps = \iterator_to_array($vavailability->VAVAILABILITY);
-        \usort($vavailComps, function ($a, $b) {
+        $vavailComps = iterator_to_array($vavailability->VAVAILABILITY);
+        usort($vavailComps, function ($a, $b) {
             // We need to order the components by priority. Priority 1
             // comes first, up until priority 9. Priority 0 comes after
             // priority 9. No priority implies priority 0.
@@ -215,10 +215,10 @@ class FreeBusyGenerator
             // We don't care about datetimes that are earlier or later than the
             // start and end of the freebusy report, so this gets normalized
             // first.
-            if (\is_null($compStart) || $compStart < $this->start) {
+            if (is_null($compStart) || $compStart < $this->start) {
                 $compStart = $this->start;
             }
-            if (\is_null($compEnd) || $compEnd > $this->end) {
+            if (is_null($compEnd) || $compEnd > $this->end) {
                 $compEnd = $this->end;
             }
             // If the item fell out of the timerange, we can just skip it.
@@ -229,7 +229,7 @@ class FreeBusyGenerator
             // a higher priority component that already fully covers this one.
             foreach ($new as $higherVavail) {
                 list($higherStart, $higherEnd) = $higherVavail->getEffectiveStartEnd();
-                if ((\is_null($higherStart) || $higherStart < $compStart) && (\is_null($higherEnd) || $higherEnd > $compEnd)) {
+                if ((is_null($higherStart) || $higherStart < $compStart) && (is_null($higherEnd) || $higherEnd > $compEnd)) {
                     // Component is fully covered by a higher priority
                     // component. We can skip this component.
                     continue 2;
@@ -243,8 +243,8 @@ class FreeBusyGenerator
         //
         // We traverse the components in reverse, because we want the higher
         // priority components to override the lower ones.
-        foreach (\array_reverse($new) as $vavail) {
-            $busyType = isset($vavail->BUSYTYPE) ? \strtoupper($vavail->BUSYTYPE) : 'BUSY-UNAVAILABLE';
+        foreach (array_reverse($new) as $vavail) {
+            $busyType = isset($vavail->BUSYTYPE) ? strtoupper($vavail->BUSYTYPE) : 'BUSY-UNAVAILABLE';
             list($vavailStart, $vavailEnd) = $vavail->getEffectiveStartEnd();
             // Making the component size no larger than the requested free-busy
             // report range.
@@ -300,11 +300,11 @@ class FreeBusyGenerator
                 switch ($component->name) {
                     case 'VEVENT':
                         $FBTYPE = 'BUSY';
-                        if (isset($component->TRANSP) && 'TRANSPARENT' === \strtoupper($component->TRANSP)) {
+                        if (isset($component->TRANSP) && 'TRANSPARENT' === strtoupper($component->TRANSP)) {
                             break;
                         }
                         if (isset($component->STATUS)) {
-                            $status = \strtoupper($component->STATUS);
+                            $status = strtoupper($component->STATUS);
                             if ('CANCELLED' === $status) {
                                 break;
                             }
@@ -368,16 +368,16 @@ class FreeBusyGenerator
                         break;
                     case 'VFREEBUSY':
                         foreach ($component->FREEBUSY as $freebusy) {
-                            $fbType = isset($freebusy['FBTYPE']) ? \strtoupper($freebusy['FBTYPE']) : 'BUSY';
+                            $fbType = isset($freebusy['FBTYPE']) ? strtoupper($freebusy['FBTYPE']) : 'BUSY';
                             // Skipping intervals marked as 'free'
                             if ('FREE' === $fbType) {
                                 continue;
                             }
-                            $values = \explode(',', $freebusy);
+                            $values = explode(',', $freebusy);
                             foreach ($values as $value) {
-                                list($startTime, $endTime) = \explode('/', $value);
+                                list($startTime, $endTime) = explode('/', $value);
                                 $startTime = DateTimeParser::parseDateTime($startTime);
-                                if ('P' === \substr($endTime, 0, 1) || '-P' === \substr($endTime, 0, 2)) {
+                                if ('P' === substr($endTime, 0, 1) || '-P' === substr($endTime, 0, 2)) {
                                     $duration = DateTimeParser::parseDuration($endTime);
                                     $endTime = clone $startTime;
                                     $endTime = $endTime->add($duration);
@@ -428,14 +428,14 @@ class FreeBusyGenerator
         $dtstamp->setDateTime(new DateTimeImmutable('now', $tz));
         $vfreebusy->add($dtstamp);
         foreach ($fbData->getData() as $busyTime) {
-            $busyType = \strtoupper($busyTime['type']);
+            $busyType = strtoupper($busyTime['type']);
             // Ignoring all the FREE parts, because those are already assumed.
             if ('FREE' === $busyType) {
                 continue;
             }
             $busyTime[0] = new \DateTimeImmutable('@' . $busyTime['start'], $tz);
             $busyTime[1] = new \DateTimeImmutable('@' . $busyTime['end'], $tz);
-            $prop = $calendar->createProperty('FREEBUSY', $busyTime[0]->format('WappoVendor\\Ymd\\THis\\Z') . '/' . $busyTime[1]->format('WappoVendor\\Ymd\\THis\\Z'));
+            $prop = $calendar->createProperty('FREEBUSY', $busyTime[0]->format('WappoVendor\Ymd\THis\Z') . '/' . $busyTime[1]->format('WappoVendor\Ymd\THis\Z'));
             // Only setting FBTYPE if it's not BUSY, because BUSY is the
             // default anyway.
             if ('BUSY' !== $busyType) {

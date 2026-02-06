@@ -16,7 +16,7 @@ use WappoVendor\Egulias\EmailValidator\Result\ValidEmail;
 class FoldingWhiteSpace extends PartParser
 {
     public const FWS_TYPES = [EmailLexer::S_SP, EmailLexer::S_HTAB, EmailLexer::S_CR, EmailLexer::S_LF, EmailLexer::CRLF];
-    public function parse() : Result
+    public function parse(): Result
     {
         if (!$this->isFWS()) {
             return new ValidEmail();
@@ -42,7 +42,7 @@ class FoldingWhiteSpace extends PartParser
         }
         return new ValidEmail();
     }
-    protected function checkCRLFInFWS() : Result
+    protected function checkCRLFInFWS(): Result
     {
         if ($this->lexer->token['type'] !== EmailLexer::CRLF) {
             return new ValidEmail();
@@ -56,11 +56,11 @@ class FoldingWhiteSpace extends PartParser
         }
         return new ValidEmail();
     }
-    protected function isFWS() : bool
+    protected function isFWS(): bool
     {
         if ($this->escaped()) {
             return \false;
         }
-        return \in_array($this->lexer->token['type'], self::FWS_TYPES);
+        return in_array($this->lexer->token['type'], self::FWS_TYPES);
     }
 }

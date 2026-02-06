@@ -39,11 +39,11 @@ final class WrappedListener
         $this->called = \false;
         $this->stoppedPropagation = \false;
         if (\is_array($listener)) {
-            $this->name = \is_object($listener[0]) ? \get_debug_type($listener[0]) : $listener[0];
+            $this->name = \is_object($listener[0]) ? get_debug_type($listener[0]) : $listener[0];
             $this->pretty = $this->name . '::' . $listener[1];
         } elseif ($listener instanceof \Closure) {
             $r = new \ReflectionFunction($listener);
-            if (\str_contains($r->name, '{closure}')) {
+            if (str_contains($r->name, '{closure}')) {
                 $this->pretty = $this->name = 'closure';
             } elseif ($class = $r->getClosureScopeClass()) {
                 $this->name = $class->name;
@@ -54,40 +54,40 @@ final class WrappedListener
         } elseif (\is_string($listener)) {
             $this->pretty = $this->name = $listener;
         } else {
-            $this->name = \get_debug_type($listener);
+            $this->name = get_debug_type($listener);
             $this->pretty = $this->name . '::__invoke';
         }
         if (null !== $name) {
             $this->name = $name;
         }
         if (null === self::$hasClassStub) {
-            self::$hasClassStub = \class_exists(ClassStub::class);
+            self::$hasClassStub = class_exists(ClassStub::class);
         }
     }
     public function getWrappedListener()
     {
         return $this->listener;
     }
-    public function wasCalled() : bool
+    public function wasCalled(): bool
     {
         return $this->called;
     }
-    public function stoppedPropagation() : bool
+    public function stoppedPropagation(): bool
     {
         return $this->stoppedPropagation;
     }
-    public function getPretty() : string
+    public function getPretty(): string
     {
         return $this->pretty;
     }
-    public function getInfo(string $eventName) : array
+    public function getInfo(string $eventName): array
     {
         if (null === $this->stub) {
             $this->stub = self::$hasClassStub ? new ClassStub($this->pretty . '()', $this->listener) : $this->pretty . '()';
         }
         return ['event' => $eventName, 'priority' => null !== $this->priority ? $this->priority : (null !== $this->dispatcher ? $this->dispatcher->getListenerPriority($eventName, $this->listener) : null), 'pretty' => $this->pretty, 'stub' => $this->stub];
     }
-    public function __invoke(object $event, string $eventName, EventDispatcherInterface $dispatcher) : void
+    public function __invoke(object $event, string $eventName, EventDispatcherInterface $dispatcher): void
     {
         $dispatcher = $this->dispatcher ?: $dispatcher;
         $this->called = \true;

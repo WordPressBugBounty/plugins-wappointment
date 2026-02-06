@@ -35,13 +35,10 @@ class EventsController extends \Wappointment\Controllers\RestController
         $failures = [];
         if ($request->input('sibblings')) {
             $failures = $this->deleteSiblings($appointment);
+        } else if ($this->processCancel($appointment)) {
+            return ['message' => __('Appointment cancelled', 'wappointment'), 'failures' => $failures];
         } else {
-            //cancel just the one here
-            if ($this->processCancel($appointment)) {
-                return ['message' => __('Appointment cancelled', 'wappointment'), 'failures' => $failures];
-            } else {
-                throw new \WappointmentException(__('Error deleting appointment', 'wappointment'), 1);
-            }
+            throw new \WappointmentException(__('Error deleting appointment', 'wappointment'), 1);
         }
         return ['message' => __('Appointment cancelled', 'wappointment'), 'failures' => $failures];
     }
@@ -83,7 +80,7 @@ class EventsController extends \Wappointment\Controllers\RestController
             AppointmentNew::cancel($appointment, null, \true);
         } catch (\Throwable $th) {
             $staff = CalendarsBack::findById($appointment->staff_id);
-            return 'Couldn\'t delete the session starting at ' . $appointment->start_at->setTimezone($staff['timezone'])->format('Y-m-d\\TH:i:00');
+            return 'Couldn\'t delete the session starting at ' . $appointment->start_at->setTimezone($staff['timezone'])->format('Y-m-d\TH:i:00');
         }
         return \true;
     }
@@ -133,7 +130,7 @@ class EventsController extends \Wappointment\Controllers\RestController
         $prob_pref = ['cal-duration', 'cal-minH', 'cal-maxH', 'cal-avail-col', 'cal-appoint-col'];
         foreach ($prob_pref as $pref_key) {
             if (!empty($request->header($pref_key)) && $request->header($pref_key) !== 'null') {
-                $pref_save[\str_replace('-', '_', $pref_key)] = $request->header($pref_key);
+                $pref_save[str_replace('-', '_', $pref_key)] = $request->header($pref_key);
             }
         }
         if (!empty($pref_save)) {

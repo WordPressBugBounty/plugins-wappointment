@@ -13,7 +13,7 @@ final class IntegerIntervalStringParser extends \Wappointment\Achse\Math\Interva
      * @param string $string
      * @return IntegerInterval
      */
-    public static function parse(string $string) : \Wappointment\Achse\Math\Interval\Interval
+    public static function parse(string $string): \Wappointment\Achse\Math\Interval\Interval
     {
         list($left, $right) = self::parseBoundariesStringsFromString($string);
         return new \Wappointment\Achse\Math\Interval\Integer\IntegerInterval(self::parseBoundary($left), self::parseBoundary($right));
@@ -22,7 +22,7 @@ final class IntegerIntervalStringParser extends \Wappointment\Achse\Math\Interva
      * @param string $string
      * @return IntegerBoundary
      */
-    protected static function parseBoundary(string $input) : \Wappointment\Achse\Math\Interval\Boundary
+    protected static function parseBoundary(string $input): \Wappointment\Achse\Math\Interval\Boundary
     {
         list($elementString, $state) = self::parseBoundaryDataFromString($input);
         return new \Wappointment\Achse\Math\Interval\Integer\IntegerBoundary(\Wappointment\Achse\Math\Interval\Integer\Integer::fromString($elementString), $state);

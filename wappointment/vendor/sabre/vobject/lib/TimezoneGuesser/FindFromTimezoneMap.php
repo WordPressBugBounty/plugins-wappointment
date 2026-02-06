@@ -10,8 +10,8 @@ use DateTimeZone;
 class FindFromTimezoneMap implements TimezoneFinder
 {
     private $map = [];
-    private $patterns = ['/^\\((UTC|GMT)(\\+|\\-)[\\d]{2}\\:[\\d]{2}\\) (.*)/', '/^\\((UTC|GMT)(\\+|\\-)[\\d]{2}\\.[\\d]{2}\\) (.*)/'];
-    public function find(string $tzid, bool $failIfUncertain = \false) : ?DateTimeZone
+    private $patterns = ['/^\((UTC|GMT)(\+|\-)[\d]{2}\:[\d]{2}\) (.*)/', '/^\((UTC|GMT)(\+|\-)[\d]{2}\.[\d]{2}\) (.*)/'];
+    public function find(string $tzid, bool $failIfUncertain = \false): ?DateTimeZone
     {
         // Next, we check if the tzid is somewhere in our tzid map.
         if ($this->hasTzInMap($tzid)) {
@@ -21,7 +21,7 @@ class FindFromTimezoneMap implements TimezoneFinder
         // and see if it is our tzid map.  We don't want to check for this first just
         // in case there are overrides in our tzid map.
         foreach ($this->patterns as $pattern) {
-            if (!\preg_match($pattern, $tzid, $matches)) {
+            if (!preg_match($pattern, $tzid, $matches)) {
                 continue;
             }
             $tzidAlternate = $matches[3];
@@ -45,15 +45,15 @@ class FindFromTimezoneMap implements TimezoneFinder
     private function getTzMaps()
     {
         if ([] === $this->map) {
-            $this->map = \array_merge(include __DIR__ . '/../timezonedata/windowszones.php', include __DIR__ . '/../timezonedata/lotuszones.php', include __DIR__ . '/../timezonedata/exchangezones.php', include __DIR__ . '/../timezonedata/php-workaround.php');
+            $this->map = array_merge(include __DIR__ . '/../timezonedata/windowszones.php', include __DIR__ . '/../timezonedata/lotuszones.php', include __DIR__ . '/../timezonedata/exchangezones.php', include __DIR__ . '/../timezonedata/php-workaround.php');
         }
         return $this->map;
     }
-    private function getTzFromMap(string $tzid) : string
+    private function getTzFromMap(string $tzid): string
     {
         return $this->getTzMaps()[$tzid];
     }
-    private function hasTzInMap(string $tzid) : bool
+    private function hasTzInMap(string $tzid): bool
     {
         return isset($this->getTzMaps()[$tzid]);
     }

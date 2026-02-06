@@ -76,14 +76,14 @@ class HandlerStack
             $stack[] = "0) Handler: " . $this->debugCallable($this->handler);
         }
         $result = '';
-        foreach (\array_reverse($this->stack) as $tuple) {
+        foreach (array_reverse($this->stack) as $tuple) {
             $depth++;
             $str = "{$depth}) Name: '{$tuple[1]}', ";
             $str .= "Function: " . $this->debugCallable($tuple[0]);
             $result = "> {$str}\n{$result}";
             $stack[] = $str;
         }
-        foreach (\array_keys($stack) as $k) {
+        foreach (array_keys($stack) as $k) {
             $result .= "< {$stack[$k]}\n";
         }
         return $result;
@@ -116,7 +116,7 @@ class HandlerStack
      */
     public function unshift(callable $middleware, $name = null)
     {
-        \array_unshift($this->stack, [$middleware, $name]);
+        array_unshift($this->stack, [$middleware, $name]);
         $this->cached = null;
     }
     /**
@@ -160,8 +160,8 @@ class HandlerStack
     public function remove($remove)
     {
         $this->cached = null;
-        $idx = \is_callable($remove) ? 0 : 1;
-        $this->stack = \array_values(\array_filter($this->stack, function ($tuple) use($idx, $remove) {
+        $idx = is_callable($remove) ? 0 : 1;
+        $this->stack = array_values(array_filter($this->stack, function ($tuple) use ($idx, $remove) {
             return $tuple[$idx] !== $remove;
         }));
     }
@@ -173,10 +173,10 @@ class HandlerStack
     public function resolve()
     {
         if (!$this->cached) {
-            if (!($prev = $this->handler)) {
+            if (!$prev = $this->handler) {
                 throw new \LogicException('No handler has been specified');
             }
-            foreach (\array_reverse($this->stack) as $fn) {
+            foreach (array_reverse($this->stack) as $fn) {
                 $prev = $fn[0]($prev);
             }
             $this->cached = $prev;
@@ -211,16 +211,16 @@ class HandlerStack
         $tuple = [$middleware, $withName];
         if ($before) {
             if ($idx === 0) {
-                \array_unshift($this->stack, $tuple);
+                array_unshift($this->stack, $tuple);
             } else {
                 $replacement = [$tuple, $this->stack[$idx]];
-                \array_splice($this->stack, $idx, 1, $replacement);
+                array_splice($this->stack, $idx, 1, $replacement);
             }
-        } elseif ($idx === \count($this->stack) - 1) {
+        } elseif ($idx === count($this->stack) - 1) {
             $this->stack[] = $tuple;
         } else {
             $replacement = [$this->stack[$idx], $tuple];
-            \array_splice($this->stack, $idx, 1, $replacement);
+            array_splice($this->stack, $idx, 1, $replacement);
         }
     }
     /**
@@ -232,12 +232,12 @@ class HandlerStack
      */
     private function debugCallable($fn)
     {
-        if (\is_string($fn)) {
+        if (is_string($fn)) {
             return "callable({$fn})";
         }
-        if (\is_array($fn)) {
-            return \is_string($fn[0]) ? "callable({$fn[0]}::{$fn[1]})" : "callable(['" . \get_class($fn[0]) . "', '{$fn[1]}'])";
+        if (is_array($fn)) {
+            return is_string($fn[0]) ? "callable({$fn[0]}::{$fn[1]})" : "callable(['" . get_class($fn[0]) . "', '{$fn[1]}'])";
         }
-        return 'callable(' . \spl_object_hash($fn) . ')';
+        return 'callable(' . spl_object_hash($fn) . ')';
     }
 }

@@ -4,7 +4,7 @@ namespace Wappointment\Listeners;
 
 class AdminNotifyNewListener extends \Wappointment\Listeners\AbstractJobRecordListener
 {
-    protected $jobClass = '\\Wappointment\\Jobs\\AdminEmailNewAppointment';
+    protected $jobClass = '\Wappointment\Jobs\AdminEmailNewAppointment';
     protected function addToJobs($event)
     {
         $this->data_job = ['appointment' => $event->getAppointment(), 'client' => $event->getClient(), 'args' => $event->getAdditional()];

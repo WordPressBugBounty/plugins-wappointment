@@ -53,7 +53,7 @@ class Status
     }
     public static function tryConvertToUTCFormatted($timevalue, $timezone)
     {
-        if (\is_numeric($timevalue)) {
+        if (is_numeric($timevalue)) {
             //unixtimestamp
             return Carbon::createFromTimestamp($timevalue)->format(WAPPOINTMENT_DB_FORMAT . ':00');
         } else {
@@ -69,14 +69,14 @@ class Status
         foreach ($recurringBusy as $recurring) {
             $recurring_until = !empty($recurring->options['until']) ? $recurring->options['until'] : \false;
             $until_end_recurring = $recurring_until !== \false && $recurring_until < $until ? $recurring_until : $until;
-            $punctualEvents = \array_merge($punctualEvents, self::generateRecurring($recurring, $until_end_recurring));
+            $punctualEvents = array_merge($punctualEvents, self::generateRecurring($recurring, $until_end_recurring));
         }
         return $punctualEvents;
     }
     private static function generateRecurring($statusRecurrent, $until)
     {
         $newEvents = [];
-        $from = \time();
+        $from = time();
         $i = 0;
         self::$diff = $statusRecurrent->end_at->timestamp - $statusRecurrent->start_at->timestamp;
         if (self::$diff <= 0) {
@@ -165,12 +165,12 @@ class Status
     {
         $interval = self::getInterval($statusRecurrent);
         $days_accepted = static::getByDay($statusRecurrent);
-        $daysAdded = $start_at->timestamp > \time() ? 0 : Carbon::now()->diffInDays($start_at);
+        $daysAdded = $start_at->timestamp > time() ? 0 : Carbon::now()->diffInDays($start_at);
         $start_at->tz($statusRecurrent->options['origin_tz'])->addDays($daysAdded);
         $weekWhenEnter = $start_at->weekNumberInMonth;
         $i = 0;
         //while these conditions are not met we go to the next record to find a match
-        while ($i < 50 && ($start_at->timestamp < $from || !\in_array($start_at->dayOfWeek, $days_accepted))) {
+        while ($i < 50 && ($start_at->timestamp < $from || !in_array($start_at->dayOfWeek, $days_accepted))) {
             $start_at_copy = $start_at->copy();
             $start_at->addDay();
             if ($weekWhenEnter != $start_at->weekNumberInMonth && $interval > 1) {
@@ -199,7 +199,7 @@ class Status
         if (!$dayofthemonth) {
             $dayofthemonth = $start_at->day;
         }
-        $diffInSeconds = $start_at->timestamp > \time() ? 0 : Carbon::now()->diffInSeconds($start_at);
+        $diffInSeconds = $start_at->timestamp > time() ? 0 : Carbon::now()->diffInSeconds($start_at);
         if ($diffInSeconds > 0) {
             $start_at->addSeconds($diffInSeconds);
             if ($dayofthemonth !== \false) {
@@ -241,7 +241,7 @@ class Status
         $minute = $carbon->minute;
         $carbonNewStart = Carbon::createFromTimestamp($carbon->timestamp, $statusRecurrent->options['origin_tz']);
         //2 - change day (which will go to a midnight value)
-        if (\is_array($dayofthemonth)) {
+        if (is_array($dayofthemonth)) {
             $i = 0;
             if ($dayofthemonth['each'] == 'last') {
                 $carbonNewStart->lastOfMonth($dayofthemonth['day']);
@@ -266,7 +266,7 @@ class Status
     private static function getNextYearly($statusRecurrent, $start_at, $from, $until)
     {
         $interval = self::getInterval($statusRecurrent);
-        $yearsAdded = $start_at->timestamp > \time() ? 0 : Carbon::now()->diffInYears($start_at);
+        $yearsAdded = $start_at->timestamp > time() ? 0 : Carbon::now()->diffInYears($start_at);
         $start_at->addYears($yearsAdded);
         while ($start_at->timestamp < $from) {
             $start_at->addYears($interval);
@@ -312,6 +312,6 @@ class Status
      */
     protected static function fixArrayBydays($byday)
     {
-        return \is_array($byday) && isset($byday[0]) ? $byday[0] : (empty($byday) ? \false : $byday);
+        return is_array($byday) && isset($byday[0]) ? $byday[0] : (empty($byday) ? \false : $byday);
     }
 }

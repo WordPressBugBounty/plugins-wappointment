@@ -23,7 +23,7 @@ namespace WappoVendor\Sabre\Uri;
  *
  * @throws InvalidUriException
  */
-function resolve(string $basePath, string $newPath) : string
+function resolve(string $basePath, string $newPath): string
 {
     $delta = parse($newPath);
     // If the new path defines a scheme, it's absolute and we can just return
@@ -32,7 +32,7 @@ function resolve(string $basePath, string $newPath) : string
         return build($delta);
     }
     $base = parse($basePath);
-    $pick = function ($part) use($base, $delta) {
+    $pick = function ($part) use ($base, $delta) {
         if ($delta[$part]) {
             return $delta[$part];
         } elseif ($base[$part]) {
@@ -45,16 +45,16 @@ function resolve(string $basePath, string $newPath) : string
     $newParts['host'] = $pick('host');
     $newParts['port'] = $pick('port');
     $path = '';
-    if (\is_string($delta['path']) and \strlen($delta['path']) > 0) {
+    if (is_string($delta['path']) and strlen($delta['path']) > 0) {
         // If the path starts with a slash
         if ('/' === $delta['path'][0]) {
             $path = $delta['path'];
         } else {
             // Removing last component from base path.
             $path = $base['path'];
-            $length = \strrpos((string) $path, '/');
+            $length = strrpos((string) $path, '/');
             if (\false !== $length) {
-                $path = \substr($path, 0, $length);
+                $path = substr($path, 0, $length);
             }
             $path .= '/' . $delta['path'];
         }
@@ -62,7 +62,7 @@ function resolve(string $basePath, string $newPath) : string
         $path = $base['path'] ?: '/';
     }
     // Removing .. and .
-    $pathParts = \explode('/', $path);
+    $pathParts = explode('/', $path);
     $newPathParts = [];
     foreach ($pathParts as $pathPart) {
         switch ($pathPart) {
@@ -70,14 +70,14 @@ function resolve(string $basePath, string $newPath) : string
             case '.':
                 break;
             case '..':
-                \array_pop($newPathParts);
+                array_pop($newPathParts);
                 break;
             default:
                 $newPathParts[] = $pathPart;
                 break;
         }
     }
-    $path = \implode('/', $newPathParts);
+    $path = implode('/', $newPathParts);
     // If the source url ended with a /, we want to preserve that.
     $newParts['path'] = $path;
     if ($delta['query']) {
@@ -106,11 +106,11 @@ function resolve(string $basePath, string $newPath) : string
  *
  * @throws InvalidUriException
  */
-function normalize(string $uri) : string
+function normalize(string $uri): string
 {
     $parts = parse($uri);
     if (!empty($parts['path'])) {
-        $pathParts = \explode('/', \ltrim($parts['path'], '/'));
+        $pathParts = explode('/', ltrim($parts['path'], '/'));
         $newPathParts = [];
         foreach ($pathParts as $pathPart) {
             switch ($pathPart) {
@@ -119,18 +119,18 @@ function normalize(string $uri) : string
                     break;
                 case '..':
                     // One level up in the hierarchy
-                    \array_pop($newPathParts);
+                    array_pop($newPathParts);
                     break;
                 default:
                     // Ensuring that everything is correctly percent-encoded.
-                    $newPathParts[] = \rawurlencode(\rawurldecode($pathPart));
+                    $newPathParts[] = rawurlencode(rawurldecode($pathPart));
                     break;
             }
         }
-        $parts['path'] = '/' . \implode('/', $newPathParts);
+        $parts['path'] = '/' . implode('/', $newPathParts);
     }
     if ($parts['scheme']) {
-        $parts['scheme'] = \strtolower($parts['scheme']);
+        $parts['scheme'] = strtolower($parts['scheme']);
         $defaultPorts = ['http' => '80', 'https' => '443'];
         if (!empty($parts['port']) && isset($defaultPorts[$parts['scheme']]) && $defaultPorts[$parts['scheme']] == $parts['port']) {
             // Removing default ports.
@@ -148,7 +148,7 @@ function normalize(string $uri) : string
         }
     }
     if ($parts['host']) {
-        $parts['host'] = \strtolower($parts['host']);
+        $parts['host'] = strtolower($parts['host']);
     }
     return build($parts);
 }
@@ -168,17 +168,17 @@ function normalize(string $uri) : string
  *
  * @throws InvalidUriException
  */
-function parse(string $uri) : array
+function parse(string $uri): array
 {
     // Normally a URI must be ASCII, however. However, often it's not and
     // parse_url might corrupt these strings.
     //
     // For that reason we take any non-ascii characters from the uri and
     // uriencode them first.
-    $uri = \preg_replace_callback('/[^[:ascii:]]/u', function ($matches) {
-        return \rawurlencode($matches[0]);
+    $uri = preg_replace_callback('/[^[:ascii:]]/u', function ($matches) {
+        return rawurlencode($matches[0]);
     }, $uri);
-    $result = \parse_url($uri);
+    $result = parse_url($uri);
     if (!$result) {
         $result = _parse_fallback($uri);
     }
@@ -192,7 +192,7 @@ function parse(string $uri) : array
  *
  * @return string
  */
-function build(array $parts) : string
+function build(array $parts): string
 {
     $uri = '';
     $authority = '';
@@ -243,10 +243,10 @@ function build(array $parts) : string
  *
  * @return array
  */
-function split(string $path) : array
+function split(string $path): array
 {
     $matches = [];
-    if (\preg_match('/^(?:(?:(.*)(?:\\/+))?([^\\/]+))(?:\\/?)$/u', $path, $matches)) {
+    if (preg_match('/^(?:(?:(.*)(?:\/+))?([^\/]+))(?:\/?)$/u', $path, $matches)) {
         return [$matches[1], $matches[2]];
     }
     return [null, null];
@@ -267,47 +267,47 @@ function split(string $path) : array
  *
  * @throws InvalidUriException
  */
-function _parse_fallback(string $uri) : array
+function _parse_fallback(string $uri): array
 {
     // Normally a URI must be ASCII, however. However, often it's not and
     // parse_url might corrupt these strings.
     //
     // For that reason we take any non-ascii characters from the uri and
     // uriencode them first.
-    $uri = \preg_replace_callback('/[^[:ascii:]]/u', function ($matches) {
-        return \rawurlencode($matches[0]);
+    $uri = preg_replace_callback('/[^[:ascii:]]/u', function ($matches) {
+        return rawurlencode($matches[0]);
     }, $uri);
     $result = ['scheme' => null, 'host' => null, 'port' => null, 'user' => null, 'path' => null, 'fragment' => null, 'query' => null];
-    if (\preg_match('% ^([A-Za-z][A-Za-z0-9+-\\.]+): %x', $uri, $matches)) {
+    if (preg_match('% ^([A-Za-z][A-Za-z0-9+-\.]+): %x', $uri, $matches)) {
         $result['scheme'] = $matches[1];
         // Take what's left.
-        $uri = \substr($uri, \strlen($result['scheme']) + 1);
+        $uri = substr($uri, strlen($result['scheme']) + 1);
     }
     // Taking off a fragment part
-    if (\false !== \strpos($uri, '#')) {
-        list($uri, $result['fragment']) = \explode('#', $uri, 2);
+    if (\false !== strpos($uri, '#')) {
+        list($uri, $result['fragment']) = explode('#', $uri, 2);
     }
     // Taking off the query part
-    if (\false !== \strpos($uri, '?')) {
-        list($uri, $result['query']) = \explode('?', $uri, 2);
+    if (\false !== strpos($uri, '?')) {
+        list($uri, $result['query']) = explode('?', $uri, 2);
     }
-    if ('///' === \substr($uri, 0, 3)) {
+    if ('///' === substr($uri, 0, 3)) {
         // The triple slash uris are a bit unusual, but we have special handling
         // for them.
-        $result['path'] = \substr($uri, 2);
+        $result['path'] = substr($uri, 2);
         $result['host'] = '';
-    } elseif ('//' === \substr($uri, 0, 2)) {
+    } elseif ('//' === substr($uri, 0, 2)) {
         // Uris that have an authority part.
         $regex = '
           %^
             //
             (?: (?<user> [^:@]+) (: (?<pass> [^@]+)) @)?
-            (?<host> ( [^:/]* | \\[ [^\\]]+ \\] ))
+            (?<host> ( [^:/]* | \[ [^\]]+ \] ))
             (?: : (?<port> [0-9]+))?
             (?<path> / .*)?
           $%x
         ';
-        if (!\preg_match($regex, $uri, $matches)) {
+        if (!preg_match($regex, $uri, $matches)) {
             throw new InvalidUriException('Invalid, or could not parse URI');
         }
         if ($matches['host']) {

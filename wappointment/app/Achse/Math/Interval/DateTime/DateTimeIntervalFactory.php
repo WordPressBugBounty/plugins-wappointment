@@ -16,7 +16,7 @@ final class DateTimeIntervalFactory
      * @param bool $rightState
      * @return DateTimeInterval
      */
-    public static function create(\DateTimeInterface $leftElement, bool $leftState, \DateTimeInterface $rightElement, bool $rightState) : \Wappointment\Achse\Math\Interval\DateTime\DateTimeInterval
+    public static function create(\DateTimeInterface $leftElement, bool $leftState, \DateTimeInterface $rightElement, bool $rightState): \Wappointment\Achse\Math\Interval\DateTime\DateTimeInterval
     {
         return new \Wappointment\Achse\Math\Interval\DateTime\DateTimeInterval(\Wappointment\Achse\Math\Interval\DateTime\DateTimeBoundaryFactory::create($leftElement, $leftState), \Wappointment\Achse\Math\Interval\DateTime\DateTimeBoundaryFactory::create($rightElement, $rightState));
     }

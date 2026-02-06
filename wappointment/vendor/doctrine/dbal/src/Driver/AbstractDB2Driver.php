@@ -30,7 +30,7 @@ abstract class AbstractDB2Driver implements Driver
         assert($platform instanceof DB2Platform);
         return new DB2SchemaManager($conn, $platform);
     }
-    public function getExceptionConverter() : ExceptionConverterInterface
+    public function getExceptionConverter(): ExceptionConverterInterface
     {
         return new ExceptionConverter();
     }

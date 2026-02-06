@@ -37,7 +37,7 @@ class DumpListener implements EventSubscriberInterface
         $cloner = $this->cloner;
         $dumper = $this->dumper;
         $connection = $this->connection;
-        VarDumper::setHandler(static function ($var) use($cloner, $dumper, $connection) {
+        VarDumper::setHandler(static function ($var) use ($cloner, $dumper, $connection) {
             $data = $cloner->cloneVar($var);
             if (!$connection || !$connection->write($data)) {
                 $dumper->dump($data);
@@ -46,7 +46,7 @@ class DumpListener implements EventSubscriberInterface
     }
     public static function getSubscribedEvents()
     {
-        if (!\class_exists(ConsoleEvents::class)) {
+        if (!class_exists(ConsoleEvents::class)) {
             return [];
         }
         // Register early to have a working dump() as early as possible

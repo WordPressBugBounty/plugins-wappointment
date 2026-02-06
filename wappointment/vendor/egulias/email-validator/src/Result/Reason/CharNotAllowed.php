@@ -4,11 +4,11 @@ namespace WappoVendor\Egulias\EmailValidator\Result\Reason;
 
 class CharNotAllowed implements Reason
 {
-    public function code() : int
+    public function code(): int
     {
         return 1;
     }
-    public function description() : string
+    public function description(): string
     {
         return "Character not allowed";
     }

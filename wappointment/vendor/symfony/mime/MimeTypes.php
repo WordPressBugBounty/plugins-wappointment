@@ -56,9 +56,9 @@ final class MimeTypes implements MimeTypesInterface
     {
         self::$default = $default;
     }
-    public static function getDefault() : self
+    public static function getDefault(): self
     {
-        return self::$default ?? (self::$default = new self());
+        return self::$default ?? self::$default = new self();
     }
     /**
      * Registers a MIME type guesser.
@@ -67,32 +67,32 @@ final class MimeTypes implements MimeTypesInterface
      */
     public function registerGuesser(MimeTypeGuesserInterface $guesser)
     {
-        \array_unshift($this->guessers, $guesser);
+        array_unshift($this->guessers, $guesser);
     }
     /**
      * {@inheritdoc}
      */
-    public function getExtensions(string $mimeType) : array
+    public function getExtensions(string $mimeType): array
     {
         if ($this->extensions) {
-            $extensions = $this->extensions[$mimeType] ?? $this->extensions[$lcMimeType = \strtolower($mimeType)] ?? null;
+            $extensions = $this->extensions[$mimeType] ?? $this->extensions[$lcMimeType = strtolower($mimeType)] ?? null;
         }
-        return $extensions ?? self::MAP[$mimeType] ?? self::MAP[$lcMimeType ?? \strtolower($mimeType)] ?? [];
+        return $extensions ?? self::MAP[$mimeType] ?? self::MAP[$lcMimeType ?? strtolower($mimeType)] ?? [];
     }
     /**
      * {@inheritdoc}
      */
-    public function getMimeTypes(string $ext) : array
+    public function getMimeTypes(string $ext): array
     {
         if ($this->mimeTypes) {
-            $mimeTypes = $this->mimeTypes[$ext] ?? $this->mimeTypes[$lcExt = \strtolower($ext)] ?? null;
+            $mimeTypes = $this->mimeTypes[$ext] ?? $this->mimeTypes[$lcExt = strtolower($ext)] ?? null;
         }
-        return $mimeTypes ?? self::REVERSE_MAP[$ext] ?? self::REVERSE_MAP[$lcExt ?? \strtolower($ext)] ?? [];
+        return $mimeTypes ?? self::REVERSE_MAP[$ext] ?? self::REVERSE_MAP[$lcExt ?? strtolower($ext)] ?? [];
     }
     /**
      * {@inheritdoc}
      */
-    public function isGuesserSupported() : bool
+    public function isGuesserSupported(): bool
     {
         foreach ($this->guessers as $guesser) {
             if ($guesser->isGuesserSupported()) {
@@ -109,13 +109,13 @@ final class MimeTypes implements MimeTypesInterface
      * returns a value that is not null, this method terminates and returns the
      * value.
      */
-    public function guessMimeType(string $path) : ?string
+    public function guessMimeType(string $path): ?string
     {
         foreach ($this->guessers as $guesser) {
             if (!$guesser->isGuesserSupported()) {
                 continue;
             }
-            if (null !== ($mimeType = $guesser->guessMimeType($path))) {
+            if (null !== $mimeType = $guesser->guessMimeType($path)) {
                 return $mimeType;
             }
         }

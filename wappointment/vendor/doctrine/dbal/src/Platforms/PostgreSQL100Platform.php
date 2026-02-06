@@ -16,7 +16,7 @@ class PostgreSQL100Platform extends PostgreSQL94Platform
     /**
      * @deprecated Implement {@see createReservedKeywordsList()} instead.
      */
-    protected function getReservedKeywordsClass() : string
+    protected function getReservedKeywordsClass(): string
     {
         Deprecation::triggerIfCalledFromOutside('doctrine/dbal', 'https://github.com/doctrine/dbal/issues/4510', 'PostgreSQL100Platform::getReservedKeywordsClass() is deprecated,' . ' use PostgreSQL100Platform::createReservedKeywordsList() instead.');
         return PostgreSQL100Keywords::class;
@@ -24,7 +24,7 @@ class PostgreSQL100Platform extends PostgreSQL94Platform
     /**
      * {@inheritDoc}
      */
-    public function getListSequencesSQL($database) : string
+    public function getListSequencesSQL($database): string
     {
         return 'SELECT sequence_name AS relname,
                        sequence_schema AS schemaname,

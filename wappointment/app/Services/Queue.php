@@ -21,7 +21,7 @@ class Queue
         } catch (\Throwable $th) {
             $jobs = [];
         }
-        if (\count($jobs) > 0) {
+        if (count($jobs) > 0) {
             foreach ($jobs as $job) {
                 self::run($job);
             }
@@ -33,7 +33,7 @@ class Queue
     }
     private static function loadBatch($take)
     {
-        $reserve_at = \time();
+        $reserve_at = time();
         //reserve the batch of jobs
         self::reserveBatch($reserve_at, $take);
         //and load it
@@ -65,7 +65,7 @@ class Queue
     }
     public static function push($job, $params, $queue = 'default', $available_at = 0)
     {
-        $jobInsert = ['payload' => ['job' => $job, 'params' => $params], 'created_at' => \time(), 'queue' => $queue, 'reserved_at' => 0, 'available_at' => $available_at];
+        $jobInsert = ['payload' => ['job' => $job, 'params' => $params], 'created_at' => time(), 'queue' => $queue, 'reserved_at' => 0, 'available_at' => $available_at];
         if (!empty($params['staff_id'])) {
             $jobInsert['appointment_id'] = $params['staff_id'];
         }
@@ -76,14 +76,14 @@ class Queue
     }
     public static function resetTimedoutJobs()
     {
-        $jobsTimedOut = Job::where('reserved_at', '>', 0)->where('reserved_at', '<', \time() - static::DELAY_TIMEOUT_RETRY)->get();
+        $jobsTimedOut = Job::where('reserved_at', '>', 0)->where('reserved_at', '<', time() - static::DELAY_TIMEOUT_RETRY)->get();
         foreach ($jobsTimedOut as $key => $job) {
             $job->attempts++;
             if ($job->attempts >= self::MAX_FAILURE) {
                 self::jobFailed($job, ['timedout' => 'timedout']);
             } else {
                 $job->reserved_at = 0;
-                $job->available_at = \time() + self::DELAY_AFTER_FAIL;
+                $job->available_at = time() + self::DELAY_AFTER_FAIL;
                 $job->save();
             }
         }
@@ -94,19 +94,19 @@ class Queue
         if (!$job) {
             throw new \WappointmentException('Error Queueing job', 1);
         }
-        $job->update(['reserved_at' => \time()]);
+        $job->update(['reserved_at' => time()]);
         self::run($job);
     }
     private static function run(Job $job)
     {
         //process it
         $jobClassName = $job->payload['job'];
-        if (!\class_exists($jobClassName)) {
+        if (!class_exists($jobClassName)) {
             throw new \WappointmentException('Error Job ' . $jobClassName . ' cannot be found ', 1);
         }
         // control the kind of job class passed
-        $interfaces = \class_implements($jobClassName);
-        if (!isset($interfaces['Wappointment\\Jobs\\JobInterface'])) {
+        $interfaces = class_implements($jobClassName);
+        if (!isset($interfaces['Wappointment\Jobs\JobInterface'])) {
             throw new \WappointmentException('Job ' . $jobClassName . ' doesn\'t implement required interface', 1);
         }
         // process the job
@@ -125,7 +125,7 @@ class Queue
             // MAX_FAILURE reached we keep a record in the failures table and delete the original job
             self::jobFailed($job, Debug::convertExceptionToArray($e));
         } else {
-            $job->update(['attempts' => $attempts, 'payload' => $job->payload, 'reserved_at' => 0, 'available_at' => \time() + self::DELAY_AFTER_FAIL]);
+            $job->update(['attempts' => $attempts, 'payload' => $job->payload, 'reserved_at' => 0, 'available_at' => time() + self::DELAY_AFTER_FAIL]);
         }
     }
     protected static function jobFailed(Job $job, $arrayException)
@@ -164,7 +164,7 @@ class Queue
     public static function queueRefreshAVBJob()
     {
         static::cancelRefreshAVBJob();
-        self::push('Wappointment\\Jobs\\AVBDaily', [], 'avb_daily', static::generateTime(\Wappointment\Services\Settings::get('refreshavb_at'), static::getDefaultTz())->timestamp);
+        self::push('Wappointment\Jobs\AVBDaily', [], 'avb_daily', static::generateTime(\Wappointment\Services\Settings::get('refreshavb_at'), static::getDefaultTz())->timestamp);
     }
     public static function cancelDailyJob($staff_id_only = \false)
     {
@@ -178,7 +178,7 @@ class Queue
             if ($staff_id_only !== \false && $staff_id_only !== $staff['id']) {
                 continue;
             }
-            self::push('Wappointment\\Jobs\\AdminEmailDailySummary', ['staff_id' => $staff['id']], 'daily', static::generateTime($daily_sumary_time, $staff['t'])->timestamp);
+            self::push('Wappointment\Jobs\AdminEmailDailySummary', ['staff_id' => $staff['id']], 'daily', static::generateTime($daily_sumary_time, $staff['t'])->timestamp);
         }
     }
     public static function cancelWeeklyJob($staff_id_only = \false)
@@ -195,16 +195,16 @@ class Queue
                 continue;
             }
             $available_at = static::generateTime($summary_time, $staff['t']);
-            while ($available_at->timestamp < \time() || !$available_at->isDayOfWeek($summary_day)) {
+            while ($available_at->timestamp < time() || !$available_at->isDayOfWeek($summary_day)) {
                 $available_at->addDay();
             }
-            self::push('Wappointment\\Jobs\\AdminEmailWeeklySummary', ['staff_id' => $staff['id']], 'weekly', $available_at->timestamp);
+            self::push('Wappointment\Jobs\AdminEmailWeeklySummary', ['staff_id' => $staff['id']], 'weekly', $available_at->timestamp);
         }
     }
     protected static function generateTime($hour_trigger, $timezone)
     {
         $available_at = \Wappointment\ClassConnect\Carbon::createFromTime($hour_trigger, 0, 0, $timezone);
-        if ($available_at->timestamp < \time()) {
+        if ($available_at->timestamp < time()) {
             $available_at->addDay();
         }
         return $available_at;

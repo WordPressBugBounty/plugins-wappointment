@@ -59,15 +59,15 @@ class Request implements ArrayAccess
      */
     public function hasHeader($key, $value = null)
     {
-        if (\is_null($value)) {
+        if (is_null($value)) {
             return !empty($this->request->getHeaders()[$key]);
         }
         $headers = $this->headers();
         if (!Arr::has($headers, $key)) {
             return \false;
         }
-        $value = \is_array($value) ? $value : [$value];
-        return empty(\array_diff($value, $headers[$key]));
+        $value = is_array($value) ? $value : [$value];
+        return empty(array_diff($value, $headers[$key]));
     }
     /**
      * Determine if the request has the given headers.
@@ -77,7 +77,7 @@ class Request implements ArrayAccess
      */
     public function hasHeaders($headers)
     {
-        if (\is_string($headers)) {
+        if (is_string($headers)) {
             $headers = [$headers => null];
         }
         foreach ($headers as $key => $value) {
@@ -128,7 +128,7 @@ class Request implements ArrayAccess
         if (!$this->isMultipart()) {
             return \false;
         }
-        return \WappointmentLv::collect($this->data)->reject(function ($file) use($name, $value, $filename) {
+        return \WappointmentLv::collect($this->data)->reject(function ($file) use ($name, $value, $filename) {
             return $file['name'] != $name || $value && $file['contents'] != $value || $filename && $file['filename'] != $filename;
         })->count() > 0;
     }
@@ -154,7 +154,7 @@ class Request implements ArrayAccess
     protected function parameters()
     {
         if (!$this->data) {
-            \parse_str($this->body(), $parameters);
+            parse_str($this->body(), $parameters);
             $this->data = $parameters;
         }
         return $this->data;
@@ -167,7 +167,7 @@ class Request implements ArrayAccess
     protected function json()
     {
         if (!$this->data) {
-            $this->data = \json_decode($this->body(), \true);
+            $this->data = json_decode($this->body(), \true);
         }
         return $this->data;
     }

@@ -22,7 +22,7 @@ class StrictSessionHandler extends AbstractSessionHandler
     public function __construct(\SessionHandlerInterface $handler)
     {
         if ($handler instanceof \SessionUpdateTimestampHandlerInterface) {
-            throw new \LogicException(\sprintf('"%s" is already an instance of "SessionUpdateTimestampHandlerInterface", you cannot wrap it with "%s".', \get_debug_type($handler), self::class));
+            throw new \LogicException(sprintf('"%s" is already an instance of "SessionUpdateTimestampHandlerInterface", you cannot wrap it with "%s".', get_debug_type($handler), self::class));
         }
         $this->handler = $handler;
     }
@@ -31,7 +31,7 @@ class StrictSessionHandler extends AbstractSessionHandler
      *
      * @internal
      */
-    public function isWrapper() : bool
+    public function isWrapper(): bool
     {
         return $this->handler instanceof \SessionHandler;
     }

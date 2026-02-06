@@ -108,13 +108,13 @@ class RouterListener implements EventSubscriberInterface
             unset($parameters['_route'], $parameters['_controller']);
             $request->attributes->set('_route_params', $parameters);
         } catch (ResourceNotFoundException $e) {
-            $message = \sprintf('No route found for "%s %s"', $request->getMethod(), $request->getUriForPath($request->getPathInfo()));
+            $message = sprintf('No route found for "%s %s"', $request->getMethod(), $request->getUriForPath($request->getPathInfo()));
             if ($referer = $request->headers->get('referer')) {
-                $message .= \sprintf(' (from "%s")', $referer);
+                $message .= sprintf(' (from "%s")', $referer);
             }
             throw new NotFoundHttpException($message, $e);
         } catch (MethodNotAllowedException $e) {
-            $message = \sprintf('No route found for "%s %s": Method Not Allowed (Allow: %s)', $request->getMethod(), $request->getUriForPath($request->getPathInfo()), \implode(', ', $e->getAllowedMethods()));
+            $message = sprintf('No route found for "%s %s": Method Not Allowed (Allow: %s)', $request->getMethod(), $request->getUriForPath($request->getPathInfo()), implode(', ', $e->getAllowedMethods()));
             throw new MethodNotAllowedHttpException($e->getAllowedMethods(), $message, $e);
         }
     }
@@ -127,17 +127,17 @@ class RouterListener implements EventSubscriberInterface
             $event->setResponse($this->createWelcomeResponse());
         }
     }
-    public static function getSubscribedEvents() : array
+    public static function getSubscribedEvents(): array
     {
         return [KernelEvents::REQUEST => [['onKernelRequest', 32]], KernelEvents::FINISH_REQUEST => [['onKernelFinishRequest', 0]], KernelEvents::EXCEPTION => ['onKernelException', -64]];
     }
-    private function createWelcomeResponse() : Response
+    private function createWelcomeResponse(): Response
     {
         $version = Kernel::VERSION;
-        $projectDir = \realpath((string) $this->projectDir) . \DIRECTORY_SEPARATOR;
-        $docVersion = \substr(Kernel::VERSION, 0, 3);
-        \ob_start();
+        $projectDir = realpath((string) $this->projectDir) . \DIRECTORY_SEPARATOR;
+        $docVersion = substr(Kernel::VERSION, 0, 3);
+        ob_start();
         include \dirname(__DIR__) . '/Resources/welcome.html.php';
-        return new Response(\ob_get_clean(), Response::HTTP_NOT_FOUND);
+        return new Response(ob_get_clean(), Response::HTTP_NOT_FOUND);
     }
 }

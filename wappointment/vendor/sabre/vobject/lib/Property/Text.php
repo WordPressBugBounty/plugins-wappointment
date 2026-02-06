@@ -69,7 +69,7 @@ class Text extends Property
         // 2. structured value properties
         //
         // The former is always separated by a comma, the latter by semi-colon.
-        if (\in_array($name, $this->structuredValues)) {
+        if (in_array($name, $this->structuredValues)) {
             $this->delimiter = ';';
         }
         parent::__construct($root, $name, $value, $parameters, $group);
@@ -93,7 +93,7 @@ class Text extends Property
      */
     public function setQuotedPrintableValue($val)
     {
-        $val = \quoted_printable_decode($val);
+        $val = quoted_printable_decode($val);
         // Quoted printable only appears in vCard 2.1, and the only character
         // that may be escaped there is ;. So we are simply splitting on just
         // that.
@@ -101,7 +101,7 @@ class Text extends Property
         // We also don't have to unescape \\, so all we need to look for is a ;
         // that's not preceded with a \.
         $regex = '# (?<!\\\\) ; #x';
-        $matches = \preg_split($regex, $val);
+        $matches = preg_split($regex, $val);
         $this->setValue($matches);
     }
     /**
@@ -113,20 +113,20 @@ class Text extends Property
     {
         $val = $this->getParts();
         if (isset($this->minimumPropertyValues[$this->name])) {
-            $val = \array_pad($val, $this->minimumPropertyValues[$this->name], '');
+            $val = array_pad($val, $this->minimumPropertyValues[$this->name], '');
         }
         foreach ($val as &$item) {
-            if (!\is_array($item)) {
+            if (!is_array($item)) {
                 $item = [$item];
             }
             foreach ($item as &$subItem) {
-                if (!\is_null($subItem)) {
-                    $subItem = \strtr($subItem, ['\\' => '\\\\', ';' => '\\;', ',' => '\\,', "\n" => '\\n', "\r" => '']);
+                if (!is_null($subItem)) {
+                    $subItem = strtr($subItem, ['\\' => '\\\\', ';' => '\;', ',' => '\,', "\n" => '\n', "\r" => '']);
                 }
             }
-            $item = \implode(',', $item);
+            $item = implode(',', $item);
         }
-        return \implode($this->delimiter, $val);
+        return implode($this->delimiter, $val);
     }
     /**
      * Returns the value, in the format it should be encoded for json.
@@ -140,7 +140,7 @@ class Text extends Property
         // Structured text values should always be returned as a single
         // array-item. Multi-value text should be returned as multiple items in
         // the top-array.
-        if (\in_array($this->name, $this->structuredValues)) {
+        if (in_array($this->name, $this->structuredValues)) {
             return [$this->getParts()];
         }
         return $this->getParts();
@@ -176,7 +176,7 @@ class Text extends Property
         // values with ;.
         if (\count($val) > 1) {
             foreach ($val as $k => $v) {
-                $val[$k] = \str_replace(';', '\\;', $v);
+                $val[$k] = \str_replace(';', '\;', $v);
             }
             $val = \implode(';', $val);
         } else {
@@ -225,7 +225,7 @@ class Text extends Property
             $str = \preg_replace('/(
                     (?:^.)?         # 1 additional byte in first line because of missing single space (see next line)
                     .{1,74}         # max 75 bytes per line (1 byte is used for a single space added after every CRLF)
-                    (?![\\x80-\\xbf]) # prevent splitting multibyte characters
+                    (?![\x80-\xbf]) # prevent splitting multibyte characters
                 )/x', "\$1\r\n ", $str);
             // remove single space after last CRLF
             return \substr($str, 0, -1);
@@ -240,7 +240,7 @@ class Text extends Property
     protected function xmlSerializeValue(Xml\Writer $writer)
     {
         $values = $this->getParts();
-        $map = function ($items) use($values, $writer) {
+        $map = function ($items) use ($values, $writer) {
             foreach ($items as $i => $item) {
                 $writer->writeElement($item, !empty($values[$i]) ? $values[$i] : null);
             }
@@ -297,10 +297,10 @@ class Text extends Property
         if (isset($this->minimumPropertyValues[$this->name])) {
             $minimum = $this->minimumPropertyValues[$this->name];
             $parts = $this->getParts();
-            if (\count($parts) < $minimum) {
-                $warnings[] = ['level' => $options & self::REPAIR ? 1 : 3, 'message' => 'The ' . $this->name . ' property must have at least ' . $minimum . ' values. It only has ' . \count($parts), 'node' => $this];
+            if (count($parts) < $minimum) {
+                $warnings[] = ['level' => $options & self::REPAIR ? 1 : 3, 'message' => 'The ' . $this->name . ' property must have at least ' . $minimum . ' values. It only has ' . count($parts), 'node' => $this];
                 if ($options & self::REPAIR) {
-                    $parts = \array_pad($parts, $minimum, '');
+                    $parts = array_pad($parts, $minimum, '');
                     $this->setParts($parts);
                 }
             }

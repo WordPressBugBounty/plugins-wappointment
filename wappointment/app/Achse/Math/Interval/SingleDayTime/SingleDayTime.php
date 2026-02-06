@@ -104,7 +104,7 @@ final class SingleDayTime implements \Wappointment\Achse\Comparable\IComparable
      * @param DateTimeInterface|SingleDayTime|string $time
      * @return SingleDayTime
      */
-    public static function from($time) : \Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTime
+    public static function from($time): \Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTime
     {
         if ($time instanceof static) {
             return clone $time;
@@ -123,14 +123,14 @@ final class SingleDayTime implements \Wappointment\Achse\Comparable\IComparable
      * @param DateTimeInterface $dateTime
      * @return static
      */
-    public static function fromDateTime(\DateTimeInterface $dateTime) : \Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTime
+    public static function fromDateTime(\DateTimeInterface $dateTime): \Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTime
     {
         return new static((int) $dateTime->format('H'), (int) $dateTime->format('i'), (float) $dateTime->format('s'));
     }
     /**
      * @inheritdoc
      */
-    public function compare(\Wappointment\Achse\Comparable\IComparable $other) : int
+    public function compare(\Wappointment\Achse\Comparable\IComparable $other): int
     {
         /** @var static $other */
         \Wappointment\Achse\Math\Interval\Utils::validateClassType(static::class, $other);
@@ -139,7 +139,7 @@ final class SingleDayTime implements \Wappointment\Achse\Comparable\IComparable
     /**
      * @return float
      */
-    public function toSeconds() : float
+    public function toSeconds(): float
     {
         return $this->hours * 3600 + $this->minutes * 60 + $this->seconds;
     }
@@ -148,7 +148,7 @@ final class SingleDayTime implements \Wappointment\Achse\Comparable\IComparable
      * @return static
      * @throws ModificationNotPossibleException
      */
-    public function modify(string $modifier) : \Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTime
+    public function modify(string $modifier): \Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTime
     {
         $new = clone $this;
         $thisDateTime = $new->toInternalDateTime();
@@ -161,7 +161,7 @@ final class SingleDayTime implements \Wappointment\Achse\Comparable\IComparable
     /**
      * @return DateTimeImmutable
      */
-    private function toInternalDateTime() : \Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutable
+    private function toInternalDateTime(): \Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutable
     {
         return $this->toDateTime(new \Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutable(self::INTERNAL_DATE, new \DateTimeZone('UTC')));
     }
@@ -169,7 +169,7 @@ final class SingleDayTime implements \Wappointment\Achse\Comparable\IComparable
      * @param DateTimeInterface $day
      * @return DateTimeImmutable
      */
-    public function toDateTime(\DateTimeInterface $day) : \Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutable
+    public function toDateTime(\DateTimeInterface $day): \Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutable
     {
         $day = \Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutable::from($day)->setTime($this->hours, $this->minutes, (int) \round($this->seconds));
         return $day;
@@ -178,7 +178,7 @@ final class SingleDayTime implements \Wappointment\Achse\Comparable\IComparable
      * @param SingleDayTime $other
      * @return static
      */
-    public function add(\Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTime $other) : \Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTime
+    public function add(\Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTime $other): \Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTime
     {
         return $this->addOrSub($other, 1);
     }
@@ -188,7 +188,7 @@ final class SingleDayTime implements \Wappointment\Achse\Comparable\IComparable
      * @return static
      * @throws ModificationNotPossibleException
      */
-    private function addOrSub(\Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTime $other, int $sign) : \Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTime
+    private function addOrSub(\Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTime $other, int $sign): \Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTime
     {
         $seconds = $this->seconds;
         $minutes = $this->minutes;
@@ -212,7 +212,7 @@ final class SingleDayTime implements \Wappointment\Achse\Comparable\IComparable
     /**
      * @return float
      */
-    public function getSeconds() : float
+    public function getSeconds(): float
     {
         return $this->seconds;
     }
@@ -220,14 +220,14 @@ final class SingleDayTime implements \Wappointment\Achse\Comparable\IComparable
      * @param float $seconds
      * @return static
      */
-    public function withSeconds(float $seconds) : \Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTime
+    public function withSeconds(float $seconds): \Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTime
     {
         return new static($this->hours, $this->minutes, $seconds);
     }
     /**
      * @return int
      */
-    public function getMinutes() : int
+    public function getMinutes(): int
     {
         return $this->minutes;
     }
@@ -235,14 +235,14 @@ final class SingleDayTime implements \Wappointment\Achse\Comparable\IComparable
      * @param int $minutes
      * @return static
      */
-    public function withMinutes(int $minutes) : \Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTime
+    public function withMinutes(int $minutes): \Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTime
     {
         return new static($this->hours, $minutes, $this->seconds);
     }
     /**
      * @return int
      */
-    public function getHours() : int
+    public function getHours(): int
     {
         return $this->hours;
     }
@@ -250,7 +250,7 @@ final class SingleDayTime implements \Wappointment\Achse\Comparable\IComparable
      * @param int $hours
      * @return static
      */
-    public function withHours(int $hours) : \Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTime
+    public function withHours(int $hours): \Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTime
     {
         return new static($hours, $this->minutes, $this->seconds);
     }
@@ -269,7 +269,7 @@ final class SingleDayTime implements \Wappointment\Achse\Comparable\IComparable
      * @param SingleDayTime $other
      * @return static
      */
-    public function sub(\Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTime $other) : \Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTime
+    public function sub(\Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTime $other): \Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTime
     {
         return $this->addOrSub($other, -1);
     }
@@ -277,7 +277,7 @@ final class SingleDayTime implements \Wappointment\Achse\Comparable\IComparable
      * @param string $format
      * @return string
      */
-    public function format(string $format) : string
+    public function format(string $format): string
     {
         if (\Wappointment\Achse\DateTimeFormatTools\Tools::isAnyOfSymbolsInPattern(self::NOT_ALLOWED_FORMAT_SYMBOLS, $format)) {
             throw new \LogicException(\sprintf('Invalid pattern. Only [%s] symbols are allowed.', \implode(', ', self::ALLOWED_FORMAT_SYMBOLS)));
@@ -287,7 +287,7 @@ final class SingleDayTime implements \Wappointment\Achse\Comparable\IComparable
     /**
      * @inheritdoc
      */
-    public function __toString() : string
+    public function __toString(): string
     {
         return $this->toInternalDateTime()->format('H:i:s');
     }

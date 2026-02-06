@@ -34,7 +34,7 @@ final class CacheItem implements CacheItemInterface
         $this->value = $data;
         $this->isHit = $isHit;
     }
-    public function getKey() : string
+    public function getKey(): string
     {
         return $this->key;
     }
@@ -47,14 +47,14 @@ final class CacheItem implements CacheItemInterface
     {
         return $this->value;
     }
-    public function isHit() : bool
+    public function isHit(): bool
     {
         return $this->isHit;
     }
     /**
      * {@inheritDoc}
      */
-    public function set($value) : self
+    public function set($value): self
     {
         $this->value = $value;
         return $this;
@@ -62,7 +62,7 @@ final class CacheItem implements CacheItemInterface
     /**
      * {@inheritDoc}
      */
-    public function expiresAt($expiration) : self
+    public function expiresAt($expiration): self
     {
         if ($expiration === null) {
             $this->expiry = null;
@@ -76,7 +76,7 @@ final class CacheItem implements CacheItemInterface
     /**
      * {@inheritDoc}
      */
-    public function expiresAfter($time) : self
+    public function expiresAfter($time): self
     {
         if ($time === null) {
             $this->expiry = null;
@@ -92,7 +92,7 @@ final class CacheItem implements CacheItemInterface
     /**
      * @internal
      */
-    public function getExpiry() : ?float
+    public function getExpiry(): ?float
     {
         return $this->expiry;
     }

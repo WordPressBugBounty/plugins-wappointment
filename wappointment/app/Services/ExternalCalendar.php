@@ -70,13 +70,13 @@ class ExternalCalendar
             throw new \WappointmentException(__('Cannot save calendar verify it respects the Ical ics format', 'wappointment'));
         }
         $calurls = $this->getCalUrls();
-        if (isset($calurls[\md5($calurl)])) {
+        if (isset($calurls[md5($calurl)])) {
             throw new \WappointmentException(__('Calendar already connected', 'wappointment'));
         }
-        if (\count($calurls) > 2) {
+        if (count($calurls) > 2) {
             throw new \WappointmentException('Cannot connect more than 3 calendars');
         }
-        $calurls[\md5($calurl)] = $calurl;
+        $calurls[md5($calurl)] = $calurl;
         $statusSaved = $this->saveUrls($calurls);
         $this->refreshCalendars(\true);
         return ['message' => Translations::get('element_saved'), 'status' => $statusSaved];

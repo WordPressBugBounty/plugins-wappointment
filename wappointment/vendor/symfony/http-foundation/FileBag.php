@@ -67,8 +67,8 @@ class FileBag extends ParameterBag
             return $file;
         }
         $file = $this->fixPhpFilesArray($file);
-        $keys = \array_keys($file);
-        \sort($keys);
+        $keys = array_keys($file);
+        sort($keys);
         if (self::FILE_KEYS == $keys) {
             if (\UPLOAD_ERR_NO_FILE == $file['error']) {
                 $file = null;
@@ -76,11 +76,11 @@ class FileBag extends ParameterBag
                 $file = new UploadedFile($file['tmp_name'], $file['name'], $file['type'], $file['error'], \false);
             }
         } else {
-            $file = \array_map(function ($v) {
+            $file = array_map(function ($v) {
                 return $v instanceof UploadedFile || \is_array($v) ? $this->convertFileInformation($v) : $v;
             }, $file);
-            if (\array_keys($keys) === $keys) {
-                $file = \array_filter($file);
+            if (array_keys($keys) === $keys) {
+                $file = array_filter($file);
             }
         }
         return $file;
@@ -103,8 +103,8 @@ class FileBag extends ParameterBag
     {
         // Remove extra key added by PHP 8.1.
         unset($data['full_path']);
-        $keys = \array_keys($data);
-        \sort($keys);
+        $keys = array_keys($data);
+        sort($keys);
         if (self::FILE_KEYS != $keys || !isset($data['name']) || !\is_array($data['name'])) {
             return $data;
         }

@@ -31,10 +31,10 @@ class MockFileSessionStorage extends MockArraySessionStorage
     public function __construct(string $savePath = null, string $name = 'MOCKSESSID', MetadataBag $metaBag = null)
     {
         if (null === $savePath) {
-            $savePath = \sys_get_temp_dir();
+            $savePath = sys_get_temp_dir();
         }
-        if (!\is_dir($savePath) && !@\mkdir($savePath, 0777, \true) && !\is_dir($savePath)) {
-            throw new \RuntimeException(\sprintf('Session Storage was not able to create directory "%s".', $savePath));
+        if (!is_dir($savePath) && !@mkdir($savePath, 0777, \true) && !is_dir($savePath)) {
+            throw new \RuntimeException(sprintf('Session Storage was not able to create directory "%s".', $savePath));
         }
         $this->savePath = $savePath;
         parent::__construct($name, $metaBag);
@@ -81,15 +81,15 @@ class MockFileSessionStorage extends MockArraySessionStorage
                 unset($data[$key]);
             }
         }
-        if ([$key = $this->metadataBag->getStorageKey()] === \array_keys($data)) {
+        if ([$key = $this->metadataBag->getStorageKey()] === array_keys($data)) {
             unset($data[$key]);
         }
         try {
             if ($data) {
                 $path = $this->getFilePath();
-                $tmp = $path . \bin2hex(\random_bytes(6));
-                \file_put_contents($tmp, \serialize($data));
-                \rename($tmp, $path);
+                $tmp = $path . bin2hex(random_bytes(6));
+                file_put_contents($tmp, serialize($data));
+                rename($tmp, $path);
             } else {
                 $this->destroy();
             }
@@ -104,36 +104,36 @@ class MockFileSessionStorage extends MockArraySessionStorage
      * Deletes a session from persistent storage.
      * Deliberately leaves session data in memory intact.
      */
-    private function destroy() : void
+    private function destroy(): void
     {
-        \set_error_handler(static function () {
+        set_error_handler(static function () {
         });
         try {
-            \unlink($this->getFilePath());
+            unlink($this->getFilePath());
         } finally {
-            \restore_error_handler();
+            restore_error_handler();
         }
     }
     /**
      * Calculate path to file.
      */
-    private function getFilePath() : string
+    private function getFilePath(): string
     {
         return $this->savePath . '/' . $this->id . '.mocksess';
     }
     /**
      * Reads session from storage and loads session.
      */
-    private function read() : void
+    private function read(): void
     {
-        \set_error_handler(static function () {
+        set_error_handler(static function () {
         });
         try {
-            $data = \file_get_contents($this->getFilePath());
+            $data = file_get_contents($this->getFilePath());
         } finally {
-            \restore_error_handler();
+            restore_error_handler();
         }
-        $this->data = $data ? \unserialize($data) : [];
+        $this->data = $data ? unserialize($data) : [];
         $this->loadSession();
     }
 }

@@ -63,7 +63,7 @@ class Response implements ResponseInterface
     }
     private function assertStatusCodeIsInteger($statusCode)
     {
-        if (\filter_var($statusCode, \FILTER_VALIDATE_INT) === \false) {
+        if (filter_var($statusCode, \FILTER_VALIDATE_INT) === \false) {
             throw new \InvalidArgumentException('Status code must be an integer value.');
         }
     }

@@ -57,14 +57,14 @@ class InlineFragmentRenderer extends RoutableFragmentRenderer
                 }
             }
             $uri = $this->generateFragmentUri($uri, $request, \false, \false);
-            $reference->attributes = \array_merge($attributes, $reference->attributes);
+            $reference->attributes = array_merge($attributes, $reference->attributes);
         }
         $subRequest = $this->createSubRequest($uri, $request);
         // override Request attributes as they can be objects (which are not supported by the generated URI)
         if (null !== $reference) {
             $subRequest->attributes->add($reference->attributes);
         }
-        $level = \ob_get_level();
+        $level = ob_get_level();
         try {
             return SubRequestHandler::handle($this->kernel, $subRequest, HttpKernelInterface::SUB_REQUEST, \false);
         } catch (\Exception $e) {

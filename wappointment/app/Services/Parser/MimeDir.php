@@ -26,16 +26,16 @@ class MimeDir extends \WappoVendor\Sabre\VObject\Parser\MimeDir
     protected function readProperty($line)
     {
         if ($this->options & self::OPTION_FORGIVING) {
-            $propNameToken = 'A-Z0-9\\-\\._\\/';
+            $propNameToken = 'A-Z0-9\-\._\/';
         } else {
-            $propNameToken = 'A-Z0-9\\-\\.';
+            $propNameToken = 'A-Z0-9\-\.';
         }
-        $paramNameToken = 'A-Z0-9\\-';
+        $paramNameToken = 'A-Z0-9\-';
         $safeChar = '^";:,';
         $qSafeChar = '^"';
         $regex = "/\n            ^(?P<name> [{$propNameToken}]+ ) (?=[;:])        # property name\n            |\n            (?<=:)(?P<propValue> .+)\$                      # property value\n            |\n            ;(?P<paramName> [{$paramNameToken}]+) (?=[=;:])  # parameter name\n            |\n            (=|,)(?P<paramValue>                           # parameter value\n                (?: [{$safeChar}]*) |\n                \"(?: [{$qSafeChar}]+)\"\n            ) (?=[;:,])\n            /xi";
         //echo $regex, "\n"; die();
-        \preg_match_all($regex, $line, $matches, \PREG_SET_ORDER);
+        preg_match_all($regex, $line, $matches, \PREG_SET_ORDER);
         $property = ['name' => null, 'parameters' => [], 'value' => null];
         $lastParam = null;
         /**
@@ -48,18 +48,18 @@ class MimeDir extends \WappoVendor\Sabre\VObject\Parser\MimeDir
         foreach ($matches as $match) {
             if (isset($match['paramValue'])) {
                 if ($match['paramValue'] && $match['paramValue'][0] === '"') {
-                    $value = \substr($match['paramValue'], 1, -1);
+                    $value = substr($match['paramValue'], 1, -1);
                 } else {
                     $value = $match['paramValue'];
                 }
                 $value = $this->unescapeParam($value);
-                if (\is_null($lastParam)) {
+                if (is_null($lastParam)) {
                     continue;
                     throw new \WappoVendor\Sabre\VObject\ParseException('Invalid Mimedir file. Line starting at ' . $this->startLine . ' did not follow iCalendar/vCard conventions');
                 }
-                if (\is_null($property['parameters'][$lastParam])) {
+                if (is_null($property['parameters'][$lastParam])) {
                     $property['parameters'][$lastParam] = $value;
-                } elseif (\is_array($property['parameters'][$lastParam])) {
+                } elseif (is_array($property['parameters'][$lastParam])) {
                     $property['parameters'][$lastParam][] = $value;
                 } else {
                     $property['parameters'][$lastParam] = [$property['parameters'][$lastParam], $value];
@@ -67,7 +67,7 @@ class MimeDir extends \WappoVendor\Sabre\VObject\Parser\MimeDir
                 continue;
             }
             if (isset($match['paramName'])) {
-                $lastParam = \strtoupper($match['paramName']);
+                $lastParam = strtoupper($match['paramName']);
                 if (!isset($property['parameters'][$lastParam])) {
                     $property['parameters'][$lastParam] = null;
                 }
@@ -78,14 +78,14 @@ class MimeDir extends \WappoVendor\Sabre\VObject\Parser\MimeDir
                 continue;
             }
             if (isset($match['name']) && $match['name']) {
-                $property['name'] = \strtoupper($match['name']);
+                $property['name'] = strtoupper($match['name']);
                 continue;
             }
             // @codeCoverageIgnoreStart
             throw new \LogicException('This code should not be reachable');
             // @codeCoverageIgnoreEnd
         }
-        if (\is_null($property['value'])) {
+        if (is_null($property['value'])) {
             $property['value'] = '';
         }
         if (!$property['name']) {
@@ -102,7 +102,7 @@ class MimeDir extends \WappoVendor\Sabre\VObject\Parser\MimeDir
         $namedParameters = [];
         $namelessParameters = [];
         foreach ($property['parameters'] as $name => $value) {
-            if (!\is_null($value)) {
+            if (!is_null($value)) {
                 $namedParameters[$name] = $value;
             } else {
                 $namelessParameters[] = $name;
@@ -112,7 +112,7 @@ class MimeDir extends \WappoVendor\Sabre\VObject\Parser\MimeDir
         foreach ($namelessParameters as $namelessParameter) {
             $propObj->add(null, $namelessParameter);
         }
-        if (\is_string($propObj['ENCODING']) && \strtoupper($propObj['ENCODING']) === 'QUOTED-PRINTABLE') {
+        if (is_string($propObj['ENCODING']) && strtoupper($propObj['ENCODING']) === 'QUOTED-PRINTABLE') {
             $propObj->setQuotedPrintableValue($this->extractQuotedPrintableValue());
         } else {
             $charset = $this->charset;
@@ -120,14 +120,14 @@ class MimeDir extends \WappoVendor\Sabre\VObject\Parser\MimeDir
                 // vCard 2.1 allows the character set to be specified per property.
                 $charset = (string) $propObj['CHARSET'];
             }
-            switch (\strtolower($charset)) {
+            switch (strtolower($charset)) {
                 case 'utf-8':
                     break;
                 case 'iso-8859-1':
-                    $property['value'] = \utf8_encode($property['value']);
+                    $property['value'] = utf8_encode($property['value']);
                     break;
                 case 'windows-1252':
-                    $property['value'] = \mb_convert_encoding($property['value'], 'UTF-8', $charset);
+                    $property['value'] = mb_convert_encoding($property['value'], 'UTF-8', $charset);
                     break;
                 default:
                     throw new \WappoVendor\Sabre\VObject\ParseException('Unsupported CHARSET: ' . $propObj['CHARSET']);
@@ -172,7 +172,7 @@ class MimeDir extends \WappoVendor\Sabre\VObject\Parser\MimeDir
      */
     private function unescapeParam($input)
     {
-        return \preg_replace_callback('#(\\^(\\^|n|\'))#', function ($matches) {
+        return preg_replace_callback('#(\^(\^|n|\'))#', function ($matches) {
             switch ($matches[2]) {
                 case 'n':
                     return "\n";
@@ -206,16 +206,16 @@ class MimeDir extends \WappoVendor\Sabre\VObject\Parser\MimeDir
             : # start of the value we really care about
             (.*)$
         /xs';
-        \preg_match($regex, $this->rawLine, $matches);
+        preg_match($regex, $this->rawLine, $matches);
         $value = $matches[1];
         // Removing the first whitespace character from every line. Kind of
         // like unfolding, but we keep the newline.
-        $value = \str_replace("\n ", "\n", $value);
+        $value = str_replace("\n ", "\n", $value);
         // Microsoft products don't always correctly fold lines, they may be
         // missing a whitespace. So if 'forgiving' is turned on, we will take
         // those as well.
         if ($this->options & self::OPTION_FORGIVING) {
-            while (\substr($value, -1) === '=') {
+            while (substr($value, -1) === '=') {
                 // Reading the line
                 $this->readLine();
                 // Grabbing the raw form
@@ -229,10 +229,10 @@ class MimeDir extends \WappoVendor\Sabre\VObject\Parser\MimeDir
         $line = $this->readLine();
         // BOM is ZERO WIDTH NO-BREAK SPACE (U+FEFF).
         // It's 0xEF 0xBB 0xBF in UTF-8 hex.
-        if (3 <= \strlen($line) && \ord($line[0]) === 0xef && \ord($line[1]) === 0xbb && \ord($line[2]) === 0xbf) {
-            $line = \substr($line, 3);
+        if (3 <= strlen($line) && ord($line[0]) === 0xef && ord($line[1]) === 0xbb && ord($line[2]) === 0xbf) {
+            $line = substr($line, 3);
         }
-        switch (\strtoupper($line)) {
+        switch (strtoupper($line)) {
             case 'BEGIN:VCALENDAR':
                 $class = \WappoVendor\Sabre\VObject\Component\VCalendar::$componentMap['VCALENDAR'];
                 break;
@@ -248,7 +248,7 @@ class MimeDir extends \WappoVendor\Sabre\VObject\Parser\MimeDir
         while (\true) {
             // Reading until we hit END:
             $line = $this->readLine();
-            if (\strtoupper(\substr($line, 0, 4)) === 'END:') {
+            if (strtoupper(substr($line, 0, 4)) === 'END:') {
                 break;
             }
             $result = $this->parseLine($line);
@@ -256,7 +256,7 @@ class MimeDir extends \WappoVendor\Sabre\VObject\Parser\MimeDir
                 $this->root->add($result);
             }
         }
-        $name = \strtoupper(\substr($line, 4));
+        $name = strtoupper(substr($line, 4));
         if ($name !== $this->root->name) {
             throw new \WappoVendor\Sabre\VObject\ParseException('Invalid MimeDir file. expected: "END:' . $this->root->name . '" got: "END:' . $name . '"');
         }

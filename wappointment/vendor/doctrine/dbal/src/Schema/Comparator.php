@@ -40,7 +40,7 @@ class Comparator
     /**
      * @param list<mixed> $args
      */
-    public function __call(string $method, array $args) : SchemaDiff
+    public function __call(string $method, array $args): SchemaDiff
     {
         if ($method !== 'compareSchemas') {
             throw new BadMethodCallException(sprintf('Unknown method "%s"', $method));
@@ -50,7 +50,7 @@ class Comparator
     /**
      * @param list<mixed> $args
      */
-    public static function __callStatic(string $method, array $args) : SchemaDiff
+    public static function __callStatic(string $method, array $args): SchemaDiff
     {
         if ($method !== 'compareSchemas') {
             throw new BadMethodCallException(sprintf('Unknown method "%s"', $method));
@@ -140,10 +140,8 @@ class Comparator
                 if (!$this->isAutoIncrementSequenceInSchema($fromSchema, $sequence)) {
                     $diff->newSequences[] = $sequence;
                 }
-            } else {
-                if ($this->diffSequence($sequence, $fromSchema->getSequence($sequenceName))) {
-                    $diff->changedSequences[] = $toSchema->getSequence($sequenceName);
-                }
+            } else if ($this->diffSequence($sequence, $fromSchema->getSequence($sequenceName))) {
+                $diff->changedSequences[] = $toSchema->getSequence($sequenceName);
             }
         }
         foreach ($fromSchema->getSequences() as $sequence) {
@@ -174,7 +172,7 @@ class Comparator
      * @param Schema   $schema
      * @param Sequence $sequence
      */
-    private function isAutoIncrementSequenceInSchema($schema, $sequence) : bool
+    private function isAutoIncrementSequenceInSchema($schema, $sequence): bool
     {
         foreach ($schema->getTables() as $table) {
             if ($sequence->isAutoIncrementsFor($table)) {
@@ -273,12 +271,10 @@ class Comparator
             foreach ($toForeignKeys as $toKey => $toConstraint) {
                 if ($this->diffForeignKey($fromConstraint, $toConstraint) === \false) {
                     unset($fromForeignKeys[$fromKey], $toForeignKeys[$toKey]);
-                } else {
-                    if (strtolower($fromConstraint->getName()) === strtolower($toConstraint->getName())) {
-                        $tableDifferences->changedForeignKeys[] = $toConstraint;
-                        $changes++;
-                        unset($fromForeignKeys[$fromKey], $toForeignKeys[$toKey]);
-                    }
+                } else if (strtolower($fromConstraint->getName()) === strtolower($toConstraint->getName())) {
+                    $tableDifferences->changedForeignKeys[] = $toConstraint;
+                    $changes++;
+                    unset($fromForeignKeys[$fromKey], $toForeignKeys[$toKey]);
                 }
             }
         }
@@ -296,7 +292,7 @@ class Comparator
      * Try to find columns that only changed their name, rename operations maybe cheaper than add/drop
      * however ambiguities between different possibilities should not lead to renaming at all.
      */
-    private function detectColumnRenamings(TableDiff $tableDifferences) : void
+    private function detectColumnRenamings(TableDiff $tableDifferences): void
     {
         $renameCandidates = [];
         foreach ($tableDifferences->addedColumns as $addedColumnName => $addedColumn) {
@@ -325,7 +321,7 @@ class Comparator
      * Try to find indexes that only changed their name, rename operations maybe cheaper than add/drop
      * however ambiguities between different possibilities should not lead to renaming at all.
      */
-    private function detectIndexRenamings(TableDiff $tableDifferences) : void
+    private function detectIndexRenamings(TableDiff $tableDifferences): void
     {
         $renameCandidates = [];
         // Gather possible rename candidates by comparing each added and removed index based on semantics.
@@ -379,7 +375,7 @@ class Comparator
      *
      * @throws Exception
      */
-    public function columnsEqual(Column $column1, Column $column2) : bool
+    public function columnsEqual(Column $column1, Column $column2): bool
     {
         if ($this->platform === null) {
             return $this->diffColumn($column1, $column2) === [];

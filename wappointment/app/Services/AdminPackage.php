@@ -18,13 +18,11 @@ class AdminPackage
                 if (!empty($price_id)) {
                     static::deletePrice($price_id);
                 }
-            } else {
-                if (!empty($price) && !empty($packData['id'])) {
-                    $pack_options_db['variations'][$key]['price_id'] = static::recordPrice($packData['id'], $price, $price_id, 'Credits : ' . $variationObj['credits']);
-                }
+            } else if (!empty($price) && !empty($packData['id'])) {
+                $pack_options_db['variations'][$key]['price_id'] = static::recordPrice($packData['id'], $price, $price_id, 'Credits : ' . $variationObj['credits']);
             }
         }
-        $packData['options']['variations'] = \array_values($pack_options_db['variations']);
+        $packData['options']['variations'] = array_values($pack_options_db['variations']);
         return $packData;
     }
     public static function recordPrice($package_id, $price_value, $price_id, $details)

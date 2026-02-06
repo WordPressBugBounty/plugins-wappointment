@@ -78,7 +78,7 @@ abstract class Factory
      *
      * @var string
      */
-    protected static $namespace = 'Database\\Factories\\';
+    protected static $namespace = 'Database\Factories\\';
     /**
      * The default model name resolver.
      *
@@ -119,7 +119,7 @@ abstract class Factory
      *
      * @return array
      */
-    public abstract function definition();
+    abstract public function definition();
     /**
      * Get a new factory instance for the given attributes.
      *
@@ -161,9 +161,9 @@ abstract class Factory
         if ($this->count === null) {
             return $this->state($attributes)->getExpandedAttributes($parent);
         }
-        return \array_map(function () use($attributes, $parent) {
+        return array_map(function () use ($attributes, $parent) {
             return $this->state($attributes)->getExpandedAttributes($parent);
-        }, \range(1, $this->count));
+        }, range(1, $this->count));
     }
     /**
      * Create a single model and persist it to the database.
@@ -205,7 +205,7 @@ abstract class Factory
      */
     public function createManyQuietly(iterable $records)
     {
-        return Model::withoutEvents(function () use($records) {
+        return Model::withoutEvents(function () use ($records) {
             return $this->createMany($records);
         });
     }
@@ -240,7 +240,7 @@ abstract class Factory
      */
     public function createQuietly($attributes = [], ?Model $parent = null)
     {
-        return Model::withoutEvents(function () use($attributes, $parent) {
+        return Model::withoutEvents(function () use ($attributes, $parent) {
             return $this->create($attributes, $parent);
         });
     }
@@ -253,7 +253,7 @@ abstract class Factory
      */
     public function lazy(array $attributes = [], ?Model $parent = null)
     {
-        return function () use($attributes, $parent) {
+        return function () use ($attributes, $parent) {
             return $this->create($attributes, $parent);
         };
     }
@@ -281,8 +281,8 @@ abstract class Factory
      */
     protected function createChildren(Model $model)
     {
-        Model::unguarded(function () use($model) {
-            $this->has->each(function ($has) use($model) {
+        Model::unguarded(function () use ($model) {
+            $this->has->each(function ($has) use ($model) {
                 $has->createFor($model);
             });
         });
@@ -317,9 +317,9 @@ abstract class Factory
         if ($this->count < 1) {
             return $this->newModel()->newCollection();
         }
-        $instances = $this->newModel()->newCollection(\array_map(function () use($parent) {
+        $instances = $this->newModel()->newCollection(array_map(function () use ($parent) {
             return $this->makeInstance($parent);
-        }, \range(1, $this->count)));
+        }, range(1, $this->count)));
         $this->callAfterMaking($instances);
         return $instances;
     }
@@ -331,7 +331,7 @@ abstract class Factory
      */
     protected function makeInstance(?Model $parent)
     {
-        return Model::unguarded(function () use($parent) {
+        return Model::unguarded(function () use ($parent) {
             return \WappointmentLv::tap($this->newModel($this->getExpandedAttributes($parent)), function ($instance) {
                 if (isset($this->connection)) {
                     $instance->setConnection($this->connection);
@@ -358,14 +358,14 @@ abstract class Factory
     protected function getRawAttributes(?Model $parent)
     {
         return $this->states->pipe(function ($states) {
-            return $this->for->isEmpty() ? $states : new Collection(\array_merge([function () {
+            return $this->for->isEmpty() ? $states : new Collection(array_merge([function () {
                 return $this->parentResolvers();
             }], $states->all()));
-        })->reduce(function ($carry, $state) use($parent) {
+        })->reduce(function ($carry, $state) use ($parent) {
             if ($state instanceof Closure) {
                 $state = $state->bindTo($this);
             }
-            return \array_merge($carry, $state($carry, $parent));
+            return array_merge($carry, $state($carry, $parent));
         }, $this->definition());
     }
     /**
@@ -376,7 +376,7 @@ abstract class Factory
     protected function parentResolvers()
     {
         $model = $this->newModel();
-        return $this->for->map(function (BelongsToRelationship $for) use($model) {
+        return $this->for->map(function (BelongsToRelationship $for) use ($model) {
             return $for->attributesFor($model);
         })->collapse()->all();
     }
@@ -388,8 +388,8 @@ abstract class Factory
      */
     protected function expandAttributes(array $definition)
     {
-        return \WappointmentLv::collect($definition)->map(function ($attribute, $key) use(&$definition) {
-            if (\is_callable($attribute) && !\is_string($attribute) && !\is_array($attribute)) {
+        return \WappointmentLv::collect($definition)->map(function ($attribute, $key) use (&$definition) {
+            if (is_callable($attribute) && !is_string($attribute) && !is_array($attribute)) {
                 $attribute = $attribute($definition);
             }
             if ($attribute instanceof self) {
@@ -409,7 +409,7 @@ abstract class Factory
      */
     public function state($state)
     {
-        return $this->newInstance(['states' => $this->states->concat([\is_callable($state) ? $state : function () use($state) {
+        return $this->newInstance(['states' => $this->states->concat([is_callable($state) ? $state : function () use ($state) {
             return $state;
         }])]);
     }
@@ -453,7 +453,7 @@ abstract class Factory
     protected function guessRelationship(string $related)
     {
         $guess = Str::camel(Str::plural(\WappointmentLv::class_basename($related)));
-        return \method_exists($this->modelName(), $guess) ? $guess : Str::singular($guess);
+        return method_exists($this->modelName(), $guess) ? $guess : Str::singular($guess);
     }
     /**
      * Define an attached relationship for the model.
@@ -507,7 +507,7 @@ abstract class Factory
     protected function callAfterMaking(Collection $instances)
     {
         $instances->each(function ($model) {
-            $this->afterMaking->each(function ($callback) use($model) {
+            $this->afterMaking->each(function ($callback) use ($model) {
                 $callback($model);
             });
         });
@@ -521,8 +521,8 @@ abstract class Factory
      */
     protected function callAfterCreating(Collection $instances, ?Model $parent = null)
     {
-        $instances->each(function ($model) use($parent) {
-            $this->afterCreating->each(function ($callback) use($model, $parent) {
+        $instances->each(function ($model) use ($parent) {
+            $this->afterCreating->each(function ($callback) use ($model, $parent) {
                 $callback($model, $parent);
             });
         });
@@ -555,7 +555,7 @@ abstract class Factory
      */
     protected function newInstance(array $arguments = [])
     {
-        return new static(...\array_values(\array_merge(['count' => $this->count, 'states' => $this->states, 'has' => $this->has, 'for' => $this->for, 'afterMaking' => $this->afterMaking, 'afterCreating' => $this->afterCreating, 'connection' => $this->connection], $arguments)));
+        return new static(...array_values(array_merge(['count' => $this->count, 'states' => $this->states, 'has' => $this->has, 'for' => $this->for, 'afterMaking' => $this->afterMaking, 'afterCreating' => $this->afterCreating, 'connection' => $this->connection], $arguments)));
     }
     /**
      * Get a new model instance.
@@ -576,10 +576,10 @@ abstract class Factory
     public function modelName()
     {
         $resolver = static::$modelNameResolver ?: function (self $factory) {
-            $namespacedFactoryBasename = Str::replaceLast('Factory', '', Str::replaceFirst(static::$namespace, '', \get_class($factory)));
+            $namespacedFactoryBasename = Str::replaceLast('Factory', '', Str::replaceFirst(static::$namespace, '', get_class($factory)));
             $factoryBasename = Str::replaceLast('Factory', '', \WappointmentLv::class_basename($factory));
             $appNamespace = static::appNamespace();
-            return \class_exists($appNamespace . 'Models\\' . $namespacedFactoryBasename) ? $appNamespace . 'Models\\' . $namespacedFactoryBasename : $appNamespace . $factoryBasename;
+            return class_exists($appNamespace . 'Models\\' . $namespacedFactoryBasename) ? $appNamespace . 'Models\\' . $namespacedFactoryBasename : $appNamespace . $factoryBasename;
         };
         return $this->model ?: $resolver($this);
     }
@@ -677,8 +677,8 @@ abstract class Factory
             static::throwBadMethodCallException($method);
         }
         $relationship = Str::camel(Str::substr($method, 3));
-        $relatedModel = \get_class($this->newModel()->{$relationship}()->getRelated());
-        if (\method_exists($relatedModel, 'newFactory')) {
+        $relatedModel = get_class($this->newModel()->{$relationship}()->getRelated());
+        if (method_exists($relatedModel, 'newFactory')) {
             $factory = $relatedModel::newFactory() ?: static::factoryForModel($relatedModel);
         } else {
             $factory = static::factoryForModel($relatedModel);
@@ -686,7 +686,7 @@ abstract class Factory
         if (Str::startsWith($method, 'for')) {
             return $this->for($factory->state($parameters[0] ?? []), $relationship);
         } elseif (Str::startsWith($method, 'has')) {
-            return $this->has($factory->count(\is_numeric($parameters[0] ?? null) ? $parameters[0] : 1)->state(\is_callable($parameters[0] ?? null) || \is_array($parameters[0] ?? null) ? $parameters[0] : $parameters[1] ?? []), $relationship);
+            return $this->has($factory->count(is_numeric($parameters[0] ?? null) ? $parameters[0] : 1)->state(is_callable($parameters[0] ?? null) || is_array($parameters[0] ?? null) ? $parameters[0] : $parameters[1] ?? []), $relationship);
         }
     }
 }

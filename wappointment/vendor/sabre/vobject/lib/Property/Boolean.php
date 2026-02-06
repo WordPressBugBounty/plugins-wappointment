@@ -27,7 +27,7 @@ class Boolean extends Property
      */
     public function setRawMimeDirValue($val)
     {
-        $val = 'TRUE' === \strtoupper($val) ? \true : \false;
+        $val = 'TRUE' === strtoupper($val) ? \true : \false;
         $this->setValue($val);
     }
     /**
@@ -57,7 +57,7 @@ class Boolean extends Property
      */
     public function setXmlValue(array $value)
     {
-        $value = \array_map(function ($value) {
+        $value = array_map(function ($value) {
             return 'true' === $value;
         }, $value);
         parent::setXmlValue($value);

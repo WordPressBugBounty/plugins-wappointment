@@ -12,7 +12,7 @@ class AdminCanceledAppointmentEmail extends \Wappointment\Messages\AbstractAdmin
         $this->addBr();
         $this->addLines([
             /* translators: %s - client's first name. */
-            \sprintf(__('Hi %s,', 'wappointment'), $this->params['appointment']->getStaff()->getFirstName()),
+            sprintf(__('Hi %s,', 'wappointment'), $this->params['appointment']->getStaff()->getFirstName()),
             __('Unfortunately a client cancelled his appointment.', 'wappointment'),
         ]);
         $this->addRoundedSquare($this->getEmailContent($this->params['client'], $this->params['appointment']));

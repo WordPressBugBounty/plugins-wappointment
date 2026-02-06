@@ -26,7 +26,7 @@ abstract class AbstractPostgreSQLDriver implements VersionAwarePlatformDriver
      */
     public function createDatabasePlatformForVersion($version)
     {
-        if (preg_match('/^(?P<major>\\d+)(?:\\.(?P<minor>\\d+)(?:\\.(?P<patch>\\d+))?)?/', $version, $versionParts) === 0) {
+        if (preg_match('/^(?P<major>\d+)(?:\.(?P<minor>\d+)(?:\.(?P<patch>\d+))?)?/', $version, $versionParts) === 0) {
             throw Exception::invalidPlatformVersionSpecified($version, '<major_version>.<minor_version>.<patch_version>');
         }
         $majorVersion = $versionParts['major'];
@@ -54,7 +54,7 @@ abstract class AbstractPostgreSQLDriver implements VersionAwarePlatformDriver
         assert($platform instanceof PostgreSQLPlatform);
         return new PostgreSQLSchemaManager($conn, $platform);
     }
-    public function getExceptionConverter() : ExceptionConverter
+    public function getExceptionConverter(): ExceptionConverter
     {
         return new PostgreSQL\ExceptionConverter();
     }

@@ -53,15 +53,15 @@ class DeclarationBlock extends RuleSet
             $sStringWrapperChar = \false;
             do {
                 $aSelectorParts[] = $oParserState->consume(1) . $oParserState->consumeUntil(['{', '}', '\'', '"'], \false, \false, $aComments);
-                if (\in_array($oParserState->peek(), ['\'', '"']) && \substr(\end($aSelectorParts), -1) != "\\") {
+                if (in_array($oParserState->peek(), ['\'', '"']) && substr(end($aSelectorParts), -1) != "\\") {
                     if ($sStringWrapperChar === \false) {
                         $sStringWrapperChar = $oParserState->peek();
                     } elseif ($sStringWrapperChar == $oParserState->peek()) {
                         $sStringWrapperChar = \false;
                     }
                 }
-            } while (!\in_array($oParserState->peek(), ['{', '}']) || $sStringWrapperChar !== \false);
-            $oResult->setSelectors(\implode('', $aSelectorParts), $oList);
+            } while (!in_array($oParserState->peek(), ['{', '}']) || $sStringWrapperChar !== \false);
+            $oResult->setSelectors(implode('', $aSelectorParts), $oList);
             if ($oParserState->comes('{')) {
                 $oParserState->consume(1);
             }
@@ -87,10 +87,10 @@ class DeclarationBlock extends RuleSet
      */
     public function setSelectors($mSelector, $oList = null)
     {
-        if (\is_array($mSelector)) {
+        if (is_array($mSelector)) {
             $this->aSelectors = $mSelector;
         } else {
-            $this->aSelectors = \explode(',', $mSelector);
+            $this->aSelectors = explode(',', $mSelector);
         }
         foreach ($this->aSelectors as $iKey => $mSelector) {
             if (!$mSelector instanceof Selector) {
@@ -220,12 +220,10 @@ class DeclarationBlock extends RuleSet
                     $sNewRuleName = $sBorderRule . "-width";
                 } elseif ($mValue instanceof Color) {
                     $sNewRuleName = $sBorderRule . "-color";
+                } else if (in_array($mValue, $aBorderSizes)) {
+                    $sNewRuleName = $sBorderRule . "-width";
                 } else {
-                    if (\in_array($mValue, $aBorderSizes)) {
-                        $sNewRuleName = $sBorderRule . "-width";
-                    } else {
-                        $sNewRuleName = $sBorderRule . "-style";
-                    }
+                    $sNewRuleName = $sBorderRule . "-style";
                 }
                 $oNewRule = new Rule($sNewRuleName, $oRule->getLineNo(), $oRule->getColNo());
                 $oNewRule->setIsImportant($oRule->getIsImportant());
@@ -260,7 +258,7 @@ class DeclarationBlock extends RuleSet
                 $aValues = $mRuleValue->getListComponents();
             }
             $top = $right = $bottom = $left = null;
-            switch (\count($aValues)) {
+            switch (count($aValues)) {
                 case 1:
                     $top = $right = $bottom = $left = $aValues[0];
                     break;
@@ -281,7 +279,7 @@ class DeclarationBlock extends RuleSet
                     break;
             }
             foreach (['top', 'right', 'bottom', 'left'] as $sPosition) {
-                $oNewRule = new Rule(\sprintf($sExpanded, $sPosition), $oRule->getLineNo(), $oRule->getColNo());
+                $oNewRule = new Rule(sprintf($sExpanded, $sPosition), $oRule->getLineNo(), $oRule->getColNo());
                 $oNewRule->setIsImportant($oRule->getIsImportant());
                 $oNewRule->addValue(${$sPosition});
                 $this->addRule($oNewRule);
@@ -314,19 +312,19 @@ class DeclarationBlock extends RuleSet
         }
         foreach ($aValues as $mValue) {
             if (!$mValue instanceof Value) {
-                $mValue = \mb_strtolower($mValue);
+                $mValue = mb_strtolower($mValue);
             }
-            if (\in_array($mValue, ['normal', 'inherit'])) {
+            if (in_array($mValue, ['normal', 'inherit'])) {
                 foreach (['font-style', 'font-weight', 'font-variant'] as $sProperty) {
                     if (!isset($aFontProperties[$sProperty])) {
                         $aFontProperties[$sProperty] = $mValue;
                     }
                 }
-            } elseif (\in_array($mValue, ['italic', 'oblique'])) {
+            } elseif (in_array($mValue, ['italic', 'oblique'])) {
                 $aFontProperties['font-style'] = $mValue;
             } elseif ($mValue == 'small-caps') {
                 $aFontProperties['font-variant'] = $mValue;
-            } elseif (\in_array($mValue, ['bold', 'bolder', 'lighter']) || $mValue instanceof Size && \in_array($mValue->getSize(), \range(100, 900, 100))) {
+            } elseif (in_array($mValue, ['bold', 'bolder', 'lighter']) || $mValue instanceof Size && in_array($mValue->getSize(), range(100, 900, 100))) {
                 $aFontProperties['font-weight'] = $mValue;
             } elseif ($mValue instanceof RuleValueList && $mValue->getListSeparator() == '/') {
                 list($oSize, $oHeight) = $mValue->getListComponents();
@@ -370,7 +368,7 @@ class DeclarationBlock extends RuleSet
         } else {
             $aValues = $mRuleValue->getListComponents();
         }
-        if (\count($aValues) == 1 && $aValues[0] == 'inherit') {
+        if (count($aValues) == 1 && $aValues[0] == 'inherit') {
             foreach ($aBgProperties as $sProperty => $mValue) {
                 $oNewRule = new Rule($sProperty, $oRule->getLineNo(), $oRule->getColNo());
                 $oNewRule->addValue('inherit');
@@ -383,17 +381,17 @@ class DeclarationBlock extends RuleSet
         $iNumBgPos = 0;
         foreach ($aValues as $mValue) {
             if (!$mValue instanceof Value) {
-                $mValue = \mb_strtolower($mValue);
+                $mValue = mb_strtolower($mValue);
             }
             if ($mValue instanceof URL) {
                 $aBgProperties['background-image'] = $mValue;
             } elseif ($mValue instanceof Color) {
                 $aBgProperties['background-color'] = $mValue;
-            } elseif (\in_array($mValue, ['scroll', 'fixed'])) {
+            } elseif (in_array($mValue, ['scroll', 'fixed'])) {
                 $aBgProperties['background-attachment'] = $mValue;
-            } elseif (\in_array($mValue, ['repeat', 'no-repeat', 'repeat-x', 'repeat-y'])) {
+            } elseif (in_array($mValue, ['repeat', 'no-repeat', 'repeat-x', 'repeat-y'])) {
                 $aBgProperties['background-repeat'] = $mValue;
-            } elseif (\in_array($mValue, ['left', 'center', 'right', 'top', 'bottom']) || $mValue instanceof Size) {
+            } elseif (in_array($mValue, ['left', 'center', 'right', 'top', 'bottom']) || $mValue instanceof Size) {
                 if ($iNumBgPos == 0) {
                     $aBgProperties['background-position'][0] = $mValue;
                     $aBgProperties['background-position'][1] = 'center';
@@ -431,7 +429,7 @@ class DeclarationBlock extends RuleSet
         } else {
             $aValues = $mRuleValue->getListComponents();
         }
-        if (\count($aValues) == 1 && $aValues[0] == 'inherit') {
+        if (count($aValues) == 1 && $aValues[0] == 'inherit') {
             foreach ($aListProperties as $sProperty => $mValue) {
                 $oNewRule = new Rule($sProperty, $oRule->getLineNo(), $oRule->getColNo());
                 $oNewRule->addValue('inherit');
@@ -443,13 +441,13 @@ class DeclarationBlock extends RuleSet
         }
         foreach ($aValues as $mValue) {
             if (!$mValue instanceof Value) {
-                $mValue = \mb_strtolower($mValue);
+                $mValue = mb_strtolower($mValue);
             }
             if ($mValue instanceof Url) {
                 $aListProperties['list-style-image'] = $mValue;
-            } elseif (\in_array($mValue, $aListStyleTypes)) {
+            } elseif (in_array($mValue, $aListStyleTypes)) {
                 $aListProperties['list-style-types'] = $mValue;
-            } elseif (\in_array($mValue, $aListStylePositions)) {
+            } elseif (in_array($mValue, $aListStylePositions)) {
                 $aListProperties['list-style-position'] = $mValue;
             }
         }
@@ -490,7 +488,7 @@ class DeclarationBlock extends RuleSet
                 $this->removeRule($sProperty);
             }
         }
-        if (\count($aNewValues)) {
+        if (count($aNewValues)) {
             $oNewRule = new Rule($sShorthand, $oRule->getLineNo(), $oRule->getColNo());
             foreach ($aNewValues as $mValue) {
                 $oNewRule->addValue($mValue);
@@ -542,16 +540,16 @@ class DeclarationBlock extends RuleSet
             $aFoldable = [];
             foreach ($aRules as $sRuleName => $oRule) {
                 foreach ($aPositions as $sPosition) {
-                    if ($sRuleName == \sprintf($sExpanded, $sPosition)) {
+                    if ($sRuleName == sprintf($sExpanded, $sPosition)) {
                         $aFoldable[$sRuleName] = $oRule;
                     }
                 }
             }
             // All four dimensions must be present
-            if (\count($aFoldable) == 4) {
+            if (count($aFoldable) == 4) {
                 $aValues = [];
                 foreach ($aPositions as $sPosition) {
-                    $oRule = $aRules[\sprintf($sExpanded, $sPosition)];
+                    $oRule = $aRules[sprintf($sExpanded, $sPosition)];
                     $mRuleValue = $oRule->getValue();
                     $aRuleValues = [];
                     if (!$mRuleValue instanceof RuleValueList) {
@@ -587,7 +585,7 @@ class DeclarationBlock extends RuleSet
                 }
                 $this->addRule($oNewRule);
                 foreach ($aPositions as $sPosition) {
-                    $this->removeRule(\sprintf($sExpanded, $sPosition));
+                    $this->removeRule(sprintf($sExpanded, $sPosition));
                 }
             }
         }
@@ -685,7 +683,7 @@ class DeclarationBlock extends RuleSet
      */
     public function render(OutputFormat $oOutputFormat)
     {
-        if (\count($this->aSelectors) === 0) {
+        if (count($this->aSelectors) === 0) {
             // If all the selectors have been removed, this declaration block becomes invalid
             throw new OutputException("Attempt to print declaration block with missing selector", $this->iLineNo);
         }

@@ -25,7 +25,7 @@ final class DoctrineProvider extends CacheProvider
 {
     /** @var CacheItemPoolInterface */
     private $pool;
-    public static function wrap(CacheItemPoolInterface $pool) : Cache
+    public static function wrap(CacheItemPoolInterface $pool): Cache
     {
         if ($pool instanceof CacheAdapter) {
             return $pool->getCache();
@@ -44,11 +44,11 @@ final class DoctrineProvider extends CacheProvider
         $this->pool = $pool;
     }
     /** @internal */
-    public function getPool() : CacheItemPoolInterface
+    public function getPool(): CacheItemPoolInterface
     {
         return $this->pool;
     }
-    public function reset() : void
+    public function reset(): void
     {
         if ($this->pool instanceof ResetInterface) {
             $this->pool->reset();

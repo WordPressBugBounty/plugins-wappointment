@@ -59,7 +59,7 @@ class EventManager
      *
      * @return array<string, object[]> The event listeners for the specified event, or all event listeners.
      */
-    public function getAllListeners() : array
+    public function getAllListeners(): array
     {
         return $this->listeners;
     }

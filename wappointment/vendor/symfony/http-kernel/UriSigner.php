@@ -39,9 +39,9 @@ class UriSigner
      */
     public function sign(string $uri)
     {
-        $url = \parse_url($uri);
+        $url = parse_url($uri);
         if (isset($url['query'])) {
-            \parse_str($url['query'], $params);
+            parse_str($url['query'], $params);
         } else {
             $params = [];
         }
@@ -56,9 +56,9 @@ class UriSigner
      */
     public function check(string $uri)
     {
-        $url = \parse_url($uri);
+        $url = parse_url($uri);
         if (isset($url['query'])) {
-            \parse_str($url['query'], $params);
+            parse_str($url['query'], $params);
         } else {
             $params = [];
         }
@@ -67,22 +67,22 @@ class UriSigner
         }
         $hash = $params[$this->parameter];
         unset($params[$this->parameter]);
-        return \hash_equals($this->computeHash($this->buildUrl($url, $params)), $hash);
+        return hash_equals($this->computeHash($this->buildUrl($url, $params)), $hash);
     }
-    public function checkRequest(Request $request) : bool
+    public function checkRequest(Request $request): bool
     {
         $qs = ($qs = $request->server->get('QUERY_STRING')) ? '?' . $qs : '';
         // we cannot use $request->getUri() here as we want to work with the original URI (no query string reordering)
         return $this->check($request->getSchemeAndHttpHost() . $request->getBaseUrl() . $request->getPathInfo() . $qs);
     }
-    private function computeHash(string $uri) : string
+    private function computeHash(string $uri): string
     {
-        return \base64_encode(\hash_hmac('sha256', $uri, $this->secret, \true));
+        return base64_encode(hash_hmac('sha256', $uri, $this->secret, \true));
     }
-    private function buildUrl(array $url, array $params = []) : string
+    private function buildUrl(array $url, array $params = []): string
     {
-        \ksort($params, \SORT_STRING);
-        $url['query'] = \http_build_query($params, '', '&');
+        ksort($params, \SORT_STRING);
+        $url['query'] = http_build_query($params, '', '&');
         $scheme = isset($url['scheme']) ? $url['scheme'] . '://' : '';
         $host = $url['host'] ?? '';
         $port = isset($url['port']) ? ':' . $url['port'] : '';

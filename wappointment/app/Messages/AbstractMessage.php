@@ -13,14 +13,14 @@ abstract class AbstractMessage implements \Wappointment\Messages\InterfaceMessag
     }
     protected function parseBody()
     {
-        if (\method_exists($this, 'replaceTags')) {
+        if (method_exists($this, 'replaceTags')) {
             $this->replaceTags();
         }
         $this->finalRemoveEmptyLines();
     }
     public function finalRemoveEmptyLines()
     {
-        $this->body = \str_replace('<p></p>', '', $this->body);
+        $this->body = str_replace('<p></p>', '', $this->body);
     }
     public function renderMessage()
     {

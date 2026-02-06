@@ -8,7 +8,7 @@ class Response implements InterfaceResponse
     public $response = null;
     public function __construct($response)
     {
-        if (!\is_array($response)) {
+        if (!is_array($response)) {
             throw new \WappointmentException("WP remote response error", 1);
         }
         $this->response = $response;

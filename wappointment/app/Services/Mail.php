@@ -51,7 +51,7 @@ class Mail
     }
     public function convertToText($htmlBody)
     {
-        return \WappoVendor\Html2Text\Html2Text::convert($htmlBody);
+        return @\WappoVendor\Html2Text\Html2Text::convert($htmlBody);
     }
     public function getFrom()
     {
@@ -82,10 +82,10 @@ class Mail
     }
     public function mergeAddresses($addresses, $email, $name = '')
     {
-        if (!\is_array($email)) {
+        if (!is_array($email)) {
             $email = [$email => $name];
         }
-        return \array_merge($addresses, $email);
+        return array_merge($addresses, $email);
     }
     public function body($body)
     {

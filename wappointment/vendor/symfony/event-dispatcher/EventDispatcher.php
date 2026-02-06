@@ -41,7 +41,7 @@ class EventDispatcher implements EventDispatcherInterface
     /**
      * {@inheritdoc}
      */
-    public function dispatch(object $event, string $eventName = null) : object
+    public function dispatch(object $event, string $eventName = null): object
     {
         $eventName = $eventName ?? \get_class($event);
         if (null !== $this->optimized) {
@@ -73,7 +73,7 @@ class EventDispatcher implements EventDispatcherInterface
                 $this->sortListeners($eventName);
             }
         }
-        return \array_filter($this->sorted);
+        return array_filter($this->sorted);
     }
     /**
      * {@inheritdoc}
@@ -207,7 +207,7 @@ class EventDispatcher implements EventDispatcherInterface
      */
     private function sortListeners(string $eventName)
     {
-        \krsort($this->listeners[$eventName]);
+        krsort($this->listeners[$eventName]);
         $this->sorted[$eventName] = [];
         foreach ($this->listeners[$eventName] as &$listeners) {
             foreach ($listeners as $k => &$listener) {
@@ -222,15 +222,15 @@ class EventDispatcher implements EventDispatcherInterface
     /**
      * Optimizes the internal list of listeners for the given event by priority.
      */
-    private function optimizeListeners(string $eventName) : array
+    private function optimizeListeners(string $eventName): array
     {
-        \krsort($this->listeners[$eventName]);
+        krsort($this->listeners[$eventName]);
         $this->optimized[$eventName] = [];
         foreach ($this->listeners[$eventName] as &$listeners) {
             foreach ($listeners as &$listener) {
                 $closure =& $this->optimized[$eventName][];
                 if (\is_array($listener) && isset($listener[0]) && $listener[0] instanceof \Closure && 2 >= \count($listener)) {
-                    $closure = static function (...$args) use(&$listener, &$closure) {
+                    $closure = static function (...$args) use (&$listener, &$closure) {
                         if ($listener[0] instanceof \Closure) {
                             $listener[0] = $listener[0]();
                             $listener[1] = $listener[1] ?? '__invoke';

@@ -82,7 +82,7 @@ trait Test
     public static function setTestNowAndTimezone($testNow = null, $tz = null)
     {
         if ($testNow) {
-            self::$testDefaultTimezone = self::$testDefaultTimezone ?? \date_default_timezone_get();
+            self::$testDefaultTimezone = self::$testDefaultTimezone ?? date_default_timezone_get();
         }
         $useDateInstanceTimezone = $testNow instanceof DateTimeInterface;
         if ($useDateInstanceTimezone) {
@@ -166,12 +166,12 @@ trait Test
         }
         $time = $testInstance instanceof self ? $testInstance->rawFormat(static::MOCK_DATETIME_FORMAT) : $testInstance->format(static::MOCK_DATETIME_FORMAT);
     }
-    private static function setDefaultTimezone($timezone, DateTimeInterface $date = null)
+    private static function setDefaultTimezone($timezone, ?DateTimeInterface $date = null)
     {
         $previous = null;
         $success = \false;
         try {
-            $success = \date_default_timezone_set($timezone);
+            $success = date_default_timezone_set($timezone);
         } catch (Throwable $exception) {
             $previous = $exception;
         }

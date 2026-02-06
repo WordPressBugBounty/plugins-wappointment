@@ -54,8 +54,8 @@ function enum(Writer $writer, array $values)
  */
 function valueObject(Writer $writer, $valueObject, string $namespace)
 {
-    foreach (\get_object_vars($valueObject) as $key => $val) {
-        if (\is_array($val)) {
+    foreach (get_object_vars($valueObject) as $key => $val) {
+        if (is_array($val)) {
             // If $val is an array, it has a special meaning. We need to
             // generate one child element for each item in $val
             foreach ($val as $child) {
@@ -146,21 +146,21 @@ function repeatingElements(Writer $writer, array $items, string $childElementNam
  */
 function standardSerializer(Writer $writer, $value)
 {
-    if (\is_scalar($value)) {
+    if (is_scalar($value)) {
         // String, integer, float, boolean
         $writer->text((string) $value);
     } elseif ($value instanceof XmlSerializable) {
         // XmlSerializable classes or Element classes.
         $value->xmlSerialize($writer);
-    } elseif (\is_object($value) && isset($writer->classMap[\get_class($value)])) {
+    } elseif (is_object($value) && isset($writer->classMap[get_class($value)])) {
         // It's an object which class appears in the classmap.
-        $writer->classMap[\get_class($value)]($writer, $value);
-    } elseif (\is_callable($value)) {
+        $writer->classMap[get_class($value)]($writer, $value);
+    } elseif (is_callable($value)) {
         // A callback
         $value($writer);
-    } elseif (\is_null($value)) {
+    } elseif (is_null($value)) {
         // nothing!
-    } elseif (\is_array($value) && \array_key_exists('name', $value)) {
+    } elseif (is_array($value) && array_key_exists('name', $value)) {
         // if the array had a 'name' element, we assume that this array
         // describes a 'name' and optionally 'attributes' and 'value'.
         $name = $value['name'];
@@ -170,13 +170,13 @@ function standardSerializer(Writer $writer, $value)
         $writer->writeAttributes($attributes);
         $writer->write($value);
         $writer->endElement();
-    } elseif (\is_array($value)) {
+    } elseif (is_array($value)) {
         foreach ($value as $name => $item) {
-            if (\is_int($name)) {
+            if (is_int($name)) {
                 // This item has a numeric index. We just loop through the
                 // array and throw it back in the writer.
                 standardSerializer($writer, $item);
-            } elseif (\is_string($name) && \is_array($item) && isset($item['attributes'])) {
+            } elseif (is_string($name) && is_array($item) && isset($item['attributes'])) {
                 // The key is used for a name, but $item has 'attributes' and
                 // possibly 'value'
                 $writer->startElement($name);
@@ -185,18 +185,18 @@ function standardSerializer(Writer $writer, $value)
                     $writer->write($item['value']);
                 }
                 $writer->endElement();
-            } elseif (\is_string($name)) {
+            } elseif (is_string($name)) {
                 // This was a plain key-value array.
                 $writer->startElement($name);
                 $writer->write($item);
                 $writer->endElement();
             } else {
-                throw new InvalidArgumentException('The writer does not know how to serialize arrays with keys of type: ' . \gettype($name));
+                throw new InvalidArgumentException('The writer does not know how to serialize arrays with keys of type: ' . gettype($name));
             }
         }
-    } elseif (\is_object($value)) {
-        throw new InvalidArgumentException('The writer cannot serialize objects of class: ' . \get_class($value));
+    } elseif (is_object($value)) {
+        throw new InvalidArgumentException('The writer cannot serialize objects of class: ' . get_class($value));
     } else {
-        throw new InvalidArgumentException('The writer cannot serialize values of type: ' . \gettype($value));
+        throw new InvalidArgumentException('The writer cannot serialize values of type: ' . gettype($value));
     }
 }

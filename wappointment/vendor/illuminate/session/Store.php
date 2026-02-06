@@ -74,7 +74,7 @@ class Store implements Session
      */
     protected function loadSession()
     {
-        $this->attributes = \array_merge($this->attributes, $this->readFromHandler());
+        $this->attributes = array_merge($this->attributes, $this->readFromHandler());
     }
     /**
      * Read the session data from the handler.
@@ -84,8 +84,8 @@ class Store implements Session
     protected function readFromHandler()
     {
         if ($data = $this->handler->read($this->getId())) {
-            $data = @\unserialize($this->prepareForUnserialize($data));
-            if ($data !== \false && !\is_null($data) && \is_array($data)) {
+            $data = @unserialize($this->prepareForUnserialize($data));
+            if ($data !== \false && !is_null($data) && is_array($data)) {
                 return $data;
             }
         }
@@ -109,7 +109,7 @@ class Store implements Session
     public function save()
     {
         $this->ageFlashData();
-        $this->handler->write($this->getId(), $this->prepareForStorage(\serialize($this->attributes)));
+        $this->handler->write($this->getId(), $this->prepareForStorage(serialize($this->attributes)));
         $this->started = \false;
     }
     /**
@@ -161,7 +161,7 @@ class Store implements Session
     public function exists($key)
     {
         $placeholder = new stdClass();
-        return !\WappointmentLv::collect(\is_array($key) ? $key : \func_get_args())->contains(function ($key) use($placeholder) {
+        return !\WappointmentLv::collect(is_array($key) ? $key : func_get_args())->contains(function ($key) use ($placeholder) {
             return $this->get($key, $placeholder) === $placeholder;
         });
     }
@@ -183,8 +183,8 @@ class Store implements Session
      */
     public function has($key)
     {
-        return !\WappointmentLv::collect(\is_array($key) ? $key : \func_get_args())->contains(function ($key) {
-            return \is_null($this->get($key));
+        return !\WappointmentLv::collect(is_array($key) ? $key : func_get_args())->contains(function ($key) {
+            return is_null($this->get($key));
         });
     }
     /**
@@ -218,7 +218,7 @@ class Store implements Session
     public function hasOldInput($key = null)
     {
         $old = $this->getOldInput($key);
-        return \is_null($key) ? \count($old) > 0 : !\is_null($old);
+        return is_null($key) ? count($old) > 0 : !is_null($old);
     }
     /**
      * Get the requested item from the flashed input array.
@@ -250,7 +250,7 @@ class Store implements Session
      */
     public function put($key, $value = null)
     {
-        if (!\is_array($key)) {
+        if (!is_array($key)) {
             $key = [$key => $value];
         }
         foreach ($key as $arrayKey => $arrayValue) {
@@ -266,10 +266,10 @@ class Store implements Session
      */
     public function remember($key, Closure $callback)
     {
-        if (!\is_null($value = $this->get($key))) {
+        if (!is_null($value = $this->get($key))) {
             return $value;
         }
-        return \WappointmentLv::tap($callback(), function ($value) use($key) {
+        return \WappointmentLv::tap($callback(), function ($value) use ($key) {
             $this->put($key, $value);
         });
     }
@@ -352,7 +352,7 @@ class Store implements Session
      */
     public function keep($keys = null)
     {
-        $this->mergeNewFlashes($keys = \is_array($keys) ? $keys : \func_get_args());
+        $this->mergeNewFlashes($keys = is_array($keys) ? $keys : func_get_args());
         $this->removeFromOldFlashData($keys);
     }
     /**
@@ -363,7 +363,7 @@ class Store implements Session
      */
     protected function mergeNewFlashes(array $keys)
     {
-        $values = \array_unique(\array_merge($this->get('_flash.new', []), $keys));
+        $values = array_unique(array_merge($this->get('_flash.new', []), $keys));
         $this->put('_flash.new', $values);
     }
     /**
@@ -374,7 +374,7 @@ class Store implements Session
      */
     protected function removeFromOldFlashData(array $keys)
     {
-        $this->put('_flash.old', \array_diff($this->get('_flash.old', []), $keys));
+        $this->put('_flash.old', array_diff($this->get('_flash.old', []), $keys));
     }
     /**
      * Flash an input array to the session.
@@ -507,7 +507,7 @@ class Store implements Session
      */
     public function isValidId($id)
     {
-        return \is_string($id) && \ctype_alnum($id) && \strlen($id) === 40;
+        return is_string($id) && ctype_alnum($id) && strlen($id) === 40;
     }
     /**
      * Get a new, random session ID.
@@ -574,7 +574,7 @@ class Store implements Session
      */
     public function passwordConfirmed()
     {
-        $this->put('auth.password_confirmed_at', \time());
+        $this->put('auth.password_confirmed_at', time());
     }
     /**
      * Get the underlying session handler implementation.

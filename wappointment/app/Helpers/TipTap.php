@@ -32,7 +32,7 @@ class TipTap
             case 'heading':
                 return 'h' . $tiptapRow['attrs']['level'];
             case 'paragraph':
-                return \in_array($parentTag, ['li']) ? 'span' : 'p';
+                return in_array($parentTag, ['li']) ? 'span' : 'p';
             case 'list_item':
                 return 'li';
             case 'ordered_list':
@@ -41,7 +41,6 @@ class TipTap
                 return 'ul';
             case 'cblockphysical':
             case 'cblockphone':
-            case 'cblockskype':
             case 'cblockzoom':
             case 'customfield':
             case 'text':
@@ -99,8 +98,8 @@ class TipTap
         $convertedArray = [];
         foreach ($bodyArray as $keyValuePair) {
             foreach ($keyValuePair as $key => $value) {
-                $conversionMethod = 'tiptap' . \ucfirst($key);
-                if (!\is_array($value)) {
+                $conversionMethod = 'tiptap' . ucfirst($key);
+                if (!is_array($value)) {
                     $value = [['p' => $value]];
                 }
                 foreach ($value as $val) {
@@ -118,7 +117,7 @@ class TipTap
     }
     protected static function detectTag($value)
     {
-        \preg_match_all("/\\[([^\\]]*)\\]/", $value, $matches);
+        preg_match_all("/\\[([^\\]]*)\\]/", $value, $matches);
         return $matches[1];
     }
     protected static function integrateContent($attributes, $value)
@@ -142,19 +141,19 @@ class TipTap
             $wrapped_tags[] = '[' . $tag . ']';
         }
         $tag_replacement = '<detectedtag>';
-        $tempstring = \str_replace($wrapped_tags, $tag_replacement, $value);
-        $arrayString = \explode($tag_replacement, $tempstring);
+        $tempstring = str_replace($wrapped_tags, $tag_replacement, $value);
+        $arrayString = explode($tag_replacement, $tempstring);
         $newArrayString = [];
         foreach ($arrayString as $key => $value) {
             if (empty($value)) {
                 continue;
             }
             $newArrayString[] = ['type' => 'text', 'text' => $value];
-            if (\count($detected_tags) > 0) {
-                $tag_to_use = \array_shift($detected_tags);
-                if (\strpos($tag_to_use, ':') === \false) {
+            if (count($detected_tags) > 0) {
+                $tag_to_use = array_shift($detected_tags);
+                if (strpos($tag_to_use, ':') === \false) {
                     //if must be a link since it noest a : separated values
-                    \preg_match_all("/(\\s+)(\\S+)=[\"']?((?:.(?![\"']?\\s+(?:\\S+)=|[>\"']))+.)[\"']?/", $tag_to_use, $matches);
+                    preg_match_all("/(\\s+)(\\S+)=[\"']?((?:.(?![\"']?\\s+(?:\\S+)=|[>\"']))+.)[\"']?/", $tag_to_use, $matches);
                     $attributeValues = [];
                     foreach ($matches[2] as $key => $attributeName) {
                         $attributeValues[$attributeName] = $matches[3][$key];
@@ -162,7 +161,7 @@ class TipTap
                     $model_String = !empty($attributeValues['model']) ? $attributeValues['model'] : 'appointment';
                     $newArrayString[] = ['type' => 'text', 'marks' => [['type' => 'link', 'attrs' => ['href' => '[' . $model_String . ':' . $attributeValues['link'] . ']']]], 'text' => $attributeValues['label']];
                 } else {
-                    $modelValue = \explode(':', $tag_to_use);
+                    $modelValue = explode(':', $tag_to_use);
                     $data = ['type' => 'customfield', 'attrs' => ['src' => $modelValue[0], 'alt' => $modelValue[1], 'class' => 'customfield', 'title' => null]];
                     if (isset($attributes['marks'])) {
                         $data['marks'] = $attributes['marks'];
@@ -175,7 +174,7 @@ class TipTap
     }
     protected static function typeToOptions($type = 'p')
     {
-        if (\strlen($type) == 2 && $type[0] == 'h') {
+        if (strlen($type) == 2 && $type[0] == 'h') {
             return ['type' => 'heading', 'attrs' => ['level' => (int) $type[1]]];
         }
         return ['type' => 'paragraph'];
@@ -201,10 +200,6 @@ class TipTap
     protected static function tiptapPhone($value, $type = 'p')
     {
         return ['type' => 'cblockphone', 'content' => [self::integrateContent(self::typeToOptions($type), $value)]];
-    }
-    protected static function tiptapSkype($value, $type = 'p')
-    {
-        return ['type' => 'cblockskype', 'content' => [self::integrateContent(self::typeToOptions($type), $value)]];
     }
     protected static function tiptapZoom($value, $type = 'p')
     {

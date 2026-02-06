@@ -67,7 +67,7 @@ class ErrorListener implements EventSubscriberInterface
             break;
         }
         $e = FlattenException::createFromThrowable($throwable);
-        $this->logException($throwable, \sprintf('Uncaught PHP Exception %s: "%s" at %s line %s', $e->getClass(), $e->getMessage(), $e->getFile(), $e->getLine()), $logLevel);
+        $this->logException($throwable, sprintf('Uncaught PHP Exception %s: "%s" at %s line %s', $e->getClass(), $e->getMessage(), $e->getFile(), $e->getLine()), $logLevel);
     }
     public function onKernelException(ExceptionEvent $event)
     {
@@ -80,10 +80,10 @@ class ErrorListener implements EventSubscriberInterface
             $response = $event->getKernel()->handle($request, HttpKernelInterface::SUB_REQUEST, \false);
         } catch (\Exception $e) {
             $f = FlattenException::createFromThrowable($e);
-            $this->logException($e, \sprintf('Exception thrown when handling an exception (%s: %s at %s line %s)', $f->getClass(), $f->getMessage(), $e->getFile(), $e->getLine()));
+            $this->logException($e, sprintf('Exception thrown when handling an exception (%s: %s at %s line %s)', $f->getClass(), $f->getMessage(), $e->getFile(), $e->getLine()));
             $prev = $e;
             do {
-                if ($throwable === ($wrapper = $prev)) {
+                if ($throwable === $wrapper = $prev) {
                     throw $e;
                 }
             } while ($prev = $wrapper->getPrevious());
@@ -97,7 +97,7 @@ class ErrorListener implements EventSubscriberInterface
             $event->getRequest()->attributes->set('_remove_csp_headers', \true);
         }
     }
-    public function removeCspHeader(ResponseEvent $event) : void
+    public function removeCspHeader(ResponseEvent $event): void
     {
         if ($this->debug && $event->getRequest()->attributes->get('_remove_csp_headers', \false)) {
             $event->getResponse()->headers->remove('Content-Security-Policy');
@@ -106,7 +106,7 @@ class ErrorListener implements EventSubscriberInterface
     public function onControllerArguments(ControllerArgumentsEvent $event)
     {
         $e = $event->getRequest()->attributes->get('exception');
-        if (!$e instanceof \Throwable || \false === ($k = \array_search($e, $event->getArguments(), \true))) {
+        if (!$e instanceof \Throwable || \false === $k = array_search($e, $event->getArguments(), \true)) {
             return;
         }
         $r = new \ReflectionFunction(\Closure::fromCallable($event->getController()));
@@ -117,14 +117,14 @@ class ErrorListener implements EventSubscriberInterface
             $event->setArguments($arguments);
         }
     }
-    public static function getSubscribedEvents() : array
+    public static function getSubscribedEvents(): array
     {
         return [KernelEvents::CONTROLLER_ARGUMENTS => 'onControllerArguments', KernelEvents::EXCEPTION => [['logKernelException', 0], ['onKernelException', -128]], KernelEvents::RESPONSE => ['removeCspHeader', -128]];
     }
     /**
      * Logs an exception.
      */
-    protected function logException(\Throwable $exception, string $message, string $logLevel = null) : void
+    protected function logException(\Throwable $exception, string $message, string $logLevel = null): void
     {
         if (null !== $this->logger) {
             if (null !== $logLevel) {
@@ -139,7 +139,7 @@ class ErrorListener implements EventSubscriberInterface
     /**
      * Clones the request for the exception.
      */
-    protected function duplicateRequest(\Throwable $exception, Request $request) : Request
+    protected function duplicateRequest(\Throwable $exception, Request $request): Request
     {
         $attributes = ['_controller' => $this->controller, 'exception' => $exception, 'logger' => $this->logger instanceof DebugLoggerInterface ? $this->logger : null];
         $request = $request->duplicate(null, null, $attributes);

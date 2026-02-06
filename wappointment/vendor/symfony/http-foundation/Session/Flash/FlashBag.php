@@ -113,7 +113,7 @@ class FlashBag implements FlashBagInterface
      */
     public function keys()
     {
-        return \array_keys($this->flashes);
+        return array_keys($this->flashes);
     }
     /**
      * {@inheritdoc}

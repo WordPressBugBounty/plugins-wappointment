@@ -14,10 +14,10 @@ class FileFactory
      */
     public function create($name, $kilobytes = 0, $mimeType = null)
     {
-        if (\is_string($kilobytes)) {
+        if (is_string($kilobytes)) {
             return $this->createWithContent($name, $kilobytes);
         }
-        return \WappointmentLv::tap(new File($name, \tmpfile()), function ($file) use($kilobytes, $mimeType) {
+        return \WappointmentLv::tap(new File($name, tmpfile()), function ($file) use ($kilobytes, $mimeType) {
             $file->sizeToReport = $kilobytes * 1024;
             $file->mimeTypeToReport = $mimeType;
         });
@@ -31,10 +31,10 @@ class FileFactory
      */
     public function createWithContent($name, $content)
     {
-        $tmpfile = \tmpfile();
-        \fwrite($tmpfile, $content);
-        return \WappointmentLv::tap(new File($name, $tmpfile), function ($file) use($tmpfile) {
-            $file->sizeToReport = \fstat($tmpfile)['size'];
+        $tmpfile = tmpfile();
+        fwrite($tmpfile, $content);
+        return \WappointmentLv::tap(new File($name, $tmpfile), function ($file) use ($tmpfile) {
+            $file->sizeToReport = fstat($tmpfile)['size'];
         });
     }
     /**
@@ -47,7 +47,7 @@ class FileFactory
      */
     public function image($name, $width = 10, $height = 10)
     {
-        return new File($name, $this->generateImage($width, $height, \pathinfo($name, \PATHINFO_EXTENSION)));
+        return new File($name, $this->generateImage($width, $height, pathinfo($name, \PATHINFO_EXTENSION)));
     }
     /**
      * Generate a dummy image of the given width and height.
@@ -59,12 +59,12 @@ class FileFactory
      */
     protected function generateImage($width, $height, $extension)
     {
-        return \WappointmentLv::tap(\tmpfile(), function ($temp) use($width, $height, $extension) {
-            \ob_start();
-            $extension = \in_array($extension, ['jpeg', 'png', 'gif', 'webp', 'wbmp', 'bmp']) ? \strtolower($extension) : 'jpeg';
-            $image = \imagecreatetruecolor($width, $height);
-            \call_user_func("image{$extension}", $image);
-            \fwrite($temp, \ob_get_clean());
+        return \WappointmentLv::tap(tmpfile(), function ($temp) use ($width, $height, $extension) {
+            ob_start();
+            $extension = in_array($extension, ['jpeg', 'png', 'gif', 'webp', 'wbmp', 'bmp']) ? strtolower($extension) : 'jpeg';
+            $image = imagecreatetruecolor($width, $height);
+            call_user_func("image{$extension}", $image);
+            fwrite($temp, ob_get_clean());
         });
     }
 }

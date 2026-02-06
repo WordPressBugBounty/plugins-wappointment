@@ -94,7 +94,7 @@ class DatabaseSessionHandler implements ExistenceAwareInterface, SessionHandlerI
         }
         if (isset($session->payload)) {
             $this->exists = \true;
-            return \base64_decode($session->payload);
+            return base64_decode($session->payload);
         }
         return '';
     }
@@ -161,7 +161,7 @@ class DatabaseSessionHandler implements ExistenceAwareInterface, SessionHandlerI
      */
     protected function getDefaultPayload($data)
     {
-        $payload = ['payload' => \base64_encode($data), 'last_activity' => $this->currentTime()];
+        $payload = ['payload' => base64_encode($data), 'last_activity' => $this->currentTime()];
         if (!$this->container) {
             return $payload;
         }
@@ -200,7 +200,7 @@ class DatabaseSessionHandler implements ExistenceAwareInterface, SessionHandlerI
     protected function addRequestInformation(&$payload)
     {
         if ($this->container->bound('request')) {
-            $payload = \array_merge($payload, ['ip_address' => $this->ipAddress(), 'user_agent' => $this->userAgent()]);
+            $payload = array_merge($payload, ['ip_address' => $this->ipAddress(), 'user_agent' => $this->userAgent()]);
         }
         return $this;
     }
@@ -220,7 +220,7 @@ class DatabaseSessionHandler implements ExistenceAwareInterface, SessionHandlerI
      */
     protected function userAgent()
     {
-        return \substr((string) $this->container->make('request')->header('User-Agent'), 0, 500);
+        return substr((string) $this->container->make('request')->header('User-Agent'), 0, 500);
     }
     /**
      * {@inheritdoc}

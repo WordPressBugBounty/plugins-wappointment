@@ -24,7 +24,7 @@ class CleanPendingPaymentAppointment implements JobInterface
     }
     public static function cancelReservations($orderData, $appointment = null)
     {
-        $look_for_appointment = \is_null($appointment);
+        $look_for_appointment = is_null($appointment);
         if (!empty($orderData['reservations']) && !isset($orderData['already_cancelled'])) {
             foreach ($orderData['reservations'] as $reservation) {
                 if (!empty($reservation['appointment_id'])) {
@@ -67,7 +67,7 @@ class CleanPendingPaymentAppointment implements JobInterface
         //woo marker
         do_action('wappointment_woo_cancelled_order', $orderData);
         //standalone marker
-        if (isset($orderData['orderObj']) && !\is_null($orderData['orderObj'])) {
+        if (isset($orderData['orderObj']) && !is_null($orderData['orderObj'])) {
             $orderData['orderObj']->setAutoCancelled();
         }
     }
@@ -93,21 +93,21 @@ class CleanPendingPaymentAppointment implements JobInterface
     {
         if ($skipCheck || self::lastCheckExpired() && !self::hasJobInQueue('pending_clean')) {
             Job::where('queue', 'pending_clean')->delete();
-            Queue::push('Wappointment\\Jobs\\CleanPendingPaymentAppointment', [], 'pending_clean', static::next());
+            Queue::push('Wappointment\Jobs\CleanPendingPaymentAppointment', [], 'pending_clean', static::next());
         }
     }
     public static function lastCheckExpired()
     {
-        return Settings::get('clean_last_check') === \false || Settings::get('clean_last_check') < \time() - 5 * 60;
+        return Settings::get('clean_last_check') === \false || Settings::get('clean_last_check') < time() - 5 * 60;
     }
     public static function hasJobInQueue($queue_key)
     {
-        Settings::save('clean_last_check', \time());
+        Settings::save('clean_last_check', time());
         return \Wappointment\Models\Job::where('queue', $queue_key)->first();
     }
     public static function next()
     {
-        return \time() + static::getDelayInSeconds();
+        return time() + static::getDelayInSeconds();
     }
     public static function getDelayInSeconds()
     {

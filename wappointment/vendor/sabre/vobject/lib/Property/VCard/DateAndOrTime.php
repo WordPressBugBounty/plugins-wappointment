@@ -45,7 +45,7 @@ class DateAndOrTime extends Property
      */
     public function setParts(array $parts)
     {
-        if (\count($parts) > 1) {
+        if (count($parts) > 1) {
             throw new \InvalidArgumentException('Only one value allowed');
         }
         if (isset($parts[0]) && $parts[0] instanceof DateTimeInterface) {
@@ -77,12 +77,12 @@ class DateAndOrTime extends Property
     public function setDateTime(DateTimeInterface $dt)
     {
         $tz = $dt->getTimeZone();
-        $isUtc = \in_array($tz->getName(), ['UTC', 'GMT', 'Z']);
+        $isUtc = in_array($tz->getName(), ['UTC', 'GMT', 'Z']);
         if ($isUtc) {
-            $value = $dt->format('WappoVendor\\Ymd\\THis\\Z');
+            $value = $dt->format('WappoVendor\Ymd\THis\Z');
         } else {
             // Calculating the offset.
-            $value = $dt->format('WappoVendor\\Ymd\\THisO');
+            $value = $dt->format('WappoVendor\Ymd\THisO');
         }
         $this->value = $value;
     }
@@ -105,14 +105,14 @@ class DateAndOrTime extends Property
     public function getDateTime()
     {
         $now = new DateTime();
-        $tzFormat = 0 === $now->getTimezone()->getOffset($now) ? '\\Z' : 'O';
-        $nowParts = DateTimeParser::parseVCardDateTime($now->format('Ymd\\This' . $tzFormat));
+        $tzFormat = 0 === $now->getTimezone()->getOffset($now) ? '\Z' : 'O';
+        $nowParts = DateTimeParser::parseVCardDateTime($now->format('Ymd\This' . $tzFormat));
         $dateParts = DateTimeParser::parseVCardDateTime($this->getValue());
         // This sets all the missing parts to the current date/time.
         // So if the year was missing for a birthday, we're making it 'this
         // year'.
         foreach ($dateParts as $k => $v) {
-            if (\is_null($v)) {
+            if (is_null($v)) {
                 $dateParts[$k] = $nowParts[$k];
             }
         }
@@ -130,21 +130,19 @@ class DateAndOrTime extends Property
         $parts = DateTimeParser::parseVCardDateTime($this->getValue());
         $dateStr = '';
         // Year
-        if (!\is_null($parts['year'])) {
+        if (!is_null($parts['year'])) {
             $dateStr .= $parts['year'];
-            if (!\is_null($parts['month'])) {
+            if (!is_null($parts['month'])) {
                 // If a year and a month is set, we need to insert a separator
                 // dash.
                 $dateStr .= '-';
             }
-        } else {
-            if (!\is_null($parts['month']) || !\is_null($parts['date'])) {
-                // Inserting two dashes
-                $dateStr .= '--';
-            }
+        } else if (!is_null($parts['month']) || !is_null($parts['date'])) {
+            // Inserting two dashes
+            $dateStr .= '--';
         }
         // Month
-        if (!\is_null($parts['month'])) {
+        if (!is_null($parts['month'])) {
             $dateStr .= $parts['month'];
             if (isset($parts['date'])) {
                 // If month and date are set, we need the separator dash.
@@ -156,18 +154,18 @@ class DateAndOrTime extends Property
             $dateStr .= '-';
         }
         // Date
-        if (!\is_null($parts['date'])) {
+        if (!is_null($parts['date'])) {
             $dateStr .= $parts['date'];
         }
         // Early exit if we don't have a time string.
-        if (\is_null($parts['hour']) && \is_null($parts['minute']) && \is_null($parts['second'])) {
+        if (is_null($parts['hour']) && is_null($parts['minute']) && is_null($parts['second'])) {
             return [$dateStr];
         }
         $dateStr .= 'T';
         // Hour
-        if (!\is_null($parts['hour'])) {
+        if (!is_null($parts['hour'])) {
             $dateStr .= $parts['hour'];
-            if (!\is_null($parts['minute'])) {
+            if (!is_null($parts['minute'])) {
                 $dateStr .= ':';
             }
         } else {
@@ -176,9 +174,9 @@ class DateAndOrTime extends Property
             $dateStr .= '-';
         }
         // Minute
-        if (!\is_null($parts['minute'])) {
+        if (!is_null($parts['minute'])) {
             $dateStr .= $parts['minute'];
-            if (!\is_null($parts['second'])) {
+            if (!is_null($parts['second'])) {
                 $dateStr .= ':';
             }
         } elseif (isset($parts['second'])) {
@@ -186,11 +184,11 @@ class DateAndOrTime extends Property
             $dateStr .= '-';
         }
         // Second
-        if (!\is_null($parts['second'])) {
+        if (!is_null($parts['second'])) {
             $dateStr .= $parts['second'];
         }
         // Timezone
-        if (!\is_null($parts['timezone'])) {
+        if (!is_null($parts['timezone'])) {
             $dateStr .= $parts['timezone'];
         }
         return [$dateStr];
@@ -203,15 +201,15 @@ class DateAndOrTime extends Property
      */
     protected function xmlSerializeValue(Xml\Writer $writer)
     {
-        $valueType = \strtolower($this->getValueType());
+        $valueType = strtolower($this->getValueType());
         $parts = DateTimeParser::parseVCardDateAndOrTime($this->getValue());
         $value = '';
         // $d = defined
-        $d = function ($part) use($parts) {
-            return !\is_null($parts[$part]);
+        $d = function ($part) use ($parts) {
+            return !is_null($parts[$part]);
         };
         // $r = read
-        $r = function ($part) use($parts) {
+        $r = function ($part) use ($parts) {
             return $parts[$part];
         };
         // From the Relax NG Schema.
@@ -280,7 +278,7 @@ class DateAndOrTime extends Property
      */
     public function getRawMimeDirValue()
     {
-        return \implode($this->delimiter, $this->getParts());
+        return implode($this->delimiter, $this->getParts());
     }
     /**
      * Validates the node for correctness.

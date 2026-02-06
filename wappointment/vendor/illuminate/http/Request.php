@@ -78,7 +78,7 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
      */
     public function root()
     {
-        return \rtrim($this->getSchemeAndHttpHost() . $this->getBaseUrl(), '/');
+        return rtrim($this->getSchemeAndHttpHost() . $this->getBaseUrl(), '/');
     }
     /**
      * Get the URL (no query string) for the request.
@@ -87,7 +87,7 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
      */
     public function url()
     {
-        return \rtrim(\preg_replace('/\\?.*/', '', $this->getUri()), '/');
+        return rtrim(preg_replace('/\?.*/', '', $this->getUri()), '/');
     }
     /**
      * Get the full URL for the request.
@@ -109,7 +109,7 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
     public function fullUrlWithQuery(array $query)
     {
         $question = $this->getBaseUrl() . $this->getPathInfo() === '/' ? '/?' : '?';
-        return \count($this->query()) > 0 ? $this->url() . $question . Arr::query(\array_merge($this->query(), $query)) : $this->fullUrl() . $question . Arr::query($query);
+        return count($this->query()) > 0 ? $this->url() . $question . Arr::query(array_merge($this->query(), $query)) : $this->fullUrl() . $question . Arr::query($query);
     }
     /**
      * Get the full URL for the request without the given query string parameters.
@@ -121,7 +121,7 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
     {
         $query = Arr::except($this->query(), $keys);
         $question = $this->getBaseUrl() . $this->getPathInfo() === '/' ? '/?' : '?';
-        return \count($query) > 0 ? $this->url() . $question . Arr::query($query) : $this->url();
+        return count($query) > 0 ? $this->url() . $question . Arr::query($query) : $this->url();
     }
     /**
      * Get the current path info for the request.
@@ -130,7 +130,7 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
      */
     public function path()
     {
-        $pattern = \trim($this->getPathInfo(), '/');
+        $pattern = trim($this->getPathInfo(), '/');
         return $pattern === '' ? '/' : $pattern;
     }
     /**
@@ -140,7 +140,7 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
      */
     public function decodedPath()
     {
-        return \rawurldecode($this->path());
+        return rawurldecode($this->path());
     }
     /**
      * Get a segment from the URI (1 based index).
@@ -160,8 +160,8 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
      */
     public function segments()
     {
-        $segments = \explode('/', $this->decodedPath());
-        return \array_values(\array_filter($segments, function ($value) {
+        $segments = explode('/', $this->decodedPath());
+        return array_values(array_filter($segments, function ($value) {
             return $value !== '';
         }));
     }
@@ -232,7 +232,7 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
      */
     public function prefetch()
     {
-        return \strcasecmp($this->server->get('HTTP_X_MOZ') ?? '', 'prefetch') === 0 || \strcasecmp($this->headers->get('Purpose') ?? '', 'prefetch') === 0;
+        return strcasecmp($this->server->get('HTTP_X_MOZ') ?? '', 'prefetch') === 0 || strcasecmp($this->headers->get('Purpose') ?? '', 'prefetch') === 0;
     }
     /**
      * Determine if the request is over HTTPS.
@@ -327,9 +327,9 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
     public function json($key = null, $default = null)
     {
         if (!isset($this->json)) {
-            $this->json = new ParameterBag((array) \json_decode($this->getContent(), \true));
+            $this->json = new ParameterBag((array) json_decode($this->getContent(), \true));
         }
-        if (\is_null($key)) {
+        if (is_null($key)) {
             return $this->json;
         }
         return \WappointmentLv::data_get($this->json->all(), $key, $default);
@@ -344,7 +344,7 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
         if ($this->isJson()) {
             return $this->json();
         }
-        return \in_array($this->getRealMethod(), ['GET', 'HEAD']) ? $this->query : $this->request;
+        return in_array($this->getRealMethod(), ['GET', 'HEAD']) ? $this->query : $this->request;
     }
     /**
      * Create a new request instance from the given Laravel request.
@@ -357,7 +357,7 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
     {
         $request = $to ?: new static();
         $files = $from->files->all();
-        $files = \is_array($files) ? \array_filter($files) : $files;
+        $files = is_array($files) ? array_filter($files) : $files;
         $request->initialize($from->query->all(), $from->request->all(), $from->attributes->all(), $from->cookies->all(), $files, $from->server->all(), $from->getContent());
         $request->headers->replace($from->headers->all());
         $request->setJson($from->json());
@@ -403,7 +403,7 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
             return;
         }
         foreach ($files as $key => $file) {
-            if (\is_array($file)) {
+            if (is_array($file)) {
                 $files[$key] = $this->filterFiles($files[$key]);
             }
             if (empty($files[$key])) {
@@ -453,7 +453,7 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
      */
     public function user($guard = null)
     {
-        return \call_user_func($this->getUserResolver(), $guard);
+        return call_user_func($this->getUserResolver(), $guard);
     }
     /**
      * Get the route handling the request.
@@ -464,8 +464,8 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
      */
     public function route($param = null, $default = null)
     {
-        $route = \call_user_func($this->getRouteResolver());
-        if (\is_null($route) || \is_null($param)) {
+        $route = call_user_func($this->getRouteResolver());
+        if (is_null($route) || is_null($param)) {
             return $route;
         }
         return $route->parameter($param, $default);
@@ -479,10 +479,10 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
      */
     public function fingerprint()
     {
-        if (!($route = $this->route())) {
+        if (!$route = $this->route()) {
             throw new RuntimeException('Unable to generate fingerprint. Route unavailable.');
         }
-        return \sha1(\implode('|', \array_merge($route->methods(), [$route->getDomain(), $route->uri(), $this->ip()])));
+        return sha1(implode('|', array_merge($route->methods(), [$route->getDomain(), $route->uri(), $this->ip()])));
     }
     /**
      * Set the JSON payload for the request.
@@ -602,7 +602,7 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
      */
     public function __isset($key)
     {
-        return !\is_null($this->__get($key));
+        return !is_null($this->__get($key));
     }
     /**
      * Get an input element from the request.
@@ -612,7 +612,7 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
      */
     public function __get($key)
     {
-        return Arr::get($this->all(), $key, function () use($key) {
+        return Arr::get($this->all(), $key, function () use ($key) {
             return $this->route($key);
         });
     }

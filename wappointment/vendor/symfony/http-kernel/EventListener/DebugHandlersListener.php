@@ -53,9 +53,9 @@ class DebugHandlersListener implements EventSubscriberInterface
             $scope = $deprecationLogger;
             $deprecationLogger = $fileLinkFormat;
         }
-        $handler = \set_exception_handler('is_int');
+        $handler = set_exception_handler('is_int');
         $this->earlyHandler = \is_array($handler) ? $handler[0] : null;
-        \restore_exception_handler();
+        restore_exception_handler();
         $this->exceptionHandler = $exceptionHandler;
         $this->logger = $logger;
         $this->levels = $levels ?? \E_ALL;
@@ -76,9 +76,9 @@ class DebugHandlersListener implements EventSubscriberInterface
             return;
         }
         $this->firstCall = $this->hasTerminatedWithException = \false;
-        $handler = \set_exception_handler('is_int');
+        $handler = set_exception_handler('is_int');
         $handler = \is_array($handler) ? $handler[0] : null;
-        \restore_exception_handler();
+        restore_exception_handler();
         if (!$handler instanceof ErrorHandler) {
             $handler = $this->earlyHandler;
         }
@@ -109,10 +109,10 @@ class DebugHandlersListener implements EventSubscriberInterface
         }
         if (!$this->exceptionHandler) {
             if ($event instanceof KernelEvent) {
-                if (\method_exists($kernel = $event->getKernel(), 'terminateWithException')) {
+                if (method_exists($kernel = $event->getKernel(), 'terminateWithException')) {
                     $request = $event->getRequest();
                     $hasRun =& $this->hasTerminatedWithException;
-                    $this->exceptionHandler = static function (\Throwable $e) use($kernel, $request, &$hasRun) {
+                    $this->exceptionHandler = static function (\Throwable $e) use ($kernel, $request, &$hasRun) {
                         if ($hasRun) {
                             throw $e;
                         }
@@ -120,12 +120,12 @@ class DebugHandlersListener implements EventSubscriberInterface
                         $kernel->terminateWithException($e, $request);
                     };
                 }
-            } elseif ($event instanceof ConsoleEvent && ($app = $event->getCommand()->getApplication())) {
+            } elseif ($event instanceof ConsoleEvent && $app = $event->getCommand()->getApplication()) {
                 $output = $event->getOutput();
                 if ($output instanceof ConsoleOutputInterface) {
                     $output = $output->getErrorOutput();
                 }
-                $this->exceptionHandler = static function (\Throwable $e) use($app, $output) {
+                $this->exceptionHandler = static function (\Throwable $e) use ($app, $output) {
                     $app->renderThrowable($e, $output);
                 };
             }
@@ -137,7 +137,7 @@ class DebugHandlersListener implements EventSubscriberInterface
             $this->exceptionHandler = null;
         }
     }
-    private function setDefaultLoggers(ErrorHandler $handler) : void
+    private function setDefaultLoggers(ErrorHandler $handler): void
     {
         if (\is_array($this->levels)) {
             $levelsDeprecatedOnly = [];
@@ -162,10 +162,10 @@ class DebugHandlersListener implements EventSubscriberInterface
             $handler->setDefaultLogger($this->logger, $defaultLoggerLevels);
         }
     }
-    public static function getSubscribedEvents() : array
+    public static function getSubscribedEvents(): array
     {
         $events = [KernelEvents::REQUEST => ['configure', 2048]];
-        if (\defined('Symfony\\Component\\Console\\ConsoleEvents::COMMAND')) {
+        if (\defined('WappoVendor\Symfony\Component\Console\ConsoleEvents::COMMAND')) {
             $events[ConsoleEvents::COMMAND] = ['configure', 2048];
         }
         return $events;

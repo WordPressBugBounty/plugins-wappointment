@@ -50,7 +50,7 @@ final class Statement implements StatementInterface
     /**
      * {@inheritdoc}
      */
-    public function bindParam($param, &$variable, $type = ParameterType::STRING, $length = null) : bool
+    public function bindParam($param, &$variable, $type = ParameterType::STRING, $length = null): bool
     {
         assert(is_int($param));
         if (!isset(self::$paramTypeMap[$type])) {
@@ -63,7 +63,7 @@ final class Statement implements StatementInterface
     /**
      * {@inheritdoc}
      */
-    public function bindValue($param, $value, $type = ParameterType::STRING) : bool
+    public function bindValue($param, $value, $type = ParameterType::STRING): bool
     {
         assert(is_int($param));
         if (!isset(self::$paramTypeMap[$type])) {
@@ -77,7 +77,7 @@ final class Statement implements StatementInterface
     /**
      * {@inheritdoc}
      */
-    public function execute($params = null) : ResultInterface
+    public function execute($params = null): ResultInterface
     {
         if ($params !== null && count($params) > 0) {
             if (!$this->bindUntypedValues($params)) {
@@ -101,7 +101,7 @@ final class Statement implements StatementInterface
      *
      * @throws Exception
      */
-    private function bindTypedParameters() : void
+    private function bindTypedParameters(): void
     {
         $streams = $values = [];
         $types = $this->types;
@@ -135,7 +135,7 @@ final class Statement implements StatementInterface
      *
      * @throws Exception
      */
-    private function sendLongData(array $streams) : void
+    private function sendLongData(array $streams): void
     {
         foreach ($streams as $paramNr => $stream) {
             while (!feof($stream)) {
@@ -154,7 +154,7 @@ final class Statement implements StatementInterface
      *
      * @param mixed[] $values
      */
-    private function bindUntypedValues(array $values) : bool
+    private function bindUntypedValues(array $values): bool
     {
         return $this->stmt->bind_param(str_repeat('s', count($values)), ...$values);
     }

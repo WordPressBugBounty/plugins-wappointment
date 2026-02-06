@@ -17,11 +17,11 @@ class SingleConnectionProvider implements ConnectionProvider
         $this->connection = $connection;
         $this->defaultConnectionName = $defaultConnectionName;
     }
-    public function getDefaultConnection() : Connection
+    public function getDefaultConnection(): Connection
     {
         return $this->connection;
     }
-    public function getConnection(string $name) : Connection
+    public function getConnection(string $name): Connection
     {
         if ($name !== $this->defaultConnectionName) {
             throw new ConnectionNotFound(sprintf('Connection with name "%s" does not exist.', $name));

@@ -26,7 +26,7 @@ class CurrentUser
         $calendar = \Wappointment\Models\Calendar::where('wp_uid', static::id())->first();
         if (empty($calendar)) {
             /* translators: %s - email of the account. */
-            throw new \WappointmentException(\sprintf(__("No Wappointment calendar is connected to your WordPress account %s", 'wappointment'), static::get()->user_email), 1);
+            throw new \WappointmentException(sprintf(__("No Wappointment calendar is connected to your WordPress account %s", 'wappointment'), static::get()->user_email), 1);
         }
         return $calendar->id;
     }

@@ -8,7 +8,7 @@ class Database
     private static $capsule = null;
     public static function capsule($alt_port = \false)
     {
-        if (\is_null(self::$capsule)) {
+        if (is_null(self::$capsule)) {
             self::$capsule = new \WappoVendor\Illuminate\Database\Capsule\Manager();
             self::$capsule->addConnection(self::config($alt_port));
             if (is_multisite()) {
@@ -31,7 +31,7 @@ class Database
     {
         $db = new \Wappointment\WP\Database();
         $config = ['driver' => 'mysql', 'database' => $db->getDbName(), 'username' => $db->getDbUser(), 'password' => $db->getDbPass(), 'charset' => $db->getDbCharset(), 'collation' => $db->getDbCollate(), 'prefix' => $db->getPrefix(), 'strict' => \true, 'engine' => null];
-        if (\is_numeric($db->getPort()) || \strpos($db->getPort(), '/') !== 0) {
+        if (is_numeric($db->getPort()) || strpos($db->getPort(), '/') !== 0) {
             $config['host'] = $db->getHost();
             $config['port'] = $alt_port ? $db->getAltPort() : $db->getPort();
         } else {

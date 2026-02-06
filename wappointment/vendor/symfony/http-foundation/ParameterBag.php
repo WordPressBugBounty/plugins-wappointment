@@ -37,12 +37,12 @@ class ParameterBag implements \IteratorAggregate, \Countable
      */
     public function all()
     {
-        $key = \func_num_args() > 0 ? \func_get_arg(0) : null;
+        $key = \func_num_args() > 0 ? func_get_arg(0) : null;
         if (null === $key) {
             return $this->parameters;
         }
         if (!\is_array($value = $this->parameters[$key] ?? [])) {
-            throw new BadRequestException(\sprintf('Unexpected value for parameter "%s": expecting "array", got "%s".', $key, \get_debug_type($value)));
+            throw new BadRequestException(sprintf('Unexpected value for parameter "%s": expecting "array", got "%s".', $key, get_debug_type($value)));
         }
         return $value;
     }
@@ -53,7 +53,7 @@ class ParameterBag implements \IteratorAggregate, \Countable
      */
     public function keys()
     {
-        return \array_keys($this->parameters);
+        return array_keys($this->parameters);
     }
     /**
      * Replaces the current parameters by a new set.
@@ -67,7 +67,7 @@ class ParameterBag implements \IteratorAggregate, \Countable
      */
     public function add(array $parameters = [])
     {
-        $this->parameters = \array_replace($this->parameters, $parameters);
+        $this->parameters = array_replace($this->parameters, $parameters);
     }
     /**
      * Returns a parameter by name.
@@ -112,7 +112,7 @@ class ParameterBag implements \IteratorAggregate, \Countable
      */
     public function getAlpha(string $key, string $default = '')
     {
-        return \preg_replace('/[^[:alpha:]]/', '', $this->get($key, $default));
+        return preg_replace('/[^[:alpha:]]/', '', $this->get($key, $default));
     }
     /**
      * Returns the alphabetic characters and digits of the parameter value.
@@ -121,7 +121,7 @@ class ParameterBag implements \IteratorAggregate, \Countable
      */
     public function getAlnum(string $key, string $default = '')
     {
-        return \preg_replace('/[^[:alnum:]]/', '', $this->get($key, $default));
+        return preg_replace('/[^[:alnum:]]/', '', $this->get($key, $default));
     }
     /**
      * Returns the digits of the parameter value.
@@ -131,7 +131,7 @@ class ParameterBag implements \IteratorAggregate, \Countable
     public function getDigits(string $key, string $default = '')
     {
         // we need to remove - and + because they're allowed in the filter
-        return \str_replace(['-', '+'], '', $this->filter($key, $default, \FILTER_SANITIZE_NUMBER_INT));
+        return str_replace(['-', '+'], '', $this->filter($key, $default, \FILTER_SANITIZE_NUMBER_INT));
     }
     /**
      * Returns the parameter value converted to integer.
@@ -177,7 +177,7 @@ class ParameterBag implements \IteratorAggregate, \Countable
             trigger_deprecation('symfony/http-foundation', '5.2', 'Not passing a Closure together with FILTER_CALLBACK to "%s()" is deprecated. Wrap your filter in a closure instead.', __METHOD__);
             // throw new \InvalidArgumentException(sprintf('A Closure must be passed to "%s()" when FILTER_CALLBACK is used, "%s" given.', __METHOD__, get_debug_type($options['options'] ?? null)));
         }
-        return \filter_var($value, $filter, $options);
+        return filter_var($value, $filter, $options);
     }
     /**
      * Returns an iterator for parameters.

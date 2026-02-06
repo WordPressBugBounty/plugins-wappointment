@@ -32,7 +32,7 @@ class ServerDumper implements DataDumperInterface
         $this->connection = new Connection($host, $contextProviders);
         $this->wrappedDumper = $wrappedDumper;
     }
-    public function getContextProviders() : array
+    public function getContextProviders(): array
     {
         return $this->connection->getContextProviders();
     }

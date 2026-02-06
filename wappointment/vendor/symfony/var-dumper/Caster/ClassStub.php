@@ -33,13 +33,13 @@ class ClassStub extends ConstStub
                     $r = [$callable, '__invoke'];
                 } elseif (\is_array($callable)) {
                     $r = $callable;
-                } elseif (\false !== ($i = \strpos($callable, '::'))) {
-                    $r = [\substr($callable, 0, $i), \substr($callable, 2 + $i)];
+                } elseif (\false !== $i = strpos($callable, '::')) {
+                    $r = [substr($callable, 0, $i), substr($callable, 2 + $i)];
                 } else {
                     $r = new \ReflectionFunction($callable);
                 }
-            } elseif (0 < ($i = \strpos($identifier, '::') ?: \strpos($identifier, '->'))) {
-                $r = [\substr($identifier, 0, $i), \substr($identifier, 2 + $i)];
+            } elseif (0 < $i = strpos($identifier, '::') ?: strpos($identifier, '->')) {
+                $r = [substr($identifier, 0, $i), substr($identifier, 2 + $i)];
             } else {
                 $r = new \ReflectionClass($identifier);
             }
@@ -50,16 +50,16 @@ class ClassStub extends ConstStub
                     $r = new \ReflectionClass($r[0]);
                 }
             }
-            if (\str_contains($identifier, "@anonymous\x00")) {
-                $this->value = $identifier = \preg_replace_callback('/[a-zA-Z_\\x7f-\\xff][\\\\a-zA-Z0-9_\\x7f-\\xff]*+@anonymous\\x00.*?\\.php(?:0x?|:[0-9]++\\$)[0-9a-fA-F]++/', function ($m) {
-                    return \class_exists($m[0], \false) ? ((\get_parent_class($m[0]) ?: \key(\class_implements($m[0]))) ?: 'class') . '@anonymous' : $m[0];
+            if (str_contains($identifier, "@anonymous\x00")) {
+                $this->value = $identifier = preg_replace_callback('/[a-zA-Z_\x7f-\xff][\\\\a-zA-Z0-9_\x7f-\xff]*+@anonymous\x00.*?\.php(?:0x?|:[0-9]++\$)[0-9a-fA-F]++/', function ($m) {
+                    return class_exists($m[0], \false) ? ((get_parent_class($m[0]) ?: key(class_implements($m[0]))) ?: 'class') . '@anonymous' : $m[0];
                 }, $identifier);
             }
             if (null !== $callable && $r instanceof \ReflectionFunctionAbstract) {
                 $s = ReflectionCaster::castFunctionAbstract($r, [], new Stub(), \true, Caster::EXCLUDE_VERBOSE);
                 $s = ReflectionCaster::getSignature($s);
-                if (\str_ends_with($identifier, '()')) {
-                    $this->value = \substr_replace($identifier, $s, -2);
+                if (str_ends_with($identifier, '()')) {
+                    $this->value = substr_replace($identifier, $s, -2);
                 } else {
                     $this->value .= $s;
                 }
@@ -67,7 +67,7 @@ class ClassStub extends ConstStub
         } catch (\ReflectionException $e) {
             return;
         } finally {
-            if (0 < ($i = \strrpos($this->value, '\\'))) {
+            if (0 < $i = strrpos($this->value, '\\')) {
                 $this->attr['ellipsis'] = \strlen($this->value) - $i;
                 $this->attr['ellipsis-type'] = 'class';
                 $this->attr['ellipsis-tail'] = 1;

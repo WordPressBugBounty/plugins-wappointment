@@ -26,7 +26,7 @@ abstract class AbstractBoot implements \Wappointment\Addons\Boot
     public static $addon_db_version_required;
     public static function getAddonSlug()
     {
-        return \str_replace('_', '-', static::$addon_key);
+        return str_replace('_', '-', static::$addon_key);
     }
     public static function init()
     {
@@ -46,7 +46,7 @@ abstract class AbstractBoot implements \Wappointment\Addons\Boot
     }
     public static function addToListOfDbUpdates($addons_require_db_update)
     {
-        if (\method_exists(static::$name_space . 'Boot', 'runDbMigrate')) {
+        if (method_exists(static::$name_space . 'Boot', 'runDbMigrate')) {
             $addons_require_db_update[] = ['key' => static::$addon_key, 'namespace' => static::$name_space . 'Boot'];
         }
         return $addons_require_db_update;
@@ -59,23 +59,21 @@ abstract class AbstractBoot implements \Wappointment\Addons\Boot
     {
         if (static::isInstalledOrdoesntRequireInstallation()) {
             $package->initial_wizard = static::isSetup();
-            if (\is_array(static::$instructions) && \count(static::$instructions) > 0) {
+            if (is_array(static::$instructions) && count(static::$instructions) > 0) {
                 $package->instructions = static::$instructions;
             }
             if (static::$setting_key !== \false) {
                 $package->settingKey = static::$setting_key;
             }
-        } else {
-            if (static::$has_installation) {
-                $package->initial_install = \true;
-            }
+        } else if (static::$has_installation) {
+            $package->initial_install = \true;
         }
         return $package;
     }
     public static function requiresDbUpdate()
     {
         if (static::$addon_db_version_required) {
-            return static::addonDbVersion() === \false ? \true : \version_compare(static::addonDbVersion(), static::$addon_db_version_required) < 0;
+            return static::addonDbVersion() === \false ? \true : version_compare(static::addonDbVersion(), static::$addon_db_version_required) < 0;
         }
         return \false;
     }
@@ -108,7 +106,7 @@ abstract class AbstractBoot implements \Wappointment\Addons\Boot
     }
     public static function isInstalled()
     {
-        return \call_user_func(static::$name_space . 'Services\\Settings::get', 'installed_at');
+        return call_user_func(static::$name_space . 'Services\Settings::get', 'installed_at');
     }
     public static function backSetup()
     {
@@ -166,13 +164,13 @@ abstract class AbstractBoot implements \Wappointment\Addons\Boot
     }
     protected static function pluginNamekey()
     {
-        return \str_replace('_', '-', static::$addon_key);
+        return str_replace('_', '-', static::$addon_key);
     }
     public static function licenceExpired()
     {
         $licence = static::getLicenceDetail();
         $expires_at_carbon = new Carbon($licence->expires_at);
-        return $expires_at_carbon->timestamp < \time();
+        return $expires_at_carbon->timestamp < time();
     }
     public static function versionUpdateWarning($plugin)
     {
@@ -183,7 +181,7 @@ abstract class AbstractBoot implements \Wappointment\Addons\Boot
                 <div class="error-message error inline notice-error notice-alt">
                     <div>
                         <?php 
-            echo \sprintf(__('Your licence expired, you must renew in order to update to version %s', 'wappointment'), $plugin['new_version']);
+            echo sprintf(__('Your licence expired, you must renew in order to update to version %s', 'wappointment'), $plugin['new_version']);
             ?>
                         <a href="<?php 
             echo WAPPOINTMENT_SITE . "/renew/site_" . WPHelpers::getOption('site_key');
@@ -198,7 +196,7 @@ abstract class AbstractBoot implements \Wappointment\Addons\Boot
     }
     protected static function hasAccessToNewVersion($new_version)
     {
-        return \version_compare($new_version, static::getMaxVersion()) < 0;
+        return version_compare($new_version, static::getMaxVersion()) < 0;
     }
     protected static function getMaxVersion()
     {
@@ -220,7 +218,7 @@ abstract class AbstractBoot implements \Wappointment\Addons\Boot
     {
         $addons[static::$addon_key] = ['name' => static::$addon_name, 'icon' => static::$addon_settings_icon, 'settings' => (bool) static::$has_settings];
         $wappo_compatible_with_addon_version = static::compatibleWithAddon();
-        if (is_admin() && \version_compare(static::$addon_version, $wappo_compatible_with_addon_version, '<')) {
+        if (is_admin() && version_compare(static::$addon_version, $wappo_compatible_with_addon_version, '<')) {
             $addons[static::$addon_key]['requires_update'] = $wappo_compatible_with_addon_version;
         }
         return $addons;
@@ -231,9 +229,9 @@ abstract class AbstractBoot implements \Wappointment\Addons\Boot
     }
     protected static function convertVersionToMajor($version)
     {
-        $vexplode = \explode('.', $version);
-        \array_pop($vexplode);
-        return \implode('.', $vexplode);
+        $vexplode = explode('.', $version);
+        array_pop($vexplode);
+        return implode('.', $vexplode);
     }
     public static function jsVariables($var)
     {

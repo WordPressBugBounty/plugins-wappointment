@@ -66,7 +66,7 @@ trait ManipulateLinks
             return \true;
         }
         $when_shows_link = (int) Settings::get('video_link_shows');
-        if ($when_shows_link > 0 && $this->start_at->timestamp - $when_shows_link * 60 > \time() || $this->isOver()) {
+        if ($when_shows_link > 0 && $this->start_at->timestamp - $when_shows_link * 60 > time() || $this->isOver()) {
             return \false;
         }
         return \true;

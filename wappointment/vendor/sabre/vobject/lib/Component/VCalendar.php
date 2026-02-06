@@ -165,7 +165,7 @@ class VCalendar extends VObject\Document
         };
         if ($componentName) {
             // Early exit
-            return \array_filter($this->select($componentName), $isBaseComponent);
+            return array_filter($this->select($componentName), $isBaseComponent);
         }
         $components = [];
         foreach ($this->children as $childGroup) {
@@ -250,7 +250,7 @@ class VCalendar extends VObject\Document
         if (!$timeZone) {
             $timeZone = new DateTimeZone('UTC');
         }
-        $stripTimezones = function (Component $component) use($timeZone, &$stripTimezones) {
+        $stripTimezones = function (Component $component) use ($timeZone, &$stripTimezones) {
             foreach ($component->children() as $componentChild) {
                 if ($componentChild instanceof Property\ICalendar\DateTime && $componentChild->hasTime()) {
                     $dt = $componentChild->getDateTimes($timeZone);
@@ -374,7 +374,7 @@ class VCalendar extends VObject\Document
         foreach ($this->children() as $child) {
             if ($child instanceof Component) {
                 ++$componentsFound;
-                if (!\in_array($child->name, ['VEVENT', 'VTODO', 'VJOURNAL'])) {
+                if (!in_array($child->name, ['VEVENT', 'VTODO', 'VJOURNAL'])) {
                     continue;
                 }
                 $componentTypes[] = $child->name;
@@ -395,13 +395,13 @@ class VCalendar extends VObject\Document
             $warnings[] = ['level' => 3, 'message' => 'An iCalendar object must have at least 1 component.', 'node' => $this];
         }
         if ($options & self::PROFILE_CALDAV) {
-            if (\count($uidList) > 1) {
+            if (count($uidList) > 1) {
                 $warnings[] = ['level' => 3, 'message' => 'A calendar object on a CalDAV server may only have components with the same UID.', 'node' => $this];
             }
-            if (0 === \count($componentTypes)) {
+            if (0 === count($componentTypes)) {
                 $warnings[] = ['level' => 3, 'message' => 'A calendar object on a CalDAV server must have at least 1 component (VTODO, VEVENT, VJOURNAL).', 'node' => $this];
             }
-            if (\count(\array_unique($componentTypes)) > 1) {
+            if (count(array_unique($componentTypes)) > 1) {
                 $warnings[] = ['level' => 3, 'message' => 'A calendar object on a CalDAV server may only have 1 type of component (VEVENT, VTODO or VJOURNAL).', 'node' => $this];
             }
             if (isset($this->METHOD)) {
@@ -417,11 +417,11 @@ class VCalendar extends VObject\Document
      */
     public function getByUID($uid)
     {
-        return \array_filter($this->getComponents(), function ($item) use($uid) {
-            if (!($itemUid = $item->select('UID'))) {
+        return array_filter($this->getComponents(), function ($item) use ($uid) {
+            if (!$itemUid = $item->select('UID')) {
                 return \false;
             }
-            $itemUid = \current($itemUid)->getValue();
+            $itemUid = current($itemUid)->getValue();
             return $uid === $itemUid;
         });
     }

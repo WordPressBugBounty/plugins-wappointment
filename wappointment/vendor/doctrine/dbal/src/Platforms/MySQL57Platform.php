@@ -29,7 +29,7 @@ class MySQL57Platform extends MySQLPlatform
     {
         return 'JSON';
     }
-    public function createSQLParser() : Parser
+    public function createSQLParser(): Parser
     {
         return new Parser(\true);
     }

@@ -125,7 +125,7 @@ abstract class AbstractSchemaManager
      *
      * @throws Exception
      */
-    public function listSchemaNames() : array
+    public function listSchemaNames(): array
     {
         throw Exception::notSupported(__METHOD__);
     }
@@ -326,7 +326,7 @@ abstract class AbstractSchemaManager
      *
      * @throws Exception
      */
-    public function dropSchema(string $schemaName) : void
+    public function dropSchema(string $schemaName): void
     {
         $this->_execSql($this->_platform->getDropSchemaSQL($schemaName));
     }
@@ -407,7 +407,7 @@ abstract class AbstractSchemaManager
      *
      * @throws Exception
      */
-    public function dropUniqueConstraint(string $name, string $tableName) : void
+    public function dropUniqueConstraint(string $name, string $tableName): void
     {
         $this->_execSql($this->_platform->getDropUniqueConstraintSQL($name, $tableName));
     }
@@ -510,7 +510,7 @@ abstract class AbstractSchemaManager
      *
      * @throws Exception
      */
-    public function createUniqueConstraint(UniqueConstraint $uniqueConstraint, string $tableName) : void
+    public function createUniqueConstraint(UniqueConstraint $uniqueConstraint, string $tableName): void
     {
         $this->_execSql($this->_platform->getCreateUniqueConstraintSQL($uniqueConstraint, $tableName));
     }
@@ -651,7 +651,7 @@ abstract class AbstractSchemaManager
      *
      * @throws Exception
      */
-    public function alterSchema(SchemaDiff $schemaDiff) : void
+    public function alterSchema(SchemaDiff $schemaDiff): void
     {
         $this->_execSql($schemaDiff->toSql($this->_platform));
     }
@@ -660,7 +660,7 @@ abstract class AbstractSchemaManager
      *
      * @throws Exception
      */
-    public function migrateSchema(Schema $toSchema) : void
+    public function migrateSchema(Schema $toSchema): void
     {
         $schemaDiff = $this->createComparator()->compareSchemas($this->createSchema(), $toSchema);
         $this->alterSchema($schemaDiff);
@@ -826,7 +826,7 @@ abstract class AbstractSchemaManager
      *
      * @throws Exception
      */
-    protected abstract function _getPortableTableColumnDefinition($tableColumn);
+    abstract protected function _getPortableTableColumnDefinition($tableColumn);
     /**
      * Aggregates and groups the index results according to the required data result.
      *
@@ -1066,7 +1066,7 @@ abstract class AbstractSchemaManager
      */
     public function extractDoctrineTypeFromComment($comment, $currentType)
     {
-        if ($comment !== null && preg_match('(\\(DC2Type:(((?!\\)).)+)\\))', $comment, $match) === 1) {
+        if ($comment !== null && preg_match('(\(DC2Type:(((?!\)).)+)\))', $comment, $match) === 1) {
             return $match[1];
         }
         return $currentType;
@@ -1086,7 +1086,7 @@ abstract class AbstractSchemaManager
         }
         return str_replace('(DC2Type:' . $type . ')', '', $comment);
     }
-    public function createComparator() : Comparator
+    public function createComparator(): Comparator
     {
         return new Comparator($this->getDatabasePlatform());
     }

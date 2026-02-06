@@ -25,7 +25,7 @@ class CalendarsBack extends \Wappointment\Repositories\AbstractRepository
         if ($repository === \false) {
             $repository = new static();
         }
-        return \WappointmentLv::collect($repository->get())->filter(function ($calendar) use($id) {
+        return \WappointmentLv::collect($repository->get())->filter(function ($calendar) use ($id) {
             return (int) $calendar['id'] === (int) $id;
         })->toArray()[0];
     }

@@ -28,7 +28,7 @@ class AdminDailySummaryEmail extends \Wappointment\Messages\AbstractAdminEmail
         $this->tz = $this->staff->timezone;
         $this->date_string = $this->tomorrowCarbon()->format(Settings::get('date_format'));
         /* translators: %s - today's date. */
-        $this->subject = \sprintf(__('Daily summary for %s', 'wappointment'), $this->date_string);
+        $this->subject = sprintf(__('Daily summary for %s', 'wappointment'), $this->date_string);
         $this->sections = new Sections($this->tomorrowCarbon()->timestamp, $this->tomorrowCarbon()->timestamp + 86400, $this->staff, $this->isLegacy());
     }
     public function loadContent()
@@ -40,26 +40,26 @@ class AdminDailySummaryEmail extends \Wappointment\Messages\AbstractAdminEmail
         $coverage = $this->sections->getCoverage($serviceDurationInSeconds);
         $lines = [
             /* translators: %s - client's first name. */
-            \sprintf(__('Hi %s,', 'wappointment'), $this->staff->getFirstName()),
+            sprintf(__('Hi %s,', 'wappointment'), $this->staff->getFirstName()),
             /* translators: %s - today's date. */
-            \sprintf(__('Here is a summary of your appointments for %s', 'wappointment'), $this->date_string),
+            sprintf(__('Here is a summary of your appointments for %s', 'wappointment'), $this->date_string),
         ];
         if (!empty($coverage)) {
             $newlines = [
                 /* translators: %s - number of appointments. */
-                \sprintf(__('New Appointments: %s', 'wappointment'), \count($this->sections->appointments)),
+                sprintf(__('New Appointments: %s', 'wappointment'), count($this->sections->appointments)),
                 /* translators: %1$s - numbers of slots, %2$s slots duration. */
-                \sprintf(__('Available slots: %1$s (duration %2$s min)', 'wappointment'), $this->sections->getFreeSlots($serviceDurationInSeconds), Service::get()['duration']),
+                sprintf(__('Available slots: %1$s (duration %2$s min)', 'wappointment'), $this->sections->getFreeSlots($serviceDurationInSeconds), Service::get()['duration']),
                 /* translators: %s - percentage. */
-                \sprintf(__('Coverage: %s', 'wappointment'), $coverage),
+                sprintf(__('Coverage: %s', 'wappointment'), $coverage),
             ];
         } else {
             $newlines = [
                 /* translators: %s - todays date. */
-                \sprintf(__('No availabilities for %s', 'wappointment'), $this->date_string),
+                sprintf(__('No availabilities for %s', 'wappointment'), $this->date_string),
             ];
         }
-        $this->addLines(\array_merge($lines, $newlines));
+        $this->addLines(array_merge($lines, $newlines));
         if ($this->sections->getFreeSlots($serviceDurationInSeconds) == 0) {
             $this->addButton(__('Open new slots', 'wappointment'), WPHelpers::adminUrl('wappointment_calendar'), \false);
         }
@@ -74,7 +74,7 @@ class AdminDailySummaryEmail extends \Wappointment\Messages\AbstractAdminEmail
             $appointmentSumarry[] = $this->getAppointmentFormatted($appointment);
         }
         if (!empty($appointmentSumarry)) {
-            \array_unshift($appointmentSumarry, '<strong>' . $this->date_string . '</strong>');
+            array_unshift($appointmentSumarry, '<strong>' . $this->date_string . '</strong>');
             $this->addRoundedSquare($appointmentSumarry);
         }
     }

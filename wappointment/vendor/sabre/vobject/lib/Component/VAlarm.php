@@ -27,9 +27,9 @@ class VAlarm extends VObject\Component
     public function getEffectiveTriggerTime()
     {
         $trigger = $this->TRIGGER;
-        if (!isset($trigger['VALUE']) || 'DURATION' === \strtoupper($trigger['VALUE'])) {
+        if (!isset($trigger['VALUE']) || 'DURATION' === strtoupper($trigger['VALUE'])) {
             $triggerDuration = VObject\DateTimeParser::parseDuration($this->TRIGGER);
-            $related = isset($trigger['RELATED']) && 'END' == \strtoupper($trigger['RELATED']) ? 'END' : 'START';
+            $related = isset($trigger['RELATED']) && 'END' == strtoupper($trigger['RELATED']) ? 'END' : 'START';
             $parentComponent = $this->parent;
             if ('START' === $related) {
                 if ('VTODO' === $parentComponent->name) {

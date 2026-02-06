@@ -52,9 +52,9 @@ class Response implements ArrayAccess
     public function json($key = null, $default = null)
     {
         if (!$this->decoded) {
-            $this->decoded = \json_decode($this->body(), \true);
+            $this->decoded = json_decode($this->body(), \true);
         }
-        if (\is_null($key)) {
+        if (is_null($key)) {
             return $this->decoded;
         }
         return \WappointmentLv::data_get($this->decoded, $key, $default);
@@ -66,7 +66,7 @@ class Response implements ArrayAccess
      */
     public function object()
     {
-        return \json_decode($this->body(), \false);
+        return json_decode($this->body(), \false);
     }
     /**
      * Get the JSON decoded body of the response as a collection.
@@ -267,10 +267,10 @@ class Response implements ArrayAccess
      */
     public function throw()
     {
-        $callback = \func_get_args()[0] ?? null;
+        $callback = func_get_args()[0] ?? null;
         if ($this->failed()) {
-            throw \WappointmentLv::tap($this->toException(), function ($exception) use($callback) {
-                if ($callback && \is_callable($callback)) {
+            throw \WappointmentLv::tap($this->toException(), function ($exception) use ($callback) {
+                if ($callback && is_callable($callback)) {
                     $callback($this, $exception);
                 }
             });

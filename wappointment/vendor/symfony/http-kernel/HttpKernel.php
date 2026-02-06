@@ -31,15 +31,15 @@ use WappoVendor\Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use WappoVendor\Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use WappoVendor\Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 // Help opcache.preload discover always-needed symbols
-\class_exists(ControllerArgumentsEvent::class);
-\class_exists(ControllerEvent::class);
-\class_exists(ExceptionEvent::class);
-\class_exists(FinishRequestEvent::class);
-\class_exists(RequestEvent::class);
-\class_exists(ResponseEvent::class);
-\class_exists(TerminateEvent::class);
-\class_exists(ViewEvent::class);
-\class_exists(KernelEvents::class);
+class_exists(ControllerArgumentsEvent::class);
+class_exists(ControllerEvent::class);
+class_exists(ExceptionEvent::class);
+class_exists(FinishRequestEvent::class);
+class_exists(RequestEvent::class);
+class_exists(ResponseEvent::class);
+class_exists(TerminateEvent::class);
+class_exists(ViewEvent::class);
+class_exists(KernelEvents::class);
 /**
  * HttpKernel notifies events to convert a Request object to a Response one.
  *
@@ -63,7 +63,7 @@ class HttpKernel implements HttpKernelInterface, TerminableInterface
      */
     public function handle(Request $request, int $type = HttpKernelInterface::MAIN_REQUEST, bool $catch = \true)
     {
-        $request->headers->set('X-Php-Ob-Level', (string) \ob_get_level());
+        $request->headers->set('X-Php-Ob-Level', (string) ob_get_level());
         $this->requestStack->push($request);
         try {
             return $this->handleRaw($request, $type);
@@ -92,7 +92,7 @@ class HttpKernel implements HttpKernelInterface, TerminableInterface
      */
     public function terminateWithException(\Throwable $exception, Request $request = null)
     {
-        if (!($request = $request ?: $this->requestStack->getMainRequest())) {
+        if (!$request = $request ?: $this->requestStack->getMainRequest()) {
             throw $exception;
         }
         if ($pop = $request !== $this->requestStack->getMainRequest()) {
@@ -117,7 +117,7 @@ class HttpKernel implements HttpKernelInterface, TerminableInterface
      * @throws \LogicException       If one of the listener does not behave as expected
      * @throws NotFoundHttpException When controller cannot be found
      */
-    private function handleRaw(Request $request, int $type = self::MAIN_REQUEST) : Response
+    private function handleRaw(Request $request, int $type = self::MAIN_REQUEST): Response
     {
         // request
         $event = new RequestEvent($this, $request, $type);
@@ -126,8 +126,8 @@ class HttpKernel implements HttpKernelInterface, TerminableInterface
             return $this->filterResponse($event->getResponse(), $request, $type);
         }
         // load controller
-        if (\false === ($controller = $this->resolver->getController($request))) {
-            throw new NotFoundHttpException(\sprintf('Unable to find the controller for path "%s". The route is wrongly configured.', $request->getPathInfo()));
+        if (\false === $controller = $this->resolver->getController($request)) {
+            throw new NotFoundHttpException(sprintf('Unable to find the controller for path "%s". The route is wrongly configured.', $request->getPathInfo()));
         }
         $event = new ControllerEvent($this, $controller, $request, $type);
         $this->dispatcher->dispatch($event, KernelEvents::CONTROLLER);
@@ -147,7 +147,7 @@ class HttpKernel implements HttpKernelInterface, TerminableInterface
             if ($event->hasResponse()) {
                 $response = $event->getResponse();
             } else {
-                $msg = \sprintf('The controller must return a "Symfony\\Component\\HttpFoundation\\Response" object but it returned %s.', $this->varToString($response));
+                $msg = sprintf('The controller must return a "Symfony\Component\HttpFoundation\Response" object but it returned %s.', $this->varToString($response));
                 // the user may have forgotten to return something
                 if (null === $response) {
                     $msg .= ' Did you forget to add a return statement somewhere in your controller?';
@@ -162,7 +162,7 @@ class HttpKernel implements HttpKernelInterface, TerminableInterface
      *
      * @throws \RuntimeException if the passed object is not a Response instance
      */
-    private function filterResponse(Response $response, Request $request, int $type) : Response
+    private function filterResponse(Response $response, Request $request, int $type): Response
     {
         $event = new ResponseEvent($this, $request, $type, $response);
         $this->dispatcher->dispatch($event, KernelEvents::RESPONSE);
@@ -185,7 +185,7 @@ class HttpKernel implements HttpKernelInterface, TerminableInterface
      *
      * @throws \Exception
      */
-    private function handleThrowable(\Throwable $e, Request $request, int $type) : Response
+    private function handleThrowable(\Throwable $e, Request $request, int $type): Response
     {
         $event = new ExceptionEvent($this, $request, $type, $e);
         $this->dispatcher->dispatch($event, KernelEvents::EXCEPTION);
@@ -216,20 +216,20 @@ class HttpKernel implements HttpKernelInterface, TerminableInterface
     /**
      * Returns a human-readable string for the specified variable.
      */
-    private function varToString($var) : string
+    private function varToString($var): string
     {
         if (\is_object($var)) {
-            return \sprintf('an object of type %s', \get_class($var));
+            return sprintf('an object of type %s', \get_class($var));
         }
         if (\is_array($var)) {
             $a = [];
             foreach ($var as $k => $v) {
-                $a[] = \sprintf('%s => ...', $k);
+                $a[] = sprintf('%s => ...', $k);
             }
-            return \sprintf('an array ([%s])', \mb_substr(\implode(', ', $a), 0, 255));
+            return sprintf('an array ([%s])', mb_substr(implode(', ', $a), 0, 255));
         }
         if (\is_resource($var)) {
-            return \sprintf('a resource (%s)', \get_resource_type($var));
+            return sprintf('a resource (%s)', get_resource_type($var));
         }
         if (null === $var) {
             return 'null';
@@ -241,10 +241,10 @@ class HttpKernel implements HttpKernelInterface, TerminableInterface
             return 'a boolean value (true)';
         }
         if (\is_string($var)) {
-            return \sprintf('a string ("%s%s")', \mb_substr($var, 0, 255), \mb_strlen($var) > 255 ? '...' : '');
+            return sprintf('a string ("%s%s")', mb_substr($var, 0, 255), mb_strlen($var) > 255 ? '...' : '');
         }
-        if (\is_numeric($var)) {
-            return \sprintf('a number (%s)', (string) $var);
+        if (is_numeric($var)) {
+            return sprintf('a number (%s)', (string) $var);
         }
         return (string) $var;
     }

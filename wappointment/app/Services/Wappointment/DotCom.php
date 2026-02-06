@@ -33,7 +33,7 @@ class DotCom extends \Wappointment\Services\Wappointment\API
     {
         $must_refresh = WPHelpers::getOption('appointments_must_refresh');
         // 0 - only check if site connected
-        if (!empty($this->site_key) && (bool) $must_refresh === \true && $must_refresh < \time()) {
+        if (!empty($this->site_key) && (bool) $must_refresh === \true && $must_refresh < time()) {
             // 1 - retrieve appointments data
             $appointments = $this->getAppointments();
             if (empty($appointments)) {
@@ -53,11 +53,11 @@ class DotCom extends \Wappointment\Services\Wappointment\API
                     }
                 }
                 if (!empty($requires_update)) {
-                    $retrieved_appointments = Appointment::select('id', 'options')->whereIn('id', \array_keys($requires_update))->get();
+                    $retrieved_appointments = Appointment::select('id', 'options')->whereIn('id', array_keys($requires_update))->get();
                     foreach ($retrieved_appointments as $updatingAppointment) {
                         $options = empty($updatingAppointment->options) ? [] : $updatingAppointment->options;
                         $merging_options = isset($requires_update[$updatingAppointment->id]) ? $requires_update[$updatingAppointment->id] : [];
-                        $updatingAppointment->options = \array_merge($options, $merging_options);
+                        $updatingAppointment->options = array_merge($options, $merging_options);
                         $updatingAppointment->save();
                     }
                 }
@@ -72,11 +72,11 @@ class DotCom extends \Wappointment\Services\Wappointment\API
     }
     public function setMustRefresh()
     {
-        WPHelpers::setOption('appointments_must_refresh', \time() + 60);
+        WPHelpers::setOption('appointments_must_refresh', time() + 60);
     }
     public function hasPendingChanges($appointments, $appointments_update)
     {
-        return \md5(wp_json_encode($appointments)) !== \md5(wp_json_encode($appointments_update));
+        return md5(wp_json_encode($appointments)) !== md5(wp_json_encode($appointments_update));
     }
     public function getAppointments()
     {
@@ -94,7 +94,7 @@ class DotCom extends \Wappointment\Services\Wappointment\API
     }
     public function connect($account_key = '')
     {
-        if (\strlen($account_key) > 48 || \strlen($account_key) < 32) {
+        if (strlen($account_key) > 48 || strlen($account_key) < 32) {
             throw new \WappointmentException("Account key is invalid", 1);
         }
         $response = $this->client->setForm($this->getParams(['account_key' => $account_key]))->post($this->call('/api/connect'));

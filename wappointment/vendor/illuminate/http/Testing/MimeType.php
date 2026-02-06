@@ -32,7 +32,7 @@ class MimeType
      */
     public static function from($filename)
     {
-        $extension = \pathinfo($filename, \PATHINFO_EXTENSION);
+        $extension = pathinfo($filename, \PATHINFO_EXTENSION);
         return self::get($extension);
     }
     /**

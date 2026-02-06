@@ -18,7 +18,7 @@ final class Options implements Initializer
     {
         $this->options = $options;
     }
-    public function initialize(mysqli $connection) : void
+    public function initialize(mysqli $connection): void
     {
         foreach ($this->options as $option => $value) {
             if (!mysqli_options($connection, $option, $value)) {

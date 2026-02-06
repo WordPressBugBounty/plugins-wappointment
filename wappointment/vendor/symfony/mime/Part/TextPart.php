@@ -42,26 +42,26 @@ class TextPart extends AbstractPart
         unset($this->_headers);
         parent::__construct();
         if (!\is_string($body) && !\is_resource($body)) {
-            throw new \TypeError(\sprintf('The body of "%s" must be a string or a resource (got "%s").', self::class, \get_debug_type($body)));
+            throw new \TypeError(sprintf('The body of "%s" must be a string or a resource (got "%s").', self::class, get_debug_type($body)));
         }
         $this->body = $body;
         $this->charset = $charset;
         $this->subtype = $subtype;
-        $this->seekable = \is_resource($body) ? \stream_get_meta_data($body)['seekable'] && 0 === \fseek($body, 0, \SEEK_CUR) : null;
+        $this->seekable = \is_resource($body) ? stream_get_meta_data($body)['seekable'] && 0 === fseek($body, 0, \SEEK_CUR) : null;
         if (null === $encoding) {
             $this->encoding = $this->chooseEncoding();
         } else {
             if ('quoted-printable' !== $encoding && 'base64' !== $encoding && '8bit' !== $encoding) {
-                throw new InvalidArgumentException(\sprintf('The encoding must be one of "quoted-printable", "base64", or "8bit" ("%s" given).', $encoding));
+                throw new InvalidArgumentException(sprintf('The encoding must be one of "quoted-printable", "base64", or "8bit" ("%s" given).', $encoding));
             }
             $this->encoding = $encoding;
         }
     }
-    public function getMediaType() : string
+    public function getMediaType(): string
     {
         return 'text';
     }
-    public function getMediaSubtype() : string
+    public function getMediaSubtype(): string
     {
         return $this->subtype;
     }
@@ -85,32 +85,32 @@ class TextPart extends AbstractPart
         $this->name = $name;
         return $this;
     }
-    public function getBody() : string
+    public function getBody(): string
     {
         if (null === $this->seekable) {
             return $this->body;
         }
         if ($this->seekable) {
-            \rewind($this->body);
+            rewind($this->body);
         }
-        return \stream_get_contents($this->body) ?: '';
+        return stream_get_contents($this->body) ?: '';
     }
-    public function bodyToString() : string
+    public function bodyToString(): string
     {
         return $this->getEncoder()->encodeString($this->getBody(), $this->charset);
     }
-    public function bodyToIterable() : iterable
+    public function bodyToIterable(): iterable
     {
         if (null !== $this->seekable) {
             if ($this->seekable) {
-                \rewind($this->body);
+                rewind($this->body);
             }
             yield from $this->getEncoder()->encodeByteStream($this->body);
         } else {
-            (yield $this->getEncoder()->encodeString($this->body));
+            yield $this->getEncoder()->encodeString($this->body);
         }
     }
-    public function getPreparedHeaders() : Headers
+    public function getPreparedHeaders(): Headers
     {
         $headers = parent::getPreparedHeaders();
         $headers->setHeaderBody('Parameterized', 'Content-Type', $this->getMediaType() . '/' . $this->getMediaSubtype());
@@ -129,7 +129,7 @@ class TextPart extends AbstractPart
         }
         return $headers;
     }
-    public function asDebugString() : string
+    public function asDebugString(): string
     {
         $str = parent::asDebugString();
         if (null !== $this->charset) {
@@ -140,17 +140,17 @@ class TextPart extends AbstractPart
         }
         return $str;
     }
-    private function getEncoder() : ContentEncoderInterface
+    private function getEncoder(): ContentEncoderInterface
     {
         if ('8bit' === $this->encoding) {
-            return self::$encoders[$this->encoding] ?? (self::$encoders[$this->encoding] = new EightBitContentEncoder());
+            return self::$encoders[$this->encoding] ?? self::$encoders[$this->encoding] = new EightBitContentEncoder();
         }
         if ('quoted-printable' === $this->encoding) {
-            return self::$encoders[$this->encoding] ?? (self::$encoders[$this->encoding] = new QpContentEncoder());
+            return self::$encoders[$this->encoding] ?? self::$encoders[$this->encoding] = new QpContentEncoder();
         }
-        return self::$encoders[$this->encoding] ?? (self::$encoders[$this->encoding] = new Base64ContentEncoder());
+        return self::$encoders[$this->encoding] ?? self::$encoders[$this->encoding] = new Base64ContentEncoder();
     }
-    private function chooseEncoding() : string
+    private function chooseEncoding(): string
     {
         if (null === $this->charset) {
             return 'base64';

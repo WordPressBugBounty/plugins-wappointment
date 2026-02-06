@@ -37,7 +37,7 @@ class ReservedKeywordsValidator implements Visitor
      *
      * @return string[]
      */
-    private function isReservedWord($word) : array
+    private function isReservedWord($word): array
     {
         if ($word[0] === '`') {
             $word = str_replace('`', '', $word);
@@ -55,7 +55,7 @@ class ReservedKeywordsValidator implements Visitor
      * @param string   $asset
      * @param string[] $violatedPlatforms
      */
-    private function addViolation($asset, $violatedPlatforms) : void
+    private function addViolation($asset, $violatedPlatforms): void
     {
         if (count($violatedPlatforms) === 0) {
             return;

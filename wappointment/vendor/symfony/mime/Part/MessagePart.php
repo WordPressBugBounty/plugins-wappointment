@@ -30,23 +30,23 @@ class MessagePart extends DataPart
         parent::__construct('', $name);
         $this->message = $message;
     }
-    public function getMediaType() : string
+    public function getMediaType(): string
     {
         return 'message';
     }
-    public function getMediaSubtype() : string
+    public function getMediaSubtype(): string
     {
         return 'rfc822';
     }
-    public function getBody() : string
+    public function getBody(): string
     {
         return $this->message->toString();
     }
-    public function bodyToString() : string
+    public function bodyToString(): string
     {
         return $this->getBody();
     }
-    public function bodyToIterable() : iterable
+    public function bodyToIterable(): iterable
     {
         return $this->message->toIterable();
     }

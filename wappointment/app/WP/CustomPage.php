@@ -38,7 +38,7 @@ class CustomPage
         if ($this->isDisplayed()) {
             add_filter('wp_title', [$this, 'metaPageTitle']);
             add_filter('the_title', [$this, 'scanTitle']);
-            add_action('init', ['\\Wappointment\\WP\\Helpers', 'enqueueFrontScripts'], 98);
+            add_action('init', ['\Wappointment\WP\Helpers', 'enqueueFrontScripts'], 98);
             //\Wappointment\WP\Helpers::enqueueFrontScripts();
         }
     }
@@ -51,15 +51,15 @@ class CustomPage
     }
     public function isAddEventToCalendarPage()
     {
-        return \strpos(WPHelpers::requestGet()->input('view'), 'add-event-to-calendar') !== \false;
+        return !empty(WPHelpers::requestGet()->input('view')) && strpos(WPHelpers::requestGet()->input('view'), 'add-event-to-calendar') !== \false;
     }
     public function isReschedulePage()
     {
-        return \strpos(WPHelpers::requestGet()->input('view'), 'reschedule-event') !== \false;
+        return !empty(WPHelpers::requestGet()->input('view')) && strpos(WPHelpers::requestGet()->input('view'), 'reschedule-event') !== \false;
     }
     public function isCancelPage()
     {
-        return \strpos(WPHelpers::requestGet()->input('view'), 'cancel-event') !== \false;
+        return !empty(WPHelpers::requestGet()->input('view')) && strpos(WPHelpers::requestGet()->input('view'), 'cancel-event') !== \false;
     }
     public function isNewAppointmentPage()
     {
@@ -83,6 +83,7 @@ class CustomPage
         if ($this->isNewAppointmentPage()) {
             return Settings::get('new_booking_link');
         }
+        return '';
     }
     public static function getPageContent()
     {
@@ -90,10 +91,11 @@ class CustomPage
     }
     public function metaPageTitle($title)
     {
-        return \str_replace($this->page_title, $this->getPageTitle(), $title);
+        $replace = !empty($this->getPageTitle()) ? $this->getPageTitle() : '';
+        return str_replace($this->page_title, $replace, $title);
     }
     public function scanTitle($title)
     {
-        return \str_replace($this->page_title, $this->getPageTitle(), $title);
+        return str_replace($this->page_title, $this->getPageTitle(), $title);
     }
 }

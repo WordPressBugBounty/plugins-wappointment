@@ -45,7 +45,7 @@ class Component extends Node
      */
     public function __construct(Document $root, $name, array $children = [], $defaults = \true)
     {
-        $this->name = isset($name) ? \strtoupper($name) : '';
+        $this->name = isset($name) ? strtoupper($name) : '';
         $this->root = $root;
         if ($defaults) {
             // This is a terribly convoluted way to do this, but this ensures
@@ -97,17 +97,17 @@ class Component extends Node
      */
     public function add()
     {
-        $arguments = \func_get_args();
+        $arguments = func_get_args();
         if ($arguments[0] instanceof Node) {
             if (isset($arguments[1])) {
                 throw new \InvalidArgumentException('The second argument must not be specified, when passing a VObject Node');
             }
             $arguments[0]->parent = $this;
             $newNode = $arguments[0];
-        } elseif (\is_string($arguments[0])) {
-            $newNode = \call_user_func_array([$this->root, 'create'], $arguments);
+        } elseif (is_string($arguments[0])) {
+            $newNode = call_user_func_array([$this->root, 'create'], $arguments);
         } else {
-            throw new \InvalidArgumentException('The first argument must either be a \\Sabre\\VObject\\Node or a string');
+            throw new \InvalidArgumentException('The first argument must either be a \Sabre\VObject\Node or a string');
         }
         $name = $newNode->name;
         if (isset($this->children[$name])) {
@@ -129,12 +129,12 @@ class Component extends Node
      */
     public function remove($item)
     {
-        if (\is_string($item)) {
+        if (is_string($item)) {
             // If there's no dot in the name, it's an exact property name and
             // we can just wipe out all those properties.
             //
-            if (\false === \strpos($item, '.')) {
-                unset($this->children[\strtoupper($item)]);
+            if (\false === strpos($item, '.')) {
+                unset($this->children[strtoupper($item)]);
                 return;
             }
             // If there was a dot, we need to ask select() to help us out and
@@ -162,7 +162,7 @@ class Component extends Node
     {
         $result = [];
         foreach ($this->children as $childGroup) {
-            $result = \array_merge($result, $childGroup);
+            $result = array_merge($result, $childGroup);
         }
         return $result;
     }
@@ -201,22 +201,22 @@ class Component extends Node
     public function select($name)
     {
         $group = null;
-        $name = \strtoupper($name);
-        if (\false !== \strpos($name, '.')) {
-            list($group, $name) = \explode('.', $name, 2);
+        $name = strtoupper($name);
+        if (\false !== strpos($name, '.')) {
+            list($group, $name) = explode('.', $name, 2);
         }
         if ('' === $name) {
             $name = null;
         }
-        if (!\is_null($name)) {
+        if (!is_null($name)) {
             $result = isset($this->children[$name]) ? $this->children[$name] : [];
-            if (\is_null($group)) {
+            if (is_null($group)) {
                 return $result;
             } else {
                 // If we have a group filter as well, we need to narrow it down
                 // more.
-                return \array_filter($result, function ($child) use($group) {
-                    return $child instanceof Property && (null !== $child->group ? \strtoupper($child->group) : '') === $group;
+                return array_filter($result, function ($child) use ($group) {
+                    return $child instanceof Property && (null !== $child->group ? strtoupper($child->group) : '') === $group;
                 });
             }
         }
@@ -225,7 +225,7 @@ class Component extends Node
         $result = [];
         foreach ($this->children as $childGroup) {
             foreach ($childGroup as $child) {
-                if ($child instanceof Property && (null !== $child->group ? \strtoupper($child->group) : '') === $group) {
+                if ($child instanceof Property && (null !== $child->group ? strtoupper($child->group) : '') === $group) {
                     $result[] = $child;
                 }
             }
@@ -266,24 +266,20 @@ class Component extends Node
                     $score = 400000000;
                     return $score + $key;
                 }
-            } else {
-                // Properties get encoded first
-                // VCARD version 4.0 wants the VERSION property to appear first
-                if ($array[$key] instanceof Property) {
-                    if ('VERSION' === $array[$key]->name) {
-                        $score = 100000000;
-                        return $score + $key;
-                    } else {
-                        // All other properties
-                        $score = 200000000;
-                        return $score + $key;
-                    }
+            } else if ($array[$key] instanceof Property) {
+                if ('VERSION' === $array[$key]->name) {
+                    $score = 100000000;
+                    return $score + $key;
+                } else {
+                    // All other properties
+                    $score = 200000000;
+                    return $score + $key;
                 }
             }
         };
         $children = $this->children();
         $tmp = $children;
-        \uksort($children, function ($a, $b) use($sortScore, $tmp) {
+        uksort($children, function ($a, $b) use ($sortScore, $tmp) {
             $sA = $sortScore($a, $tmp);
             $sB = $sortScore($b, $tmp);
             return $sA - $sB;
@@ -314,7 +310,7 @@ class Component extends Node
                 }
             }
         }
-        return [\strtolower($this->name), $properties, $components];
+        return [strtolower($this->name), $properties, $components];
     }
     /**
      * This method serializes the data into XML. This is used to create xCard or
@@ -322,7 +318,7 @@ class Component extends Node
      *
      * @param Xml\Writer $writer XML writer
      */
-    public function xmlSerialize(Xml\Writer $writer) : void
+    public function xmlSerialize(Xml\Writer $writer): void
     {
         $components = [];
         $properties = [];
@@ -335,7 +331,7 @@ class Component extends Node
                 }
             }
         }
-        $writer->startElement(\strtolower($this->name));
+        $writer->startElement(strtolower($this->name));
         if (!empty($properties)) {
             $writer->startElement('properties');
             foreach ($properties as $property) {
@@ -382,12 +378,12 @@ class Component extends Node
             throw new \RuntimeException('Starting sabre/vobject 4.0 the children property is now protected. You should use the children() method instead');
         }
         $matches = $this->select($name);
-        if (0 === \count($matches)) {
+        if (0 === count($matches)) {
             return;
         } else {
-            $firstMatch = \current($matches);
+            $firstMatch = current($matches);
             /* @var $firstMatch Property */
-            $firstMatch->setIterator(new ElementList(\array_values($matches)));
+            $firstMatch->setIterator(new ElementList(array_values($matches)));
             return $firstMatch;
         }
     }
@@ -401,7 +397,7 @@ class Component extends Node
     public function __isset($name)
     {
         $matches = $this->select($name);
-        return \count($matches) > 0;
+        return count($matches) > 0;
     }
     /**
      * Using the setter method you can add properties or subcomponents.
@@ -417,7 +413,7 @@ class Component extends Node
      */
     public function __set($name, $value)
     {
-        $name = \strtoupper($name);
+        $name = strtoupper($name);
         $this->remove($name);
         if ($value instanceof self || $value instanceof Property) {
             $this->add($value);
@@ -507,13 +503,13 @@ class Component extends Node
         $propertyCounters = [];
         $messages = [];
         foreach ($this->children() as $child) {
-            $name = \strtoupper($child->name);
+            $name = strtoupper($child->name);
             if (!isset($propertyCounters[$name])) {
                 $propertyCounters[$name] = 1;
             } else {
                 ++$propertyCounters[$name];
             }
-            $messages = \array_merge($messages, $child->validate($options));
+            $messages = array_merge($messages, $child->validate($options));
         }
         foreach ($rules as $propName => $rule) {
             switch ($rule) {
@@ -545,8 +541,8 @@ class Component extends Node
                         // We try to repair the same property appearing multiple times with the exact same value
                         // by removing the duplicates and keeping only one property
                         if ($options & self::REPAIR) {
-                            $properties = \array_unique($this->select($propName), \SORT_REGULAR);
-                            if (1 === \count($properties)) {
+                            $properties = array_unique($this->select($propName), \SORT_REGULAR);
+                            if (1 === count($properties)) {
                                 $this->remove($propName);
                                 $this->add($properties[0]);
                                 $level = 1;

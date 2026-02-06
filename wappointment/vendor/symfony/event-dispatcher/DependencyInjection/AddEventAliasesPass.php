@@ -29,9 +29,9 @@ class AddEventAliasesPass implements CompilerPassInterface
         $this->eventAliases = $eventAliases;
         $this->eventAliasesParameter = $eventAliasesParameter;
     }
-    public function process(ContainerBuilder $container) : void
+    public function process(ContainerBuilder $container): void
     {
         $eventAliases = $container->hasParameter($this->eventAliasesParameter) ? $container->getParameter($this->eventAliasesParameter) : [];
-        $container->setParameter($this->eventAliasesParameter, \array_merge($eventAliases, $this->eventAliases));
+        $container->setParameter($this->eventAliasesParameter, array_merge($eventAliases, $this->eventAliases));
     }
 }

@@ -19,10 +19,10 @@ final class Factory
      *
      * @template T of AbstractException
      */
-    public static function create(string $message, callable $constructor) : AbstractException
+    public static function create(string $message, callable $constructor): AbstractException
     {
         $code = 0;
-        if (preg_match('/ SQL(\\d+)N /', $message, $matches) === 1) {
+        if (preg_match('/ SQL(\d+)N /', $message, $matches) === 1) {
             $code = -(int) $matches[1];
         }
         return $constructor($code);

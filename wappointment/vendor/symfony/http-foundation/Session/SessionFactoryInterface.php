@@ -15,5 +15,5 @@ namespace WappoVendor\Symfony\Component\HttpFoundation\Session;
  */
 interface SessionFactoryInterface
 {
-    public function createSession() : SessionInterface;
+    public function createSession(): SessionInterface;
 }

@@ -13,7 +13,7 @@ class FulfilledPromise implements PromiseInterface
     private $value;
     public function __construct($value)
     {
-        if (\is_object($value) && \method_exists($value, 'then')) {
+        if (is_object($value) && method_exists($value, 'then')) {
             throw new \InvalidArgumentException('You cannot create a FulfilledPromise with a promise.');
         }
         $this->value = $value;
@@ -27,7 +27,7 @@ class FulfilledPromise implements PromiseInterface
         $queue = Utils::queue();
         $p = new Promise([$queue, 'run']);
         $value = $this->value;
-        $queue->add(static function () use($p, $value, $onFulfilled) {
+        $queue->add(static function () use ($p, $value, $onFulfilled) {
             if (Is::pending($p)) {
                 try {
                     $p->resolve($onFulfilled($value));

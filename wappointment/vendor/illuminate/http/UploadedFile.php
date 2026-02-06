@@ -85,7 +85,7 @@ class UploadedFile extends SymfonyUploadedFile
         if (!$this->isValid()) {
             throw new FileNotFoundException("File does not exist at path {$this->getPathname()}.");
         }
-        return \file_get_contents($this->getPathname());
+        return file_get_contents($this->getPathname());
     }
     /**
      * Get the file's extension supplied by the client.
@@ -115,7 +115,7 @@ class UploadedFile extends SymfonyUploadedFile
      */
     protected function parseOptions($options)
     {
-        if (\is_string($options)) {
+        if (is_string($options)) {
             $options = ['disk' => $options];
         }
         return $options;

@@ -19,14 +19,14 @@ abstract class Parser
     /**
      * id-left "@" id-right
      */
-    protected abstract function parseRightFromAt() : Result;
-    protected abstract function parseLeftFromAt() : Result;
-    protected abstract function preLeftParsing() : Result;
+    abstract protected function parseRightFromAt(): Result;
+    abstract protected function parseLeftFromAt(): Result;
+    abstract protected function preLeftParsing(): Result;
     public function __construct(EmailLexer $lexer)
     {
         $this->lexer = $lexer;
     }
-    public function parse(string $str) : Result
+    public function parse(string $str): Result
     {
         $this->lexer->setInput($str);
         if ($this->lexer->hasInvalidTokens()) {
@@ -49,11 +49,11 @@ abstract class Parser
     /**
      * @return Warning\Warning[]
      */
-    public function getWarnings() : array
+    public function getWarnings(): array
     {
         return $this->warnings;
     }
-    protected function hasAtToken() : bool
+    protected function hasAtToken(): bool
     {
         $this->lexer->moveNext();
         $this->lexer->moveNext();

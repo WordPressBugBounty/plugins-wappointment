@@ -76,6 +76,6 @@ class WpMail extends \Wappointment\Transports\Transport
      */
     protected function allContacts(\WappoSwift_Mime_SimpleMessage $message)
     {
-        return \array_merge((array) $message->getTo(), (array) $message->getCc(), (array) $message->getBcc());
+        return array_merge((array) $message->getTo(), (array) $message->getCc(), (array) $message->getBcc());
     }
 }

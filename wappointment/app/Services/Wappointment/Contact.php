@@ -13,7 +13,7 @@ class Contact extends \Wappointment\Services\Wappointment\API
     }
     private function prepareData($data)
     {
-        $data['message'] = \nl2br($data['message']);
+        $data['message'] = nl2br($data['message']);
         return $data;
     }
 }

@@ -46,7 +46,7 @@ class DumpDataCollector extends DataCollector implements DataDumperInterface
      */
     public function __construct(Stopwatch $stopwatch = null, $fileLinkFormat = null, string $charset = null, RequestStack $requestStack = null, $dumper = null)
     {
-        $fileLinkFormat = ($fileLinkFormat ?: \ini_get('xdebug.file_link_format')) ?: \get_cfg_var('xdebug.file_link_format');
+        $fileLinkFormat = ($fileLinkFormat ?: \ini_get('xdebug.file_link_format')) ?: get_cfg_var('xdebug.file_link_format');
         $this->stopwatch = $stopwatch;
         $this->fileLinkFormat = $fileLinkFormat instanceof FileLinkFormatter && \false === $fileLinkFormat->format('', 0) ? \false : $fileLinkFormat;
         $this->charset = (($charset ?: \ini_get('php.output_encoding')) ?: \ini_get('default_charset')) ?: 'UTF-8';
@@ -78,7 +78,7 @@ class DumpDataCollector extends DataCollector implements DataDumperInterface
         if (!$this->dataCount) {
             $this->data = [];
         }
-        $this->data[] = \compact('data', 'name', 'file', 'line', 'fileExcerpt');
+        $this->data[] = compact('data', 'name', 'file', 'line', 'fileExcerpt');
         ++$this->dataCount;
         if ($this->stopwatch) {
             $this->stopwatch->stop('dump');
@@ -94,13 +94,13 @@ class DumpDataCollector extends DataCollector implements DataDumperInterface
             return;
         }
         // In all other conditions that remove the web debug toolbar, dumps are written on the output.
-        if (!$this->requestStack || !$response->headers->has('X-Debug-Token') || $response->isRedirection() || $response->headers->has('Content-Type') && !\str_contains($response->headers->get('Content-Type'), 'html') || 'html' !== $request->getRequestFormat() || \false === \strripos($response->getContent(), '</body>')) {
-            if ($response->headers->has('Content-Type') && \str_contains($response->headers->get('Content-Type'), 'html')) {
+        if (!$this->requestStack || !$response->headers->has('X-Debug-Token') || $response->isRedirection() || $response->headers->has('Content-Type') && !str_contains($response->headers->get('Content-Type'), 'html') || 'html' !== $request->getRequestFormat() || \false === strripos($response->getContent(), '</body>')) {
+            if ($response->headers->has('Content-Type') && str_contains($response->headers->get('Content-Type'), 'html')) {
                 $dumper = new HtmlDumper('php://output', $this->charset);
                 $dumper->setDisplayOptions(['fileLinkFormat' => $this->fileLinkFormat]);
             } else {
                 $dumper = new CliDumper('php://output', $this->charset);
-                if (\method_exists($dumper, 'setDisplayOptions')) {
+                if (method_exists($dumper, 'setDisplayOptions')) {
                     $dumper->setDisplayOptions(['fileLinkFormat' => $this->fileLinkFormat]);
                 }
             }
@@ -123,7 +123,7 @@ class DumpDataCollector extends DataCollector implements DataDumperInterface
     /**
      * @internal
      */
-    public function __sleep() : array
+    public function __sleep(): array
     {
         if (!$this->dataCount) {
             $this->data = [];
@@ -143,8 +143,8 @@ class DumpDataCollector extends DataCollector implements DataDumperInterface
     public function __wakeup()
     {
         parent::__wakeup();
-        $charset = \array_pop($this->data);
-        $fileLinkFormat = \array_pop($this->data);
+        $charset = array_pop($this->data);
+        $fileLinkFormat = array_pop($this->data);
         $this->dataCount = \count($this->data);
         foreach ($this->data as $dump) {
             if (!\is_string($dump['name']) || !\is_string($dump['file']) || !\is_int($dump['line'])) {
@@ -153,18 +153,18 @@ class DumpDataCollector extends DataCollector implements DataDumperInterface
         }
         self::__construct($this->stopwatch, \is_string($fileLinkFormat) || $fileLinkFormat instanceof FileLinkFormatter ? $fileLinkFormat : null, \is_string($charset) ? $charset : null);
     }
-    public function getDumpsCount() : int
+    public function getDumpsCount(): int
     {
         return $this->dataCount;
     }
-    public function getDumps(string $format, int $maxDepthLimit = -1, int $maxItemsPerDepth = -1) : array
+    public function getDumps(string $format, int $maxDepthLimit = -1, int $maxItemsPerDepth = -1): array
     {
-        $data = \fopen('php://memory', 'r+');
+        $data = fopen('php://memory', 'r+');
         if ('html' === $format) {
             $dumper = new HtmlDumper($data, $this->charset);
             $dumper->setDisplayOptions(['fileLinkFormat' => $this->fileLinkFormat]);
         } else {
-            throw new \InvalidArgumentException(\sprintf('Invalid dump format: "%s".', $format));
+            throw new \InvalidArgumentException(sprintf('Invalid dump format: "%s".', $format));
         }
         $dumps = [];
         if (!$this->dataCount) {
@@ -172,14 +172,14 @@ class DumpDataCollector extends DataCollector implements DataDumperInterface
         }
         foreach ($this->data as $dump) {
             $dumper->dump($dump['data']->withMaxDepth($maxDepthLimit)->withMaxItemsPerDepth($maxItemsPerDepth));
-            $dump['data'] = \stream_get_contents($data, -1, 0);
-            \ftruncate($data, 0);
-            \rewind($data);
+            $dump['data'] = stream_get_contents($data, -1, 0);
+            ftruncate($data, 0);
+            rewind($data);
             $dumps[] = $dump;
         }
         return $dumps;
     }
-    public function getName() : string
+    public function getName(): string
     {
         return 'dump';
     }
@@ -188,18 +188,18 @@ class DumpDataCollector extends DataCollector implements DataDumperInterface
         if (0 === $this->clonesCount-- && !$this->isCollected && $this->dataCount) {
             $this->clonesCount = 0;
             $this->isCollected = \true;
-            $h = \headers_list();
+            $h = headers_list();
             $i = \count($h);
-            \array_unshift($h, 'Content-Type: ' . \ini_get('default_mimetype'));
-            while (0 !== \stripos($h[$i], 'Content-Type:')) {
+            array_unshift($h, 'Content-Type: ' . \ini_get('default_mimetype'));
+            while (0 !== stripos($h[$i], 'Content-Type:')) {
                 --$i;
             }
-            if (!\in_array(\PHP_SAPI, ['cli', 'phpdbg'], \true) && \stripos($h[$i], 'html')) {
+            if (!\in_array(\PHP_SAPI, ['cli', 'phpdbg'], \true) && stripos($h[$i], 'html')) {
                 $dumper = new HtmlDumper('php://output', $this->charset);
                 $dumper->setDisplayOptions(['fileLinkFormat' => $this->fileLinkFormat]);
             } else {
                 $dumper = new CliDumper('php://output', $this->charset);
-                if (\method_exists($dumper, 'setDisplayOptions')) {
+                if (method_exists($dumper, 'setDisplayOptions')) {
                     $dumper->setDisplayOptions(['fileLinkFormat' => $this->fileLinkFormat]);
                 }
             }
@@ -218,12 +218,12 @@ class DumpDataCollector extends DataCollector implements DataDumperInterface
                 if ($this instanceof HtmlDumper) {
                     if ($file) {
                         $s = $this->style('meta', '%s');
-                        $f = \strip_tags($this->style('', $file));
-                        $name = \strip_tags($this->style('', $name));
-                        if ($fmt && ($link = \is_string($fmt) ? \strtr($fmt, ['%f' => $file, '%l' => $line]) : $fmt->format($file, $line))) {
-                            $name = \sprintf('<a href="%s" title="%s">' . $s . '</a>', \strip_tags($this->style('', $link)), $f, $name);
+                        $f = strip_tags($this->style('', $file));
+                        $name = strip_tags($this->style('', $name));
+                        if ($fmt && $link = \is_string($fmt) ? strtr($fmt, ['%f' => $file, '%l' => $line]) : $fmt->format($file, $line)) {
+                            $name = sprintf('<a href="%s" title="%s">' . $s . '</a>', strip_tags($this->style('', $link)), $f, $name);
                         } else {
-                            $name = \sprintf('<abbr title="%s">' . $s . '</abbr>', $f, $name);
+                            $name = sprintf('<abbr title="%s">' . $s . '</abbr>', $f, $name);
                         }
                     } else {
                         $name = $this->style('meta', $name);

@@ -10,7 +10,7 @@ use function sprintf;
  */
 final class UnknownColumnOption extends SchemaException
 {
-    public static function new(string $name) : self
+    public static function new(string $name): self
     {
         return new self(sprintf('The "%s" column option is not supported.', $name));
     }

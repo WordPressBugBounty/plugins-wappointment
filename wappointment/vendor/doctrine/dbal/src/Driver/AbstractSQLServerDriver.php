@@ -30,7 +30,7 @@ abstract class AbstractSQLServerDriver implements Driver
         assert($platform instanceof SQLServer2012Platform);
         return new SQLServerSchemaManager($conn, $platform);
     }
-    public function getExceptionConverter() : ExceptionConverterInterface
+    public function getExceptionConverter(): ExceptionConverterInterface
     {
         return new ExceptionConverter();
     }

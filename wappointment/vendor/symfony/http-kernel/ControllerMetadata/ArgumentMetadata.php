@@ -38,7 +38,7 @@ class ArgumentMetadata
         $this->defaultValue = $defaultValue;
         $this->isNullable = $isNullable || null === $type || $hasDefaultValue && null === $defaultValue;
         if (null === $attributes || $attributes instanceof ArgumentInterface) {
-            trigger_deprecation('symfony/http-kernel', '5.3', 'The "%s" constructor expects an array of PHP attributes as last argument, %s given.', __CLASS__, \get_debug_type($attributes));
+            trigger_deprecation('symfony/http-kernel', '5.3', 'The "%s" constructor expects an array of PHP attributes as last argument, %s given.', __CLASS__, get_debug_type($attributes));
             $attributes = $attributes ? [$attributes] : [];
         }
         $this->attributes = $attributes;
@@ -102,14 +102,14 @@ class ArgumentMetadata
     public function getDefaultValue()
     {
         if (!$this->hasDefaultValue) {
-            throw new \LogicException(\sprintf('Argument $%s does not have a default value. Use "%s::hasDefaultValue()" to avoid this exception.', $this->name, __CLASS__));
+            throw new \LogicException(sprintf('Argument $%s does not have a default value. Use "%s::hasDefaultValue()" to avoid this exception.', $this->name, __CLASS__));
         }
         return $this->defaultValue;
     }
     /**
      * Returns the attribute (if any) that was set on the argument.
      */
-    public function getAttribute() : ?ArgumentInterface
+    public function getAttribute(): ?ArgumentInterface
     {
         trigger_deprecation('symfony/http-kernel', '5.3', 'Method "%s()" is deprecated, use "getAttributes()" instead.', __METHOD__);
         if (!$this->attributes) {
@@ -120,7 +120,7 @@ class ArgumentMetadata
     /**
      * @return object[]
      */
-    public function getAttributes(string $name = null, int $flags = 0) : array
+    public function getAttributes(string $name = null, int $flags = 0): array
     {
         if (!$name) {
             return $this->attributes;

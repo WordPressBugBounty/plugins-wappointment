@@ -2,7 +2,7 @@
 
 namespace WappoVendor;
 
-if (!\function_exists('getallheaders')) {
+if (!\function_exists('getallheaders') && !\function_exists('WappoVendor\getallheaders')) {
     /**
      * Get all HTTP header key/values as an associative array for the current request.
      *

@@ -35,7 +35,7 @@ class Availability
             if (empty($staff_id)) {
                 throw new \WappointmentException("Cant regenerate", 1);
             }
-            $this->staff = \is_numeric($staff_id) ? Central::get('CalendarModel')::findOrFail($staff_id) : $staff_id;
+            $this->staff = is_numeric($staff_id) ? Central::get('CalendarModel')::findOrFail($staff_id) : $staff_id;
             $this->timezone = $this->staff->options['timezone'];
             $this->regav = $this->staff->options['regav'];
             $this->days = (int) $this->staff->options['avb'];
@@ -43,7 +43,7 @@ class Availability
     }
     public function getMaxTs()
     {
-        return \time() + $this->days * 24 * 3600;
+        return time() + $this->days * 24 * 3600;
     }
     public function returnStaff()
     {
@@ -53,7 +53,7 @@ class Availability
     {
         $calendar_urls = $this->staff->getCalendarUrls();
         $hasChanged = \false;
-        if (!empty($calendar_urls) && \is_array($calendar_urls)) {
+        if (!empty($calendar_urls) && is_array($calendar_urls)) {
             foreach ($calendar_urls as $calurl) {
                 if ((new \Wappointment\Services\Calendar($calurl, $this->isLegacy ? $this->staff->id : $this->staff, $this->isLegacy))->fetch()) {
                     $hasChanged = \true;
@@ -81,8 +81,8 @@ class Availability
         //$end = $today->copy()->addDays($this->days);
         $start_at_string = $today->format(WAPPOINTMENT_DB_FORMAT);
         $end_at_string = $end->format(WAPPOINTMENT_DB_FORMAT);
-        $statusEventQuery = MStatus::where('muted', '<', 1)->where(function ($query) use($end_at_string, $start_at_string) {
-            $query->where(function ($qry) use($end_at_string, $start_at_string) {
+        $statusEventQuery = MStatus::where('muted', '<', 1)->where(function ($query) use ($end_at_string, $start_at_string) {
+            $query->where(function ($qry) use ($end_at_string, $start_at_string) {
                 $qry->where('start_at', '<', $end_at_string)->where('end_at', '>', $start_at_string);
             })->orWhere('recur', '>', MStatus::RECUR_NOT);
         })->orderBy('start_at');
@@ -100,7 +100,7 @@ class Availability
         // get clean free time to increase availability
         $frees = $this->segmentService->flatten($segmentCollection);
         //merge ra and extra free
-        $test = \array_merge($this->availabilities, $frees);
+        $test = array_merge($this->availabilities, $frees);
         $collection = \WappointmentLv::collect($test)->sortBy(0)->values()->all();
         $this->availabilities = $this->segmentService->flatten($collection);
         // get appointments
@@ -167,7 +167,7 @@ class Availability
     private function correctMinuteValue($carbon)
     {
         $test_array = $this->generate5minarray();
-        while (!\in_array($carbon->minute, $test_array)) {
+        while (!in_array($carbon->minute, $test_array)) {
             $carbon->addMinute(1);
         }
         return $carbon;
@@ -192,8 +192,8 @@ class Availability
         if ($min_hours > 0) {
             $int_hours = $min_hours;
             $int_minutes = 0;
-            if (\strpos($min_hours, '.') !== \false) {
-                $int_hours = \floor($min_hours);
+            if (strpos($min_hours, '.') !== \false) {
+                $int_hours = floor($min_hours);
                 $int_minutes = ($min_hours - $int_hours) * 60;
             }
             if ($int_hours) {
@@ -239,7 +239,7 @@ class Availability
         foreach ($arrayToReorder as $key => $avail) {
             $newOrder[$avail[0]] = $key;
         }
-        \ksort($newOrder);
+        ksort($newOrder);
         $newAvail = [];
         foreach ($newOrder as $index) {
             $newAvail[] = $arrayToReorder[$index];

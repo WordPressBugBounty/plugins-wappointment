@@ -46,7 +46,7 @@ abstract class AbstractTestSessionListener implements EventSubscriberInterface
         // bootstrap the session
         if ($event->getRequest()->hasSession()) {
             $session = $event->getRequest()->getSession();
-        } elseif (!($session = $this->getSession())) {
+        } elseif (!$session = $this->getSession()) {
             return;
         }
         $cookies = $event->getRequest()->cookies;
@@ -73,10 +73,10 @@ abstract class AbstractTestSessionListener implements EventSubscriberInterface
             $session->save();
         }
         if ($session instanceof Session ? !$session->isEmpty() || null !== $this->sessionId && $session->getId() !== $this->sessionId : $wasStarted) {
-            $params = \session_get_cookie_params() + ['samesite' => null];
+            $params = session_get_cookie_params() + ['samesite' => null];
             foreach ($this->sessionOptions as $k => $v) {
-                if (\str_starts_with($k, 'cookie_')) {
-                    $params[\substr($k, 7)] = $v;
+                if (str_starts_with($k, 'cookie_')) {
+                    $params[substr($k, 7)] = $v;
                 }
             }
             foreach ($event->getResponse()->headers->getCookies() as $cookie) {
@@ -84,11 +84,11 @@ abstract class AbstractTestSessionListener implements EventSubscriberInterface
                     return;
                 }
             }
-            $event->getResponse()->headers->setCookie(new Cookie($session->getName(), $session->getId(), 0 === $params['lifetime'] ? 0 : \time() + $params['lifetime'], $params['path'], $params['domain'], $params['secure'], $params['httponly'], \false, $params['samesite'] ?: null));
+            $event->getResponse()->headers->setCookie(new Cookie($session->getName(), $session->getId(), 0 === $params['lifetime'] ? 0 : time() + $params['lifetime'], $params['path'], $params['domain'], $params['secure'], $params['httponly'], \false, $params['samesite'] ?: null));
             $this->sessionId = $session->getId();
         }
     }
-    public static function getSubscribedEvents() : array
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::REQUEST => ['onKernelRequest', 127],
@@ -101,5 +101,5 @@ abstract class AbstractTestSessionListener implements EventSubscriberInterface
      *
      * @return SessionInterface|null
      */
-    protected abstract function getSession();
+    abstract protected function getSession();
 }

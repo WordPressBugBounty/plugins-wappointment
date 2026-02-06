@@ -36,7 +36,7 @@ abstract class AbstractDriverMiddleware implements VersionAwarePlatformDriver
     {
         return $this->wrappedDriver->getSchemaManager($conn, $platform);
     }
-    public function getExceptionConverter() : ExceptionConverter
+    public function getExceptionConverter(): ExceptionConverter
     {
         return $this->wrappedDriver->getExceptionConverter();
     }

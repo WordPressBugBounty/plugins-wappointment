@@ -20,7 +20,7 @@ final class ConnectionCollationMetadataProvider implements CollationMetadataProv
     /**
      * @throws Exception
      */
-    public function getCollationCharset(string $collation) : ?string
+    public function getCollationCharset(string $collation): ?string
     {
         $charset = $this->connection->fetchOne(<<<'SQL'
 SELECT CHARACTER_SET_NAME

@@ -39,7 +39,7 @@ interface Result
      *
      * @throws Exception
      */
-    public function fetchAllNumeric() : array;
+    public function fetchAllNumeric(): array;
     /**
      * Returns an array containing all of the result rows represented as associative arrays.
      *
@@ -47,7 +47,7 @@ interface Result
      *
      * @throws Exception
      */
-    public function fetchAllAssociative() : array;
+    public function fetchAllAssociative(): array;
     /**
      * Returns an array containing the values of the first column of the result.
      *
@@ -55,7 +55,7 @@ interface Result
      *
      * @throws Exception
      */
-    public function fetchFirstColumn() : array;
+    public function fetchFirstColumn(): array;
     /**
      * Returns the number of rows affected by the DELETE, INSERT, or UPDATE statement that produced the result.
      *
@@ -67,7 +67,7 @@ interface Result
      *
      * @throws Exception
      */
-    public function rowCount() : int;
+    public function rowCount(): int;
     /**
      * Returns the number of columns in the result
      *
@@ -76,9 +76,9 @@ interface Result
      *
      * @throws Exception
      */
-    public function columnCount() : int;
+    public function columnCount(): int;
     /**
      * Discards the non-fetched portion of the result, enabling the originating statement to be executed again.
      */
-    public function free() : void;
+    public function free(): void;
 }

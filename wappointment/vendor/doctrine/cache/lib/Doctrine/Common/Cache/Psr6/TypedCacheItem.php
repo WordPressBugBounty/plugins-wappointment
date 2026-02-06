@@ -20,19 +20,19 @@ final class TypedCacheItem implements CacheItemInterface
     public function __construct(private string $key, private mixed $value, private bool $isHit)
     {
     }
-    public function getKey() : string
+    public function getKey(): string
     {
         return $this->key;
     }
-    public function get() : mixed
+    public function get(): mixed
     {
         return $this->value;
     }
-    public function isHit() : bool
+    public function isHit(): bool
     {
         return $this->isHit;
     }
-    public function set(mixed $value) : static
+    public function set(mixed $value): static
     {
         $this->value = $value;
         return $this;
@@ -40,7 +40,7 @@ final class TypedCacheItem implements CacheItemInterface
     /**
      * {@inheritDoc}
      */
-    public function expiresAt($expiration) : static
+    public function expiresAt($expiration): static
     {
         if ($expiration === null) {
             $this->expiry = null;
@@ -54,7 +54,7 @@ final class TypedCacheItem implements CacheItemInterface
     /**
      * {@inheritDoc}
      */
-    public function expiresAfter($time) : static
+    public function expiresAfter($time): static
     {
         if ($time === null) {
             $this->expiry = null;
@@ -70,7 +70,7 @@ final class TypedCacheItem implements CacheItemInterface
     /**
      * @internal
      */
-    public function getExpiry() : ?float
+    public function getExpiry(): ?float
     {
         return $this->expiry;
     }

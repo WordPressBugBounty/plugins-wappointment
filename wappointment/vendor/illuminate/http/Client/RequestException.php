@@ -30,7 +30,7 @@ class RequestException extends HttpClientException
     protected function prepareMessage(Response $response)
     {
         $message = "HTTP request returned status code {$response->status()}";
-        $summary = \class_exists(\WappoVendor\GuzzleHttp\Psr7\Message::class) ? \WappoVendor\GuzzleHttp\Psr7\Message::bodySummary($response->toPsrResponse()) : \WappoVendor\GuzzleHttp\Psr7\get_message_body_summary($response->toPsrResponse());
-        return \is_null($summary) ? $message : ($message .= ":\n{$summary}\n");
+        $summary = class_exists(\WappoVendor\GuzzleHttp\Psr7\Message::class) ? \WappoVendor\GuzzleHttp\Psr7\Message::bodySummary($response->toPsrResponse()) : \WappoVendor\GuzzleHttp\Psr7\get_message_body_summary($response->toPsrResponse());
+        return is_null($summary) ? $message : $message .= ":\n{$summary}\n";
     }
 }

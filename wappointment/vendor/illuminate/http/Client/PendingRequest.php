@@ -208,14 +208,14 @@ class PendingRequest
      */
     public function attach($name, $contents = '', $filename = null, array $headers = [])
     {
-        if (\is_array($name)) {
+        if (is_array($name)) {
             foreach ($name as $file) {
                 $this->attach(...$file);
             }
             return $this;
         }
         $this->asMultipart();
-        $this->pendingFiles[] = \array_filter(['name' => $name, 'contents' => $contents, 'headers' => $headers, 'filename' => $filename]);
+        $this->pendingFiles[] = array_filter(['name' => $name, 'contents' => $contents, 'headers' => $headers, 'filename' => $filename]);
         return $this;
     }
     /**
@@ -235,7 +235,7 @@ class PendingRequest
      */
     public function bodyFormat(string $format)
     {
-        return \WappointmentLv::tap($this, function ($request) use($format) {
+        return \WappointmentLv::tap($this, function ($request) use ($format) {
             $this->bodyFormat = $format;
         });
     }
@@ -276,8 +276,8 @@ class PendingRequest
      */
     public function withHeaders(array $headers)
     {
-        return \WappointmentLv::tap($this, function ($request) use($headers) {
-            return $this->options = \array_merge_recursive($this->options, ['headers' => $headers]);
+        return \WappointmentLv::tap($this, function ($request) use ($headers) {
+            return $this->options = array_merge_recursive($this->options, ['headers' => $headers]);
         });
     }
     /**
@@ -289,7 +289,7 @@ class PendingRequest
      */
     public function withBasicAuth(string $username, string $password)
     {
-        return \WappointmentLv::tap($this, function ($request) use($username, $password) {
+        return \WappointmentLv::tap($this, function ($request) use ($username, $password) {
             return $this->options['auth'] = [$username, $password];
         });
     }
@@ -302,7 +302,7 @@ class PendingRequest
      */
     public function withDigestAuth($username, $password)
     {
-        return \WappointmentLv::tap($this, function ($request) use($username, $password) {
+        return \WappointmentLv::tap($this, function ($request) use ($username, $password) {
             return $this->options['auth'] = [$username, $password, 'digest'];
         });
     }
@@ -315,8 +315,8 @@ class PendingRequest
      */
     public function withToken($token, $type = 'Bearer')
     {
-        return \WappointmentLv::tap($this, function ($request) use($token, $type) {
-            return $this->options['headers']['Authorization'] = \trim($type . ' ' . $token);
+        return \WappointmentLv::tap($this, function ($request) use ($token, $type) {
+            return $this->options['headers']['Authorization'] = trim($type . ' ' . $token);
         });
     }
     /**
@@ -327,8 +327,8 @@ class PendingRequest
      */
     public function withUserAgent($userAgent)
     {
-        return \WappointmentLv::tap($this, function ($request) use($userAgent) {
-            return $this->options['headers']['User-Agent'] = \trim($userAgent);
+        return \WappointmentLv::tap($this, function ($request) use ($userAgent) {
+            return $this->options['headers']['User-Agent'] = trim($userAgent);
         });
     }
     /**
@@ -340,8 +340,8 @@ class PendingRequest
      */
     public function withCookies(array $cookies, string $domain)
     {
-        return \WappointmentLv::tap($this, function ($request) use($cookies, $domain) {
-            return $this->options = \array_merge_recursive($this->options, ['cookies' => CookieJar::fromArray($cookies, $domain)]);
+        return \WappointmentLv::tap($this, function ($request) use ($cookies, $domain) {
+            return $this->options = array_merge_recursive($this->options, ['cookies' => CookieJar::fromArray($cookies, $domain)]);
         });
     }
     /**
@@ -374,7 +374,7 @@ class PendingRequest
      */
     public function sink($to)
     {
-        return \WappointmentLv::tap($this, function ($request) use($to) {
+        return \WappointmentLv::tap($this, function ($request) use ($to) {
             return $this->options['sink'] = $to;
         });
     }
@@ -386,7 +386,7 @@ class PendingRequest
      */
     public function timeout(int $seconds)
     {
-        return \WappointmentLv::tap($this, function () use($seconds) {
+        return \WappointmentLv::tap($this, function () use ($seconds) {
             $this->options['timeout'] = $seconds;
         });
     }
@@ -413,8 +413,8 @@ class PendingRequest
      */
     public function withOptions(array $options)
     {
-        return \WappointmentLv::tap($this, function ($request) use($options) {
-            return $this->options = \array_replace_recursive(\array_merge_recursive($this->options, Arr::only($options, $this->mergableOptions)), $options);
+        return \WappointmentLv::tap($this, function ($request) use ($options) {
+            return $this->options = array_replace_recursive(array_merge_recursive($this->options, Arr::only($options, $this->mergableOptions)), $options);
         });
     }
     /**
@@ -436,7 +436,7 @@ class PendingRequest
      */
     public function beforeSending($callback)
     {
-        return \WappointmentLv::tap($this, function () use($callback) {
+        return \WappointmentLv::tap($this, function () use ($callback) {
             $this->beforeSendingCallbacks[] = $callback;
         });
     }
@@ -447,9 +447,9 @@ class PendingRequest
      */
     public function dump()
     {
-        $values = \func_get_args();
-        return $this->beforeSending(function (Request $request, array $options) use($values) {
-            foreach (\array_merge($values, [$request, $options]) as $value) {
+        $values = func_get_args();
+        return $this->beforeSending(function (Request $request, array $options) use ($values) {
+            foreach (array_merge($values, [$request, $options]) as $value) {
                 VarDumper::dump($value);
             }
         });
@@ -461,9 +461,9 @@ class PendingRequest
      */
     public function dd()
     {
-        $values = \func_get_args();
-        return $this->beforeSending(function (Request $request, array $options) use($values) {
-            foreach (\array_merge($values, [$request, $options]) as $value) {
+        $values = func_get_args();
+        return $this->beforeSending(function (Request $request, array $options) use ($values) {
+            foreach (array_merge($values, [$request, $options]) as $value) {
                 VarDumper::dump($value);
             }
             exit(1);
@@ -478,7 +478,7 @@ class PendingRequest
      */
     public function get(string $url, $query = null)
     {
-        return $this->send('GET', $url, \func_num_args() === 1 ? [] : ['query' => $query]);
+        return $this->send('GET', $url, func_num_args() === 1 ? [] : ['query' => $query]);
     }
     /**
      * Issue a HEAD request to the given URL.
@@ -489,7 +489,7 @@ class PendingRequest
      */
     public function head(string $url, $query = null)
     {
-        return $this->send('HEAD', $url, \func_num_args() === 1 ? [] : ['query' => $query]);
+        return $this->send('HEAD', $url, func_num_args() === 1 ? [] : ['query' => $query]);
     }
     /**
      * Issue a POST request to the given URL.
@@ -562,15 +562,15 @@ class PendingRequest
      */
     public function send(string $method, string $url, array $options = [])
     {
-        $url = \ltrim(\rtrim($this->baseUrl, '/') . '/' . \ltrim($url, '/'), '/');
+        $url = ltrim(rtrim($this->baseUrl, '/') . '/' . ltrim($url, '/'), '/');
         if (isset($options[$this->bodyFormat])) {
             if ($this->bodyFormat === 'multipart') {
                 $options[$this->bodyFormat] = $this->parseMultipartBodyFormat($options[$this->bodyFormat]);
             } elseif ($this->bodyFormat === 'body') {
                 $options[$this->bodyFormat] = $this->pendingBody;
             }
-            if (\is_array($options[$this->bodyFormat])) {
-                $options[$this->bodyFormat] = \array_merge($options[$this->bodyFormat], $this->pendingFiles);
+            if (is_array($options[$this->bodyFormat])) {
+                $options[$this->bodyFormat] = array_merge($options[$this->bodyFormat], $this->pendingFiles);
             }
         } else {
             $options[$this->bodyFormat] = $this->pendingBody;
@@ -579,7 +579,7 @@ class PendingRequest
         if ($this->async) {
             return $this->makePromise($method, $url, $options);
         }
-        return retry($this->tries ?? 1, function () use($method, $url, $options) {
+        return retry($this->tries ?? 1, function () use ($method, $url, $options) {
             try {
                 return \WappointmentLv::tap(new Response($this->sendRequest($method, $url, $options)), function ($response) {
                     $this->populateResponse($response);
@@ -603,7 +603,7 @@ class PendingRequest
     protected function parseMultipartBodyFormat(array $data)
     {
         return \WappointmentLv::collect($data)->map(function ($value, $key) {
-            return \is_array($value) ? $value : ['name' => $key, 'contents' => $value];
+            return is_array($value) ? $value : ['name' => $key, 'contents' => $value];
         })->values()->all();
     }
     /**
@@ -658,9 +658,9 @@ class PendingRequest
         if (empty($laravelData) && $method === 'GET' && $urlString->contains('?')) {
             $laravelData = (string) $urlString->after('?');
         }
-        if (\is_string($laravelData)) {
-            \parse_str($laravelData, $parsedData);
-            $laravelData = \is_array($parsedData) ? $parsedData : [];
+        if (is_string($laravelData)) {
+            parse_str($laravelData, $parsedData);
+            $laravelData = is_array($parsedData) ? $parsedData : [];
         }
         return $laravelData;
     }
@@ -692,7 +692,7 @@ class PendingRequest
      */
     protected function requestsReusableClient()
     {
-        return !\is_null($this->client) || $this->async;
+        return !is_null($this->client) || $this->async;
     }
     /**
      * Retrieve a reusable Guzzle client.
@@ -734,7 +734,7 @@ class PendingRequest
             $stack->push($this->buildBeforeSendingHandler());
             $stack->push($this->buildRecorderHandler());
             $stack->push($this->buildStubHandler());
-            $this->middleware->each(function ($middleware) use($stack) {
+            $this->middleware->each(function ($middleware) use ($stack) {
                 $stack->push($middleware);
             });
         });
@@ -747,7 +747,7 @@ class PendingRequest
     public function buildBeforeSendingHandler()
     {
         return function ($handler) {
-            return function ($request, $options) use($handler) {
+            return function ($request, $options) use ($handler) {
                 return $handler($this->runBeforeSendingCallbacks($request, $options), $options);
             };
         };
@@ -760,9 +760,9 @@ class PendingRequest
     public function buildRecorderHandler()
     {
         return function ($handler) {
-            return function ($request, $options) use($handler) {
+            return function ($request, $options) use ($handler) {
                 $promise = $handler($request, $options);
-                return $promise->then(function ($response) use($request, $options) {
+                return $promise->then(function ($response) use ($request, $options) {
                     optional($this->factory)->recordRequestResponsePair((new Request($request))->withData($options['laravel_data']), new Response($response));
                     return $response;
                 });
@@ -777,12 +777,12 @@ class PendingRequest
     public function buildStubHandler()
     {
         return function ($handler) {
-            return function ($request, $options) use($handler) {
+            return function ($request, $options) use ($handler) {
                 $response = ($this->stubCallbacks ?? \WappointmentLv::collect())->map->__invoke((new Request($request))->withData($options['laravel_data']), $options)->filter()->first();
-                if (\is_null($response)) {
+                if (is_null($response)) {
                     return $handler($request, $options);
                 }
-                $response = \is_array($response) ? Factory::response($response) : $response;
+                $response = is_array($response) ? Factory::response($response) : $response;
                 $sink = $options['sink'] ?? null;
                 if ($sink) {
                     $response->then($this->sinkStubHandler($sink));
@@ -799,14 +799,14 @@ class PendingRequest
      */
     protected function sinkStubHandler($sink)
     {
-        return function ($response) use($sink) {
+        return function ($response) use ($sink) {
             $body = $response->getBody()->getContents();
-            if (\is_string($sink)) {
-                \file_put_contents($sink, $body);
+            if (is_string($sink)) {
+                file_put_contents($sink, $body);
                 return;
             }
-            \fwrite($sink, $body);
-            \rewind($sink);
+            fwrite($sink, $body);
+            rewind($sink);
         };
     }
     /**
@@ -818,9 +818,9 @@ class PendingRequest
      */
     public function runBeforeSendingCallbacks($request, array $options)
     {
-        return \WappointmentLv::tap($request, function (&$request) use($options) {
-            $this->beforeSendingCallbacks->each(function ($callback) use(&$request, $options) {
-                $callbackResult = \call_user_func($callback, (new Request($request))->withData($options['laravel_data']), $options, $this);
+        return \WappointmentLv::tap($request, function (&$request) use ($options) {
+            $this->beforeSendingCallbacks->each(function ($callback) use (&$request, $options) {
+                $callbackResult = call_user_func($callback, (new Request($request))->withData($options['laravel_data']), $options, $this);
                 if ($callbackResult instanceof RequestInterface) {
                     $request = $callbackResult;
                 } elseif ($callbackResult instanceof Request) {
@@ -837,7 +837,7 @@ class PendingRequest
      */
     public function mergeOptions(...$options)
     {
-        return \array_replace_recursive(\array_merge_recursive($this->options, Arr::only($options, $this->mergableOptions)), ...$options);
+        return array_replace_recursive(array_merge_recursive($this->options, Arr::only($options, $this->mergableOptions)), ...$options);
     }
     /**
      * Register a stub callable that will intercept requests and be able to return stub responses.

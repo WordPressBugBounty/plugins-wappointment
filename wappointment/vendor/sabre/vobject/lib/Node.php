@@ -58,7 +58,7 @@ abstract class Node implements \IteratorAggregate, \ArrayAccess, \Countable, \Js
      *
      * @return string
      */
-    public abstract function serialize();
+    abstract public function serialize();
     /**
      * This method returns an array, with the representation as it should be
      * encoded in JSON. This is used to create jCard or jCal documents.
@@ -66,14 +66,14 @@ abstract class Node implements \IteratorAggregate, \ArrayAccess, \Countable, \Js
      * @return array
      */
     #[\ReturnTypeWillChange]
-    public abstract function jsonSerialize();
+    abstract public function jsonSerialize();
     /**
      * This method serializes the data into XML. This is used to create xCard or
      * xCal documents.
      *
      * @param Xml\Writer $writer XML writer
      */
-    public abstract function xmlSerialize(Xml\Writer $writer) : void;
+    abstract public function xmlSerialize(Xml\Writer $writer): void;
     /**
      * Call this method on a document if you're done using it.
      *
@@ -94,7 +94,7 @@ abstract class Node implements \IteratorAggregate, \ArrayAccess, \Countable, \Js
     #[\ReturnTypeWillChange]
     public function getIterator()
     {
-        if (!\is_null($this->iterator)) {
+        if (!is_null($this->iterator)) {
             return $this->iterator;
         }
         return new ElementList([$this]);

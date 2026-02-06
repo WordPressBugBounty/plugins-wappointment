@@ -50,7 +50,7 @@ final class Statement extends AbstractStatementMiddleware
     /**
      * {@inheritdoc}
      */
-    public function execute($params = null) : ResultInterface
+    public function execute($params = null): ResultInterface
     {
         $this->logger->debug('Executing statement: {sql} (parameters: {params}, types: {types})', ['sql' => $this->sql, 'params' => $params ?? $this->params, 'types' => $this->types]);
         return parent::execute($params);

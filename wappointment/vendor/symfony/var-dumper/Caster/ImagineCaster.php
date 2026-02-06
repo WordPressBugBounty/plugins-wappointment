@@ -17,7 +17,7 @@ use WappoVendor\Symfony\Component\VarDumper\Cloner\Stub;
  */
 final class ImagineCaster
 {
-    public static function castImage(ImageInterface $c, array $a, Stub $stub, bool $isNested) : array
+    public static function castImage(ImageInterface $c, array $a, Stub $stub, bool $isNested): array
     {
         $imgData = $c->get('png');
         if (\strlen($imgData) > 1 * 1000 * 1000) {

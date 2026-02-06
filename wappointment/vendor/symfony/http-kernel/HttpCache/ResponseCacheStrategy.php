@@ -52,7 +52,7 @@ class ResponseCacheStrategy implements ResponseCacheStrategyInterface
             }
         }
         $age = $response->getAge();
-        $this->age = \max($this->age, $age);
+        $this->age = max($this->age, $age);
         if ($this->willMakeFinalResponseUncacheable($response)) {
             $this->isNotCacheableResponseEmbedded = \true;
             return;
@@ -90,23 +90,23 @@ class ResponseCacheStrategy implements ResponseCacheStrategyInterface
             }
             return;
         }
-        $flags = \array_filter($this->flagDirectives);
+        $flags = array_filter($this->flagDirectives);
         if (isset($flags['must-revalidate'])) {
             $flags['no-cache'] = \true;
         }
-        $response->headers->set('Cache-Control', \implode(', ', \array_keys($flags)));
+        $response->headers->set('Cache-Control', implode(', ', array_keys($flags)));
         $maxAge = null;
-        if (\is_numeric($this->ageDirectives['max-age'])) {
+        if (is_numeric($this->ageDirectives['max-age'])) {
             $maxAge = $this->ageDirectives['max-age'] + $this->age;
             $response->headers->addCacheControlDirective('max-age', $maxAge);
         }
-        if (\is_numeric($this->ageDirectives['s-maxage'])) {
+        if (is_numeric($this->ageDirectives['s-maxage'])) {
             $sMaxage = $this->ageDirectives['s-maxage'] + $this->age;
             if ($maxAge !== $sMaxage) {
                 $response->headers->addCacheControlDirective('s-maxage', $sMaxage);
             }
         }
-        if (\is_numeric($this->ageDirectives['expires'])) {
+        if (is_numeric($this->ageDirectives['expires'])) {
             $date = clone $response->getDate();
             $date->modify('+' . ($this->ageDirectives['expires'] + $this->age) . ' seconds');
             $response->setExpires($date);
@@ -117,7 +117,7 @@ class ResponseCacheStrategy implements ResponseCacheStrategyInterface
      *
      * @see https://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.4
      */
-    private function willMakeFinalResponseUncacheable(Response $response) : bool
+    private function willMakeFinalResponseUncacheable(Response $response): bool
     {
         // RFC2616: A response received with a status code of 200, 203, 300, 301 or 410
         // MAY be stored by a cache […] unless a cache-control directive prohibits caching.
@@ -177,7 +177,7 @@ class ResponseCacheStrategy implements ResponseCacheStrategyInterface
         }
         if (\false !== $this->ageDirectives[$directive]) {
             $value -= $age;
-            $this->ageDirectives[$directive] = null !== $this->ageDirectives[$directive] ? \min($this->ageDirectives[$directive], $value) : $value;
+            $this->ageDirectives[$directive] = null !== $this->ageDirectives[$directive] ? min($this->ageDirectives[$directive], $value) : $value;
         }
     }
 }

@@ -34,7 +34,7 @@ class Duration extends Property
      */
     public function setRawMimeDirValue($val)
     {
-        $this->setValue(\explode($this->delimiter, $val));
+        $this->setValue(explode($this->delimiter, $val));
     }
     /**
      * Returns a raw mime-dir representation of the value.
@@ -43,7 +43,7 @@ class Duration extends Property
      */
     public function getRawMimeDirValue()
     {
-        return \implode($this->delimiter, $this->getParts());
+        return implode($this->delimiter, $this->getParts());
     }
     /**
      * Returns the type of value.

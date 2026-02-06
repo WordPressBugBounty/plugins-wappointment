@@ -4,5 +4,5 @@ namespace Wappointment\Jobs;
 
 class AppointmentEmailCanceled extends \Wappointment\Jobs\AppointmentEmailConfirmed
 {
-    const CONTENT = '\\Wappointment\\Messages\\AppointmentCanceledEmail';
+    const CONTENT = '\Wappointment\Messages\AppointmentCanceledEmail';
 }

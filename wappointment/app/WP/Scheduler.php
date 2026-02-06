@@ -11,8 +11,8 @@ class Scheduler
     */
     public static function init()
     {
-        add_filter('cron_schedules', ['\\Wappointment\\WP\\Scheduler', 'addFrequencies']);
-        $time_record = \time();
+        add_filter('cron_schedules', ['\Wappointment\WP\Scheduler', 'addFrequencies']);
+        $time_record = time();
         //self::clearScheduler();
         foreach (self::$scheduled_jobs as $wappo_wp_scheduled_job => $scheduledObject) {
             $scheduled_time = wp_next_scheduled($wappo_wp_scheduled_job);
@@ -30,7 +30,7 @@ class Scheduler
                 wp_schedule_event($time_record + self::getInterval($scheduledObject['frequency']), $scheduledObject['frequency'], $wappo_wp_scheduled_job);
             }
             //action to be run
-            add_action($wappo_wp_scheduled_job, ['\\Wappointment\\System\\Scheduler', $scheduledObject['method']]);
+            add_action($wappo_wp_scheduled_job, ['\Wappointment\System\Scheduler', $scheduledObject['method']]);
             /* if (!empty($_GET['testcron'])) {
                    echo 'now' . time();
                    echo ' Runs at : ' . $scheduled_time .
@@ -40,9 +40,9 @@ class Scheduler
     }
     public static function getStatuses()
     {
-        add_filter('cron_schedules', ['\\Wappointment\\WP\\Scheduler', 'addFrequencies']);
+        add_filter('cron_schedules', ['\Wappointment\WP\Scheduler', 'addFrequencies']);
         $statuses = [];
-        $time_record = \time();
+        $time_record = time();
         foreach (self::$scheduled_jobs as $wappo_wp_scheduled_job => $scheduledObject) {
             $scheduled_time = wp_next_scheduled($wappo_wp_scheduled_job);
             $time_record++;

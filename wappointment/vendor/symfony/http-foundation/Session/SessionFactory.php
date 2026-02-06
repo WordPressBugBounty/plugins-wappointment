@@ -13,7 +13,7 @@ namespace WappoVendor\Symfony\Component\HttpFoundation\Session;
 use WappoVendor\Symfony\Component\HttpFoundation\RequestStack;
 use WappoVendor\Symfony\Component\HttpFoundation\Session\Storage\SessionStorageFactoryInterface;
 // Help opcache.preload discover always-needed symbols
-\class_exists(Session::class);
+class_exists(Session::class);
 /**
  * @author Jérémy Derussé <jeremy@derusse.com>
  */
@@ -28,7 +28,7 @@ class SessionFactory implements SessionFactoryInterface
         $this->storageFactory = $storageFactory;
         $this->usageReporter = $usageReporter;
     }
-    public function createSession() : SessionInterface
+    public function createSession(): SessionInterface
     {
         return new Session($this->storageFactory->createStorage($this->requestStack->getMainRequest()), null, null, $this->usageReporter);
     }

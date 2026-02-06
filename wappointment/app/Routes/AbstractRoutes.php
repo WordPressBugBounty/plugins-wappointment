@@ -16,7 +16,7 @@ abstract class AbstractRoutes
     }
     public function get()
     {
-        return [['ns' => '\\Wappointment\\Controllers\\', 'routes' => $this->routes]];
+        return [['ns' => '\Wappointment\Controllers\\', 'routes' => $this->routes]];
     }
     public function restApiInit()
     {
@@ -24,11 +24,11 @@ abstract class AbstractRoutes
             foreach ($actions as $http_method => $route_controller_action) {
                 foreach ($route_controller_action as $route => $controller_method_args) {
                     $controller_name = $controller_method_args['ns'] . $controller_method_args['controller'];
-                    if (!\class_exists($controller_name)) {
+                    if (!class_exists($controller_name)) {
                         continue;
                     }
                     $apiVersion = empty($controller_method_args['version']) ? 'v1' : $controller_method_args['version'];
-                    register_rest_route(WAPPOINTMENT_SLUG . '/' . $apiVersion, $route, ['methods' => $http_method, 'callback' => [new $controller_name(), 'tryExecute'], 'permission_callback' => [$this, 'canExecute' . \ucfirst($access)], 'args' => $this->getArgs($controller_method_args)]);
+                    register_rest_route(WAPPOINTMENT_SLUG . '/' . $apiVersion, $route, ['methods' => $http_method, 'callback' => [new $controller_name(), 'tryExecute'], 'permission_callback' => [$this, 'canExecute' . ucfirst($access)], 'args' => $this->getArgs($controller_method_args)]);
                 }
             }
         }
@@ -58,7 +58,7 @@ abstract class AbstractRoutes
                                 $resourceObject['ns'] = $routeObject['ns'];
                             }
                             foreach ($resourceObject['methods'] as $resourceMethod) {
-                                $all_routes[$access][$this->getHTTP($resourceMethod)][$this->getURIPortion($resourceMethod, $uri_portion)] = ['ns' => $resourceObject['ns'], 'controller' => $resourceObject['controller'], 'method' => \strtoupper($resourceMethod) == 'POST' ? 'save' : $resourceMethod];
+                                $all_routes[$access][$this->getHTTP($resourceMethod)][$this->getURIPortion($resourceMethod, $uri_portion)] = ['ns' => $resourceObject['ns'], 'controller' => $resourceObject['controller'], 'method' => strtoupper($resourceMethod) == 'POST' ? 'save' : $resourceMethod];
                             }
                         }
                     } else {
@@ -76,15 +76,15 @@ abstract class AbstractRoutes
     }
     public function replaceModernVerb($method)
     {
-        return $this->disabled_modern_api_verbs && \in_array(\strtoupper($method), ['DELETE', 'PUT', 'PATCH']);
+        return $this->disabled_modern_api_verbs && in_array(strtoupper($method), ['DELETE', 'PUT', 'PATCH']);
     }
     public function getURIPortion($method, $uri)
     {
-        return $this->replaceModernVerb($method) ? $uri . '/' . \strtolower($method) : $uri;
+        return $this->replaceModernVerb($method) ? $uri . '/' . strtolower($method) : $uri;
     }
     public function getHTTP($method)
     {
-        return $this->replaceModernVerb($method) ? 'POST' : \strtoupper($method);
+        return $this->replaceModernVerb($method) ? 'POST' : strtoupper($method);
     }
     public function canExecutePublic($args)
     {
@@ -106,7 +106,7 @@ abstract class AbstractRoutes
     }
     protected function capIsValid($args)
     {
-        return !empty($args['wparams']) && !empty($args['wparams']['cap'] && \in_array($args['wparams']['cap'], $this->getAllowedCaps()));
+        return !empty($args['wparams']) && !empty($args['wparams']['cap'] && in_array($args['wparams']['cap'], $this->getAllowedCaps()));
     }
     protected function getAllowedCaps()
     {

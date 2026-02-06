@@ -61,7 +61,7 @@ class SQLServerPlatform extends AbstractPlatform
      * @param string $dataType   The target native data type. Alias data types cannot be used.
      * @param string $expression The SQL expression to convert.
      */
-    private function getConvertExpression($dataType, $expression) : string
+    private function getConvertExpression($dataType, $expression): string
     {
         return sprintf('CONVERT(%s, %s)', $dataType, $expression);
     }
@@ -133,15 +133,15 @@ class SQLServerPlatform extends AbstractPlatform
     {
         return \true;
     }
-    public function supportsSequences() : bool
+    public function supportsSequences(): bool
     {
         return \true;
     }
-    public function getAlterSequenceSQL(Sequence $sequence) : string
+    public function getAlterSequenceSQL(Sequence $sequence): string
     {
         return 'ALTER SEQUENCE ' . $sequence->getQuotedName($this) . ' INCREMENT BY ' . $sequence->getAllocationSize();
     }
-    public function getCreateSequenceSQL(Sequence $sequence) : string
+    public function getCreateSequenceSQL(Sequence $sequence): string
     {
         return 'CREATE SEQUENCE ' . $sequence->getQuotedName($this) . ' START WITH ' . $sequence->getInitialValue() . ' INCREMENT BY ' . $sequence->getAllocationSize() . ' MINVALUE ' . $sequence->getInitialValue();
     }
@@ -360,7 +360,7 @@ class SQLServerPlatform extends AbstractPlatform
      *
      * @param string $sql
      */
-    private function _appendUniqueConstraintDefinition($sql, Index $index) : string
+    private function _appendUniqueConstraintDefinition($sql, Index $index): string
     {
         $fields = [];
         foreach ($index->getQuotedColumns($this) as $field) {
@@ -475,7 +475,7 @@ class SQLServerPlatform extends AbstractPlatform
      * @param string $tableName The name of the table to generate the clause for.
      * @param Column $column    The column to generate the clause for.
      */
-    private function getAlterTableAddDefaultConstraintClause($tableName, Column $column) : string
+    private function getAlterTableAddDefaultConstraintClause($tableName, Column $column): string
     {
         $columnDef = $column->toArray();
         $columnDef['name'] = $column->getQuotedName($this);
@@ -487,7 +487,7 @@ class SQLServerPlatform extends AbstractPlatform
      * @param string $tableName  The name of the table to generate the clause for.
      * @param string $columnName The name of the column to generate the clause for.
      */
-    private function getAlterTableDropDefaultConstraintClause($tableName, $columnName) : string
+    private function getAlterTableDropDefaultConstraintClause($tableName, $columnName): string
     {
         return 'DROP CONSTRAINT ' . $this->generateDefaultConstraintName($tableName, $columnName);
     }
@@ -499,7 +499,7 @@ class SQLServerPlatform extends AbstractPlatform
      * in a column's type require dropping the default constraint first before being to
      * alter the particular column to the new definition.
      */
-    private function alterColumnRequiresDropDefaultConstraint(ColumnDiff $columnDiff) : bool
+    private function alterColumnRequiresDropDefaultConstraint(ColumnDiff $columnDiff): bool
     {
         // We can only decide whether to drop an existing default constraint
         // if we know the original default value.
@@ -717,7 +717,7 @@ class SQLServerPlatform extends AbstractPlatform
      * @param string $schemaColumn The name of the column to compare the schema to in the where clause.
      * @param string $tableColumn  The name of the column to compare the table to in the where clause.
      */
-    private function getTableWhereClause($table, $schemaColumn, $tableColumn) : string
+    private function getTableWhereClause($table, $schemaColumn, $tableColumn): string
     {
         if (strpos($table, '.') !== \false) {
             [$schema, $table] = explode('.', $table);
@@ -814,7 +814,7 @@ class SQLServerPlatform extends AbstractPlatform
     {
         return 'LEN(' . $column . ')';
     }
-    public function getCurrentDatabaseExpression() : string
+    public function getCurrentDatabaseExpression(): string
     {
         return 'DB_NAME()';
     }
@@ -863,7 +863,7 @@ class SQLServerPlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getAsciiStringTypeDeclarationSQL(array $column) : string
+    public function getAsciiStringTypeDeclarationSQL(array $column): string
     {
         $length = $column['length'] ?? null;
         if (!isset($column['fixed'])) {
@@ -945,7 +945,7 @@ class SQLServerPlatform extends AbstractPlatform
             return $query;
         }
         if ($this->shouldAddOrderBy($query)) {
-            if (preg_match('/^SELECT\\s+DISTINCT/im', $query) > 0) {
+            if (preg_match('/^SELECT\s+DISTINCT/im', $query) > 0) {
                 // SQL Server won't let us order by a non-selected column in a DISTINCT query,
                 // so we have to do this madness. This says, order by the first column in the
                 // result. SQL Server's docs say that a nonordered query's result order is non-
@@ -1072,7 +1072,7 @@ class SQLServerPlatform extends AbstractPlatform
         }
         return parent::getForeignKeyReferentialActionSQL($action);
     }
-    public function appendLockHint(string $fromClause, int $lockMode) : string
+    public function appendLockHint(string $fromClause, int $lockMode): string
     {
         switch ($lockMode) {
             case LockMode::NONE:
@@ -1144,14 +1144,14 @@ class SQLServerPlatform extends AbstractPlatform
         }
         return $name . ' ' . $columnDef;
     }
-    public function columnsEqual(Column $column1, Column $column2) : bool
+    public function columnsEqual(Column $column1, Column $column2): bool
     {
         if (!parent::columnsEqual($column1, $column2)) {
             return \false;
         }
         return $this->getDefaultValueDeclarationSQL($column1->toArray()) === $this->getDefaultValueDeclarationSQL($column2->toArray());
     }
-    protected function getLikeWildcardCharacters() : string
+    protected function getLikeWildcardCharacters(): string
     {
         return parent::getLikeWildcardCharacters() . '[]^';
     }
@@ -1161,7 +1161,7 @@ class SQLServerPlatform extends AbstractPlatform
      * @param string $table  Name of the table to generate the unique default constraint name for.
      * @param string $column Name of the column in the table to generate the unique default constraint name for.
      */
-    private function generateDefaultConstraintName($table, $column) : string
+    private function generateDefaultConstraintName($table, $column): string
     {
         return 'DF_' . $this->generateIdentifierName($table) . '_' . $this->generateIdentifierName($column);
     }
@@ -1170,13 +1170,13 @@ class SQLServerPlatform extends AbstractPlatform
      *
      * @param string $identifier Identifier to generate a hash value for.
      */
-    private function generateIdentifierName($identifier) : string
+    private function generateIdentifierName($identifier): string
     {
         // Always generate name for unquoted identifiers to ensure consistency.
         $identifier = new Identifier($identifier);
         return strtoupper(dechex(crc32($identifier->getName())));
     }
-    protected function getCommentOnTableSQL(string $tableName, ?string $comment) : string
+    protected function getCommentOnTableSQL(string $tableName, ?string $comment): string
     {
         return sprintf(<<<'SQL'
 EXEC sys.sp_addextendedproperty @name=N'MS_Description',
@@ -1185,7 +1185,7 @@ EXEC sys.sp_addextendedproperty @name=N'MS_Description',
 SQL
 , $this->quoteStringLiteral((string) $comment), $this->quoteStringLiteral($tableName));
     }
-    public function getListTableMetadataSQL(string $table) : string
+    public function getListTableMetadataSQL(string $table): string
     {
         return sprintf(<<<'SQL'
 SELECT
@@ -1201,12 +1201,12 @@ SQL
     /**
      * @param string $query
      */
-    private function shouldAddOrderBy($query) : bool
+    private function shouldAddOrderBy($query): bool
     {
         // Find the position of the last instance of ORDER BY and ensure it is not within a parenthetical statement
         // but can be in a newline
         $matches = [];
-        $matchesCount = preg_match_all('/[\\s]+order\\s+by\\s/im', $query, $matches, PREG_OFFSET_CAPTURE);
+        $matchesCount = preg_match_all('/[\s]+order\s+by\s/im', $query, $matches, PREG_OFFSET_CAPTURE);
         if ($matchesCount === 0) {
             return \true;
         }

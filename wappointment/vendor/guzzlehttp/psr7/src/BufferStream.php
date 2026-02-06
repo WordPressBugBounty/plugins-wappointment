@@ -49,7 +49,7 @@ class BufferStream implements StreamInterface
     }
     public function getSize()
     {
-        return \strlen($this->buffer);
+        return strlen($this->buffer);
     }
     public function isReadable()
     {
@@ -73,7 +73,7 @@ class BufferStream implements StreamInterface
     }
     public function eof()
     {
-        return \strlen($this->buffer) === 0;
+        return strlen($this->buffer) === 0;
     }
     public function tell()
     {
@@ -84,15 +84,15 @@ class BufferStream implements StreamInterface
      */
     public function read($length)
     {
-        $currentLength = \strlen($this->buffer);
+        $currentLength = strlen($this->buffer);
         if ($length >= $currentLength) {
             // No need to slice the buffer because we don't have enough data.
             $result = $this->buffer;
             $this->buffer = '';
         } else {
             // Slice up the result to provide a subset of the buffer.
-            $result = \substr($this->buffer, 0, $length);
-            $this->buffer = \substr($this->buffer, $length);
+            $result = substr($this->buffer, 0, $length);
+            $this->buffer = substr($this->buffer, $length);
         }
         return $result;
     }
@@ -103,10 +103,10 @@ class BufferStream implements StreamInterface
     {
         $this->buffer .= $string;
         // TODO: What should happen here?
-        if (\strlen($this->buffer) >= $this->hwm) {
+        if (strlen($this->buffer) >= $this->hwm) {
             return \false;
         }
-        return \strlen($string);
+        return strlen($string);
     }
     public function getMetadata($key = null)
     {

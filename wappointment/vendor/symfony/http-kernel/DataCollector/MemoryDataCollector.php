@@ -44,7 +44,7 @@ class MemoryDataCollector extends DataCollector implements LateDataCollectorInte
     {
         $this->updateMemoryUsage();
     }
-    public function getMemory() : int
+    public function getMemory(): int
     {
         return $this->data['memory'];
     }
@@ -57,12 +57,12 @@ class MemoryDataCollector extends DataCollector implements LateDataCollectorInte
     }
     public function updateMemoryUsage()
     {
-        $this->data['memory'] = \memory_get_peak_usage(\true);
+        $this->data['memory'] = memory_get_peak_usage(\true);
     }
     /**
      * {@inheritdoc}
      */
-    public function getName() : string
+    public function getName(): string
     {
         return 'memory';
     }
@@ -74,16 +74,16 @@ class MemoryDataCollector extends DataCollector implements LateDataCollectorInte
         if ('-1' === $memoryLimit) {
             return -1;
         }
-        $memoryLimit = \strtolower($memoryLimit);
-        $max = \strtolower(\ltrim($memoryLimit, '+'));
-        if (\str_starts_with($max, '0x')) {
+        $memoryLimit = strtolower($memoryLimit);
+        $max = strtolower(ltrim($memoryLimit, '+'));
+        if (str_starts_with($max, '0x')) {
             $max = \intval($max, 16);
-        } elseif (\str_starts_with($max, '0')) {
+        } elseif (str_starts_with($max, '0')) {
             $max = \intval($max, 8);
         } else {
             $max = (int) $max;
         }
-        switch (\substr($memoryLimit, -1)) {
+        switch (substr($memoryLimit, -1)) {
             case 't':
                 $max *= 1024;
             // no break

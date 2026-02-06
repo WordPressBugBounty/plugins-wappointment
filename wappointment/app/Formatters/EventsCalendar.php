@@ -48,17 +48,17 @@ class EventsCalendar
                 $staff_id = $this->request->input('staff_id');
                 $staffs = Calendars::all();
                 $activeStaff = $staffs->firstWhere('id', $staff_id);
-                $data['now'] = (new Carbon())->setTimezone($this->timezone)->format('Y-m-d\\TH:i:00');
+                $data['now'] = (new Carbon())->setTimezone($this->timezone)->format('Y-m-d\TH:i:00');
                 $data['availability'] = $activeStaff->availability;
                 $regav = $activeStaff->getRegav();
                 $regavTimezone = $activeStaff->getTimezone();
             } else {
                 $data['availability'] = WPHelpers::getStaffOption('availability');
-                $data['now'] = (new Carbon())->setTimezone($this->timezone)->format('Y-m-d\\TH:i:00');
+                $data['now'] = (new Carbon())->setTimezone($this->timezone)->format('Y-m-d\TH:i:00');
                 $regav = Settings::getStaff('regav');
                 $regavTimezone = Settings::getStaff('timezone');
             }
-            $data['events'] = \array_merge($this->events($staff_id), $this->statusBusyFree($staff_id), $this->regavToBgEvent($regav, $regavTimezone));
+            $data['events'] = array_merge($this->events($staff_id), $this->statusBusyFree($staff_id), $this->regavToBgEvent($regav, $regavTimezone));
             return $data;
         }
     }
@@ -80,7 +80,7 @@ class EventsCalendar
         }
         return $appointmentsQuery->get();
     }
-    protected function formatAppointmentTime($carbonTime, $format = 'Y-m-d\\TH:i:00')
+    protected function formatAppointmentTime($carbonTime, $format = 'Y-m-d\TH:i:00')
     {
         return $carbonTime->setTimezone($this->timezone)->format($format);
     }
@@ -92,7 +92,7 @@ class EventsCalendar
         return ['start' => $this->formatAppointmentTime($event->start_at), 'end' => $this->formatAppointmentTime($event->end_at), 'id' => $event->id, 'delId' => $event->id, 'location' => $event->getLocationSlug(), 'status' => $event->status, 'options' => $this->formatEventOptions($event), 'client' => $preparedClient, 'type' => 'appointment', 'recurrent' => isset($event->recurrent) && $event->recurrent > 0, 'onlyDelete' => \true, 'rendering' => (bool) $event->status ? 'appointment-confirmed' : 'appointment-pending', 'className' => apply_filters('wappointment_calendar_appointment_class', $this->baseClassAppointment($owes, $event), $event), 'owes' => $owes, 'display' => ['short' => [
             'title' => !empty($preparedClient) ? $preparedClient->name : __('Unknown client', 'wappointment'),
             /* translators: %1$s is service name, %2$s is the duration  */
-            'service' => \sprintf(__('%1$s - %2$s min', 'wappointment'), $nameService, $event->getDurationInSec() / 60),
+            'service' => sprintf(__('%1$s - %2$s min', 'wappointment'), $nameService, $event->getDurationInSec() / 60),
             'time' => $this->formatAppointmentTime($event->start_at, $this->timeFormat) . ' - ' . $this->formatAppointmentTime($event->getEndTimeWithoutBuffer(), $this->timeFormat),
             'location' => $event->location->name,
         ], 'long' => $this->getClientOptions($preparedClient)]];
@@ -114,13 +114,13 @@ class EventsCalendar
         $data = [];
         if (!empty($preparedClient)) {
             /* translators: %s - email address. */
-            $data[] = \sprintf(__('Email: %s', 'wappointment'), $preparedClient->email);
+            $data[] = sprintf(__('Email: %s', 'wappointment'), $preparedClient->email);
             foreach ($preparedClient->options as $keyOption => $optionValue) {
                 if ($keyOption == 'appointment_key' || $keyOption == 'rtl' && $optionValue === \false || !isset($this->customFieldsKeyLabel[$keyOption])) {
                     continue;
                 }
                 /* translators: %1$s is label %2$s is value */
-                $data[] = \sprintf(__('%1$s: %2$s', 'wappointment'), $this->getLabelFromKey($keyOption), $this->getLabelFromValues($keyOption, $optionValue));
+                $data[] = sprintf(__('%1$s: %2$s', 'wappointment'), $this->getLabelFromKey($keyOption), $this->getLabelFromValues($keyOption, $optionValue));
             }
         }
         return $data;
@@ -136,18 +136,18 @@ class EventsCalendar
                 return 'Right to left';
             default:
                 $label = isset($this->customFieldsKeyLabel[$keyOption]) ? $this->customFieldsKeyLabel[$keyOption] : $keyOption;
-                return \strpos($label, ':') !== \false ? \str_replace(':', '', $label) : $label;
+                return strpos($label, ':') !== \false ? str_replace(':', '', $label) : $label;
         }
     }
     public function getLabelFromValues($keyOption, $optionValues)
     {
-        if ($keyOption == 'owes' && \is_numeric($optionValues)) {
+        if ($keyOption == 'owes' && is_numeric($optionValues)) {
             return Payment::formatPrice($optionValues / 100);
         }
         $valuesLabelsDefinition = isset($this->customFieldsKeyValues[$keyOption]) ? $this->customFieldsKeyValues[$keyOption] : $optionValues;
-        if (\is_array($valuesLabelsDefinition)) {
+        if (is_array($valuesLabelsDefinition)) {
             $valuesForHumans = [];
-            $optionValues = !\is_array($optionValues) ? [$optionValues] : $optionValues;
+            $optionValues = !is_array($optionValues) ? [$optionValues] : $optionValues;
             foreach ($optionValues as $valueKey) {
                 foreach ($valuesLabelsDefinition as $valueLabelDefined) {
                     if (isset($valueLabelDefined['value']) && $valueLabelDefined['value'] == $valueKey) {
@@ -155,7 +155,7 @@ class EventsCalendar
                     }
                 }
             }
-            return \implode(',', $valuesForHumans);
+            return implode(',', $valuesForHumans);
         } else {
             return $optionValues;
         }
@@ -201,26 +201,22 @@ class EventsCalendar
     }
     protected function generateStatusEvent($event)
     {
-        $addedEvent = ['start' => $event->start_at->setTimezone($this->timezone)->format('Y-m-d\\TH:i:00'), 'end' => $event->end_at->setTimezone($this->timezone)->format('Y-m-d\\TH:i:00'), 'id' => $event->recur > MStatus::RECUR_NOT ? \time() : $event->id, 'delId' => $event->id, 'recur' => $event->recur, 'source' => empty($event->source) ? '' : $event->source, 'onlyDelete' => \true, 'rendering' => 'background', 'options' => $event->options];
+        $addedEvent = ['start' => $event->start_at->setTimezone($this->timezone)->format('Y-m-d\TH:i:00'), 'end' => $event->end_at->setTimezone($this->timezone)->format('Y-m-d\TH:i:00'), 'id' => $event->recur > MStatus::RECUR_NOT ? time() : $event->id, 'delId' => $event->id, 'recur' => $event->recur, 'source' => empty($event->source) ? '' : $event->source, 'onlyDelete' => \true, 'rendering' => 'background', 'options' => $event->options];
         if ($event->type == Mstatus::TYPE_FREE) {
             $addedEvent['className'] = 'opening extra';
             $addedEvent['type'] = 'free';
-        } else {
-            if (empty($event->source)) {
-                $addedEvent['className'] = 'busy';
-                $addedEvent['type'] = 'busy';
-                if ($this->request->input('view') == 'month') {
-                    $addedEvent['allDay'] = \true;
-                }
-            } else {
-                if ($event->recur > 0) {
-                    $addedEvent['className'] = 'calendar recurrent';
-                    $addedEvent['type'] = 'calendar';
-                } else {
-                    $addedEvent['className'] = 'calendar';
-                    $addedEvent['type'] = 'calendar';
-                }
+        } else if (empty($event->source)) {
+            $addedEvent['className'] = 'busy';
+            $addedEvent['type'] = 'busy';
+            if ($this->request->input('view') == 'month') {
+                $addedEvent['allDay'] = \true;
             }
+        } else if ($event->recur > 0) {
+            $addedEvent['className'] = 'calendar recurrent';
+            $addedEvent['type'] = 'calendar';
+        } else {
+            $addedEvent['className'] = 'calendar';
+            $addedEvent['type'] = 'calendar';
         }
         return $addedEvent;
     }
@@ -252,7 +248,7 @@ class EventsCalendar
     }
     private function setBgEvent($start, $end, $className = 'opening')
     {
-        $format = 'Y-m-d\\TH:i:00';
+        $format = 'Y-m-d\TH:i:00';
         return ['start' => $start->setTimezone($this->timezone)->format($format), 'end' => $end->setTimezone($this->timezone)->format($format), 'rendering' => 'background', 'className' => $className, 'type' => 'ra'];
     }
     private function TESTprocessAvail($avails)
@@ -276,6 +272,6 @@ class EventsCalendar
         foreach ($times as $timeslot) {
             $bg_events[] = $this->setBgEvent($timeslot[0], $timeslot[1], 'debugging');
         }
-        return ['availability' => $availability, 'events' => $bg_events, 'now' => (new Carbon())->setTimezone($this->timezone)->format('Y-m-d\\TH:i:00')];
+        return ['availability' => $availability, 'events' => $bg_events, 'now' => (new Carbon())->setTimezone($this->timezone)->format('Y-m-d\TH:i:00')];
     }
 }

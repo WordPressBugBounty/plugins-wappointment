@@ -114,15 +114,15 @@ class TraceableEventDispatcher implements EventDispatcherInterface, ResetInterfa
     /**
      * {@inheritdoc}
      */
-    public function dispatch(object $event, string $eventName = null) : object
+    public function dispatch(object $event, string $eventName = null): object
     {
         $eventName = $eventName ?? \get_class($event);
         if (null === $this->callStack) {
             $this->callStack = new \SplObjectStorage();
         }
-        $currentRequestHash = $this->currentRequestHash = $this->requestStack && ($request = $this->requestStack->getCurrentRequest()) ? \spl_object_hash($request) : '';
+        $currentRequestHash = $this->currentRequestHash = $this->requestStack && ($request = $this->requestStack->getCurrentRequest()) ? spl_object_hash($request) : '';
         if (null !== $this->logger && $event instanceof StoppableEventInterface && $event->isPropagationStopped()) {
-            $this->logger->debug(\sprintf('The "%s" event is already stopped. No listeners have been called.', $eventName));
+            $this->logger->debug(sprintf('The "%s" event is already stopped. No listeners have been called.', $eventName));
         }
         $this->preProcess($eventName);
         try {
@@ -153,7 +153,7 @@ class TraceableEventDispatcher implements EventDispatcherInterface, ResetInterfa
         if (null === $this->callStack) {
             return [];
         }
-        $hash = $request ? \spl_object_hash($request) : null;
+        $hash = $request ? spl_object_hash($request) : null;
         $called = [];
         foreach ($this->callStack as $listener) {
             [$eventName, $requestHash] = $this->callStack->getInfo();
@@ -177,7 +177,7 @@ class TraceableEventDispatcher implements EventDispatcherInterface, ResetInterfa
             // unable to retrieve the uncalled listeners
             return [];
         }
-        $hash = $request ? \spl_object_hash($request) : null;
+        $hash = $request ? spl_object_hash($request) : null;
         $calledListeners = [];
         if (null !== $this->callStack) {
             foreach ($this->callStack as $calledListener) {
@@ -198,18 +198,18 @@ class TraceableEventDispatcher implements EventDispatcherInterface, ResetInterfa
                 }
             }
         }
-        \uasort($notCalled, [$this, 'sortNotCalledListeners']);
+        uasort($notCalled, [$this, 'sortNotCalledListeners']);
         return $notCalled;
     }
-    public function getOrphanedEvents(Request $request = null) : array
+    public function getOrphanedEvents(Request $request = null): array
     {
         if ($request) {
-            return $this->orphanedEvents[\spl_object_hash($request)] ?? [];
+            return $this->orphanedEvents[spl_object_hash($request)] ?? [];
         }
         if (!$this->orphanedEvents) {
             return [];
         }
-        return \array_merge(...\array_values($this->orphanedEvents));
+        return array_merge(...array_values($this->orphanedEvents));
     }
     public function reset()
     {
@@ -241,7 +241,7 @@ class TraceableEventDispatcher implements EventDispatcherInterface, ResetInterfa
     protected function afterDispatch(string $eventName, object $event)
     {
     }
-    private function preProcess(string $eventName) : void
+    private function preProcess(string $eventName): void
     {
         if (!$this->dispatcher->hasListeners($eventName)) {
             $this->orphanedEvents[$this->currentRequestHash][] = $eventName;
@@ -256,7 +256,7 @@ class TraceableEventDispatcher implements EventDispatcherInterface, ResetInterfa
             $this->callStack->attach($wrappedListener, [$eventName, $this->currentRequestHash]);
         }
     }
-    private function postProcess(string $eventName) : void
+    private function postProcess(string $eventName): void
     {
         unset($this->wrappedListeners[$eventName]);
         $skipped = \false;
@@ -292,7 +292,7 @@ class TraceableEventDispatcher implements EventDispatcherInterface, ResetInterfa
     }
     private function sortNotCalledListeners(array $a, array $b)
     {
-        if (0 !== ($cmp = \strcmp($a['event'], $b['event']))) {
+        if (0 !== $cmp = strcmp($a['event'], $b['event'])) {
             return $cmp;
         }
         if (\is_int($a['priority']) && !\is_int($b['priority'])) {

@@ -36,7 +36,7 @@ class Addons extends \Wappointment\Services\Wappointment\API
                         $package->activated = Plugins::wp()->active($this->pluginFileName($package));
                     }
                     if ($this->pluginNamekey($package)) {
-                        $package = apply_filters('wappointment_addon_wrapper_' . \str_replace('-', '_', $this->pluginNamekey($package)), $package);
+                        $package = apply_filters('wappointment_addon_wrapper_' . str_replace('-', '_', $this->pluginNamekey($package)), $package);
                     }
                 }
             }
@@ -61,7 +61,7 @@ class Addons extends \Wappointment\Services\Wappointment\API
     }
     private function isAPlugin($package)
     {
-        return \count($package->solutions) === 1;
+        return count($package->solutions) === 1;
     }
     public function install($package)
     {
@@ -94,7 +94,7 @@ class Addons extends \Wappointment\Services\Wappointment\API
         $skin = new \WP_Ajax_Upgrader_Skin();
         $upgrader = new \Plugin_Upgrader($skin);
         $result = $upgrader->install($this->call('/api/addons/package/' . $solutionToInstall->namekey . '/' . $this->getSiteKey()));
-        if (\defined('WP_DEBUG') && WP_DEBUG) {
+        if (defined('WP_DEBUG') && WP_DEBUG) {
             $status['debug'] = $skin->get_upgrade_messages();
         }
         if (is_wp_error($result)) {
@@ -108,7 +108,7 @@ class Addons extends \Wappointment\Services\Wappointment\API
         } elseif ($skin->get_errors()->has_errors()) {
             $status['errorMessage'] = $skin->get_error_messages();
             //wp_send_json_error($status);
-        } elseif (\is_null($result)) {
+        } elseif (is_null($result)) {
             global $wp_filesystem;
             $status['errorCode'] = 'unable_to_connect_to_filesystem';
             $status['errorMessage'] = 'Unable to connect to the filesystem. Please confirm your credentials.';
@@ -124,7 +124,7 @@ class Addons extends \Wappointment\Services\Wappointment\API
     }
     private function canInstall($package)
     {
-        if (\count($package->solutions) > 1) {
+        if (count($package->solutions) > 1) {
             throw new \Exception("Package is not installable");
         }
         $solutions = static::licensedSolutions();
@@ -137,6 +137,6 @@ class Addons extends \Wappointment\Services\Wappointment\API
     }
     public static function licensedSolutions()
     {
-        return !empty(WPHelpers::getOption('site_details')) ? \json_decode(WPHelpers::getOption('site_details')) : [];
+        return !empty(WPHelpers::getOption('site_details')) ? json_decode(WPHelpers::getOption('site_details')) : [];
     }
 }

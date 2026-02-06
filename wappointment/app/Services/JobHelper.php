@@ -36,6 +36,6 @@ class JobHelper
     }
     private static function dotcom($event, $appointment)
     {
-        \Wappointment\Services\Queue::push('Wappointment\\Jobs\\ProcessTransaction', ['event' => $event, 'appointment' => $appointment], 'api');
+        \Wappointment\Services\Queue::push('Wappointment\Jobs\ProcessTransaction', ['event' => $event, 'appointment' => $appointment], 'api');
     }
 }

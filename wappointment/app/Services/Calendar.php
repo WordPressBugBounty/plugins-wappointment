@@ -17,7 +17,7 @@ class Calendar
     {
         $this->url = $calendar_url;
         $this->staff = $staff;
-        $this->calendar_id = \md5($this->url);
+        $this->calendar_id = md5($this->url);
         $this->legacy = $legacy;
         $this->calendar_logs = $this->loadCalendarLogs();
     }
@@ -41,7 +41,7 @@ class Calendar
     }
     public function fetch()
     {
-        $start = \microtime(\true);
+        $start = microtime(\true);
         $client = new RequestRemote();
         $responseCalendar = $client->getCalendar($this->url);
         // Only headers are downloaded here.
@@ -54,15 +54,15 @@ class Calendar
         $original_content = $responseCalendar->getContent();
         $body_string = $this->cleanContent($original_content);
         $result = \false;
-        $this->log('last-checked', \time());
+        $this->log('last-checked', time());
         if ($this->hasChanged($body_string)) {
             $parser = new \Wappointment\Services\CalendarParser($this->url, $original_content, $this->getStaffId());
             $this->log('last-parser', $parser->handle());
-            $this->log('last-hash', \md5($body_string), \false);
-            $this->log('last-parsed', \time(), \false);
+            $this->log('last-hash', md5($body_string), \false);
+            $this->log('last-parsed', time(), \false);
             $result = \true;
         }
-        $this->log('last-duration', \round(\microtime(\true) - $start, 2));
+        $this->log('last-duration', round(microtime(\true) - $start, 2));
         return $result;
     }
     private function getCalendarLogs()
@@ -94,8 +94,8 @@ class Calendar
     }
     private function cleanContent($content)
     {
-        \preg_match('/^PRODID:.*\\n/m', $content, $matches);
-        if (!empty($matches) && \strpos(\strtolower($matches[0]), 'google') !== \false) {
+        preg_match('/^PRODID:.*\n/m', $content, $matches);
+        if (!empty($matches) && strpos(strtolower($matches[0]), 'google') !== \false) {
             return $this->googleClean($content);
         }
         return $content;
@@ -103,14 +103,14 @@ class Calendar
     // used to then store a md5 version of the ics making sure it is cached
     private function googleClean($in)
     {
-        $in = \preg_replace('/^DTSTAMP:.*\\n/m', '', $in);
-        $in = \preg_replace('/^SUMMARY:.*\\n/m', '', $in);
-        $in = \preg_replace('/^ACTION:.*\\n/m', '', $in);
-        $in = \preg_replace('/^ATTENDEE:.*\\n/m', '', $in);
-        return \preg_replace('/^TRIGGER:.*\\n/m', '', $in);
+        $in = preg_replace('/^DTSTAMP:.*\n/m', '', $in);
+        $in = preg_replace('/^SUMMARY:.*\n/m', '', $in);
+        $in = preg_replace('/^ACTION:.*\n/m', '', $in);
+        $in = preg_replace('/^ATTENDEE:.*\n/m', '', $in);
+        return preg_replace('/^TRIGGER:.*\n/m', '', $in);
     }
     private function hasChanged($content)
     {
-        return \md5($content) != $this->calendar_logs[$this->calendar_id]['last-hash'];
+        return md5($content) != $this->calendar_logs[$this->calendar_id]['last-hash'];
     }
 }

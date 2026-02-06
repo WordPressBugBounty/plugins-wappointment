@@ -12,17 +12,17 @@ class Forms
     public function addField($field, $atLocation = \false)
     {
         if ($atLocation !== \false) {
-            $first_part = \array_splice($this->fields, (int) $atLocation);
-            $last_part = \array_splice($this->fields, (int) $atLocation - \count($this->fields));
+            $first_part = array_splice($this->fields, (int) $atLocation);
+            $last_part = array_splice($this->fields, (int) $atLocation - count($this->fields));
             $first_part[] = $field;
-            $this->fields = \array_merge($first_part, $last_part);
+            $this->fields = array_merge($first_part, $last_part);
         } else {
             $this->fields[] = $field;
         }
     }
     public function removeField($fieldId)
     {
-        $this->fields = \array_filter($this->fields, function ($value) use($fieldId) {
+        $this->fields = array_filter($this->fields, function ($value) use ($fieldId) {
             return $value['id'] != $fieldId;
         });
     }

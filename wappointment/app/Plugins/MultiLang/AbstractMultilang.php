@@ -14,7 +14,7 @@ abstract class AbstractMultilang
     }
     public function localeToLang($locale)
     {
-        return \substr($locale, 0, 2);
+        return substr($locale, 0, 2);
     }
     public function multilang()
     {

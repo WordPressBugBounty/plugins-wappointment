@@ -28,7 +28,7 @@ class Appointment
     }
     public static function create($data)
     {
-        if (empty($data['options']) || !\is_array($data['options'])) {
+        if (empty($data['options']) || !is_array($data['options'])) {
             $data['options'] = [];
         }
         $data['options']['buffer_time'] = (int) \Wappointment\Services\Settings::get('buffer_time');
@@ -62,7 +62,7 @@ class Appointment
         if (!(bool) \Wappointment\Services\Settings::get('allow_rescheduling')) {
             throw new \WappointmentException(__('Appointment rescheduling is not allowed', 'wappointment'), 1);
         }
-        if (\is_array($edit_key)) {
+        if (is_array($edit_key)) {
             throw new \WappointmentException(__("Malformed parameter", 'wappointment'), 1);
         }
         $appointment = static::getAppointmentModel()::where('edit_key', $edit_key)->first();
@@ -106,7 +106,7 @@ class Appointment
     {
         $start_at = static::unixToDb($start_at);
         $end_at = static::unixToDb($end_at);
-        $appointmentData = ['start_at' => $start_at, 'end_at' => $end_at, 'type' => $type, 'client_id' => $client->id, 'edit_key' => \md5($client->id . $start_at), 'status' => $forceConfirmed ? static::getAppointmentModel()::STATUS_CONFIRMED : static::getDefaultStatus($service)];
+        $appointmentData = ['start_at' => $start_at, 'end_at' => $end_at, 'type' => $type, 'client_id' => $client->id, 'edit_key' => md5($client->id . $start_at), 'status' => $forceConfirmed ? static::getAppointmentModel()::STATUS_CONFIRMED : static::getDefaultStatus($service)];
         return static::book($appointmentData, $client, $forceConfirmed);
     }
     protected static function canBook($start_at, $end_at, $is_admin = \false)
@@ -118,8 +118,8 @@ class Appointment
         $start_at_str = static::unixToDb($start_at);
         $end_at_str = static::unixToDb($end_at);
         $queryAppointment = static::getAppointmentModel()::where('status', '>=', static::getAppointmentModel()::STATUS_AWAITING_CONFIRMATION);
-        if ($queryAppointment->where(function ($query) use($start_at_str, $end_at_str) {
-            $query->where(function ($query) use($start_at_str, $end_at_str) {
+        if ($queryAppointment->where(function ($query) use ($start_at_str, $end_at_str) {
+            $query->where(function ($query) use ($start_at_str, $end_at_str) {
                 $query->where('start_at', $start_at_str);
                 $query->where('end_at', $end_at_str);
             });
@@ -128,7 +128,7 @@ class Appointment
              *     this: □□□□□□□□□□□□□□□□□□■■■■■■■■■■■□□□□□□□□□□□□□□□□
              *     Db contains this
              */
-            $query->orWhere(function ($query) use($start_at_str, $end_at_str) {
+            $query->orWhere(function ($query) use ($start_at_str, $end_at_str) {
                 $query->where('start_at', '<=', $start_at_str);
                 $query->where('end_at', '>=', $end_at_str);
             });
@@ -137,7 +137,7 @@ class Appointment
              *     This: □□□□□□□□□□□■■■■■■■■■■■■■■■■■■■■■■■■□□□□□□□□□□
              *      this contains DB
              */
-            $query->orWhere(function ($query) use($start_at_str, $end_at_str) {
+            $query->orWhere(function ($query) use ($start_at_str, $end_at_str) {
                 $query->where('start_at', '>=', $start_at_str);
                 $query->where('end_at', '<=', $end_at_str);
             });
@@ -146,7 +146,7 @@ class Appointment
              *     This: □□□□□□□□□□□□□□□□□□■■■■■■■■■■■□□□□□□□□□□□□□□□□
              *     DB intersects this
              */
-            $query->orWhere(function ($query) use($start_at_str, $end_at_str) {
+            $query->orWhere(function ($query) use ($start_at_str, $end_at_str) {
                 $query->where('start_at', '<', $start_at_str);
                 $query->where('end_at', '>', $start_at_str);
             });
@@ -154,7 +154,7 @@ class Appointment
              *     DB:   □□□□□□□□□□□□□□□□□□■■■■■■■■■■■□□□□□□□□□□□□□□□□
              *     This: □□□□□□□□□□□■■■■■■■■■■■■■□□□□□□□□□□□□□□□□□□□□□
              */
-            $query->orWhere(function ($query) use($start_at_str, $end_at_str) {
+            $query->orWhere(function ($query) use ($start_at_str, $end_at_str) {
                 $query->where('start_at', '<', $end_at_str);
                 $query->where('end_at', '>', $end_at_str);
             });
@@ -176,7 +176,7 @@ class Appointment
         }
         //return $appointment;
         //if availability has not been refreshed for a while we refresh it now otherwise we queue a job for it
-        if (!\defined('DISABLE_WP_CRON') || $is_admin === \true) {
+        if (!defined('DISABLE_WP_CRON') || $is_admin === \true) {
             //when web cron is disabled we need an immediate refresh of availability
             (new \Wappointment\Services\Availability())->regenerate();
         } else {
@@ -185,7 +185,7 @@ class Appointment
                 $availability->regenerate();
             } else {
                 $availability->incrementLastRefresh();
-                \Wappointment\Services\Queue::tryPush('Wappointment\\Jobs\\AvailabilityRegenerate', ['staff_id' => \Wappointment\Services\Settings::get('activeStaffId')], 'availability');
+                \Wappointment\Services\Queue::tryPush('Wappointment\Jobs\AvailabilityRegenerate', ['staff_id' => \Wappointment\Services\Settings::get('activeStaffId')], 'availability');
             }
             //we immediately spawn a process to trigger availability regenerate in the back
             WPHelpers::cronTrigger();
@@ -197,7 +197,7 @@ class Appointment
         if (!(bool) \Wappointment\Services\Settings::get('allow_cancellation')) {
             throw new \WappointmentException('Appointment cancellation is not allowed', 1);
         }
-        if (\is_array($edit_key)) {
+        if (is_array($edit_key)) {
             throw new \WappointmentException(__("Malformed parameter", 'wappointment'), 1);
         }
         $appointment = static::getAppointmentModel()::where('edit_key', $edit_key)->where('status', '>=', static::getAppointmentModel()::STATUS_AWAITING_CONFIRMATION)->first();

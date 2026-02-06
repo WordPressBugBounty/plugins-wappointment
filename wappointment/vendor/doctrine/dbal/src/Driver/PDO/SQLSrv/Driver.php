@@ -47,7 +47,7 @@ final class Driver extends AbstractSQLServerDriver
      *
      * @throws Exception
      */
-    private function constructDsn(array $params, array $connectionOptions) : string
+    private function constructDsn(array $params, array $connectionOptions): string
     {
         $dsn = 'sqlsrv:server=';
         if (isset($params['host'])) {
@@ -71,7 +71,7 @@ final class Driver extends AbstractSQLServerDriver
      *
      * @param string[] $connectionOptions
      */
-    private function getConnectionOptionsDsn(array $connectionOptions) : string
+    private function getConnectionOptionsDsn(array $connectionOptions): string
     {
         $connectionOptionsDsn = '';
         foreach ($connectionOptions as $paramName => $paramValue) {

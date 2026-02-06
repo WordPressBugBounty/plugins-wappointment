@@ -19,14 +19,14 @@ final class IntegerInterval extends \Wappointment\Achse\Math\Interval\Interval
     /**
      * @return IntegerBoundary
      */
-    public function getLeft() : \Wappointment\Achse\Math\Interval\Boundary
+    public function getLeft(): \Wappointment\Achse\Math\Interval\Boundary
     {
         return parent::getLeft();
     }
     /**
      * @return IntegerBoundary
      */
-    public function getRight() : \Wappointment\Achse\Math\Interval\Boundary
+    public function getRight(): \Wappointment\Achse\Math\Interval\Boundary
     {
         return parent::getRight();
     }
@@ -35,7 +35,7 @@ final class IntegerInterval extends \Wappointment\Achse\Math\Interval\Interval
      * @param bool $state
      * @return IntegerBoundary
      */
-    protected function buildBoundary(\Wappointment\Achse\Comparable\IComparable $element, bool $state) : \Wappointment\Achse\Math\Interval\Boundary
+    protected function buildBoundary(\Wappointment\Achse\Comparable\IComparable $element, bool $state): \Wappointment\Achse\Math\Interval\Boundary
     {
         return new \Wappointment\Achse\Math\Interval\Integer\IntegerBoundary($element, $state);
     }

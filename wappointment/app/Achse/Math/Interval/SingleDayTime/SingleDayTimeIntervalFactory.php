@@ -12,7 +12,7 @@ final class SingleDayTimeIntervalFactory
      * @param bool $rightState
      * @return SingleDayTimeInterval
      */
-    public static function create($leftElement, bool $leftState, $rightElement, bool $rightState) : \Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTimeInterval
+    public static function create($leftElement, bool $leftState, $rightElement, bool $rightState): \Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTimeInterval
     {
         return new \Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTimeInterval(\Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTimeBoundaryFactory::create($leftElement, $leftState), \Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTimeBoundaryFactory::create($rightElement, $rightState));
     }

@@ -18,7 +18,7 @@ final class CachingCollationMetadataProvider implements CollationMetadataProvide
     {
         $this->collationMetadataProvider = $collationMetadataProvider;
     }
-    public function getCollationCharset(string $collation) : ?string
+    public function getCollationCharset(string $collation): ?string
     {
         if (array_key_exists($collation, $this->cache)) {
             return $this->cache[$collation];

@@ -121,7 +121,7 @@ class AutoExpireFlashBag implements FlashBagInterface
      */
     public function keys()
     {
-        return \array_keys($this->flashes['display']);
+        return array_keys($this->flashes['display']);
     }
     /**
      * {@inheritdoc}

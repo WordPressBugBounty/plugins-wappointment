@@ -49,18 +49,18 @@ class Parameter extends Node
     public function __construct(Document $root, $name, $value = null)
     {
         $this->root = $root;
-        if (\is_null($name)) {
+        if (is_null($name)) {
             $this->noName = \true;
             $this->name = static::guessParameterNameByValue($value);
         } else {
-            $this->name = \strtoupper($name);
+            $this->name = strtoupper($name);
         }
         // If guessParameterNameByValue() returns an empty string
         // above, we're actually dealing with a parameter that has no value.
         // In that case we have to move the value to the name.
         if ('' === $this->name) {
             $this->noName = \false;
-            $this->name = \strtoupper($value);
+            $this->name = strtoupper($value);
         } else {
             $this->setValue($value);
         }
@@ -78,7 +78,7 @@ class Parameter extends Node
      */
     public static function guessParameterNameByValue($value)
     {
-        switch (\strtoupper($value)) {
+        switch (strtoupper($value)) {
             // Encodings
             case '7-BIT':
             case 'QUOTED-PRINTABLE':
@@ -175,8 +175,8 @@ class Parameter extends Node
      */
     public function getValue()
     {
-        if (\is_array($this->value)) {
-            return \implode(',', $this->value);
+        if (is_array($this->value)) {
+            return implode(',', $this->value);
         } else {
             return $this->value;
         }
@@ -197,9 +197,9 @@ class Parameter extends Node
      */
     public function getParts()
     {
-        if (\is_array($this->value)) {
+        if (is_array($this->value)) {
             return $this->value;
-        } elseif (\is_null($this->value)) {
+        } elseif (is_null($this->value)) {
             return [];
         } else {
             return [$this->value];
@@ -215,10 +215,10 @@ class Parameter extends Node
      */
     public function addValue($part)
     {
-        if (\is_null($this->value)) {
+        if (is_null($this->value)) {
             $this->value = $part;
         } else {
-            $this->value = \array_merge((array) $this->value, (array) $part);
+            $this->value = array_merge((array) $this->value, (array) $part);
         }
     }
     /**
@@ -234,7 +234,7 @@ class Parameter extends Node
      */
     public function has($value)
     {
-        return \in_array(\strtolower($value), \array_map('strtolower', (array) $this->value));
+        return in_array(strtolower($value), array_map('strtolower', (array) $this->value));
     }
     /**
      * Turns the object back into a serialized blob.
@@ -244,14 +244,14 @@ class Parameter extends Node
     public function serialize()
     {
         $value = $this->getParts();
-        if (0 === \count($value)) {
+        if (0 === count($value)) {
             return $this->name . '=';
         }
         if (Document::VCARD21 === $this->root->getDocumentType() && $this->noName) {
-            return \implode(';', $value);
+            return implode(';', $value);
         }
-        return $this->name . '=' . \array_reduce($value, function ($out, $item) {
-            if (!\is_null($out)) {
+        return $this->name . '=' . array_reduce($value, function ($out, $item) {
+            if (!is_null($out)) {
                 $out .= ',';
             }
             // If there's no special characters in the string, we'll use the simple
@@ -270,12 +270,12 @@ class Parameter extends Node
             // But we've found that iCal (7.0, shipped with OSX 10.9)
             // severely trips on + characters not being quoted, so we
             // added + as well.
-            if (!\preg_match('#(?: [\\n":;\\^,\\+] )#x', $item)) {
+            if (!preg_match('#(?: [\n":;\^,\+] )#x', $item)) {
                 return $out . $item;
             } else {
                 // Enclosing in double-quotes, and using RFC6868 for encoding any
                 // special characters
-                $out .= '"' . \strtr($item, ['^' => '^^', "\n" => '^n', '"' => '^\'']) . '"';
+                $out .= '"' . strtr($item, ['^' => '^^', "\n" => '^n', '"' => '^\'']) . '"';
                 return $out;
             }
         });
@@ -297,9 +297,9 @@ class Parameter extends Node
      *
      * @param Xml\Writer $writer XML writer
      */
-    public function xmlSerialize(Xml\Writer $writer) : void
+    public function xmlSerialize(Xml\Writer $writer): void
     {
-        foreach (\explode(',', $this->value) as $value) {
+        foreach (explode(',', $this->value) as $value) {
             $writer->writeElement('text', $value);
         }
     }
@@ -320,7 +320,7 @@ class Parameter extends Node
     #[\ReturnTypeWillChange]
     public function getIterator()
     {
-        if (!\is_null($this->iterator)) {
+        if (!is_null($this->iterator)) {
             return $this->iterator;
         }
         return $this->iterator = new ArrayIterator((array) $this->value);

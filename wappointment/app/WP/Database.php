@@ -17,18 +17,16 @@ class Database
         global $wpdb;
         $this->host = DB_HOST;
         $this->prefix = $wpdb->prefix;
-        if (is_multisite() && \defined('BLOG_ID_CURRENT_SITE')) {
+        if (is_multisite() && defined('BLOG_ID_CURRENT_SITE')) {
             $this->mainprefix = $wpdb->get_blog_prefix(BLOG_ID_CURRENT_SITE);
         }
-        if (\strpos($this->host, ':') !== \false) {
-            $host_port = \explode(':', $this->host);
+        if (strpos($this->host, ':') !== \false) {
+            $host_port = explode(':', $this->host);
             $this->host = $host_port[0];
             $this->port = $host_port[1];
-        } else {
-            if (Settings::get('alt_port') && !empty($this->getAltPort())) {
-                $this->port = $this->getAltPort();
-                // make sure this cannot break working connection
-            }
+        } else if (Settings::get('alt_port') && !empty($this->getAltPort())) {
+            $this->port = $this->getAltPort();
+            // make sure this cannot break working connection
         }
         $this->setCharsetAndCollate($wpdb);
     }
@@ -56,16 +54,16 @@ class Database
         foreach ($dbResult[0] as $res) {
             $responseString .= $res;
         }
-        if (\preg_match('/(?>CHARSET=)(.*) /', $responseString, $charsetMatch)) {
-            Settings::save('charset', \trim($charsetMatch[1]));
+        if (preg_match('/(?>CHARSET=)(.*) /', $responseString, $charsetMatch)) {
+            Settings::save('charset', trim($charsetMatch[1]));
         }
-        if (\preg_match('/(?>COLLATE=)(.*)/', $responseString, $collateMatch)) {
-            Settings::save('collate', \trim($collateMatch[1]));
+        if (preg_match('/(?>COLLATE=)(.*)/', $responseString, $collateMatch)) {
+            Settings::save('collate', trim($collateMatch[1]));
         }
     }
     public function getAltPort()
     {
-        return \ini_get('mysqli.default_port');
+        return ini_get('mysqli.default_port');
     }
     public function getDbName()
     {

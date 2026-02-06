@@ -84,9 +84,9 @@ abstract class Document extends Component
      */
     public function __construct()
     {
-        $args = \func_get_args();
+        $args = func_get_args();
         $name = static::$defaultName;
-        if (0 === \count($args) || \is_array($args[0])) {
+        if (0 === count($args) || is_array($args[0])) {
             $children = isset($args[0]) ? $args[0] : [];
             $defaults = isset($args[1]) ? $args[1] : \true;
         } else {
@@ -118,10 +118,10 @@ abstract class Document extends Component
      */
     public function create($name)
     {
-        if (isset(static::$componentMap[\strtoupper($name)])) {
-            return \call_user_func_array([$this, 'createComponent'], \func_get_args());
+        if (isset(static::$componentMap[strtoupper($name)])) {
+            return call_user_func_array([$this, 'createComponent'], func_get_args());
         } else {
-            return \call_user_func_array([$this, 'createProperty'], \func_get_args());
+            return call_user_func_array([$this, 'createProperty'], func_get_args());
         }
     }
     /**
@@ -146,12 +146,12 @@ abstract class Document extends Component
      */
     public function createComponent($name, array $children = null, $defaults = \true)
     {
-        $name = \strtoupper($name);
+        $name = strtoupper($name);
         $class = Component::class;
         if (isset(static::$componentMap[$name])) {
             $class = static::$componentMap[$name];
         }
-        if (\is_null($children)) {
+        if (is_null($children)) {
             $children = [];
         }
         return new $class($this, $name, $children, $defaults);
@@ -176,11 +176,11 @@ abstract class Document extends Component
     public function createProperty($name, $value = null, array $parameters = null, $valueType = null)
     {
         // If there's a . in the name, it means it's prefixed by a groupname.
-        if (\false !== ($i = \strpos($name, '.'))) {
-            $group = \substr($name, 0, $i);
-            $name = \strtoupper(\substr($name, $i + 1));
+        if (\false !== $i = strpos($name, '.')) {
+            $group = substr($name, 0, $i);
+            $name = strtoupper(substr($name, $i + 1));
         } else {
-            $name = \strtoupper($name);
+            $name = strtoupper($name);
             $group = null;
         }
         $class = null;
@@ -189,18 +189,18 @@ abstract class Document extends Component
             // class.
             $class = $this->getClassNameForPropertyValue($valueType);
         }
-        if (\is_null($class)) {
+        if (is_null($class)) {
             // If a VALUE parameter is supplied, we should use that.
             if (isset($parameters['VALUE'])) {
                 $class = $this->getClassNameForPropertyValue($parameters['VALUE']);
-                if (\is_null($class)) {
+                if (is_null($class)) {
                     throw new InvalidDataException('Unsupported VALUE parameter for ' . $name . ' property. You supplied "' . $parameters['VALUE'] . '"');
                 }
             } else {
                 $class = $this->getClassNameForPropertyName($name);
             }
         }
-        if (\is_null($parameters)) {
+        if (is_null($parameters)) {
             $parameters = [];
         }
         return new $class($this, $name, $value, $parameters, $group);
@@ -219,7 +219,7 @@ abstract class Document extends Component
      */
     public function getClassNameForPropertyValue($valueParam)
     {
-        $valueParam = \strtoupper($valueParam);
+        $valueParam = strtoupper($valueParam);
         if (isset(static::$valueMap[$valueParam])) {
             return static::$valueMap[$valueParam];
         }

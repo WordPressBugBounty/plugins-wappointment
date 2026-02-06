@@ -34,10 +34,10 @@ class SerializerErrorRenderer implements ErrorRendererInterface
     public function __construct(SerializerInterface $serializer, $format, ErrorRendererInterface $fallbackErrorRenderer = null, $debug = \false)
     {
         if (!\is_string($format) && !\is_callable($format)) {
-            throw new \TypeError(\sprintf('Argument 2 passed to "%s()" must be a string or a callable, "%s" given.', __METHOD__, \gettype($format)));
+            throw new \TypeError(sprintf('Argument 2 passed to "%s()" must be a string or a callable, "%s" given.', __METHOD__, \gettype($format)));
         }
         if (!\is_bool($debug) && !\is_callable($debug)) {
-            throw new \TypeError(\sprintf('Argument 4 passed to "%s()" must be a boolean or a callable, "%s" given.', __METHOD__, \gettype($debug)));
+            throw new \TypeError(sprintf('Argument 4 passed to "%s()" must be a boolean or a callable, "%s" given.', __METHOD__, \gettype($debug)));
         }
         $this->serializer = $serializer;
         $this->format = $format;
@@ -47,13 +47,13 @@ class SerializerErrorRenderer implements ErrorRendererInterface
     /**
      * {@inheritdoc}
      */
-    public function render(\Throwable $exception) : FlattenException
+    public function render(\Throwable $exception): FlattenException
     {
         $headers = [];
         $debug = \is_bool($this->debug) ? $this->debug : ($this->debug)($exception);
         if ($debug) {
-            $headers['X-Debug-Exception'] = \rawurlencode($exception->getMessage());
-            $headers['X-Debug-Exception-File'] = \rawurlencode($exception->getFile()) . ':' . $exception->getLine();
+            $headers['X-Debug-Exception'] = rawurlencode($exception->getMessage());
+            $headers['X-Debug-Exception-File'] = rawurlencode($exception->getFile()) . ':' . $exception->getLine();
         }
         $flattenException = FlattenException::createFromThrowable($exception, null, $headers);
         try {
@@ -64,10 +64,10 @@ class SerializerErrorRenderer implements ErrorRendererInterface
             return $this->fallbackErrorRenderer->render($exception);
         }
     }
-    public static function getPreferredFormat(RequestStack $requestStack) : \Closure
+    public static function getPreferredFormat(RequestStack $requestStack): \Closure
     {
-        return static function () use($requestStack) {
-            if (!($request = $requestStack->getCurrentRequest())) {
+        return static function () use ($requestStack) {
+            if (!$request = $requestStack->getCurrentRequest()) {
                 throw new NotEncodableValueException();
             }
             return $request->getPreferredFormat();

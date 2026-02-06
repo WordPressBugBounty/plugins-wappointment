@@ -47,7 +47,7 @@ class TimeStamp extends Text
         $parts = DateTimeParser::parseVCardDateTime($this->getValue());
         $dateStr = $parts['year'] . '-' . $parts['month'] . '-' . $parts['date'] . 'T' . $parts['hour'] . ':' . $parts['minute'] . ':' . $parts['second'];
         // Timezone
-        if (!\is_null($parts['timezone'])) {
+        if (!is_null($parts['timezone'])) {
             $dateStr .= $parts['timezone'];
         }
         return [$dateStr];
@@ -62,7 +62,7 @@ class TimeStamp extends Text
     {
         // xCard is the only XML and JSON format that has the same date and time
         // format than vCard.
-        $valueType = \strtolower($this->getValueType());
+        $valueType = strtolower($this->getValueType());
         $writer->writeElement($valueType, $this->getValue());
     }
 }

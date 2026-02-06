@@ -30,7 +30,7 @@ abstract class AbstractSQLiteDriver implements Driver
         assert($platform instanceof SqlitePlatform);
         return new SqliteSchemaManager($conn, $platform);
     }
-    public function getExceptionConverter() : ExceptionConverter
+    public function getExceptionConverter(): ExceptionConverter
     {
         return new SQLite\ExceptionConverter();
     }

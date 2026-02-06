@@ -38,7 +38,7 @@ class Caster
      *
      * @param bool $hasDebugInfo Whether the __debugInfo method exists on $obj or not
      */
-    public static function castObject(object $obj, string $class, bool $hasDebugInfo = \false, string $debugClass = null) : array
+    public static function castObject(object $obj, string $class, bool $hasDebugInfo = \false, string $debugClass = null): array
     {
         if ($hasDebugInfo) {
             try {
@@ -54,7 +54,7 @@ class Caster
         }
         if ($a) {
             static $publicProperties = [];
-            $debugClass = $debugClass ?? \get_debug_type($obj);
+            $debugClass = $debugClass ?? get_debug_type($obj);
             $i = 0;
             $prefixedKeys = [];
             foreach ($a as $k => $v) {
@@ -67,17 +67,17 @@ class Caster
                     if (!isset($publicProperties[$class][$k])) {
                         $prefixedKeys[$i] = self::PREFIX_DYNAMIC . $k;
                     }
-                } elseif ($debugClass !== $class && 1 === \strpos($k, $class)) {
-                    $prefixedKeys[$i] = "\x00" . $debugClass . \strrchr($k, "\x00");
+                } elseif ($debugClass !== $class && 1 === strpos($k, $class)) {
+                    $prefixedKeys[$i] = "\x00" . $debugClass . strrchr($k, "\x00");
                 }
                 ++$i;
             }
             if ($prefixedKeys) {
-                $keys = \array_keys($a);
+                $keys = array_keys($a);
                 foreach ($prefixedKeys as $i => $k) {
                     $keys[$i] = $k;
                 }
-                $a = \array_combine($keys, $a);
+                $a = array_combine($keys, $a);
             }
         }
         if ($hasDebugInfo && \is_array($debugInfo)) {
@@ -105,7 +105,7 @@ class Caster
      * @param string[] $listedProperties List of properties to exclude when Caster::EXCLUDE_VERBOSE is set, and to preserve when Caster::EXCLUDE_NOT_IMPORTANT is set
      * @param int|null &$count           Set to the number of removed properties
      */
-    public static function filter(array $a, int $filter, array $listedProperties = [], ?int &$count = 0) : array
+    public static function filter(array $a, int $filter, array $listedProperties = [], ?int &$count = 0): array
     {
         $count = 0;
         foreach ($a as $k => $v) {
@@ -140,7 +140,7 @@ class Caster
         }
         return $a;
     }
-    public static function castPhpIncompleteClass(\__PHP_Incomplete_Class $c, array $a, Stub $stub, bool $isNested) : array
+    public static function castPhpIncompleteClass(\__PHP_Incomplete_Class $c, array $a, Stub $stub, bool $isNested): array
     {
         if (isset($a['__PHP_Incomplete_Class_Name'])) {
             $stub->class .= '(' . $a['__PHP_Incomplete_Class_Name'] . ')';

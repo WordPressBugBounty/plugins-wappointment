@@ -12,7 +12,7 @@ class AdminNewAppointmentEmail extends \Wappointment\Messages\AbstractAdminEmail
         $this->addBr();
         $this->addLines([
             /* translators: %s is replaced with the first name of the staff being booked */
-            \sprintf(__('Hi %s', 'wappointment'), $this->params['appointment']->getStaff()->getFirstName()),
+            sprintf(__('Hi %s', 'wappointment'), $this->params['appointment']->getStaff()->getFirstName()),
             __('Great news! You just got booked!', 'wappointment'),
         ]);
         $this->addRoundedSquare($this->getEmailContent($this->params['client'], $this->params['appointment']));

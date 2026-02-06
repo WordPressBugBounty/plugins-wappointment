@@ -53,26 +53,26 @@ class DNSCheckValidation implements EmailValidation
     private $dnsGetRecord;
     public function __construct(?DNSGetRecordWrapper $dnsGetRecord = null)
     {
-        if (!\function_exists('idn_to_ascii')) {
-            throw new \LogicException(\sprintf('The %s class requires the Intl extension.', __CLASS__));
+        if (!function_exists('idn_to_ascii')) {
+            throw new \LogicException(sprintf('The %s class requires the Intl extension.', __CLASS__));
         }
         if ($dnsGetRecord == null) {
             $dnsGetRecord = new DNSGetRecordWrapper();
         }
         $this->dnsGetRecord = $dnsGetRecord;
     }
-    public function isValid(string $email, EmailLexer $emailLexer) : bool
+    public function isValid(string $email, EmailLexer $emailLexer): bool
     {
         // use the input to check DNS if we cannot extract something similar to a domain
         $host = $email;
         // Arguable pattern to extract the domain. Not aiming to validate the domain nor the email
-        if (\false !== ($lastAtPos = \strrpos($email, '@'))) {
-            $host = \substr($email, $lastAtPos + 1);
+        if (\false !== $lastAtPos = strrpos($email, '@')) {
+            $host = substr($email, $lastAtPos + 1);
         }
         // Get the domain parts
-        $hostParts = \explode('.', $host);
-        $isLocalDomain = \count($hostParts) <= 1;
-        $isReservedTopLevel = \in_array($hostParts[\count($hostParts) - 1], self::RESERVED_DNS_TOP_LEVEL_NAMES, \true);
+        $hostParts = explode('.', $host);
+        $isLocalDomain = count($hostParts) <= 1;
+        $isReservedTopLevel = in_array($hostParts[count($hostParts) - 1], self::RESERVED_DNS_TOP_LEVEL_NAMES, \true);
         // Exclude reserved top level DNS names
         if ($isLocalDomain || $isReservedTopLevel) {
             $this->error = new InvalidEmail(new LocalOrReservedDomain(), $host);
@@ -80,11 +80,11 @@ class DNSCheckValidation implements EmailValidation
         }
         return $this->checkDns($host);
     }
-    public function getError() : ?InvalidEmail
+    public function getError(): ?InvalidEmail
     {
         return $this->error;
     }
-    public function getWarnings() : array
+    public function getWarnings(): array
     {
         return $this->warnings;
     }
@@ -96,7 +96,7 @@ class DNSCheckValidation implements EmailValidation
     protected function checkDns($host)
     {
         $variant = \INTL_IDNA_VARIANT_UTS46;
-        $host = \rtrim(\idn_to_ascii($host, \IDNA_DEFAULT, $variant), '.') . '.';
+        $host = rtrim(idn_to_ascii($host, \IDNA_DEFAULT, $variant), '.') . '.';
         return $this->validateDnsRecords($host);
     }
     /**
@@ -106,7 +106,7 @@ class DNSCheckValidation implements EmailValidation
      *
      * @return bool True on success.
      */
-    private function validateDnsRecords($host) : bool
+    private function validateDnsRecords($host): bool
     {
         $dnsRecordsResult = $this->dnsGetRecord->getRecords($host, static::DNS_RECORD_TYPES_TO_CHECK);
         if ($dnsRecordsResult->withError()) {
@@ -138,7 +138,7 @@ class DNSCheckValidation implements EmailValidation
      *
      * @return bool True if valid.
      */
-    private function validateMxRecord($dnsRecord) : bool
+    private function validateMxRecord($dnsRecord): bool
     {
         if (!isset($dnsRecord['type'])) {
             $this->error = new InvalidEmail(new ReasonNoDNSRecord(), '');

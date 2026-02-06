@@ -8,7 +8,7 @@ class ClientLegacy
 {
     public static function book(LegacyBooking $booking)
     {
-        if (\is_array($booking->get('email'))) {
+        if (is_array($booking->get('email'))) {
             throw new \WappointmentException("Malformed parameter", 1);
         }
         //create or load client account
@@ -20,9 +20,6 @@ class ClientLegacy
         if (!empty($booking->get('phone'))) {
             $dataClient['options']['phone'] = $booking->get('phone');
         }
-        if (!empty($booking->get('skype'))) {
-            $dataClient['options']['skype'] = $booking->get('skype');
-        }
         if (empty($client)) {
             $dataClient['email'] = $booking->get('email');
             $client = MClient::create($dataClient);
@@ -30,9 +27,6 @@ class ClientLegacy
             $options = $client->options;
             if (!empty($booking->get('phone'))) {
                 $options['phone'] = $booking->get('phone');
-            }
-            if (!empty($booking->get('skype'))) {
-                $options['skype'] = $booking->get('skype');
             }
             $client->options = $options;
             $client->save();

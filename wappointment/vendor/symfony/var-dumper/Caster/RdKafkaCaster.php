@@ -84,7 +84,7 @@ class RdKafkaCaster
     }
     public static function castCollectionMetadata(CollectionMetadata $c, array $a, Stub $stub, bool $isNested)
     {
-        $a += \iterator_to_array($c);
+        $a += iterator_to_array($c);
         return $a;
     }
     public static function castTopicMetadata(TopicMetadata $c, array $a, Stub $stub, bool $isNested)

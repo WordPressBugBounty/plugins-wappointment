@@ -29,7 +29,7 @@ final class TerminateEvent extends KernelEvent
         parent::__construct($kernel, $request, HttpKernelInterface::MAIN_REQUEST);
         $this->response = $response;
     }
-    public function getResponse() : Response
+    public function getResponse(): Response
     {
         return $this->response;
     }

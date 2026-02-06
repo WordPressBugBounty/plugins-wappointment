@@ -44,7 +44,7 @@ class RetryMiddleware
      */
     public static function exponentialDelay($retries)
     {
-        return (int) \pow(2, $retries - 1) * 1000;
+        return (int) pow(2, $retries - 1) * 1000;
     }
     /**
      * @param RequestInterface $request
@@ -67,8 +67,8 @@ class RetryMiddleware
      */
     private function onFulfilled(RequestInterface $req, array $options)
     {
-        return function ($value) use($req, $options) {
-            if (!\call_user_func($this->decider, $options['retries'], $req, $value, null)) {
+        return function ($value) use ($req, $options) {
+            if (!call_user_func($this->decider, $options['retries'], $req, $value, null)) {
                 return $value;
             }
             return $this->doRetry($req, $options, $value);
@@ -81,8 +81,8 @@ class RetryMiddleware
      */
     private function onRejected(RequestInterface $req, array $options)
     {
-        return function ($reason) use($req, $options) {
-            if (!\call_user_func($this->decider, $options['retries'], $req, null, $reason)) {
+        return function ($reason) use ($req, $options) {
+            if (!call_user_func($this->decider, $options['retries'], $req, null, $reason)) {
                 return \WappoVendor\GuzzleHttp\Promise\rejection_for($reason);
             }
             return $this->doRetry($req, $options);
@@ -93,7 +93,7 @@ class RetryMiddleware
      */
     private function doRetry(RequestInterface $request, array $options, ResponseInterface $response = null)
     {
-        $options['delay'] = \call_user_func($this->delay, ++$options['retries'], $response);
+        $options['delay'] = call_user_func($this->delay, ++$options['retries'], $response);
         return $this($request, $options);
     }
 }

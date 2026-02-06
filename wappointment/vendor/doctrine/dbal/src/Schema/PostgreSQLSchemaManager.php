@@ -50,7 +50,7 @@ class PostgreSQLSchemaManager extends AbstractSchemaManager
     /**
      * {@inheritDoc}
      */
-    public function listSchemaNames() : array
+    public function listSchemaNames(): array
     {
         return $this->_conn->fetchFirstColumn(<<<'SQL'
 SELECT schema_name
@@ -123,7 +123,7 @@ SQL
     {
         $names = $this->listSchemaNames();
         $paths = $this->getSchemaSearchPaths();
-        $this->existingSchemaPaths = array_filter($paths, static function ($v) use($names) : bool {
+        $this->existingSchemaPaths = array_filter($paths, static function ($v) use ($names): bool {
             return in_array($v, $names, \true);
         });
     }
@@ -140,7 +140,7 @@ SQL
         if (preg_match('(ON DELETE ([a-zA-Z0-9]+( (NULL|ACTION|DEFAULT))?))', $tableForeignKey['condef'], $match) === 1) {
             $onDelete = $match[1];
         }
-        $result = preg_match('/FOREIGN KEY \\((.+)\\) REFERENCES (.+)\\((.+)\\)/', $tableForeignKey['condef'], $values);
+        $result = preg_match('/FOREIGN KEY \((.+)\) REFERENCES (.+)\((.+)\)/', $tableForeignKey['condef'], $values);
         assert($result === 1);
         // PostgreSQL returns identifiers that are keywords with quotes, we need them later, don't get
         // the idea to trim them here.
@@ -260,7 +260,7 @@ SQL
         $tableColumn = array_change_key_case($tableColumn, CASE_LOWER);
         if (strtolower($tableColumn['type']) === 'varchar' || strtolower($tableColumn['type']) === 'bpchar') {
             // get length from varchar definition
-            $length = preg_replace('~.*\\(([0-9]*)\\).*~', '$1', $tableColumn['complete_type']);
+            $length = preg_replace('~.*\(([0-9]*)\).*~', '$1', $tableColumn['complete_type']);
             $tableColumn['length'] = $length;
         }
         $matches = [];
@@ -349,7 +349,7 @@ SQL
             case 'money':
             case 'numeric':
                 $tableColumn['default'] = $this->fixVersion94NegativeNumericDefaultValue($tableColumn['default']);
-                if (preg_match('([A-Za-z]+\\(([0-9]+),([0-9]+)\\))', $tableColumn['complete_type'], $match) === 1) {
+                if (preg_match('([A-Za-z]+\(([0-9]+),([0-9]+)\))', $tableColumn['complete_type'], $match) === 1) {
                     $precision = $match[1];
                     $scale = $match[2];
                     $length = null;
@@ -393,7 +393,7 @@ SQL
     /**
      * Parses a default value expression as given by PostgreSQL
      */
-    private function parseDefaultExpression(?string $default) : ?string
+    private function parseDefaultExpression(?string $default): ?string
     {
         if ($default === null) {
             return $default;
@@ -403,7 +403,7 @@ SQL
     /**
      * {@inheritdoc}
      */
-    public function listTableDetails($name) : Table
+    public function listTableDetails($name): Table
     {
         $table = parent::listTableDetails($name);
         $sql = $this->_platform->getListTableMetadataSQL($name);

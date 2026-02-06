@@ -49,7 +49,7 @@ final class Statement implements StatementInterface
     /**
      * {@inheritdoc}
      */
-    public function bindValue($param, $value, $type = ParameterType::STRING) : bool
+    public function bindValue($param, $value, $type = ParameterType::STRING): bool
     {
         assert(is_int($param));
         return $this->bindParam($param, $value, $type);
@@ -57,7 +57,7 @@ final class Statement implements StatementInterface
     /**
      * {@inheritdoc}
      */
-    public function bindParam($param, &$variable, $type = ParameterType::STRING, $length = null) : bool
+    public function bindParam($param, &$variable, $type = ParameterType::STRING, $length = null): bool
     {
         assert(is_int($param));
         switch ($type) {
@@ -79,7 +79,7 @@ final class Statement implements StatementInterface
      *
      * @throws Exception
      */
-    private function bind($position, &$variable, int $parameterType, int $dataType) : void
+    private function bind($position, &$variable, int $parameterType, int $dataType): void
     {
         $this->parameters[$position] =& $variable;
         if (!db2_bind_param($this->stmt, $position, '', $parameterType, $dataType)) {
@@ -89,7 +89,7 @@ final class Statement implements StatementInterface
     /**
      * {@inheritdoc}
      */
-    public function execute($params = null) : ResultInterface
+    public function execute($params = null): ResultInterface
     {
         $handles = $this->bindLobs();
         $result = @db2_execute($this->stmt, $params ?? $this->parameters);
@@ -107,7 +107,7 @@ final class Statement implements StatementInterface
      *
      * @throws Exception
      */
-    private function bindLobs() : array
+    private function bindLobs(): array
     {
         $handles = [];
         foreach ($this->lobs as $param => $value) {
@@ -141,7 +141,7 @@ final class Statement implements StatementInterface
      *
      * @throws Exception
      */
-    private function copyStreamToStream($source, $target) : void
+    private function copyStreamToStream($source, $target): void
     {
         if (@stream_copy_to_stream($source, $target) === \false) {
             throw CannotCopyStreamToStream::new(error_get_last());

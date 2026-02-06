@@ -30,7 +30,7 @@ class TestSessionListener extends AbstractTestSessionListener
         $this->container = $container;
         parent::__construct($sessionOptions);
     }
-    protected function getSession() : ?SessionInterface
+    protected function getSession(): ?SessionInterface
     {
         if ($this->container->has('session')) {
             return $this->container->get('session');

@@ -17,7 +17,7 @@ class WidgetAPI
     public static function pushTo($sidebar)
     {
         $sidebars = get_option('sidebars_widgets');
-        if (\is_array($sidebars[$sidebar]) && !empty($sidebars[$sidebar])) {
+        if (is_array($sidebars[$sidebar]) && !empty($sidebars[$sidebar])) {
             $sidebars[$sidebar][] = 'wappointment';
             update_option('sidebars_widgets', $sidebars);
         }

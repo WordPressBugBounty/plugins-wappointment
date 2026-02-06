@@ -39,11 +39,11 @@ final class Connection implements ServerInfoAwareConnection
         $serverInfo = sqlsrv_server_info($this->connection);
         return $serverInfo['SQLServerVersion'];
     }
-    public function prepare(string $sql) : DriverStatement
+    public function prepare(string $sql): DriverStatement
     {
         return new Statement($this->connection, $sql);
     }
-    public function query(string $sql) : ResultInterface
+    public function query(string $sql): ResultInterface
     {
         return $this->prepare($sql)->execute();
     }
@@ -60,7 +60,7 @@ final class Connection implements ServerInfoAwareConnection
         }
         return "'" . str_replace("'", "''", $value) . "'";
     }
-    public function exec(string $sql) : int
+    public function exec(string $sql): int
     {
         $stmt = sqlsrv_query($this->connection, $sql);
         if ($stmt === \false) {
@@ -85,21 +85,21 @@ final class Connection implements ServerInfoAwareConnection
         }
         return $result->fetchOne();
     }
-    public function beginTransaction() : bool
+    public function beginTransaction(): bool
     {
         if (!sqlsrv_begin_transaction($this->connection)) {
             throw Error::new();
         }
         return \true;
     }
-    public function commit() : bool
+    public function commit(): bool
     {
         if (!sqlsrv_commit($this->connection)) {
             throw Error::new();
         }
         return \true;
     }
-    public function rollBack() : bool
+    public function rollBack(): bool
     {
         if (!sqlsrv_rollback($this->connection)) {
             throw Error::new();

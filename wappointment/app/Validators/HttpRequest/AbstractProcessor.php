@@ -23,7 +23,7 @@ abstract class AbstractProcessor implements \Wappointment\Validators\HttpRequest
     }
     public function hasErrors()
     {
-        return \count($this->errors) > 0;
+        return count($this->errors) > 0;
     }
     public function getErrors()
     {
@@ -40,7 +40,7 @@ abstract class AbstractProcessor implements \Wappointment\Validators\HttpRequest
     {
         return !empty($this->data[$field]) ? $this->data[$field] : \false;
     }
-    public function getData() : array
+    public function getData(): array
     {
         return $this->data;
     }
@@ -48,13 +48,13 @@ abstract class AbstractProcessor implements \Wappointment\Validators\HttpRequest
     {
         return $inputs;
     }
-    private function validate() : bool
+    private function validate(): bool
     {
         $inputs = $this->request->all();
         $inputs = $this->prepareInputs($inputs);
         $this->validator = new RakitValidator();
         $this->validator->setMessages($this->validationMessages());
-        if (\method_exists($this, 'addValidators')) {
+        if (method_exists($this, 'addValidators')) {
             $this->addValidators();
         }
         $validation = $this->validator->make($inputs, $this->validationRules());

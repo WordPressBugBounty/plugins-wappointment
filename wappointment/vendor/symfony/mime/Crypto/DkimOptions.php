@@ -18,14 +18,14 @@ namespace WappoVendor\Symfony\Component\Mime\Crypto;
 final class DkimOptions
 {
     private $options = [];
-    public function toArray() : array
+    public function toArray(): array
     {
         return $this->options;
     }
     /**
      * @return $this
      */
-    public function algorithm(string $algo) : self
+    public function algorithm(string $algo): self
     {
         $this->options['algorithm'] = $algo;
         return $this;
@@ -33,7 +33,7 @@ final class DkimOptions
     /**
      * @return $this
      */
-    public function signatureExpirationDelay(int $show) : self
+    public function signatureExpirationDelay(int $show): self
     {
         $this->options['signature_expiration_delay'] = $show;
         return $this;
@@ -41,7 +41,7 @@ final class DkimOptions
     /**
      * @return $this
      */
-    public function bodyMaxLength(int $max) : self
+    public function bodyMaxLength(int $max): self
     {
         $this->options['body_max_length'] = $max;
         return $this;
@@ -49,7 +49,7 @@ final class DkimOptions
     /**
      * @return $this
      */
-    public function bodyShowLength(bool $show) : self
+    public function bodyShowLength(bool $show): self
     {
         $this->options['body_show_length'] = $show;
         return $this;
@@ -57,7 +57,7 @@ final class DkimOptions
     /**
      * @return $this
      */
-    public function headerCanon(string $canon) : self
+    public function headerCanon(string $canon): self
     {
         $this->options['header_canon'] = $canon;
         return $this;
@@ -65,7 +65,7 @@ final class DkimOptions
     /**
      * @return $this
      */
-    public function bodyCanon(string $canon) : self
+    public function bodyCanon(string $canon): self
     {
         $this->options['body_canon'] = $canon;
         return $this;
@@ -73,7 +73,7 @@ final class DkimOptions
     /**
      * @return $this
      */
-    public function headersToIgnore(array $headers) : self
+    public function headersToIgnore(array $headers): self
     {
         $this->options['headers_to_ignore'] = $headers;
         return $this;

@@ -15,7 +15,7 @@ abstract class IntervalStringParser
      * @param string $string
      * @return Interval
      */
-    public static function parse(string $string) : \Wappointment\Achse\Math\Interval\Interval
+    public static function parse(string $string): \Wappointment\Achse\Math\Interval\Interval
     {
         throw new \LogicException('Not implemented in this abstract class. Implement this in child.');
     }
@@ -24,7 +24,7 @@ abstract class IntervalStringParser
      * @return string[]
      * @throws IntervalParseErrorException
      */
-    protected static function parseBoundariesStringsFromString(string $string) : array
+    protected static function parseBoundariesStringsFromString(string $string): array
     {
         $boundaries = \explode(',', $string);
         if (\count($boundaries) != 2) {
@@ -37,7 +37,7 @@ abstract class IntervalStringParser
      * @return array
      * @throws IntervalParseErrorException
      */
-    protected static function parseBoundaryDataFromString(string $string) : array
+    protected static function parseBoundaryDataFromString(string $string): array
     {
         $letters = \preg_split('//u', $string, -1, \PREG_SPLIT_NO_EMPTY);
         if (\count($letters) < 2) {
@@ -50,7 +50,7 @@ abstract class IntervalStringParser
      * @return array
      * @throws IntervalParseErrorException
      */
-    protected static function getElementAndStateData(array $letters) : array
+    protected static function getElementAndStateData(array $letters): array
     {
         if (($firstCharacter = \reset($letters)) === \FALSE || ($lastCharacter = \end($letters)) === \FALSE) {
             throw new \Wappointment\Achse\Math\Interval\IntervalParseErrorException('No letters given.');
@@ -72,7 +72,7 @@ abstract class IntervalStringParser
      * @param string $character
      * @return bool
      */
-    protected static function isCharacterBoundaryType(string $character) : bool
+    protected static function isCharacterBoundaryType(string $character): bool
     {
         return isset(self::$parenthesisToStateTranslationTable[$character]);
     }
@@ -80,7 +80,7 @@ abstract class IntervalStringParser
      * @param string $character
      * @return bool
      */
-    protected static function getTypeByCharacter(string $character) : bool
+    protected static function getTypeByCharacter(string $character): bool
     {
         return self::$parenthesisToStateTranslationTable[$character];
     }
@@ -88,7 +88,7 @@ abstract class IntervalStringParser
      * @param string $input
      * @return Boundary
      */
-    protected static function parseBoundary(string $input) : \Wappointment\Achse\Math\Interval\Boundary
+    protected static function parseBoundary(string $input): \Wappointment\Achse\Math\Interval\Boundary
     {
         throw new \LogicException('Not implemented in this abstract class. Implement this in child.');
     }

@@ -54,18 +54,18 @@ class CalendarsController extends RestController
         $service_ids = $this->getServiceIDs($services);
         foreach ($calendars as $key => $calendar) {
             foreach ($calendar['services'] as $keyid => $service_id) {
-                if (!\in_array($service_id, $service_ids)) {
+                if (!in_array($service_id, $service_ids)) {
                     unset($calendars[$key]['services'][$keyid]);
                 }
             }
-            $calendars[$key]['services'] = \array_values($calendars[$key]['services']);
+            $calendars[$key]['services'] = array_values($calendars[$key]['services']);
         }
         return $calendars;
     }
     public function getCalendarsStaff()
     {
         $calendars = (new CalendarsBack())->get();
-        return CurrentUser::isAdmin() ? $calendars : \array_values(\WappointmentLv::collect($calendars)->filter(function ($e) {
+        return CurrentUser::isAdmin() ? $calendars : array_values(\WappointmentLv::collect($calendars)->filter(function ($e) {
             return $e['wp_uid'] == CurrentUser::id();
         })->toArray());
     }
@@ -102,7 +102,7 @@ class CalendarsController extends RestController
                 return $e['key'];
             })->toArray();
             foreach ($request->input('values') as $key => $value) {
-                if (\in_array($key, $cf_can_save)) {
+                if (in_array($key, $cf_can_save)) {
                     $options['custom_fields'][$key] = $value;
                 }
             }
@@ -130,22 +130,22 @@ class CalendarsController extends RestController
                 return $e['key'];
             })->toArray();
             foreach ($request->input('custom_fields') as $custom_field) {
-                if (!\in_array($custom_field['key'], $current_cf_keys)) {
+                if (!in_array($custom_field['key'], $current_cf_keys)) {
                     $staff_custom_fields->push($custom_field);
                 } else {
-                    $keyFound = $staff_custom_fields->search(function ($itm, $key) use($custom_field) {
+                    $keyFound = $staff_custom_fields->search(function ($itm, $key) use ($custom_field) {
                         return $itm['key'] == $custom_field['key'];
                     });
-                    $staff_custom_fields->transform(function ($item, $key) use($keyFound, $custom_field) {
+                    $staff_custom_fields->transform(function ($item, $key) use ($keyFound, $custom_field) {
                         return $key == $keyFound ? $custom_field : $item;
                     });
                 }
             }
             $deletedFields = $request->input('deleted');
-            $new_staff_custom_fields = $staff_custom_fields->reject(function ($value) use($deletedFields) {
-                return \in_array($value['key'], $deletedFields);
+            $new_staff_custom_fields = $staff_custom_fields->reject(function ($value) use ($deletedFields) {
+                return in_array($value['key'], $deletedFields);
             });
-            WPHelpers::setOption('staff_custom_fields', \array_values($new_staff_custom_fields->toArray()));
+            WPHelpers::setOption('staff_custom_fields', array_values($new_staff_custom_fields->toArray()));
         }
         return $new_staff_custom_fields;
     }
@@ -227,7 +227,7 @@ class CalendarsController extends RestController
     }
     public function disconnectCal(Request $request)
     {
-        if (\is_array($request->input('calendar_id'))) {
+        if (is_array($request->input('calendar_id'))) {
             throw new \WappointmentException(__('Malformed parameter', 'wappointment'), 1);
         }
         $this->testIsAllowedToRunQuery('staff_id', $request);
@@ -280,7 +280,7 @@ class CalendarsController extends RestController
                 return \true;
             }
         }
-        throw new \WappointmentException(\sprintf('Unknown calendar external domain %s (allowed: %s) Read how to allow your own domain: ', $host, \implode(', ', $this->allowedDomains())));
+        throw new \WappointmentException(sprintf('Unknown calendar external domain %s (allowed: %s) Read how to allow your own domain: ', $host, implode(', ', $this->allowedDomains())));
     }
     protected function allowedDomains()
     {
@@ -288,6 +288,6 @@ class CalendarsController extends RestController
     }
     protected function endsWith($haystack, $needle)
     {
-        return \substr_compare($haystack, $needle, -\strlen($needle)) === 0;
+        return substr_compare($haystack, $needle, -strlen($needle)) === 0;
     }
 }

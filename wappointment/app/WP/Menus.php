@@ -8,10 +8,10 @@ class Menus
 {
     private $parent_slug = '';
     public $sub_menus = [];
-    private $load_view = ['Wappointment\\Controllers\\AdminDefaultController', 'defaultContent'];
+    private $load_view = ['Wappointment\Controllers\AdminDefaultController', 'defaultContent'];
     public function __construct()
     {
-        $this->parent_slug = \strtolower(WAPPOINTMENT_NAME) . '_calendar';
+        $this->parent_slug = strtolower(WAPPOINTMENT_NAME) . '_calendar';
         $this->sub_menus = ['calendar' => ['label' => __('Calendar', 'wappointment'), 'cap' => $this->getCalendarCap()]];
         /**
          * TODO probably can drop that condition
@@ -62,7 +62,7 @@ class Menus
     public function addSubmenus()
     {
         foreach ($this->sub_menus as $sub_key => $submenu) {
-            add_submenu_page($this->parent_slug, $submenu['label'], $submenu['label'], $submenu['cap'], \strtolower(WAPPOINTMENT_NAME) . '_' . $sub_key, $this->load_view);
+            add_submenu_page($this->parent_slug, $submenu['label'], $submenu['label'], $submenu['cap'], strtolower(WAPPOINTMENT_NAME) . '_' . $sub_key, $this->load_view);
         }
     }
 }

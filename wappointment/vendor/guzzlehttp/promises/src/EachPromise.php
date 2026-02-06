@@ -85,11 +85,11 @@ class EachPromise implements PromisorInterface
             if ($this->checkIfFinished()) {
                 return;
             }
-            \reset($this->pending);
+            reset($this->pending);
             // Consume a potentially fluctuating list of promises while
             // ensuring that indexes are maintained (precluding array_shift).
-            while ($promise = \current($this->pending)) {
-                \next($this->pending);
+            while ($promise = current($this->pending)) {
+                next($this->pending);
                 $promise->wait();
                 if (Is::settled($this->aggregate)) {
                     return;
@@ -113,8 +113,8 @@ class EachPromise implements PromisorInterface
             return;
         }
         // Add only up to N pending promises.
-        $concurrency = \is_callable($this->concurrency) ? \call_user_func($this->concurrency, \count($this->pending)) : $this->concurrency;
-        $concurrency = \max($concurrency - \count($this->pending), 0);
+        $concurrency = is_callable($this->concurrency) ? call_user_func($this->concurrency, count($this->pending)) : $this->concurrency;
+        $concurrency = max($concurrency - count($this->pending), 0);
         // Concurrency may be set to 0 to disallow new promises.
         if (!$concurrency) {
             return;
@@ -138,14 +138,14 @@ class EachPromise implements PromisorInterface
         // Iterable keys may not be unique, so we use a counter to
         // guarantee uniqueness
         $idx = $this->nextPendingIndex++;
-        $this->pending[$idx] = $promise->then(function ($value) use($idx, $key) {
+        $this->pending[$idx] = $promise->then(function ($value) use ($idx, $key) {
             if ($this->onFulfilled) {
-                \call_user_func($this->onFulfilled, $value, $key, $this->aggregate);
+                call_user_func($this->onFulfilled, $value, $key, $this->aggregate);
             }
             $this->step($idx);
-        }, function ($reason) use($idx, $key) {
+        }, function ($reason) use ($idx, $key) {
             if ($this->onRejected) {
-                \call_user_func($this->onRejected, $reason, $key, $this->aggregate);
+                call_user_func($this->onRejected, $reason, $key, $this->aggregate);
             }
             $this->step($idx);
         });

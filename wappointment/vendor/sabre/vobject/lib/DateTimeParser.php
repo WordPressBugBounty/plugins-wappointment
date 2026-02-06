@@ -33,11 +33,11 @@ class DateTimeParser
     public static function parseDateTime($dt, DateTimeZone $tz = null)
     {
         // Format is YYYYMMDD + "T" + hhmmss
-        $result = \preg_match('/^([0-9]{4})([0-1][0-9])([0-3][0-9])T([0-2][0-9])([0-5][0-9])([0-5][0-9])([Z]?)$/', $dt, $matches);
+        $result = preg_match('/^([0-9]{4})([0-1][0-9])([0-3][0-9])T([0-2][0-9])([0-5][0-9])([0-5][0-9])([Z]?)$/', $dt, $matches);
         if (!$result) {
             throw new InvalidDataException('The supplied iCalendar datetime value is incorrect: ' . $dt);
         }
-        if ('Z' === $matches[7] || \is_null($tz)) {
+        if ('Z' === $matches[7] || is_null($tz)) {
             $tz = new DateTimeZone('UTC');
         }
         try {
@@ -58,11 +58,11 @@ class DateTimeParser
     public static function parseDate($date, DateTimeZone $tz = null)
     {
         // Format is YYYYMMDD
-        $result = \preg_match('/^([0-9]{4})([0-1][0-9])([0-3][0-9])$/', $date, $matches);
+        $result = preg_match('/^([0-9]{4})([0-1][0-9])([0-3][0-9])$/', $date, $matches);
         if (!$result) {
             throw new InvalidDataException('The supplied iCalendar date value is incorrect: ' . $date);
         }
-        if (\is_null($tz)) {
+        if (is_null($tz)) {
             $tz = new DateTimeZone('UTC');
         }
         try {
@@ -85,7 +85,7 @@ class DateTimeParser
      */
     public static function parseDuration($duration, $asString = \false)
     {
-        $result = \preg_match('/^(?<plusminus>\\+|-)?P((?<week>\\d+)W)?((?<day>\\d+)D)?(T((?<hour>\\d+)H)?((?<minute>\\d+)M)?((?<second>\\d+)S)?)?$/', $duration, $matches);
+        $result = preg_match('/^(?<plusminus>\+|-)?P((?<week>\d+)W)?((?<day>\d+)D)?(T((?<hour>\d+)H)?((?<minute>\d+)M)?((?<second>\d+)S)?)?$/', $duration, $matches);
         if (!$result) {
             throw new InvalidDataException('The supplied iCalendar duration value is incorrect: ' . $duration);
         }
@@ -136,7 +136,7 @@ class DateTimeParser
                 $newDur .= ' ' . $matches[$part] . ' ' . $part . 's';
             }
         }
-        $newDur = ('-' === $matches['plusminus'] ? '-' : '+') . \trim($newDur);
+        $newDur = ('-' === $matches['plusminus'] ? '-' : '+') . trim($newDur);
         if ('+' === $newDur) {
             $newDur = '+0 seconds';
         }
@@ -154,7 +154,7 @@ class DateTimeParser
     {
         if ('P' === $date[0] || '-' === $date[0] && 'P' === $date[1]) {
             return self::parseDuration($date);
-        } elseif (8 === \strlen($date)) {
+        } elseif (8 === strlen($date)) {
             return self::parseDate($date, $referenceTz);
         } else {
             return self::parseDateTime($date, $referenceTz);
@@ -231,16 +231,16 @@ class DateTimeParser
                 (?<minute> [0-9]{2} | -)?
                 (?<second> [0-9]{2})?
 
-                (?: \\.[0-9]{3})? # milliseconds
+                (?: \.[0-9]{3})? # milliseconds
                 (?P<timezone> # timezone offset
 
-                    Z | (?: \\+|-)(?: [0-9]{4})
+                    Z | (?: \+|-)(?: [0-9]{4})
 
                 )?
 
             )?
             $/x';
-        if (!\preg_match($regex, $date, $matches)) {
+        if (!preg_match($regex, $date, $matches)) {
             // Attempting to parse the extended format.
             $regex = '/^
                 (?: # date part
@@ -254,16 +254,16 @@ class DateTimeParser
                     (?: (?<minute> [0-9]{2}) : | -)?
                     (?<second> [0-9]{2})?
 
-                    (?: \\.[0-9]{3})? # milliseconds
+                    (?: \.[0-9]{3})? # milliseconds
                     (?P<timezone> # timezone offset
 
-                        Z | (?: \\+|-)(?: [0-9]{2}:[0-9]{2})
+                        Z | (?: \+|-)(?: [0-9]{2}:[0-9]{2})
 
                     )?
 
                 )?
                 $/x';
-            if (!\preg_match($regex, $date, $matches)) {
+            if (!preg_match($regex, $date, $matches)) {
                 throw new InvalidDataException('Invalid vCard date-time string: ' . $date);
             }
         }
@@ -329,28 +329,28 @@ class DateTimeParser
             (?<minute> [0-9]{2} | -)?
             (?<second> [0-9]{2})?
 
-            (?: \\.[0-9]{3})? # milliseconds
+            (?: \.[0-9]{3})? # milliseconds
             (?P<timezone> # timezone offset
 
-                Z | (?: \\+|-)(?: [0-9]{4})
+                Z | (?: \+|-)(?: [0-9]{4})
 
             )?
             $/x';
-        if (!\preg_match($regex, $date, $matches)) {
+        if (!preg_match($regex, $date, $matches)) {
             // Attempting to parse the extended format.
             $regex = '/^
                 (?: (?<hour> [0-9]{2}) : | -)
                 (?: (?<minute> [0-9]{2}) : | -)?
                 (?<second> [0-9]{2})?
 
-                (?: \\.[0-9]{3})? # milliseconds
+                (?: \.[0-9]{3})? # milliseconds
                 (?P<timezone> # timezone offset
 
-                    Z | (?: \\+|-)(?: [0-9]{2}:[0-9]{2})
+                    Z | (?: \+|-)(?: [0-9]{2}:[0-9]{2})
 
                 )?
                 $/x';
-            if (!\preg_match($regex, $date, $matches)) {
+            if (!preg_match($regex, $date, $matches)) {
                 throw new InvalidDataException('Invalid vCard time string: ' . $date);
             }
         }
@@ -421,14 +421,14 @@ class DateTimeParser
     public static function parseVCardDateAndOrTime($date)
     {
         // \d{8}|\d{4}-\d\d|--\d\d(\d\d)?|---\d\d
-        $valueDate = '/^(?J)(?:' . '(?<year>\\d{4})(?<month>\\d\\d)(?<date>\\d\\d)' . '|(?<year>\\d{4})-(?<month>\\d\\d)' . '|--(?<month>\\d\\d)(?<date>\\d\\d)?' . '|---(?<date>\\d\\d)' . ')$/';
+        $valueDate = '/^(?J)(?:' . '(?<year>\d{4})(?<month>\d\d)(?<date>\d\d)' . '|(?<year>\d{4})-(?<month>\d\d)' . '|--(?<month>\d\d)(?<date>\d\d)?' . '|---(?<date>\d\d)' . ')$/';
         // (\d\d(\d\d(\d\d)?)?|-\d\d(\d\d)?|--\d\d)(Z|[+\-]\d\d(\d\d)?)?
-        $valueTime = '/^(?J)(?:' . '((?<hour>\\d\\d)((?<minute>\\d\\d)(?<second>\\d\\d)?)?' . '|-(?<minute>\\d\\d)(?<second>\\d\\d)?' . '|--(?<second>\\d\\d))' . '(?<timezone>(Z|[+\\-]\\d\\d(\\d\\d)?))?' . ')$/';
+        $valueTime = '/^(?J)(?:' . '((?<hour>\d\d)((?<minute>\d\d)(?<second>\d\d)?)?' . '|-(?<minute>\d\d)(?<second>\d\d)?' . '|--(?<second>\d\d))' . '(?<timezone>(Z|[+\-]\d\d(\d\d)?))?' . ')$/';
         // (\d{8}|--\d{4}|---\d\d)T\d\d(\d\d(\d\d)?)?(Z|[+\-]\d\d(\d\d?)?
-        $valueDateTime = '/^(?:' . '((?<year0>\\d{4})(?<month0>\\d\\d)(?<date0>\\d\\d)' . '|--(?<month1>\\d\\d)(?<date1>\\d\\d)' . '|---(?<date2>\\d\\d))' . 'T' . '(?<hour>\\d\\d)((?<minute>\\d\\d)(?<second>\\d\\d)?)?' . '(?<timezone>(Z|[+\\-]\\d\\d(\\d\\d?)))?' . ')$/';
+        $valueDateTime = '/^(?:' . '((?<year0>\d{4})(?<month0>\d\d)(?<date0>\d\d)' . '|--(?<month1>\d\d)(?<date1>\d\d)' . '|---(?<date2>\d\d))' . 'T' . '(?<hour>\d\d)((?<minute>\d\d)(?<second>\d\d)?)?' . '(?<timezone>(Z|[+\-]\d\d(\d\d?)))?' . ')$/';
         // date-and-or-time is date | date-time | time
         // in this strict order.
-        if (0 === \preg_match($valueDate, $date, $matches) && 0 === \preg_match($valueDateTime, $date, $matches) && 0 === \preg_match($valueTime, $date, $matches)) {
+        if (0 === preg_match($valueDate, $date, $matches) && 0 === preg_match($valueDateTime, $date, $matches) && 0 === preg_match($valueTime, $date, $matches)) {
             throw new InvalidDataException('Invalid vCard date-time string: ' . $date);
         }
         $parts = ['year' => null, 'month' => null, 'date' => null, 'hour' => null, 'minute' => null, 'second' => null, 'timezone' => null];

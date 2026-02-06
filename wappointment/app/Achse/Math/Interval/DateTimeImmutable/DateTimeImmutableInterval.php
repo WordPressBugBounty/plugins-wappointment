@@ -35,7 +35,7 @@ final class DateTimeImmutableInterval extends \Wappointment\Achse\Math\Interval\
      * @param string $precision
      * @return bool
      */
-    public function isFollowedByWithPrecision(\Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutableInterval $other, string $precision) : bool
+    public function isFollowedByWithPrecision(\Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutableInterval $other, string $precision): bool
     {
         if ($this->getLeft() > $other->getRight()) {
             // intentionally compares boundaries
@@ -50,14 +50,14 @@ final class DateTimeImmutableInterval extends \Wappointment\Achse\Math\Interval\
     /**
      * @return DateTimeImmutableBoundary
      */
-    public function getLeft() : \Wappointment\Achse\Math\Interval\Boundary
+    public function getLeft(): \Wappointment\Achse\Math\Interval\Boundary
     {
         return parent::getLeft();
     }
     /**
      * @return DateTimeImmutableBoundary
      */
-    public function getRight() : \Wappointment\Achse\Math\Interval\Boundary
+    public function getRight(): \Wappointment\Achse\Math\Interval\Boundary
     {
         return parent::getRight();
     }
@@ -71,7 +71,7 @@ final class DateTimeImmutableInterval extends \Wappointment\Achse\Math\Interval\
      * @param DateTimeImmutableInterval $other
      * @return bool
      */
-    public function isFollowedByAtMidnight(\Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutableInterval $other) : bool
+    public function isFollowedByAtMidnight(\Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutableInterval $other): bool
     {
         return \Wappointment\Achse\Math\Interval\Utils::isSameDate($this->getRight()->getValue(), $other->getLeft()->getValue()->modify('-1 day')) && $this->getRight()->getValue()->format('H:i:s') === '23:59:59' && $other->getLeft()->getValue()->format('H:i:s') === '00:00:00';
     }
@@ -80,7 +80,7 @@ final class DateTimeImmutableInterval extends \Wappointment\Achse\Math\Interval\
      * @param bool $state
      * @return DateTimeImmutableBoundary
      */
-    protected function buildBoundary(\Wappointment\Achse\Comparable\IComparable $element, bool $state) : \Wappointment\Achse\Math\Interval\Boundary
+    protected function buildBoundary(\Wappointment\Achse\Comparable\IComparable $element, bool $state): \Wappointment\Achse\Math\Interval\Boundary
     {
         return new \Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutableBoundary($element, $state);
     }

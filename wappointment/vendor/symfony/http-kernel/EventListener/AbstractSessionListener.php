@@ -62,7 +62,7 @@ abstract class AbstractSessionListener implements EventSubscriberInterface, Rese
         if (!$request->hasSession()) {
             // This variable prevents calling `$this->getSession()` twice in case the Request (and the below factory) is cloned
             $sess = null;
-            $request->setSessionFactory(function () use(&$sess, $request) {
+            $request->setSessionFactory(function () use (&$sess, $request) {
                 if (!$sess) {
                     $sess = $this->getSession();
                     $request->setSession($sess);
@@ -72,7 +72,7 @@ abstract class AbstractSessionListener implements EventSubscriberInterface, Rese
                      *
                      * Do not set it when a native php session is active.
                      */
-                    if ($sess && !$sess->isStarted() && \PHP_SESSION_ACTIVE !== \session_status()) {
+                    if ($sess && !$sess->isStarted() && \PHP_SESSION_ACTIVE !== session_status()) {
                         $sessionId = $sess->getId() ?: $request->cookies->get($sess->getName(), '');
                         $sess->setId($sessionId);
                     }
@@ -92,7 +92,7 @@ abstract class AbstractSessionListener implements EventSubscriberInterface, Rese
         $autoCacheControl = !$response->headers->has(self::NO_AUTO_CACHE_CONTROL_HEADER);
         // Always remove the internal header if present
         $response->headers->remove(self::NO_AUTO_CACHE_CONTROL_HEADER);
-        if (!($session = $this->container && $this->container->has('initialized_session') ? $this->container->get('initialized_session') : ($event->getRequest()->hasSession() ? $event->getRequest()->getSession() : null))) {
+        if (!$session = $this->container && $this->container->has('initialized_session') ? $this->container->get('initialized_session') : ($event->getRequest()->hasSession() ? $event->getRequest()->getSession() : null)) {
             return;
         }
         if ($session->isStarted()) {
@@ -152,13 +152,13 @@ abstract class AbstractSessionListener implements EventSubscriberInterface, Rese
                     $expire = 0;
                     $lifetime = $sessionOptions['cookie_lifetime'] ?? null;
                     if ($lifetime) {
-                        $expire = \time() + $lifetime;
+                        $expire = time() + $lifetime;
                     }
                     $response->headers->setCookie(Cookie::create($sessionName, $sessionId, $expire, $sessionCookiePath, $sessionCookieDomain, $sessionCookieSecure, $sessionCookieHttpOnly, \false, $sessionCookieSameSite));
                 }
             }
         }
-        if ($session instanceof Session ? $session->getUsageIndex() === \end($this->sessionUsageStack) : !$session->isStarted()) {
+        if ($session instanceof Session ? $session->getUsageIndex() === end($this->sessionUsageStack) : !$session->isStarted()) {
             return;
         }
         if ($autoCacheControl) {
@@ -178,10 +178,10 @@ abstract class AbstractSessionListener implements EventSubscriberInterface, Rese
     public function onFinishRequest(FinishRequestEvent $event)
     {
         if ($event->isMainRequest()) {
-            \array_pop($this->sessionUsageStack);
+            array_pop($this->sessionUsageStack);
         }
     }
-    public function onSessionUsage() : void
+    public function onSessionUsage(): void
     {
         if (!$this->debug) {
             return;
@@ -189,7 +189,7 @@ abstract class AbstractSessionListener implements EventSubscriberInterface, Rese
         if ($this->container && $this->container->has('session_collector')) {
             $this->container->get('session_collector')();
         }
-        if (!($requestStack = $this->container && $this->container->has('request_stack') ? $this->container->get('request_stack') : null)) {
+        if (!$requestStack = $this->container && $this->container->has('request_stack') ? $this->container->get('request_stack') : null) {
             return;
         }
         $stateless = \false;
@@ -200,7 +200,7 @@ abstract class AbstractSessionListener implements EventSubscriberInterface, Rese
         if (!$stateless) {
             return;
         }
-        if (!($session = $this->container && $this->container->has('initialized_session') ? $this->container->get('initialized_session') : $requestStack->getCurrentRequest()->getSession())) {
+        if (!$session = $this->container && $this->container->has('initialized_session') ? $this->container->get('initialized_session') : $requestStack->getCurrentRequest()->getSession()) {
             return;
         }
         if ($session->isStarted()) {
@@ -208,7 +208,7 @@ abstract class AbstractSessionListener implements EventSubscriberInterface, Rese
         }
         throw new UnexpectedSessionUsageException('Session was used while the request was declared stateless.');
     }
-    public static function getSubscribedEvents() : array
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::REQUEST => ['onKernelRequest', 128],
@@ -217,16 +217,16 @@ abstract class AbstractSessionListener implements EventSubscriberInterface, Rese
             KernelEvents::FINISH_REQUEST => ['onFinishRequest'],
         ];
     }
-    public function reset() : void
+    public function reset(): void
     {
-        if (\PHP_SESSION_ACTIVE === \session_status()) {
-            \session_abort();
+        if (\PHP_SESSION_ACTIVE === session_status()) {
+            session_abort();
         }
-        \session_unset();
+        session_unset();
         $_SESSION = [];
-        if (!\headers_sent()) {
+        if (!headers_sent()) {
             // session id can only be reset when no headers were so we check for headers_sent first
-            \session_id('');
+            session_id('');
         }
     }
     /**
@@ -234,11 +234,11 @@ abstract class AbstractSessionListener implements EventSubscriberInterface, Rese
      *
      * @return SessionInterface|null
      */
-    protected abstract function getSession();
-    private function getSessionOptions(array $sessionOptions) : array
+    abstract protected function getSession();
+    private function getSessionOptions(array $sessionOptions): array
     {
         $mergedSessionOptions = [];
-        foreach (\session_get_cookie_params() as $key => $value) {
+        foreach (session_get_cookie_params() as $key => $value) {
             $mergedSessionOptions['cookie_' . $key] = $value;
         }
         foreach ($sessionOptions as $key => $value) {

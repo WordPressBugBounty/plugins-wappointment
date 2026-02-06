@@ -34,9 +34,9 @@ final class SourceContextProvider implements ContextProviderInterface
         $this->fileLinkFormatter = $fileLinkFormatter;
         $this->limit = $limit;
     }
-    public function getContext() : ?array
+    public function getContext(): ?array
     {
-        $trace = \debug_backtrace(\DEBUG_BACKTRACE_PROVIDE_OBJECT | \DEBUG_BACKTRACE_IGNORE_ARGS, $this->limit);
+        $trace = debug_backtrace(\DEBUG_BACKTRACE_PROVIDE_OBJECT | \DEBUG_BACKTRACE_IGNORE_ARGS, $this->limit);
         $file = $trace[1]['file'];
         $line = $trace[1]['line'];
         $name = \false;
@@ -46,25 +46,25 @@ final class SourceContextProvider implements ContextProviderInterface
                 $file = $trace[$i]['file'] ?? $file;
                 $line = $trace[$i]['line'] ?? $line;
                 while (++$i < $this->limit) {
-                    if (isset($trace[$i]['function'], $trace[$i]['file']) && empty($trace[$i]['class']) && !\str_starts_with($trace[$i]['function'], 'call_user_func')) {
+                    if (isset($trace[$i]['function'], $trace[$i]['file']) && empty($trace[$i]['class']) && !str_starts_with($trace[$i]['function'], 'call_user_func')) {
                         $file = $trace[$i]['file'];
                         $line = $trace[$i]['line'];
                         break;
                     } elseif (isset($trace[$i]['object']) && $trace[$i]['object'] instanceof Template) {
                         $template = $trace[$i]['object'];
                         $name = $template->getTemplateName();
-                        $src = \method_exists($template, 'getSourceContext') ? $template->getSourceContext()->getCode() : (\method_exists($template, 'getSource') ? $template->getSource() : \false);
+                        $src = method_exists($template, 'getSourceContext') ? $template->getSourceContext()->getCode() : (method_exists($template, 'getSource') ? $template->getSource() : \false);
                         $info = $template->getDebugInfo();
                         if (isset($info[$trace[$i - 1]['line']])) {
                             $line = $info[$trace[$i - 1]['line']];
-                            $file = \method_exists($template, 'getSourceContext') ? $template->getSourceContext()->getPath() : null;
+                            $file = method_exists($template, 'getSourceContext') ? $template->getSourceContext()->getPath() : null;
                             if ($src) {
-                                $src = \explode("\n", $src);
+                                $src = explode("\n", $src);
                                 $fileExcerpt = [];
-                                for ($i = \max($line - 3, 1), $max = \min($line + 3, \count($src)); $i <= $max; ++$i) {
+                                for ($i = max($line - 3, 1), $max = min($line + 3, \count($src)); $i <= $max; ++$i) {
                                     $fileExcerpt[] = '<li' . ($i === $line ? ' class="selected"' : '') . '><code>' . $this->htmlEncode($src[$i - 1]) . '</code></li>';
                                 }
-                                $fileExcerpt = '<ol start="' . \max($line - 3, 1) . '">' . \implode("\n", $fileExcerpt) . '</ol>';
+                                $fileExcerpt = '<ol start="' . max($line - 3, 1) . '">' . implode("\n", $fileExcerpt) . '</ol>';
                             }
                         }
                         break;
@@ -74,32 +74,32 @@ final class SourceContextProvider implements ContextProviderInterface
             }
         }
         if (\false === $name) {
-            $name = \str_replace('\\', '/', $file);
-            $name = \substr($name, \strrpos($name, '/') + 1);
+            $name = str_replace('\\', '/', $file);
+            $name = substr($name, strrpos($name, '/') + 1);
         }
         $context = ['name' => $name, 'file' => $file, 'line' => $line];
         $context['file_excerpt'] = $fileExcerpt;
         if (null !== $this->projectDir) {
             $context['project_dir'] = $this->projectDir;
-            if (\str_starts_with($file, $this->projectDir)) {
-                $context['file_relative'] = \ltrim(\substr($file, \strlen($this->projectDir)), \DIRECTORY_SEPARATOR);
+            if (str_starts_with($file, $this->projectDir)) {
+                $context['file_relative'] = ltrim(substr($file, \strlen($this->projectDir)), \DIRECTORY_SEPARATOR);
             }
         }
-        if ($this->fileLinkFormatter && ($fileLink = $this->fileLinkFormatter->format($context['file'], $context['line']))) {
+        if ($this->fileLinkFormatter && $fileLink = $this->fileLinkFormatter->format($context['file'], $context['line'])) {
             $context['file_link'] = $fileLink;
         }
         return $context;
     }
-    private function htmlEncode(string $s) : string
+    private function htmlEncode(string $s): string
     {
         $html = '';
-        $dumper = new HtmlDumper(function ($line) use(&$html) {
+        $dumper = new HtmlDumper(function ($line) use (&$html) {
             $html .= $line;
         }, $this->charset);
         $dumper->setDumpHeader('');
         $dumper->setDumpBoundaries('', '');
         $cloner = new VarCloner();
         $dumper->dump($cloner->cloneVar($s));
-        return \substr(\strip_tags($html), 1, -1);
+        return substr(strip_tags($html), 1, -1);
     }
 }

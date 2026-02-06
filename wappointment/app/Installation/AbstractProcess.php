@@ -67,7 +67,7 @@ class AbstractProcess
     {
         $indexCurrentStep = 0;
         if (!empty($this->currentStep)) {
-            $indexCurrentStep = \array_search($this->currentStep, $this->steps);
+            $indexCurrentStep = array_search($this->currentStep, $this->steps);
             if ($indexCurrentStep === \false) {
                 throw new \WappointmentException('Instalation step cannot be found(' . $this->currentStep . ')');
             }

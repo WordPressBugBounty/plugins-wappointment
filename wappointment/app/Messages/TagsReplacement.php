@@ -32,7 +32,7 @@ class TagsReplacement
                     'model' => 'staff',
                     'key' => $custom_field['key'],
                     /* translators: %s - field name. */
-                    'label' => \sprintf(__('Staff Custom Field - %s', 'wappointment'), $custom_field['name']),
+                    'label' => sprintf(__('Staff Custom Field - %s', 'wappointment'), $custom_field['name']),
                     'getMethod' => 'getStaffCustomField',
                     'sanitize' => \true,
                     'modelCall' => 'appointment',
@@ -47,7 +47,7 @@ class TagsReplacement
     }
     public function replace($subject)
     {
-        return \str_replace($this->finds, $this->replaces, $subject);
+        return str_replace($this->finds, $this->replaces, $subject);
     }
     /**
      * Todo generate the value of only the found tags
@@ -56,7 +56,7 @@ class TagsReplacement
      */
     private function prepareTags()
     {
-        foreach (\array_merge(static::emailsTags(), static::emailsLinks()) as $tag) {
+        foreach (array_merge(static::emailsTags(), static::emailsLinks()) as $tag) {
             $tag_find = '[' . $tag['model'] . ':' . $tag['key'] . ']';
             $replace = $this->getValue($tag);
             if (!empty($tag['sanitize'])) {
@@ -73,24 +73,22 @@ class TagsReplacement
         }
         if (isset($tag['getResult'])) {
             return $tag['getResult'];
+        } else if (isset($tag['getMethod']) && is_object($this->params[$model_key])) {
+            if (method_exists($this->params[$model_key], $tag['getMethod'])) {
+                if ($tag['getMethod'] == 'getStartsDayAndTime') {
+                    return $this->params['appointment']->getStartsDayAndTime($this->params['client']->getTimezone());
+                } else {
+                    return call_user_func([$this->params[$model_key], $tag['getMethod']], empty($tag['requiresParams']) ? $tag : $this->params);
+                }
+            }
         } else {
-            if (isset($tag['getMethod']) && \is_object($this->params[$model_key])) {
-                if (\method_exists($this->params[$model_key], $tag['getMethod'])) {
-                    if ($tag['getMethod'] == 'getStartsDayAndTime') {
-                        return $this->params['appointment']->getStartsDayAndTime($this->params['client']->getTimezone());
-                    } else {
-                        return \call_user_func([$this->params[$model_key], $tag['getMethod']], empty($tag['requiresParams']) ? $tag : $this->params);
-                    }
-                }
-            } else {
-                $key = $tag['key'];
-                if (\is_object($this->params[$model_key])) {
-                    //return $this->params[$model_key]->$key;
-                    return !empty($this->params[$model_key]->{$key}) ? $this->params[$model_key]->{$key} : '';
-                }
-                if (\is_array($this->params[$model_key])) {
-                    return !empty($this->params[$model_key][$key]) ? $this->params[$model_key][$key] : '';
-                }
+            $key = $tag['key'];
+            if (is_object($this->params[$model_key])) {
+                //return $this->params[$model_key]->$key;
+                return !empty($this->params[$model_key]->{$key}) ? $this->params[$model_key]->{$key} : '';
+            }
+            if (is_array($this->params[$model_key])) {
+                return !empty($this->params[$model_key][$key]) ? $this->params[$model_key][$key] : '';
             }
         }
     }

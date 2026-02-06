@@ -33,7 +33,7 @@ class Comparator extends BaseComparator
         $this->normalizeColumns($toTable);
         return parent::diffTable($fromTable, $toTable);
     }
-    private function normalizeColumns(Table $table) : void
+    private function normalizeColumns(Table $table): void
     {
         foreach ($table->getColumns() as $column) {
             $options = $column->getPlatformOptions();

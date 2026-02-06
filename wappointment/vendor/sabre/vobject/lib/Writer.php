@@ -33,7 +33,7 @@ class Writer
      */
     public static function writeJson(Component $component, $options = 0)
     {
-        return \json_encode($component, $options);
+        return json_encode($component, $options);
     }
     /**
      * Serializes a xCal or xCard object.

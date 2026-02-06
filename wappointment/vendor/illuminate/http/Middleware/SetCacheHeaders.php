@@ -22,14 +22,14 @@ class SetCacheHeaders
         if (!$request->isMethodCacheable() || !$response->getContent()) {
             return $response;
         }
-        if (\is_string($options)) {
+        if (is_string($options)) {
             $options = $this->parseOptions($options);
         }
         if (isset($options['etag']) && $options['etag'] === \true) {
-            $options['etag'] = \md5($response->getContent());
+            $options['etag'] = md5($response->getContent());
         }
         if (isset($options['last_modified'])) {
-            if (\is_numeric($options['last_modified'])) {
+            if (is_numeric($options['last_modified'])) {
                 $options['last_modified'] = Carbon::createFromTimestamp($options['last_modified']);
             } else {
                 $options['last_modified'] = Carbon::parse($options['last_modified']);
@@ -47,8 +47,8 @@ class SetCacheHeaders
      */
     protected function parseOptions($options)
     {
-        return \WappointmentLv::collect(\explode(';', \rtrim($options, ';')))->mapWithKeys(function ($option) {
-            $data = \explode('=', $option, 2);
+        return \WappointmentLv::collect(explode(';', rtrim($options, ';')))->mapWithKeys(function ($option) {
+            $data = explode('=', $option, 2);
             return [$data[0] => $data[1] ?? \true];
         })->all();
     }

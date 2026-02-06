@@ -6,7 +6,7 @@ use Wappointment\Models\Reminder;
 class AppointmentReminderListener extends \Wappointment\Listeners\AbstractJobAppointmentListener
 {
     use \Wappointment\Listeners\IsReminder;
-    protected $jobClass = '\\Wappointment\\Jobs\\AppointmentEmailReminder';
+    protected $jobClass = '\Wappointment\Jobs\AppointmentEmailReminder';
     protected $is_reminder = \true;
     protected function addToJobs($event)
     {

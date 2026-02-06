@@ -11,7 +11,7 @@ final class DateTimeImmutableBoundaryFactory
      * @param bool $state
      * @return DateTimeImmutableBoundary
      */
-    public static function create(\DateTimeInterface $element, bool $state) : \Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutableBoundary
+    public static function create(\DateTimeInterface $element, bool $state): \Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutableBoundary
     {
         return new \Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutableBoundary(\Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutable::from($element), $state);
     }

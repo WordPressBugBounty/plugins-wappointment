@@ -13,8 +13,6 @@ trait ManipulateLocation
                 return 'physical';
             case self::TYPE_PHONE:
                 return 'phone';
-            case self::TYPE_SKYPE:
-                return 'skype';
             case self::TYPE_ZOOM:
                 return 'zoom';
         }
@@ -28,9 +26,6 @@ trait ManipulateLocation
                 break;
             case self::TYPE_PHONE:
                 $location = 'By Phone';
-                break;
-            case self::TYPE_SKYPE:
-                $location = 'By Skype';
                 break;
             case self::TYPE_ZOOM:
                 $location = 'Video meeting';

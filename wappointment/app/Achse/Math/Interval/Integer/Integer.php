@@ -26,7 +26,7 @@ final class Integer implements \Wappointment\Achse\Comparable\IComparable
      * @param string $string
      * @return static
      */
-    public static function fromString(string $string) : \Wappointment\Achse\Math\Interval\Integer\Integer
+    public static function fromString(string $string): \Wappointment\Achse\Math\Interval\Integer\Integer
     {
         if (!\is_numeric($string) || (string) (int) $string !== $string) {
             throw new \InvalidArgumentException(\sprintf('\'%s\' in not integer-like.', $string));
@@ -36,7 +36,7 @@ final class Integer implements \Wappointment\Achse\Comparable\IComparable
     /**
      * @inheritdoc
      */
-    public function compare(\Wappointment\Achse\Comparable\IComparable $other) : int
+    public function compare(\Wappointment\Achse\Comparable\IComparable $other): int
     {
         /** @var static $other */
         \Wappointment\Achse\Math\Interval\Utils::validateClassType(static::class, $other);
@@ -45,14 +45,14 @@ final class Integer implements \Wappointment\Achse\Comparable\IComparable
     /**
      * @return int
      */
-    public function toInt() : int
+    public function toInt(): int
     {
         return $this->internal;
     }
     /**
      * @return string
      */
-    public function __toString() : string
+    public function __toString(): string
     {
         return (string) $this->toInt();
     }

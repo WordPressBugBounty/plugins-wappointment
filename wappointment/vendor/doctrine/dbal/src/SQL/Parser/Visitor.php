@@ -12,13 +12,13 @@ interface Visitor
     /**
      * Accepts an SQL fragment containing a positional parameter
      */
-    public function acceptPositionalParameter(string $sql) : void;
+    public function acceptPositionalParameter(string $sql): void;
     /**
      * Accepts an SQL fragment containing a named parameter
      */
-    public function acceptNamedParameter(string $sql) : void;
+    public function acceptNamedParameter(string $sql): void;
     /**
      * Accepts other SQL fragments
      */
-    public function acceptOther(string $sql) : void;
+    public function acceptOther(string $sql): void;
 }

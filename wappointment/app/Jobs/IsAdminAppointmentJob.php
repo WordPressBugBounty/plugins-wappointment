@@ -12,7 +12,7 @@ trait IsAdminAppointmentJob
         if ($email_send === \false || !$this->transport->send($email_send)) {
             throw new \WappointmentException('Error while sending email 2', 1);
         }
-        if (\method_exists($this, 'afterHandled')) {
+        if (method_exists($this, 'afterHandled')) {
             $this->afterHandled();
         }
     }
@@ -30,7 +30,7 @@ trait IsAdminAppointmentJob
         } else {
             $email_staff = (new \Wappointment\WP\Staff($this->appointment->getStaffId()))->emailAddress();
         }
-        if (!\in_array($email_staff, $notifications_emails)) {
+        if (!in_array($email_staff, $notifications_emails)) {
             $this->transport->to($email_staff);
         }
         $this->addReplyTo();

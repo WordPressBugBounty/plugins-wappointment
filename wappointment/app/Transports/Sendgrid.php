@@ -60,7 +60,7 @@ class Sendgrid extends \Wappointment\Transports\Transport
             }
         }
         $attachments = $this->getAttachments($message);
-        if (\count($attachments) > 0) {
+        if (count($attachments) > 0) {
             $data['attachments'] = $attachments;
         }
         return ['headers' => ['Authorization' => 'Bearer ' . $this->key, 'Content-Type' => 'application/json'], 'json' => $data];
@@ -72,7 +72,7 @@ class Sendgrid extends \Wappointment\Transports\Transport
             if (!$attachment instanceof \WappoSwift_Attachment) {
                 continue;
             }
-            $attachments[] = ['content' => \base64_encode($attachment->getBody()), 'filename' => $attachment->getFilename(), 'type' => $attachment->getContentType(), 'disposition' => $attachment->getDisposition(), 'content_id' => $attachment->getId()];
+            $attachments[] = ['content' => base64_encode($attachment->getBody()), 'filename' => $attachment->getFilename(), 'type' => $attachment->getContentType(), 'disposition' => $attachment->getDisposition(), 'content_id' => $attachment->getId()];
         }
         return $this->attachments = $attachments;
     }
@@ -132,7 +132,7 @@ class Sendgrid extends \Wappointment\Transports\Transport
                 $content[] = ['type' => 'text/plain', 'value' => $child->getBody()];
             }
         }
-        if (\is_null($message->getBody())) {
+        if (is_null($message->getBody())) {
             return null;
         }
         $content[] = ['type' => 'text/html', 'value' => $message->getBody()];

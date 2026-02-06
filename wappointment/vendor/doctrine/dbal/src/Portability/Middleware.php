@@ -16,7 +16,7 @@ final class Middleware implements MiddlewareInterface
         $this->mode = $mode;
         $this->case = $case;
     }
-    public function wrap(DriverInterface $driver) : DriverInterface
+    public function wrap(DriverInterface $driver): DriverInterface
     {
         if ($this->mode !== 0) {
             return new Driver($driver, $this->mode, $this->case);

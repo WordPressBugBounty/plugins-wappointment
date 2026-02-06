@@ -12,7 +12,7 @@ namespace WappoVendor\Symfony\Component\HttpFoundation\Session\Storage;
 
 use WappoVendor\Symfony\Component\HttpFoundation\Request;
 // Help opcache.preload discover always-needed symbols
-\class_exists(PhpBridgeSessionStorage::class);
+class_exists(PhpBridgeSessionStorage::class);
 /**
  * @author Jérémy Derussé <jeremy@derusse.com>
  */
@@ -30,7 +30,7 @@ class PhpBridgeSessionStorageFactory implements SessionStorageFactoryInterface
         $this->metaBag = $metaBag;
         $this->secure = $secure;
     }
-    public function createStorage(?Request $request) : SessionStorageInterface
+    public function createStorage(?Request $request): SessionStorageInterface
     {
         $storage = new PhpBridgeSessionStorage($this->handler, $this->metaBag);
         if ($this->secure && $request && $request->isSecure()) {

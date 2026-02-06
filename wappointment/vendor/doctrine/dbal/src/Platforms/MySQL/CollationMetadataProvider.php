@@ -8,5 +8,5 @@ namespace WappoVendor\Doctrine\DBAL\Platforms\MySQL;
  */
 interface CollationMetadataProvider
 {
-    public function getCollationCharset(string $collation) : ?string;
+    public function getCollationCharset(string $collation): ?string;
 }

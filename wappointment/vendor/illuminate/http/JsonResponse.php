@@ -56,7 +56,7 @@ class JsonResponse extends BaseJsonResponse
      */
     public function getData($assoc = \false, $depth = 512)
     {
-        return \json_decode($this->data, $assoc, $depth);
+        return json_decode($this->data, $assoc, $depth);
     }
     /**
      * {@inheritdoc}
@@ -67,18 +67,18 @@ class JsonResponse extends BaseJsonResponse
     {
         $this->original = $data;
         // Ensure json_last_error() is cleared...
-        \json_decode('[]');
+        json_decode('[]');
         if ($data instanceof Jsonable) {
             $this->data = $data->toJson($this->encodingOptions);
         } elseif ($data instanceof JsonSerializable) {
-            $this->data = \json_encode($data->jsonSerialize(), $this->encodingOptions);
+            $this->data = json_encode($data->jsonSerialize(), $this->encodingOptions);
         } elseif ($data instanceof Arrayable) {
-            $this->data = \json_encode($data->toArray(), $this->encodingOptions);
+            $this->data = json_encode($data->toArray(), $this->encodingOptions);
         } else {
-            $this->data = \json_encode($data, $this->encodingOptions);
+            $this->data = json_encode($data, $this->encodingOptions);
         }
-        if (!$this->hasValidJson(\json_last_error())) {
-            throw new InvalidArgumentException(\json_last_error_msg());
+        if (!$this->hasValidJson(json_last_error())) {
+            throw new InvalidArgumentException(json_last_error_msg());
         }
         return $this->update();
     }
@@ -93,7 +93,7 @@ class JsonResponse extends BaseJsonResponse
         if ($jsonError === \JSON_ERROR_NONE) {
             return \true;
         }
-        return $this->hasEncodingOption(\JSON_PARTIAL_OUTPUT_ON_ERROR) && \in_array($jsonError, [\JSON_ERROR_RECURSION, \JSON_ERROR_INF_OR_NAN, \JSON_ERROR_UNSUPPORTED_TYPE]);
+        return $this->hasEncodingOption(\JSON_PARTIAL_OUTPUT_ON_ERROR) && in_array($jsonError, [\JSON_ERROR_RECURSION, \JSON_ERROR_INF_OR_NAN, \JSON_ERROR_UNSUPPORTED_TYPE]);
     }
     /**
      * {@inheritdoc}

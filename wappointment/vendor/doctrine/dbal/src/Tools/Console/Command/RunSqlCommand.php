@@ -70,7 +70,7 @@ EOT
         }
         return 0;
     }
-    private function getConnection(InputInterface $input) : Connection
+    private function getConnection(InputInterface $input): Connection
     {
         $connectionName = $input->getOption('connection');
         assert(is_string($connectionName) || $connectionName === null);
@@ -82,7 +82,7 @@ EOT
     /**
      * @throws Exception
      */
-    private function runQuery(SymfonyStyle $io, Connection $conn, string $sql) : void
+    private function runQuery(SymfonyStyle $io, Connection $conn, string $sql): void
     {
         $resultSet = $conn->fetchAllAssociative($sql);
         if ($resultSet === []) {
@@ -94,7 +94,7 @@ EOT
     /**
      * @throws Exception
      */
-    private function runStatement(SymfonyStyle $io, Connection $conn, string $sql) : void
+    private function runStatement(SymfonyStyle $io, Connection $conn, string $sql): void
     {
         $io->success(sprintf('%d rows affected.', $conn->executeStatement($sql)));
     }

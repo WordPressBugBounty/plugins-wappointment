@@ -130,7 +130,7 @@ class AppointmentNew
     }
     protected static function createAppointment($data, $slots = \false)
     {
-        if (empty($data['options']) || !\is_array($data['options'])) {
+        if (empty($data['options']) || !is_array($data['options'])) {
             $data['options'] = [];
         }
         if ($slots === \false) {
@@ -181,7 +181,7 @@ class AppointmentNew
         if (!$admin && !$allowrescheduling) {
             throw new \WappointmentException('Appointment rescheduling is not allowed', 1);
         }
-        if (!$admin && \is_array($edit_key)) {
+        if (!$admin && is_array($edit_key)) {
             throw new \WappointmentException(__("Malformed parameter", 'wappointment'), 1);
         }
         if ($admin) {
@@ -209,7 +209,7 @@ class AppointmentNew
     protected static function appointmentModified($appointment, $oldAppointment)
     {
         (new \Wappointment\Services\Availability($appointment->staff_id))->regenerate();
-        if ($appointment->service->isGroup() && \class_exists('\\WappointmentAddonGroup\\Models\\AppointmentsParticipants')) {
+        if ($appointment->service->isGroup() && class_exists('\WappointmentAddonGroup\Models\AppointmentsParticipants')) {
             $participants = \WappointmentAddonGroup\Models\AppointmentsParticipants::where('appointment_id', $appointment->id)->with(['client'])->get();
             foreach ($participants as $participant) {
                 $client = $participant->client;
@@ -259,8 +259,8 @@ class AppointmentNew
         if (!static::isLegacy()) {
             $queryAppointment->where('staff_id', static::getStaffId($staff_id));
         }
-        if ($queryAppointment->where(function ($query) use($start_at_str, $end_at_str) {
-            $query->where(function ($query) use($start_at_str, $end_at_str) {
+        if ($queryAppointment->where(function ($query) use ($start_at_str, $end_at_str) {
+            $query->where(function ($query) use ($start_at_str, $end_at_str) {
                 $query->where('start_at', $start_at_str);
                 $query->where('end_at', $end_at_str);
             });
@@ -269,7 +269,7 @@ class AppointmentNew
              *     this: □□□□□□□□□□□□□□□□□□■■■■■■■■■■■□□□□□□□□□□□□□□□□
              *     Db contains this
              */
-            $query->orWhere(function ($query) use($start_at_str, $end_at_str) {
+            $query->orWhere(function ($query) use ($start_at_str, $end_at_str) {
                 $query->where('start_at', '<=', $start_at_str);
                 $query->where('end_at', '>=', $end_at_str);
             });
@@ -278,7 +278,7 @@ class AppointmentNew
              *     This: □□□□□□□□□□□■■■■■■■■■■■■■■■■■■■■■■■■□□□□□□□□□□
              *      this contains DB
              */
-            $query->orWhere(function ($query) use($start_at_str, $end_at_str) {
+            $query->orWhere(function ($query) use ($start_at_str, $end_at_str) {
                 $query->where('start_at', '>=', $start_at_str);
                 $query->where('end_at', '<=', $end_at_str);
             });
@@ -287,7 +287,7 @@ class AppointmentNew
              *     This: □□□□□□□□□□□□□□□□□□■■■■■■■■■■■□□□□□□□□□□□□□□□□
              *     DB intersects this
              */
-            $query->orWhere(function ($query) use($start_at_str, $end_at_str) {
+            $query->orWhere(function ($query) use ($start_at_str, $end_at_str) {
                 $query->where('start_at', '<', $start_at_str);
                 $query->where('end_at', '>', $start_at_str);
             });
@@ -295,7 +295,7 @@ class AppointmentNew
              *     DB:   □□□□□□□□□□□□□□□□□□■■■■■■■■■■■□□□□□□□□□□□□□□□□
              *     This: □□□□□□□□□□□■■■■■■■■■■■■■□□□□□□□□□□□□□□□□□□□□□
              */
-            $query->orWhere(function ($query) use($start_at_str, $end_at_str) {
+            $query->orWhere(function ($query) use ($start_at_str, $end_at_str) {
                 $query->where('start_at', '<', $end_at_str);
                 $query->where('end_at', '>', $end_at_str);
             });
@@ -320,7 +320,7 @@ class AppointmentNew
     public static function availabilityRefreshTrigger($staff_id, $is_admin = \false)
     {
         //if availability has not been refreshed for a while we refresh it now otherwise we queue a job for it
-        if (!\defined('DISABLE_WP_CRON') || $is_admin === \true) {
+        if (!defined('DISABLE_WP_CRON') || $is_admin === \true) {
             //when web cron is disabled we need an immediate refresh of availability
             (new \Wappointment\Services\Availability($staff_id))->regenerate();
         } else {
@@ -329,7 +329,7 @@ class AppointmentNew
                 $availability->regenerate();
             } else {
                 $availability->incrementLastRefresh();
-                \Wappointment\Services\Queue::tryPush('Wappointment\\Jobs\\AvailabilityRegenerate', ['staff_id' => $staff_id], 'availability');
+                \Wappointment\Services\Queue::tryPush('Wappointment\Jobs\AvailabilityRegenerate', ['staff_id' => $staff_id], 'availability');
             }
             //we immediately spawn a process to trigger availability regenerate in the back
             WPHelpers::cronTrigger();
@@ -341,7 +341,7 @@ class AppointmentNew
             throw new \WappointmentException('Appointment cancellation is not allowed', 1);
         }
         $edit_key = $request->input('appointmentkey');
-        if (\is_array($edit_key)) {
+        if (is_array($edit_key)) {
             throw new \WappointmentException(__("Malformed parameter", 'wappointment'), 1);
         }
         $appointment = static::getAppointmentModel()::where('edit_key', $edit_key)->where('status', '>=', static::getAppointmentModel()::STATUS_AWAITING_CONFIRMATION)->first();
@@ -358,7 +358,7 @@ class AppointmentNew
     {
         //used for credit return in addons
         apply_filters('wappointment_cancelled_appointment', $appointment);
-        if ($appointment->service->isGroup() && \class_exists('\\WappointmentAddonGroup\\Models\\AppointmentsParticipants')) {
+        if ($appointment->service->isGroup() && class_exists('\WappointmentAddonGroup\Models\AppointmentsParticipants')) {
             $participants = \WappointmentAddonGroup\Models\AppointmentsParticipants::where('appointment_id', $appointment->id)->with(['client'])->get();
             foreach ($participants as $participant) {
                 $client = $participant->client;
@@ -366,7 +366,7 @@ class AppointmentNew
                 $participant->delete();
             }
         } else {
-            static::sendCancelNotification($appointment, \is_null($client) ? $appointment->getClientModel() : $client);
+            static::sendCancelNotification($appointment, is_null($client) ? $appointment->getClientModel() : $client);
         }
         //clearing charges for that appointment clearing order prices
         if (!\Wappointment\Services\Payment::isWooActive()) {

@@ -31,7 +31,7 @@ class RedisCaster
     public static function castRedis(\Redis $c, array $a, Stub $stub, bool $isNested)
     {
         $prefix = Caster::PREFIX_VIRTUAL;
-        if (!($connected = $c->isConnected())) {
+        if (!$connected = $c->isConnected()) {
             return $a + [$prefix . 'isConnected' => $connected];
         }
         $mode = $c->getMode();
@@ -52,7 +52,7 @@ class RedisCaster
     /**
      * @param \Redis|\RedisArray|\RedisCluster $redis
      */
-    private static function getRedisOptions($redis, array $options = []) : EnumStub
+    private static function getRedisOptions($redis, array $options = []): EnumStub
     {
         $serializer = $redis->getOption(\Redis::OPT_SERIALIZER);
         if (\is_array($serializer)) {

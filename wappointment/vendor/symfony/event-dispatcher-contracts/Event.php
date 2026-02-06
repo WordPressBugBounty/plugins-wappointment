@@ -32,7 +32,7 @@ class Event implements StoppableEventInterface
     /**
      * {@inheritdoc}
      */
-    public function isPropagationStopped() : bool
+    public function isPropagationStopped(): bool
     {
         return $this->propagationStopped;
     }
@@ -43,7 +43,7 @@ class Event implements StoppableEventInterface
      * further event listener will be triggered once any trigger calls
      * stopPropagation().
      */
-    public function stopPropagation() : void
+    public function stopPropagation(): void
     {
         $this->propagationStopped = \true;
     }

@@ -24,19 +24,19 @@ final class RelatedPart extends AbstractMultipartPart
         $this->prepareParts($part, ...$parts);
         parent::__construct($part, ...$parts);
     }
-    public function getParts() : array
+    public function getParts(): array
     {
-        return \array_merge([$this->mainPart], parent::getParts());
+        return array_merge([$this->mainPart], parent::getParts());
     }
-    public function getMediaSubtype() : string
+    public function getMediaSubtype(): string
     {
         return 'related';
     }
-    private function generateContentId() : string
+    private function generateContentId(): string
     {
-        return \bin2hex(\random_bytes(16)) . '@symfony';
+        return bin2hex(random_bytes(16)) . '@symfony';
     }
-    private function prepareParts(AbstractPart ...$parts) : void
+    private function prepareParts(AbstractPart ...$parts): void
     {
         foreach ($parts as $part) {
             if (!$part->getHeaders()->has('Content-ID')) {

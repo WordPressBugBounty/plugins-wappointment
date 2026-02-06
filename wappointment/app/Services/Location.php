@@ -27,10 +27,8 @@ class Location
         $serviceDB = null;
         if (!empty($locationData['id'])) {
             $serviceDB = LocationModel::findOrFail($locationData['id']);
-        } else {
-            if (!ServiceManager::model()::canCreate()) {
-                throw new \WappointmentValidationException(Translations::get('error_saving'));
-            }
+        } else if (!ServiceManager::model()::canCreate()) {
+            throw new \WappointmentValidationException(Translations::get('error_saving'));
         }
         return !empty($serviceDB) ? $serviceDB->update($locationData) : LocationModel::create($locationData);
     }

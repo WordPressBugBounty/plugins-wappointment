@@ -46,13 +46,13 @@ class CalAddress extends Text
     public function getNormalizedValue()
     {
         $input = $this->getValue();
-        if (!\strpos($input, ':')) {
+        if (!strpos($input, ':')) {
             return $input;
         }
-        list($schema, $everythingElse) = \explode(':', $input, 2);
-        $schema = \strtolower($schema);
+        list($schema, $everythingElse) = explode(':', $input, 2);
+        $schema = strtolower($schema);
         if ('mailto' === $schema) {
-            $everythingElse = \strtolower($everythingElse);
+            $everythingElse = strtolower($everythingElse);
         }
         return $schema . ':' . $everythingElse;
     }

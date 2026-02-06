@@ -35,8 +35,8 @@ class Binary extends Property
      */
     public function setValue($value)
     {
-        if (\is_array($value)) {
-            if (1 === \count($value)) {
+        if (is_array($value)) {
+            if (1 === count($value)) {
                 $this->value = $value[0];
             } else {
                 throw new \InvalidArgumentException('The argument must either be a string or an array with only one child');
@@ -55,7 +55,7 @@ class Binary extends Property
      */
     public function setRawMimeDirValue($val)
     {
-        $this->value = \base64_decode($val);
+        $this->value = base64_decode($val);
     }
     /**
      * Returns a raw mime-dir representation of the value.
@@ -64,7 +64,7 @@ class Binary extends Property
      */
     public function getRawMimeDirValue()
     {
-        return \base64_encode($this->value);
+        return base64_encode($this->value);
     }
     /**
      * Returns the type of value.
@@ -87,7 +87,7 @@ class Binary extends Property
      */
     public function getJsonValue()
     {
-        return [\base64_encode($this->getValue())];
+        return [base64_encode($this->getValue())];
     }
     /**
      * Sets the json value, as it would appear in a jCard or jCal object.
@@ -96,7 +96,7 @@ class Binary extends Property
      */
     public function setJsonValue(array $value)
     {
-        $value = \array_map('base64_decode', $value);
+        $value = array_map('base64_decode', $value);
         parent::setJsonValue($value);
     }
 }

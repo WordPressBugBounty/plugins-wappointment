@@ -54,7 +54,7 @@ class GenericEvent extends Event implements \ArrayAccess, \IteratorAggregate
         if ($this->hasArgument($key)) {
             return $this->arguments[$key];
         }
-        throw new \InvalidArgumentException(\sprintf('Argument "%s" not found.', $key));
+        throw new \InvalidArgumentException(sprintf('Argument "%s" not found.', $key));
     }
     /**
      * Add argument to event.

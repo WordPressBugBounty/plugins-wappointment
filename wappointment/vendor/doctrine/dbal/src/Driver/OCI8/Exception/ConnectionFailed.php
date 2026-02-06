@@ -13,7 +13,7 @@ use function oci_error;
  */
 final class ConnectionFailed extends AbstractException
 {
-    public static function new() : self
+    public static function new(): self
     {
         $error = oci_error();
         assert($error !== \false);

@@ -18,7 +18,7 @@ class ViewsData
     public function load($key)
     {
         $values = [];
-        if (\method_exists($this, $key)) {
+        if (method_exists($this, $key)) {
             $values = $this->{$key}();
         }
         return apply_filters('wappointment_viewdata_' . $key, $values);
@@ -143,7 +143,7 @@ class ViewsData
             $data['timezone'] = $data['staff'][0]->options['timezone'];
             $data['locations'] = \Wappointment\Models\Location::get();
             $data['custom_fields'] = Central::get('CustomFields')::get();
-            $data['now'] = (new Carbon())->setTimezone($data['timezone'])->format('Y-m-d\\TH:i:00');
+            $data['now'] = (new Carbon())->setTimezone($data['timezone'])->format('Y-m-d\TH:i:00');
             $data['regav'] = $data['staff'][0]->options['regav'];
             $data['availability'] = $data['staff'][0]->availability;
         } else {
@@ -151,7 +151,7 @@ class ViewsData
             $data['regav'] = \Wappointment\Services\Settings::getStaff('regav');
             $data['availability'] = WPHelpers::getStaffOption('availability');
             $data['timezone'] = $staff_timezone;
-            $data['now'] = (new Carbon())->setTimezone($staff_timezone)->format('Y-m-d\\TH:i:00');
+            $data['now'] = (new Carbon())->setTimezone($staff_timezone)->format('Y-m-d\TH:i:00');
             $data['legacy'] = \true;
         }
         return apply_filters('wappointment_back_calendar', $data);
@@ -176,7 +176,7 @@ class ViewsData
             'front_page_type' => get_post_type((int) \Wappointment\Services\Settings::get('front_page')),
             // advanced
             'approval_mode' => \Wappointment\Services\Settings::get('approval_mode'),
-            'today_formatted' => \Wappointment\Services\DateTime::i18nDateTime(\time(), $timezone),
+            'today_formatted' => \Wappointment\Services\DateTime::i18nDateTime(time(), $timezone),
             'date_format' => \Wappointment\Services\Settings::get('date_format'),
             'time_format' => \Wappointment\Services\Settings::get('time_format'),
             'date_time_union' => \Wappointment\Services\Settings::get('date_time_union', ' - '),
@@ -249,8 +249,8 @@ class ViewsData
     private function TESTprocessAvail($avails)
     {
         foreach ($avails as &$avail) {
-            $avail[0] = Carbon::createFromTimestamp($avail[0])->setTimezone($this->timezone)->format('Y-m-d\\TH:i:00 T');
-            $avail[1] = Carbon::createFromTimestamp($avail[1])->setTimezone($this->timezone)->format('Y-m-d\\TH:i:00 T');
+            $avail[0] = Carbon::createFromTimestamp($avail[0])->setTimezone($this->timezone)->format('Y-m-d\TH:i:00 T');
+            $avail[1] = Carbon::createFromTimestamp($avail[1])->setTimezone($this->timezone)->format('Y-m-d\TH:i:00 T');
         }
         return $avails;
     }

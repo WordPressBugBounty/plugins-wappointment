@@ -40,14 +40,14 @@ class HtmlErrorRenderer implements ErrorRendererInterface
     public function __construct($debug = \false, string $charset = null, $fileLinkFormat = null, string $projectDir = null, $outputBuffer = '', LoggerInterface $logger = null)
     {
         if (!\is_bool($debug) && !\is_callable($debug)) {
-            throw new \TypeError(\sprintf('Argument 1 passed to "%s()" must be a boolean or a callable, "%s" given.', __METHOD__, \gettype($debug)));
+            throw new \TypeError(sprintf('Argument 1 passed to "%s()" must be a boolean or a callable, "%s" given.', __METHOD__, \gettype($debug)));
         }
         if (!\is_string($outputBuffer) && !\is_callable($outputBuffer)) {
-            throw new \TypeError(\sprintf('Argument 5 passed to "%s()" must be a string or a callable, "%s" given.', __METHOD__, \gettype($outputBuffer)));
+            throw new \TypeError(sprintf('Argument 5 passed to "%s()" must be a string or a callable, "%s" given.', __METHOD__, \gettype($outputBuffer)));
         }
         $this->debug = $debug;
         $this->charset = $charset ?: (\ini_get('default_charset') ?: 'UTF-8');
-        $this->fileLinkFormat = $fileLinkFormat ?: (\ini_get('xdebug.file_link_format') ?: \get_cfg_var('xdebug.file_link_format'));
+        $this->fileLinkFormat = $fileLinkFormat ?: (\ini_get('xdebug.file_link_format') ?: get_cfg_var('xdebug.file_link_format'));
         $this->projectDir = $projectDir;
         $this->outputBuffer = $outputBuffer;
         $this->logger = $logger;
@@ -55,12 +55,12 @@ class HtmlErrorRenderer implements ErrorRendererInterface
     /**
      * {@inheritdoc}
      */
-    public function render(\Throwable $exception) : FlattenException
+    public function render(\Throwable $exception): FlattenException
     {
         $headers = ['Content-Type' => 'text/html; charset=' . $this->charset];
         if (\is_bool($this->debug) ? $this->debug : ($this->debug)($exception)) {
-            $headers['X-Debug-Exception'] = \rawurlencode($exception->getMessage());
-            $headers['X-Debug-Exception-File'] = \rawurlencode($exception->getFile()) . ':' . $exception->getLine();
+            $headers['X-Debug-Exception'] = rawurlencode($exception->getMessage());
+            $headers['X-Debug-Exception-File'] = rawurlencode($exception->getFile()) . ':' . $exception->getLine();
         }
         $exception = FlattenException::createFromThrowable($exception, null, $headers);
         return $exception->setAsString($this->renderException($exception));
@@ -68,44 +68,44 @@ class HtmlErrorRenderer implements ErrorRendererInterface
     /**
      * Gets the HTML content associated with the given exception.
      */
-    public function getBody(FlattenException $exception) : string
+    public function getBody(FlattenException $exception): string
     {
         return $this->renderException($exception, 'views/exception.html.php');
     }
     /**
      * Gets the stylesheet associated with the given exception.
      */
-    public function getStylesheet() : string
+    public function getStylesheet(): string
     {
         if (!$this->debug) {
             return $this->include('assets/css/error.css');
         }
         return $this->include('assets/css/exception.css');
     }
-    public static function isDebug(RequestStack $requestStack, bool $debug) : \Closure
+    public static function isDebug(RequestStack $requestStack, bool $debug): \Closure
     {
-        return static function () use($requestStack, $debug) : bool {
-            if (!($request = $requestStack->getCurrentRequest())) {
+        return static function () use ($requestStack, $debug): bool {
+            if (!$request = $requestStack->getCurrentRequest()) {
                 return $debug;
             }
             return $debug && $request->attributes->getBoolean('showException', \true);
         };
     }
-    public static function getAndCleanOutputBuffer(RequestStack $requestStack) : \Closure
+    public static function getAndCleanOutputBuffer(RequestStack $requestStack): \Closure
     {
-        return static function () use($requestStack) : string {
-            if (!($request = $requestStack->getCurrentRequest())) {
+        return static function () use ($requestStack): string {
+            if (!$request = $requestStack->getCurrentRequest()) {
                 return '';
             }
             $startObLevel = $request->headers->get('X-Php-Ob-Level', -1);
-            if (\ob_get_level() <= $startObLevel) {
+            if (ob_get_level() <= $startObLevel) {
                 return '';
             }
             Response::closeOutputBuffers($startObLevel + 1, \true);
-            return \ob_get_clean();
+            return ob_get_clean();
         };
     }
-    private function renderException(FlattenException $exception, string $debugTemplate = 'views/exception_full.html.php') : string
+    private function renderException(FlattenException $exception, string $debugTemplate = 'views/exception_full.html.php'): string
     {
         $debug = \is_bool($this->debug) ? $this->debug : ($this->debug)($exception);
         $statusText = $this->escape($exception->getStatusText());
@@ -119,46 +119,46 @@ class HtmlErrorRenderer implements ErrorRendererInterface
     /**
      * Formats an array as a string.
      */
-    private function formatArgs(array $args) : string
+    private function formatArgs(array $args): string
     {
         $result = [];
         foreach ($args as $key => $item) {
             if ('object' === $item[0]) {
-                $formattedValue = \sprintf('<em>object</em>(%s)', $this->abbrClass($item[1]));
+                $formattedValue = sprintf('<em>object</em>(%s)', $this->abbrClass($item[1]));
             } elseif ('array' === $item[0]) {
-                $formattedValue = \sprintf('<em>array</em>(%s)', \is_array($item[1]) ? $this->formatArgs($item[1]) : $item[1]);
+                $formattedValue = sprintf('<em>array</em>(%s)', \is_array($item[1]) ? $this->formatArgs($item[1]) : $item[1]);
             } elseif ('null' === $item[0]) {
                 $formattedValue = '<em>null</em>';
             } elseif ('boolean' === $item[0]) {
-                $formattedValue = '<em>' . \strtolower(\var_export($item[1], \true)) . '</em>';
+                $formattedValue = '<em>' . strtolower(var_export($item[1], \true)) . '</em>';
             } elseif ('resource' === $item[0]) {
                 $formattedValue = '<em>resource</em>';
             } else {
-                $formattedValue = \str_replace("\n", '', $this->escape(\var_export($item[1], \true)));
+                $formattedValue = str_replace("\n", '', $this->escape(var_export($item[1], \true)));
             }
-            $result[] = \is_int($key) ? $formattedValue : \sprintf("'%s' => %s", $this->escape($key), $formattedValue);
+            $result[] = \is_int($key) ? $formattedValue : sprintf("'%s' => %s", $this->escape($key), $formattedValue);
         }
-        return \implode(', ', $result);
+        return implode(', ', $result);
     }
     private function formatArgsAsText(array $args)
     {
-        return \strip_tags($this->formatArgs($args));
+        return strip_tags($this->formatArgs($args));
     }
-    private function escape(string $string) : string
+    private function escape(string $string): string
     {
-        return \htmlspecialchars($string, \ENT_COMPAT | \ENT_SUBSTITUTE, $this->charset);
+        return htmlspecialchars($string, \ENT_COMPAT | \ENT_SUBSTITUTE, $this->charset);
     }
-    private function abbrClass(string $class) : string
+    private function abbrClass(string $class): string
     {
-        $parts = \explode('\\', $class);
-        $short = \array_pop($parts);
-        return \sprintf('<abbr title="%s">%s</abbr>', $class, $short);
+        $parts = explode('\\', $class);
+        $short = array_pop($parts);
+        return sprintf('<abbr title="%s">%s</abbr>', $class, $short);
     }
-    private function getFileRelative(string $file) : ?string
+    private function getFileRelative(string $file): ?string
     {
-        $file = \str_replace('\\', '/', $file);
-        if (null !== $this->projectDir && 0 === \strpos($file, $this->projectDir)) {
-            return \ltrim(\substr($file, \strlen($this->projectDir)), '/');
+        $file = str_replace('\\', '/', $file);
+        if (null !== $this->projectDir && 0 === strpos($file, $this->projectDir)) {
+            return ltrim(substr($file, \strlen($this->projectDir)), '/');
         }
         return null;
     }
@@ -170,7 +170,7 @@ class HtmlErrorRenderer implements ErrorRendererInterface
     private function getFileLink(string $file, int $line)
     {
         if ($fmt = $this->fileLinkFormat) {
-            return \is_string($fmt) ? \strtr($fmt, ['%f' => $file, '%l' => $line]) : $fmt->format($file, $line);
+            return \is_string($fmt) ? strtr($fmt, ['%f' => $file, '%l' => $line]) : $fmt->format($file, $line);
         }
         return \false;
     }
@@ -181,21 +181,21 @@ class HtmlErrorRenderer implements ErrorRendererInterface
      * @param int    $line The line number
      * @param string $text Use this text for the link rather than the file path
      */
-    private function formatFile(string $file, int $line, string $text = null) : string
+    private function formatFile(string $file, int $line, string $text = null): string
     {
-        $file = \trim($file);
+        $file = trim($file);
         if (null === $text) {
             $text = $file;
-            if (null !== ($rel = $this->getFileRelative($text))) {
-                $rel = \explode('/', $rel, 2);
-                $text = \sprintf('<abbr title="%s%2$s">%s</abbr>%s', $this->projectDir, $rel[0], '/' . ($rel[1] ?? ''));
+            if (null !== $rel = $this->getFileRelative($text)) {
+                $rel = explode('/', $rel, 2);
+                $text = sprintf('<abbr title="%s%2$s">%s</abbr>%s', $this->projectDir, $rel[0], '/' . ($rel[1] ?? ''));
             }
         }
         if (0 < $line) {
             $text .= ' at line ' . $line;
         }
-        if (\false !== ($link = $this->getFileLink($file, $line))) {
-            return \sprintf('<a href="%s" title="Click to open this file" class="file_link">%s</a>', $this->escape($link), $text);
+        if (\false !== $link = $this->getFileLink($file, $line)) {
+            return sprintf('<a href="%s" title="Click to open this file" class="file_link">%s</a>', $this->escape($link), $text);
         }
         return $text;
     }
@@ -206,55 +206,55 @@ class HtmlErrorRenderer implements ErrorRendererInterface
      * @param int    $line       The selected line number
      * @param int    $srcContext The number of displayed lines around or -1 for the whole file
      */
-    private function fileExcerpt(string $file, int $line, int $srcContext = 3) : string
+    private function fileExcerpt(string $file, int $line, int $srcContext = 3): string
     {
-        if (\is_file($file) && \is_readable($file)) {
+        if (is_file($file) && is_readable($file)) {
             // highlight_file could throw warnings
             // see https://bugs.php.net/25725
-            $code = @\highlight_file($file, \true);
+            $code = @highlight_file($file, \true);
             // remove main code/span tags
-            $code = \preg_replace('#^<code.*?>\\s*<span.*?>(.*)</span>\\s*</code>#s', '\\1', $code);
+            $code = preg_replace('#^<code.*?>\s*<span.*?>(.*)</span>\s*</code>#s', '\1', $code);
             // split multiline spans
-            $code = \preg_replace_callback('#<span ([^>]++)>((?:[^<]*+<br \\/>)++[^<]*+)</span>#', function ($m) {
-                return "<span {$m[1]}>" . \str_replace('<br />', "</span><br /><span {$m[1]}>", $m[2]) . '</span>';
+            $code = preg_replace_callback('#<span ([^>]++)>((?:[^<]*+<br \/>)++[^<]*+)</span>#', function ($m) {
+                return "<span {$m[1]}>" . str_replace('<br />', "</span><br /><span {$m[1]}>", $m[2]) . '</span>';
             }, $code);
-            $content = \explode('<br />', $code);
+            $content = explode('<br />', $code);
             $lines = [];
             if (0 > $srcContext) {
                 $srcContext = \count($content);
             }
-            for ($i = \max($line - $srcContext, 1), $max = \min($line + $srcContext, \count($content)); $i <= $max; ++$i) {
+            for ($i = max($line - $srcContext, 1), $max = min($line + $srcContext, \count($content)); $i <= $max; ++$i) {
                 $lines[] = '<li' . ($i == $line ? ' class="selected"' : '') . '><code>' . $this->fixCodeMarkup($content[$i - 1]) . '</code></li>';
             }
-            return '<ol start="' . \max($line - $srcContext, 1) . '">' . \implode("\n", $lines) . '</ol>';
+            return '<ol start="' . max($line - $srcContext, 1) . '">' . implode("\n", $lines) . '</ol>';
         }
         return '';
     }
     private function fixCodeMarkup(string $line)
     {
         // </span> ending tag from previous line
-        $opening = \strpos($line, '<span');
-        $closing = \strpos($line, '</span>');
+        $opening = strpos($line, '<span');
+        $closing = strpos($line, '</span>');
         if (\false !== $closing && (\false === $opening || $closing < $opening)) {
-            $line = \substr_replace($line, '', $closing, 7);
+            $line = substr_replace($line, '', $closing, 7);
         }
         // missing </span> tag at the end of line
-        $opening = \strrpos($line, '<span');
-        $closing = \strrpos($line, '</span>');
+        $opening = strrpos($line, '<span');
+        $closing = strrpos($line, '</span>');
         if (\false !== $opening && (\false === $closing || $closing < $opening)) {
             $line .= '</span>';
         }
-        return \trim($line);
+        return trim($line);
     }
     private function formatFileFromText(string $text)
     {
-        return \preg_replace_callback('/in ("|&quot;)?(.+?)\\1(?: +(?:on|at))? +line (\\d+)/s', function ($match) {
+        return preg_replace_callback('/in ("|&quot;)?(.+?)\1(?: +(?:on|at))? +line (\d+)/s', function ($match) {
             return 'in ' . $this->formatFile($match[2], $match[3]);
         }, $text);
     }
     private function formatLogMessage(string $message, array $context)
     {
-        if ($context && \false !== \strpos($message, '{')) {
+        if ($context && \false !== strpos($message, '{')) {
             $replacements = [];
             foreach ($context as $key => $val) {
                 if (\is_scalar($val)) {
@@ -262,31 +262,31 @@ class HtmlErrorRenderer implements ErrorRendererInterface
                 }
             }
             if ($replacements) {
-                $message = \strtr($message, $replacements);
+                $message = strtr($message, $replacements);
             }
         }
         return $this->escape($message);
     }
-    private function addElementToGhost() : string
+    private function addElementToGhost(): string
     {
-        if (!isset(self::GHOST_ADDONS[\date('m-d')])) {
+        if (!isset(self::GHOST_ADDONS[date('m-d')])) {
             return '';
         }
-        return '<path d="' . self::GHOST_ADDONS[\date('m-d')] . '" fill="#fff" fill-opacity="0.6"></path>';
+        return '<path d="' . self::GHOST_ADDONS[date('m-d')] . '" fill="#fff" fill-opacity="0.6"></path>';
     }
-    private function include(string $name, array $context = []) : string
+    private function include(string $name, array $context = []): string
     {
-        \extract($context, \EXTR_SKIP);
-        \ob_start();
-        include \is_file(\dirname(__DIR__) . '/Resources/' . $name) ? \dirname(__DIR__) . '/Resources/' . $name : $name;
-        return \trim(\ob_get_clean());
+        extract($context, \EXTR_SKIP);
+        ob_start();
+        include is_file(\dirname(__DIR__) . '/Resources/' . $name) ? \dirname(__DIR__) . '/Resources/' . $name : $name;
+        return trim(ob_get_clean());
     }
     /**
      * Allows overriding the default non-debug template.
      *
      * @param string $template path to the custom template file to render
      */
-    public static function setTemplate(string $template) : void
+    public static function setTemplate(string $template): void
     {
         self::$template = $template;
     }

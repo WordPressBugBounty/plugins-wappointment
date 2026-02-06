@@ -11,7 +11,7 @@
 namespace WappoVendor\Symfony\Component\HttpFoundation;
 
 // Help opcache.preload discover always-needed symbols
-\class_exists(AcceptHeaderItem::class);
+class_exists(AcceptHeaderItem::class);
 /**
  * Represents an Accept-* header.
  *
@@ -48,8 +48,8 @@ class AcceptHeader
     {
         $index = 0;
         $parts = HeaderUtils::split($headerValue ?? '', ',;=');
-        return new self(\array_map(function ($subParts) use(&$index) {
-            $part = \array_shift($subParts);
+        return new self(array_map(function ($subParts) use (&$index) {
+            $part = array_shift($subParts);
             $attributes = HeaderUtils::combine($subParts);
             $item = new AcceptHeaderItem($part[0], $attributes);
             $item->setIndex($index++);
@@ -63,7 +63,7 @@ class AcceptHeader
      */
     public function __toString()
     {
-        return \implode(',', $this->items);
+        return implode(',', $this->items);
     }
     /**
      * Tests if header has given value.
@@ -81,7 +81,7 @@ class AcceptHeader
      */
     public function get(string $value)
     {
-        return $this->items[$value] ?? $this->items[\explode('/', $value)[0] . '/*'] ?? $this->items['*/*'] ?? $this->items['*'] ?? null;
+        return $this->items[$value] ?? $this->items[explode('/', $value)[0] . '/*'] ?? $this->items['*/*'] ?? $this->items['*'] ?? null;
     }
     /**
      * Adds an item.
@@ -111,8 +111,8 @@ class AcceptHeader
      */
     public function filter(string $pattern)
     {
-        return new self(\array_filter($this->items, function (AcceptHeaderItem $item) use($pattern) {
-            return \preg_match($pattern, $item->getValue());
+        return new self(array_filter($this->items, function (AcceptHeaderItem $item) use ($pattern) {
+            return preg_match($pattern, $item->getValue());
         }));
     }
     /**
@@ -123,15 +123,15 @@ class AcceptHeader
     public function first()
     {
         $this->sort();
-        return !empty($this->items) ? \reset($this->items) : null;
+        return !empty($this->items) ? reset($this->items) : null;
     }
     /**
      * Sorts items by descending quality.
      */
-    private function sort() : void
+    private function sort(): void
     {
         if (!$this->sorted) {
-            \uasort($this->items, function (AcceptHeaderItem $a, AcceptHeaderItem $b) {
+            uasort($this->items, function (AcceptHeaderItem $a, AcceptHeaderItem $b) {
                 $qA = $a->getQuality();
                 $qB = $b->getQuality();
                 if ($qA === $qB) {

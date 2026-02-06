@@ -59,7 +59,7 @@ class Profiler implements ResetInterface
      */
     public function loadProfileFromResponse(Response $response)
     {
-        if (!($token = $response->headers->get('X-Debug-Token'))) {
+        if (!$token = $response->headers->get('X-Debug-Token')) {
             return null;
         }
         return $this->loadProfile($token);
@@ -123,8 +123,8 @@ class Profiler implements ResetInterface
         if (\false === $this->enabled) {
             return null;
         }
-        $profile = new Profile(\substr(\hash('sha256', \uniqid(\mt_rand(), \true)), 0, 6));
-        $profile->setTime(\time());
+        $profile = new Profile(substr(hash('sha256', uniqid(mt_rand(), \true)), 0, 6));
+        $profile->setTime(time());
         $profile->setUrl($request->getUri());
         $profile->setMethod($request->getMethod());
         $profile->setStatusCode($response->getStatusCode());
@@ -202,17 +202,17 @@ class Profiler implements ResetInterface
     public function get(string $name)
     {
         if (!isset($this->collectors[$name])) {
-            throw new \InvalidArgumentException(\sprintf('Collector "%s" does not exist.', $name));
+            throw new \InvalidArgumentException(sprintf('Collector "%s" does not exist.', $name));
         }
         return $this->collectors[$name];
     }
-    private function getTimestamp(?string $value) : ?int
+    private function getTimestamp(?string $value): ?int
     {
         if (null === $value || '' === $value) {
             return null;
         }
         try {
-            $value = new \DateTime(\is_numeric($value) ? '@' . $value : $value);
+            $value = new \DateTime(is_numeric($value) ? '@' . $value : $value);
         } catch (\Exception $e) {
             return null;
         }

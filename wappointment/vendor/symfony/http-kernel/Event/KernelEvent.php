@@ -64,7 +64,7 @@ class KernelEvent extends Event
     /**
      * Checks if this is the main request.
      */
-    public function isMainRequest() : bool
+    public function isMainRequest(): bool
     {
         return HttpKernelInterface::MAIN_REQUEST === $this->requestType;
     }

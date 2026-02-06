@@ -16,7 +16,7 @@ class MessageIDValidation implements EmailValidation
      * @var ?InvalidEmail
      */
     private $error;
-    public function isValid(string $email, EmailLexer $emailLexer) : bool
+    public function isValid(string $email, EmailLexer $emailLexer): bool
     {
         $parser = new MessageIDParser($emailLexer);
         try {
@@ -33,11 +33,11 @@ class MessageIDValidation implements EmailValidation
         }
         return \true;
     }
-    public function getWarnings() : array
+    public function getWarnings(): array
     {
         return $this->warnings;
     }
-    public function getError() : ?InvalidEmail
+    public function getError(): ?InvalidEmail
     {
         return $this->error;
     }

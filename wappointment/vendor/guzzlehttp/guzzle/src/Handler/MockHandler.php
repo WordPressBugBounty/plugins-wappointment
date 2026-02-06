@@ -47,7 +47,7 @@ class MockHandler implements \Countable
         $this->onFulfilled = $onFulfilled;
         $this->onRejected = $onRejected;
         if ($queue) {
-            \call_user_func_array([$this, 'append'], $queue);
+            call_user_func_array([$this, 'append'], $queue);
         }
     }
     public function __invoke(RequestInterface $request, array $options)
@@ -55,14 +55,14 @@ class MockHandler implements \Countable
         if (!$this->queue) {
             throw new \OutOfBoundsException('Mock queue is empty');
         }
-        if (isset($options['delay']) && \is_numeric($options['delay'])) {
-            \usleep($options['delay'] * 1000);
+        if (isset($options['delay']) && is_numeric($options['delay'])) {
+            usleep($options['delay'] * 1000);
         }
         $this->lastRequest = $request;
         $this->lastOptions = $options;
-        $response = \array_shift($this->queue);
+        $response = array_shift($this->queue);
         if (isset($options['on_headers'])) {
-            if (!\is_callable($options['on_headers'])) {
+            if (!is_callable($options['on_headers'])) {
                 throw new \InvalidArgumentException('on_headers must be callable');
             }
             try {
@@ -72,31 +72,31 @@ class MockHandler implements \Countable
                 $response = new RequestException($msg, $request, $response, $e);
             }
         }
-        if (\is_callable($response)) {
-            $response = \call_user_func($response, $request, $options);
+        if (is_callable($response)) {
+            $response = call_user_func($response, $request, $options);
         }
         $response = $response instanceof \Exception ? \WappoVendor\GuzzleHttp\Promise\rejection_for($response) : \WappoVendor\GuzzleHttp\Promise\promise_for($response);
-        return $response->then(function ($value) use($request, $options) {
+        return $response->then(function ($value) use ($request, $options) {
             $this->invokeStats($request, $options, $value);
             if ($this->onFulfilled) {
-                \call_user_func($this->onFulfilled, $value);
+                call_user_func($this->onFulfilled, $value);
             }
             if (isset($options['sink'])) {
                 $contents = (string) $value->getBody();
                 $sink = $options['sink'];
-                if (\is_resource($sink)) {
-                    \fwrite($sink, $contents);
-                } elseif (\is_string($sink)) {
-                    \file_put_contents($sink, $contents);
+                if (is_resource($sink)) {
+                    fwrite($sink, $contents);
+                } elseif (is_string($sink)) {
+                    file_put_contents($sink, $contents);
                 } elseif ($sink instanceof \WappoVendor\Psr\Http\Message\StreamInterface) {
                     $sink->write($contents);
                 }
             }
             return $value;
-        }, function ($reason) use($request, $options) {
+        }, function ($reason) use ($request, $options) {
             $this->invokeStats($request, $options, null, $reason);
             if ($this->onRejected) {
-                \call_user_func($this->onRejected, $reason);
+                call_user_func($this->onRejected, $reason);
             }
             return \WappoVendor\GuzzleHttp\Promise\rejection_for($reason);
         });
@@ -107,8 +107,8 @@ class MockHandler implements \Countable
      */
     public function append()
     {
-        foreach (\func_get_args() as $value) {
-            if ($value instanceof ResponseInterface || $value instanceof \Exception || $value instanceof PromiseInterface || \is_callable($value)) {
+        foreach (func_get_args() as $value) {
+            if ($value instanceof ResponseInterface || $value instanceof \Exception || $value instanceof PromiseInterface || is_callable($value)) {
                 $this->queue[] = $value;
             } else {
                 throw new \InvalidArgumentException('Expected a response or ' . 'exception. Found ' . \WappoVendor\GuzzleHttp\describe_type($value));
@@ -140,7 +140,7 @@ class MockHandler implements \Countable
      */
     public function count()
     {
-        return \count($this->queue);
+        return count($this->queue);
     }
     public function reset()
     {
@@ -151,7 +151,7 @@ class MockHandler implements \Countable
         if (isset($options['on_stats'])) {
             $transferTime = isset($options['transfer_time']) ? $options['transfer_time'] : 0;
             $stats = new TransferStats($request, $response, $transferTime, $reason);
-            \call_user_func($options['on_stats'], $stats);
+            call_user_func($options['on_stats'], $stats);
         }
     }
 }

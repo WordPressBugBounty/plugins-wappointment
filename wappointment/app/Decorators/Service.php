@@ -14,7 +14,7 @@ class Service
     {
         $this->service = $serviceArray;
         $this->name = !empty($serviceArray['name']) ? $serviceArray['name'] : '';
-        $this->type = !empty($serviceArray['type']) && \is_array($serviceArray['type']) ? $serviceArray['type'] : [];
+        $this->type = !empty($serviceArray['type']) && is_array($serviceArray['type']) ? $serviceArray['type'] : [];
         $this->address = $this->hasPhysical() && !empty($serviceArray['address']) ? $serviceArray['address'] : '';
         $this->duration = empty($serviceArray['duration']) ? 0 : $serviceArray['duration'];
         $this->options = empty($serviceArray['options']) ? [] : $serviceArray['options'];
@@ -33,15 +33,11 @@ class Service
     }
     public function hasManyTypes()
     {
-        return \count($this->type) > 1;
+        return count($this->type) > 1;
     }
     public function hasPhone()
     {
         return $this->hasType('phone');
-    }
-    public function hasSkype()
-    {
-        return $this->hasType('skype');
     }
     public function hasZoom()
     {
@@ -53,7 +49,7 @@ class Service
     }
     public function hasType($type)
     {
-        return \in_array($type, $this->type);
+        return in_array($type, $this->type);
     }
     public function getCountries()
     {

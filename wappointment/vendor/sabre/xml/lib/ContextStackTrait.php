@@ -96,6 +96,6 @@ trait ContextStackTrait
      */
     public function popContext()
     {
-        list($this->elementMap, $this->contextUri, $this->namespaceMap, $this->classMap) = \array_pop($this->contextStack);
+        list($this->elementMap, $this->contextUri, $this->namespaceMap, $this->classMap) = array_pop($this->contextStack);
     }
 }

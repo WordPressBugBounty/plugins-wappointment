@@ -38,8 +38,8 @@ class Events
     }
     public static function getCustomInstance($className, $type = 'Events', $args = \false, $full_namespace = \false)
     {
-        $className = $full_namespace ? $className : '\\Wappointment\\' . $type . '\\' . $className;
-        if (!\class_exists($className)) {
+        $className = $full_namespace ? $className : '\Wappointment\\' . $type . '\\' . $className;
+        if (!class_exists($className)) {
             throw new \WappointmentException('Cannot load ' . $type . ' instance ' . $className, 1);
         }
         if (empty($args)) {

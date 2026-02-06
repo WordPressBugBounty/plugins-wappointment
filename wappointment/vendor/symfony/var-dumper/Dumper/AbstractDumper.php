@@ -41,7 +41,7 @@ abstract class AbstractDumper implements DataDumperInterface, DumperInterface
     {
         $this->flags = $flags;
         $this->setCharset((($charset ?: \ini_get('php.output_encoding')) ?: \ini_get('default_charset')) ?: 'UTF-8');
-        $this->decimalPoint = \PHP_VERSION_ID >= 80000 ? '.' : \localeconv()['decimal_point'];
+        $this->decimalPoint = \PHP_VERSION_ID >= 80000 ? '.' : localeconv()['decimal_point'];
         $this->setOutput($output ?: static::$defaultOutput);
         if (!$output && \is_string(static::$defaultOutput)) {
             static::$defaultOutput = $this->outputStream;
@@ -62,7 +62,7 @@ abstract class AbstractDumper implements DataDumperInterface, DumperInterface
             $this->lineDumper = $output;
         } else {
             if (\is_string($output)) {
-                $output = \fopen($output, 'w');
+                $output = fopen($output, 'w');
             }
             $this->outputStream = $output;
             $this->lineDumper = [$this, 'echoLine'];
@@ -77,7 +77,7 @@ abstract class AbstractDumper implements DataDumperInterface, DumperInterface
     public function setCharset(string $charset)
     {
         $prev = $this->charset;
-        $charset = \strtoupper($charset);
+        $charset = strtoupper($charset);
         $charset = null === $charset || 'UTF-8' === $charset || 'UTF8' === $charset ? 'CP1252' : $charset;
         $this->charset = $charset;
         return $prev;
@@ -104,12 +104,12 @@ abstract class AbstractDumper implements DataDumperInterface, DumperInterface
      */
     public function dump(Data $data, $output = null)
     {
-        $this->decimalPoint = \PHP_VERSION_ID >= 80000 ? '.' : \localeconv()['decimal_point'];
-        if ($locale = $this->flags & (self::DUMP_COMMA_SEPARATOR | self::DUMP_TRAILING_COMMA) ? \setlocale(\LC_NUMERIC, 0) : null) {
-            \setlocale(\LC_NUMERIC, 'C');
+        $this->decimalPoint = \PHP_VERSION_ID >= 80000 ? '.' : localeconv()['decimal_point'];
+        if ($locale = $this->flags & (self::DUMP_COMMA_SEPARATOR | self::DUMP_TRAILING_COMMA) ? setlocale(\LC_NUMERIC, 0) : null) {
+            setlocale(\LC_NUMERIC, 'C');
         }
         if ($returnDump = \true === $output) {
-            $output = \fopen('php://memory', 'r+');
+            $output = fopen('php://memory', 'r+');
         }
         if ($output) {
             $prevOutput = $this->setOutput($output);
@@ -118,8 +118,8 @@ abstract class AbstractDumper implements DataDumperInterface, DumperInterface
             $data->dump($this);
             $this->dumpLine(-1);
             if ($returnDump) {
-                $result = \stream_get_contents($output, -1, 0);
-                \fclose($output);
+                $result = stream_get_contents($output, -1, 0);
+                fclose($output);
                 return $result;
             }
         } finally {
@@ -127,7 +127,7 @@ abstract class AbstractDumper implements DataDumperInterface, DumperInterface
                 $this->setOutput($prevOutput);
             }
             if ($locale) {
-                \setlocale(\LC_NUMERIC, $locale);
+                setlocale(\LC_NUMERIC, $locale);
             }
         }
         return null;
@@ -149,7 +149,7 @@ abstract class AbstractDumper implements DataDumperInterface, DumperInterface
     protected function echoLine(string $line, int $depth, string $indentPad)
     {
         if (-1 !== $depth) {
-            \fwrite($this->outputStream, \str_repeat($indentPad, $depth) . $line . "\n");
+            fwrite($this->outputStream, str_repeat($indentPad, $depth) . $line . "\n");
         }
     }
     /**
@@ -159,18 +159,18 @@ abstract class AbstractDumper implements DataDumperInterface, DumperInterface
      */
     protected function utf8Encode(?string $s)
     {
-        if (null === $s || \preg_match('//u', $s)) {
+        if (null === $s || preg_match('//u', $s)) {
             return $s;
         }
-        if (!\function_exists('iconv')) {
+        if (!\function_exists('iconv') && !\function_exists('WappoVendor\iconv')) {
             throw new \RuntimeException('Unable to convert a non-UTF-8 string to UTF-8: required function iconv() does not exist. You should install ext-iconv or symfony/polyfill-iconv.');
         }
-        if (\false !== ($c = @\iconv($this->charset, 'UTF-8', $s))) {
+        if (\false !== $c = @iconv($this->charset, 'UTF-8', $s)) {
             return $c;
         }
-        if ('CP1252' !== $this->charset && \false !== ($c = @\iconv('CP1252', 'UTF-8', $s))) {
+        if ('CP1252' !== $this->charset && \false !== $c = @iconv('CP1252', 'UTF-8', $s)) {
             return $c;
         }
-        return \iconv('CP850', 'UTF-8', $s);
+        return iconv('CP850', 'UTF-8', $s);
     }
 }

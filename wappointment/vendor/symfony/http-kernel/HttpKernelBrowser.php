@@ -71,16 +71,16 @@ class HttpKernelBrowser extends AbstractBrowser
      */
     protected function getScript(object $request)
     {
-        $kernel = \var_export(\serialize($this->kernel), \true);
-        $request = \var_export(\serialize($request), \true);
-        $errorReporting = \error_reporting();
+        $kernel = var_export(serialize($this->kernel), \true);
+        $request = var_export(serialize($request), \true);
+        $errorReporting = error_reporting();
         $requires = '';
-        foreach (\get_declared_classes() as $class) {
-            if (0 === \strpos($class, 'ComposerAutoloaderInit')) {
+        foreach (get_declared_classes() as $class) {
+            if (0 === strpos($class, 'ComposerAutoloaderInit')) {
                 $r = new \ReflectionClass($class);
                 $file = \dirname($r->getFileName(), 2) . '/autoload.php';
-                if (\file_exists($file)) {
-                    $requires .= 'require_once ' . \var_export($file, \true) . ";\n";
+                if (file_exists($file)) {
+                    $requires .= 'require_once ' . var_export($file, \true) . ";\n";
                 }
             }
         }
@@ -166,9 +166,9 @@ EOF;
     protected function filterResponse(object $response)
     {
         // this is needed to support StreamedResponse
-        \ob_start();
+        ob_start();
         $response->sendContent();
-        $content = \ob_get_clean();
+        $content = ob_get_clean();
         return new DomResponse($content, $response->getStatusCode(), $response->headers->all());
     }
 }

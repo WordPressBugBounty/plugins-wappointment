@@ -26,7 +26,7 @@ final class ExceptionConverter implements ExceptionConverterInterface
     /**
      * @link http://www.dba-oracle.com/t_error_code_list.htm
      */
-    public function convert(Exception $exception, ?Query $query) : DriverException
+    public function convert(Exception $exception, ?Query $query): DriverException
     {
         switch ($exception->getCode()) {
             case 1:

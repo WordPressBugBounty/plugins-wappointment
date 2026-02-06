@@ -40,5 +40,5 @@ interface Driver
     /**
      * Gets the ExceptionConverter that can be used to convert driver-level exceptions into DBAL exceptions.
      */
-    public function getExceptionConverter() : ExceptionConverter;
+    public function getExceptionConverter(): ExceptionConverter;
 }

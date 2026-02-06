@@ -15,7 +15,7 @@ final class Charset implements Initializer
     {
         $this->charset = $charset;
     }
-    public function initialize(mysqli $connection) : void
+    public function initialize(mysqli $connection): void
     {
         try {
             $success = $connection->set_charset($this->charset);

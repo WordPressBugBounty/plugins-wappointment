@@ -69,7 +69,7 @@ class MongoDbSessionHandler extends AbstractSessionHandler
             throw new \InvalidArgumentException('You must provide the "database" and "collection" option for MongoDBSessionHandler.');
         }
         $this->mongo = $mongo;
-        $this->options = \array_merge(['id_field' => '_id', 'data_field' => 'data', 'time_field' => 'time', 'expiry_field' => 'expires_at'], $options);
+        $this->options = array_merge(['id_field' => '_id', 'data_field' => 'data', 'time_field' => 'time', 'expiry_field' => 'expires_at'], $options);
     }
     /**
      * @return bool
@@ -100,7 +100,7 @@ class MongoDbSessionHandler extends AbstractSessionHandler
      */
     protected function doWrite(string $sessionId, string $data)
     {
-        $expiry = new UTCDateTime((\time() + (int) \ini_get('session.gc_maxlifetime')) * 1000);
+        $expiry = new UTCDateTime((time() + (int) \ini_get('session.gc_maxlifetime')) * 1000);
         $fields = [$this->options['time_field'] => new UTCDateTime(), $this->options['expiry_field'] => $expiry, $this->options['data_field'] => new Binary($data, Binary::TYPE_OLD_BINARY)];
         $this->getCollection()->updateOne([$this->options['id_field'] => $sessionId], ['$set' => $fields], ['upsert' => \true]);
         return \true;
@@ -111,7 +111,7 @@ class MongoDbSessionHandler extends AbstractSessionHandler
     #[\ReturnTypeWillChange]
     public function updateTimestamp($sessionId, $data)
     {
-        $expiry = new UTCDateTime((\time() + (int) \ini_get('session.gc_maxlifetime')) * 1000);
+        $expiry = new UTCDateTime((time() + (int) \ini_get('session.gc_maxlifetime')) * 1000);
         $this->getCollection()->updateOne([$this->options['id_field'] => $sessionId], ['$set' => [$this->options['time_field'] => new UTCDateTime(), $this->options['expiry_field'] => $expiry]]);
         return \true;
     }
@@ -126,7 +126,7 @@ class MongoDbSessionHandler extends AbstractSessionHandler
         }
         return $dbData[$this->options['data_field']]->getData();
     }
-    private function getCollection() : Collection
+    private function getCollection(): Collection
     {
         if (null === $this->collection) {
             $this->collection = $this->mongo->selectCollection($this->options['database'], $this->options['collection']);

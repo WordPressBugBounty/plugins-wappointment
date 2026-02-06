@@ -31,7 +31,7 @@ class MethodNotAllowedHttpException extends HttpException
             trigger_deprecation('symfony/http-kernel', '5.3', 'Passing null as $code to "%s()" is deprecated, pass 0 instead.', __METHOD__);
             $code = 0;
         }
-        $headers['Allow'] = \strtoupper(\implode(', ', $allow));
+        $headers['Allow'] = strtoupper(implode(', ', $allow));
         parent::__construct(405, $message, $previous, $headers, $code);
     }
 }

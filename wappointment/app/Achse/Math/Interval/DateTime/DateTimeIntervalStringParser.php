@@ -15,7 +15,7 @@ final class DateTimeIntervalStringParser extends \Wappointment\Achse\Math\Interv
      * @param string $string
      * @return DateTimeInterval
      */
-    public static function parse(string $string) : \Wappointment\Achse\Math\Interval\Interval
+    public static function parse(string $string): \Wappointment\Achse\Math\Interval\Interval
     {
         list($left, $right) = self::parseBoundariesStringsFromString($string);
         return new \Wappointment\Achse\Math\Interval\DateTime\DateTimeInterval(self::parseBoundary($left), self::parseBoundary($right));
@@ -24,7 +24,7 @@ final class DateTimeIntervalStringParser extends \Wappointment\Achse\Math\Interv
      * @param string $string
      * @return DateTimeBoundary
      */
-    protected static function parseBoundary(string $input) : \Wappointment\Achse\Math\Interval\Boundary
+    protected static function parseBoundary(string $input): \Wappointment\Achse\Math\Interval\Boundary
     {
         list($elementString, $state) = self::parseBoundaryDataFromString($input);
         /** @var DateTime $dateTime */

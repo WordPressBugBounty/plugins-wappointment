@@ -41,7 +41,7 @@ class ExpressionBuilder
      * @param string|CompositeExpression $expression
      * @param string|CompositeExpression ...$expressions
      */
-    public function and($expression, ...$expressions) : CompositeExpression
+    public function and($expression, ...$expressions): CompositeExpression
     {
         return CompositeExpression::and($expression, ...$expressions);
     }
@@ -51,7 +51,7 @@ class ExpressionBuilder
      * @param string|CompositeExpression $expression
      * @param string|CompositeExpression ...$expressions
      */
-    public function or($expression, ...$expressions) : CompositeExpression
+    public function or($expression, ...$expressions): CompositeExpression
     {
         return CompositeExpression::or($expression, ...$expressions);
     }

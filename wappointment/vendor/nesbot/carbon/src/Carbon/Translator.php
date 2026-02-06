@@ -13,7 +13,7 @@ namespace WappoVendor\Carbon;
 use ReflectionMethod;
 use WappoVendor\Symfony\Component\Translation;
 use WappoVendor\Symfony\Contracts\Translation\TranslatorInterface;
-$transMethod = new ReflectionMethod(\class_exists(TranslatorInterface::class) ? TranslatorInterface::class : Translation\Translator::class, 'trans');
+$transMethod = new ReflectionMethod(class_exists(TranslatorInterface::class) ? TranslatorInterface::class : Translation\Translator::class, 'trans');
 require $transMethod->hasReturnType() ? __DIR__ . '/../../lazy/Carbon/TranslatorStrongType.php' : __DIR__ . '/../../lazy/Carbon/TranslatorWeakType.php';
 class Translator extends LazyTranslator
 {

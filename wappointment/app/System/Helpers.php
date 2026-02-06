@@ -19,7 +19,7 @@ class Helpers
     }
     public static function pluginSlug()
     {
-        return \strtolower(self::pluginName());
+        return strtolower(self::pluginName());
     }
     public static function pluginPath()
     {
@@ -38,17 +38,17 @@ class Helpers
         static $manifests = [];
         $manifestPath = self::pluginPath() . 'dist/manifest.json';
         if (!isset($manifests[$manifestPath])) {
-            if (!\file_exists($manifestPath)) {
+            if (!file_exists($manifestPath)) {
                 throw new \WappointmentException('The manifest does not exist.');
             }
-            if (!\is_readable($manifestPath)) {
+            if (!is_readable($manifestPath)) {
                 throw new \WappointmentException('The manifest is not readable.');
             }
-            $manifests[$manifestPath] = \json_decode(\file_get_contents($manifestPath), \true);
+            $manifests[$manifestPath] = json_decode(file_get_contents($manifestPath), \true);
         }
         $manifest = $manifests[$manifestPath];
         if (!isset($manifest[$bundled_file])) {
-            if (\file_exists(WAPPOINTMENT_PATH . '/dist/' . $bundled_file)) {
+            if (file_exists(WAPPOINTMENT_PATH . '/dist/' . $bundled_file)) {
                 return $bundled_file;
             }
             throw new \WappointmentException("Unable to locate bundled file: {$bundled_file}.");

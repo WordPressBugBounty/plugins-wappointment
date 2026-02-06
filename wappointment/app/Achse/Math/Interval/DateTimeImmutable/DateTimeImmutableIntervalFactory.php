@@ -13,7 +13,7 @@ final class DateTimeImmutableIntervalFactory
      * @param bool $rightState
      * @return DateTimeImmutableInterval
      */
-    public static function create(\DateTimeInterface $leftElement, bool $leftState, \DateTimeInterface $rightElement, bool $rightState) : \Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutableInterval
+    public static function create(\DateTimeInterface $leftElement, bool $leftState, \DateTimeInterface $rightElement, bool $rightState): \Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutableInterval
     {
         return new \Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutableInterval(\Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutableBoundaryFactory::create($leftElement, $leftState), \Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutableBoundaryFactory::create($rightElement, $rightState));
     }

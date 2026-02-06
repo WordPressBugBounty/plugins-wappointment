@@ -61,33 +61,33 @@ final class ArrayResult implements Result
     /**
      * {@inheritdoc}
      */
-    public function fetchAllNumeric() : array
+    public function fetchAllNumeric(): array
     {
         return FetchUtils::fetchAllNumeric($this);
     }
     /**
      * {@inheritdoc}
      */
-    public function fetchAllAssociative() : array
+    public function fetchAllAssociative(): array
     {
         return FetchUtils::fetchAllAssociative($this);
     }
     /**
      * {@inheritdoc}
      */
-    public function fetchFirstColumn() : array
+    public function fetchFirstColumn(): array
     {
         return FetchUtils::fetchFirstColumn($this);
     }
-    public function rowCount() : int
+    public function rowCount(): int
     {
         return count($this->data);
     }
-    public function columnCount() : int
+    public function columnCount(): int
     {
         return $this->columnCount;
     }
-    public function free() : void
+    public function free(): void
     {
         $this->data = [];
     }

@@ -30,7 +30,7 @@ final class NotTaggedControllerValueResolver implements ArgumentValueResolverInt
     /**
      * {@inheritdoc}
      */
-    public function supports(Request $request, ArgumentMetadata $argument) : bool
+    public function supports(Request $request, ArgumentMetadata $argument): bool
     {
         $controller = $request->attributes->get('_controller');
         if (\is_array($controller) && \is_callable($controller, \true) && \is_string($controller[0])) {
@@ -39,29 +39,29 @@ final class NotTaggedControllerValueResolver implements ArgumentValueResolverInt
             return \false;
         }
         if ('\\' === $controller[0]) {
-            $controller = \ltrim($controller, '\\');
+            $controller = ltrim($controller, '\\');
         }
-        if (!$this->container->has($controller) && \false !== ($i = \strrpos($controller, ':'))) {
-            $controller = \substr($controller, 0, $i) . \strtolower(\substr($controller, $i));
+        if (!$this->container->has($controller) && \false !== $i = strrpos($controller, ':')) {
+            $controller = substr($controller, 0, $i) . strtolower(substr($controller, $i));
         }
         return \false === $this->container->has($controller);
     }
     /**
      * {@inheritdoc}
      */
-    public function resolve(Request $request, ArgumentMetadata $argument) : iterable
+    public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
         if (\is_array($controller = $request->attributes->get('_controller'))) {
             $controller = $controller[0] . '::' . $controller[1];
         }
         if ('\\' === $controller[0]) {
-            $controller = \ltrim($controller, '\\');
+            $controller = ltrim($controller, '\\');
         }
         if (!$this->container->has($controller)) {
-            $controller = \false !== ($i = \strrpos($controller, ':')) ? \substr($controller, 0, $i) . \strtolower(\substr($controller, $i)) : $controller . '::__invoke';
+            $controller = \false !== ($i = strrpos($controller, ':')) ? substr($controller, 0, $i) . strtolower(substr($controller, $i)) : $controller . '::__invoke';
         }
-        $what = \sprintf('argument $%s of "%s()"', $argument->getName(), $controller);
-        $message = \sprintf('Could not resolve %s, maybe you forgot to register the controller as a service or missed tagging it with the "controller.service_arguments"?', $what);
+        $what = sprintf('argument $%s of "%s()"', $argument->getName(), $controller);
+        $message = sprintf('Could not resolve %s, maybe you forgot to register the controller as a service or missed tagging it with the "controller.service_arguments"?', $what);
         throw new RuntimeException($message);
     }
 }

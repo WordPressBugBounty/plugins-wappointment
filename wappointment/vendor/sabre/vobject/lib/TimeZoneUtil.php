@@ -37,18 +37,18 @@ class TimeZoneUtil
         $this->addFinder('tzmap', new FindFromTimezoneMap());
         $this->addFinder('offset', new FindFromOffset());
     }
-    private static function getInstance() : self
+    private static function getInstance(): self
     {
         if (null === self::$instance) {
             self::$instance = new self();
         }
         return self::$instance;
     }
-    private function addGuesser(string $key, TimezoneGuesser $guesser) : void
+    private function addGuesser(string $key, TimezoneGuesser $guesser): void
     {
         $this->timezoneGuessers[$key] = $guesser;
     }
-    private function addFinder(string $key, TimezoneFinder $finder) : void
+    private function addFinder(string $key, TimezoneFinder $finder): void
     {
         $this->timezoneFinders[$key] = $finder;
     }
@@ -66,7 +66,7 @@ class TimeZoneUtil
      * Alternatively, if $failIfUncertain is set to true, it will throw an
      * exception if we cannot accurately determine the timezone.
      */
-    private function findTimeZone(string $tzid, Component $vcalendar = null, bool $failIfUncertain = \false) : DateTimeZone
+    private function findTimeZone(string $tzid, Component $vcalendar = null, bool $failIfUncertain = \false): DateTimeZone
     {
         foreach ($this->timezoneFinders as $timezoneFinder) {
             $timezone = $timezoneFinder->find($tzid, $failIfUncertain);
@@ -93,13 +93,13 @@ class TimeZoneUtil
             throw new InvalidArgumentException('We were unable to determine the correct PHP timezone for tzid: ' . $tzid);
         }
         // If we got all the way here, we default to whatever has been set as the PHP default timezone.
-        return new DateTimeZone(\date_default_timezone_get());
+        return new DateTimeZone(date_default_timezone_get());
     }
-    public static function addTimezoneGuesser(string $key, TimezoneGuesser $guesser) : void
+    public static function addTimezoneGuesser(string $key, TimezoneGuesser $guesser): void
     {
         self::getInstance()->addGuesser($key, $guesser);
     }
-    public static function addTimezoneFinder(string $key, TimezoneFinder $finder) : void
+    public static function addTimezoneFinder(string $key, TimezoneFinder $finder): void
     {
         self::getInstance()->addFinder($key, $finder);
     }
@@ -113,7 +113,7 @@ class TimeZoneUtil
     {
         return self::getInstance()->findTimeZone($tzid, $vcalendar, $failIfUncertain);
     }
-    public static function clean() : void
+    public static function clean(): void
     {
         self::$instance = null;
     }
@@ -224,10 +224,10 @@ class TimeZoneUtil
      */
     public static function loadTzMaps()
     {
-        if (!\is_null(self::$map)) {
+        if (!is_null(self::$map)) {
             return;
         }
-        self::$map = \array_merge(include __DIR__ . '/timezonedata/windowszones.php', include __DIR__ . '/timezonedata/lotuszones.php', include __DIR__ . '/timezonedata/exchangezones.php', include __DIR__ . '/timezonedata/php-workaround.php');
+        self::$map = array_merge(include __DIR__ . '/timezonedata/windowszones.php', include __DIR__ . '/timezonedata/lotuszones.php', include __DIR__ . '/timezonedata/exchangezones.php', include __DIR__ . '/timezonedata/php-workaround.php');
     }
     /**
      * This method returns an array of timezone identifiers, that are supported

@@ -63,7 +63,7 @@ final class Driver extends AbstractMySQLDriver
      *
      * @return list<Initializer>
      */
-    private function withOptions(array $initializers, array $options) : array
+    private function withOptions(array $initializers, array $options): array
     {
         if (count($options) !== 0) {
             $initializers[] = new Options($options);
@@ -76,7 +76,7 @@ final class Driver extends AbstractMySQLDriver
      *
      * @return list<Initializer>
      */
-    private function withSecure(array $initializers, array $params) : array
+    private function withSecure(array $initializers, array $params): array
     {
         if (isset($params['ssl_key']) || isset($params['ssl_cert']) || isset($params['ssl_ca']) || isset($params['ssl_capath']) || isset($params['ssl_cipher'])) {
             $initializers[] = new Secure($params['ssl_key'] ?? '', $params['ssl_cert'] ?? '', $params['ssl_ca'] ?? '', $params['ssl_capath'] ?? '', $params['ssl_cipher'] ?? '');
@@ -89,7 +89,7 @@ final class Driver extends AbstractMySQLDriver
      *
      * @return list<Initializer>
      */
-    private function withCharset(array $initializers, array $params) : array
+    private function withCharset(array $initializers, array $params): array
     {
         if (isset($params['charset'])) {
             $initializers[] = new Charset($params['charset']);

@@ -4,7 +4,7 @@ namespace WappoVendor;
 
 use WappoVendor\Illuminate\Support\Arr;
 use WappoVendor\Illuminate\Support\Collection;
-if (!\function_exists('WappoVendor\\collect')) {
+if (!\function_exists('WappoVendor\collect')) {
     /**
      * Create a collection from the given value.
      *
@@ -16,7 +16,7 @@ if (!\function_exists('WappoVendor\\collect')) {
         return new Collection($value);
     }
 }
-if (!\function_exists('WappoVendor\\data_fill')) {
+if (!\function_exists('WappoVendor\data_fill')) {
     /**
      * Fill in data where it's missing.
      *
@@ -30,7 +30,7 @@ if (!\function_exists('WappoVendor\\data_fill')) {
         return data_set($target, $key, $value, \false);
     }
 }
-if (!\function_exists('WappoVendor\\data_get')) {
+if (!\function_exists('WappoVendor\data_get')) {
     /**
      * Get an item from an array or object using "dot" notation.
      *
@@ -73,7 +73,7 @@ if (!\function_exists('WappoVendor\\data_get')) {
         return $target;
     }
 }
-if (!\function_exists('WappoVendor\\data_set')) {
+if (!\function_exists('WappoVendor\data_set')) {
     /**
      * Set an item on an array or object using dot notation.
      *
@@ -128,7 +128,7 @@ if (!\function_exists('WappoVendor\\data_set')) {
         return $target;
     }
 }
-if (!\function_exists('WappoVendor\\head')) {
+if (!\function_exists('WappoVendor\head')) {
     /**
      * Get the first element of an array. Useful for method chaining.
      *
@@ -140,7 +140,7 @@ if (!\function_exists('WappoVendor\\head')) {
         return \reset($array);
     }
 }
-if (!\function_exists('WappoVendor\\last')) {
+if (!\function_exists('WappoVendor\last')) {
     /**
      * Get the last element from an array.
      *
@@ -152,7 +152,7 @@ if (!\function_exists('WappoVendor\\last')) {
         return \end($array);
     }
 }
-if (!\function_exists('WappoVendor\\value')) {
+if (!\function_exists('WappoVendor\value')) {
     /**
      * Return the default value of the given value.
      *

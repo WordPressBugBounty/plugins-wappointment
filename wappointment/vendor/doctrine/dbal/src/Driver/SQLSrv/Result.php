@@ -48,25 +48,25 @@ final class Result implements ResultInterface
     /**
      * {@inheritDoc}
      */
-    public function fetchAllNumeric() : array
+    public function fetchAllNumeric(): array
     {
         return FetchUtils::fetchAllNumeric($this);
     }
     /**
      * {@inheritDoc}
      */
-    public function fetchAllAssociative() : array
+    public function fetchAllAssociative(): array
     {
         return FetchUtils::fetchAllAssociative($this);
     }
     /**
      * {@inheritDoc}
      */
-    public function fetchFirstColumn() : array
+    public function fetchFirstColumn(): array
     {
         return FetchUtils::fetchFirstColumn($this);
     }
-    public function rowCount() : int
+    public function rowCount(): int
     {
         $count = sqlsrv_rows_affected($this->statement);
         if ($count !== \false) {
@@ -74,7 +74,7 @@ final class Result implements ResultInterface
         }
         return 0;
     }
-    public function columnCount() : int
+    public function columnCount(): int
     {
         $count = sqlsrv_num_fields($this->statement);
         if ($count !== \false) {
@@ -82,7 +82,7 @@ final class Result implements ResultInterface
         }
         return 0;
     }
-    public function free() : void
+    public function free(): void
     {
         // emulate it by fetching and discarding rows, similarly to what PDO does in this case
         // @link http://php.net/manual/en/pdostatement.closecursor.php

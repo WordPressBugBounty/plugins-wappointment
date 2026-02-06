@@ -71,7 +71,7 @@ class StartSession
         $lockFor = $request->route() && $request->route()->locksFor() ? $request->route()->locksFor() : 10;
         $lock = $this->cache($this->manager->blockDriver())->lock('session:' . $session->getId(), $lockFor)->betweenBlockedAttemptsSleepFor(50);
         try {
-            $lock->block(!\is_null($request->route()->waitsFor()) ? $request->route()->waitsFor() : 10);
+            $lock->block(!is_null($request->route()->waitsFor()) ? $request->route()->waitsFor() : 10);
             return $this->handleStatefulRequest($request, $session, $next);
         } finally {
             optional($lock)->release();
@@ -110,7 +110,7 @@ class StartSession
      */
     protected function startSession(Request $request, $session)
     {
-        return \WappointmentLv::tap($session, function ($session) use($request) {
+        return \WappointmentLv::tap($session, function ($session) use ($request) {
             $session->setRequestOnHandler($request);
             $session->start();
         });
@@ -123,7 +123,7 @@ class StartSession
      */
     public function getSession(Request $request)
     {
-        return \WappointmentLv::tap($this->manager->driver(), function ($session) use($request) {
+        return \WappointmentLv::tap($this->manager->driver(), function ($session) use ($request) {
             $session->setId($request->cookies->get($session->getName()));
         });
     }
@@ -151,7 +151,7 @@ class StartSession
      */
     protected function configHitsLottery(array $config)
     {
-        return \random_int(1, $config['lottery'][1]) <= $config['lottery'][0];
+        return random_int(1, $config['lottery'][1]) <= $config['lottery'][0];
     }
     /**
      * Store the current URL for the request if necessary.
@@ -215,7 +215,7 @@ class StartSession
      */
     protected function sessionConfigured()
     {
-        return !\is_null($this->manager->getSessionConfig()['driver'] ?? null);
+        return !is_null($this->manager->getSessionConfig()['driver'] ?? null);
     }
     /**
      * Determine if the configured session driver is persistent.
@@ -226,7 +226,7 @@ class StartSession
     protected function sessionIsPersistent(array $config = null)
     {
         $config = $config ?: $this->manager->getSessionConfig();
-        return !\is_null($config['driver'] ?? null);
+        return !is_null($config['driver'] ?? null);
     }
     /**
      * Resolve the given cache driver.
@@ -236,6 +236,6 @@ class StartSession
      */
     protected function cache($driver)
     {
-        return \call_user_func($this->cacheFactoryResolver)->driver($driver);
+        return call_user_func($this->cacheFactoryResolver)->driver($driver);
     }
 }

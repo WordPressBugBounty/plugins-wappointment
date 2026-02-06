@@ -31,11 +31,11 @@ final class ControllerEvent extends KernelEvent
         parent::__construct($kernel, $request, $requestType);
         $this->setController($controller);
     }
-    public function getController() : callable
+    public function getController(): callable
     {
         return $this->controller;
     }
-    public function setController(callable $controller) : void
+    public function setController(callable $controller): void
     {
         $this->controller = $controller;
     }

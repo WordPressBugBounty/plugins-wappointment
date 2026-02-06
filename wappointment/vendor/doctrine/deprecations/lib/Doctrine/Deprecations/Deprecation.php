@@ -60,7 +60,7 @@ class Deprecation
      *
      * @param mixed $args
      */
-    public static function trigger(string $package, string $link, string $message, ...$args) : void
+    public static function trigger(string $package, string $link, string $message, ...$args): void
     {
         if (self::$type === self::TYPE_NONE) {
             return;
@@ -99,7 +99,7 @@ class Deprecation
      *
      * @param mixed $args
      */
-    public static function triggerIfCalledFromOutside(string $package, string $link, string $message, ...$args) : void
+    public static function triggerIfCalledFromOutside(string $package, string $link, string $message, ...$args): void
     {
         if (self::$type === self::TYPE_NONE) {
             return;
@@ -132,7 +132,7 @@ class Deprecation
     /**
      * @param array<mixed> $backtrace
      */
-    private static function delegateTriggerToBackend(string $message, array $backtrace, string $link, string $package) : void
+    private static function delegateTriggerToBackend(string $message, array $backtrace, string $link, string $package): void
     {
         if ((self::$type & self::TYPE_PSR_LOGGER) > 0) {
             $context = ['file' => $backtrace[0]['file'], 'line' => $backtrace[0]['line'], 'package' => $package, 'link' => $link];
@@ -147,7 +147,7 @@ class Deprecation
     /**
      * A non-local-aware version of PHPs basename function.
      */
-    private static function basename(string $filename) : string
+    private static function basename(string $filename): string
     {
         $pos = strrpos($filename, DIRECTORY_SEPARATOR);
         if ($pos === \false) {
@@ -155,24 +155,24 @@ class Deprecation
         }
         return substr($filename, $pos + 1);
     }
-    public static function enableTrackingDeprecations() : void
+    public static function enableTrackingDeprecations(): void
     {
         self::$type |= self::TYPE_TRACK_DEPRECATIONS;
     }
-    public static function enableWithTriggerError() : void
+    public static function enableWithTriggerError(): void
     {
         self::$type |= self::TYPE_TRIGGER_ERROR;
     }
-    public static function enableWithPsrLogger(LoggerInterface $logger) : void
+    public static function enableWithPsrLogger(LoggerInterface $logger): void
     {
         self::$type |= self::TYPE_PSR_LOGGER;
         self::$logger = $logger;
     }
-    public static function withoutDeduplication() : void
+    public static function withoutDeduplication(): void
     {
         self::$deduplication = \false;
     }
-    public static function disable() : void
+    public static function disable(): void
     {
         self::$type = self::TYPE_NONE;
         self::$logger = null;
@@ -181,17 +181,17 @@ class Deprecation
             self::$ignoredLinks[$link] = 0;
         }
     }
-    public static function ignorePackage(string $packageName) : void
+    public static function ignorePackage(string $packageName): void
     {
         self::$ignoredPackages[$packageName] = \true;
     }
-    public static function ignoreDeprecations(string ...$links) : void
+    public static function ignoreDeprecations(string ...$links): void
     {
         foreach ($links as $link) {
             self::$ignoredLinks[$link] = 0;
         }
     }
-    public static function getUniqueTriggeredDeprecationsCount() : int
+    public static function getUniqueTriggeredDeprecationsCount(): int
     {
         return array_reduce(self::$ignoredLinks, static function (int $carry, int $count) {
             return $carry + $count;
@@ -202,7 +202,7 @@ class Deprecation
      *
      * @return array<string,int>
      */
-    public static function getTriggeredDeprecations() : array
+    public static function getTriggeredDeprecations(): array
     {
         return self::$ignoredLinks;
     }

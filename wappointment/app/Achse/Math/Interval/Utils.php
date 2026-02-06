@@ -20,7 +20,7 @@ final class Utils
      * @param int|float $second
      * @return int
      */
-    public static function numberCmp($first, $second) : int
+    public static function numberCmp($first, $second): int
     {
         return $first - $second ? (int) (($first - $second) / \abs($first - $second)) : 0;
     }
@@ -32,7 +32,7 @@ final class Utils
      * @param DateTimeInterface $second
      * @return bool
      */
-    public static function isSameDate(\DateTimeInterface $first, \DateTimeInterface $second) : bool
+    public static function isSameDate(\DateTimeInterface $first, \DateTimeInterface $second): bool
     {
         if ($first->getTimezone()->getName() !== $second->getTimezone()->getName()) {
             throw new \InvalidArgumentException(\sprintf('You cannot compare times from two different timezones (%s, %s) for same date.' . ' Date is not always same at a time in different locations.', $first->getTimezone()->getName(), $second->getTimezone()->getName()));

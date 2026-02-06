@@ -5,11 +5,11 @@ namespace Wappointment\Validators;
 class IsAdvancedString extends \WappoVendor\Rakit\Validation\Rule
 {
     protected $message = ":attribute is using forbidden characters";
-    public function check($value) : bool
+    public function check($value): bool
     {
-        if (!\is_string($value)) {
+        if (!is_string($value)) {
             return \false;
         }
-        return empty($value) || \preg_match('/^[\\pL\\pM\\pN\\s\'\\+\\?\\=\\¿\\!\\¡\\"\\%\\&\\$\\(\\)\\[\\]\\*\\´\\,\\`\\;\\:\\.\\@\\/\\~\\#\\^-]+$/u', $value) > 0;
+        return empty($value) || preg_match('/^[\pL\pM\pN\s\'\+\?\=\¿\!\¡\"\%\&\$\(\)\[\]\*\´\,\`\;\:\.\@\/\~\#\^-]+$/u', $value) > 0;
     }
 }

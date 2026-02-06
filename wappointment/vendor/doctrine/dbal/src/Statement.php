@@ -140,7 +140,7 @@ class Statement
      *
      * @throws Exception
      */
-    public function execute($params = null) : Result
+    public function execute($params = null): Result
     {
         Deprecation::triggerIfCalledFromOutside('doctrine/dbal', 'https://github.com/doctrine/dbal/pull/4580', 'Statement::execute() is deprecated, use Statement::executeQuery() or Statement::executeStatement() instead');
         if ($params !== null) {
@@ -167,7 +167,7 @@ class Statement
      *
      * @throws Exception
      */
-    public function executeQuery(array $params = []) : Result
+    public function executeQuery(array $params = []): Result
     {
         if ($params === []) {
             $params = null;
@@ -182,7 +182,7 @@ class Statement
      *
      * @throws Exception
      */
-    public function executeStatement(array $params = []) : int
+    public function executeStatement(array $params = []): int
     {
         if ($params === []) {
             $params = null;

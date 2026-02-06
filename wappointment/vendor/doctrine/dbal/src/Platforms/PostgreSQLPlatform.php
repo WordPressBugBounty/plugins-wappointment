@@ -110,7 +110,7 @@ class PostgreSQLPlatform extends AbstractPlatform
     {
         return '(DATE(' . $date1 . ')-DATE(' . $date2 . '))';
     }
-    public function getCurrentDatabaseExpression() : string
+    public function getCurrentDatabaseExpression(): string
     {
         return 'CURRENT_DATABASE()';
     }
@@ -280,7 +280,7 @@ SQL
      * @param string $classAlias
      * @param string $namespaceAlias
      */
-    private function getTableWhereClause($table, $classAlias = 'c', $namespaceAlias = 'n') : string
+    private function getTableWhereClause($table, $classAlias = 'c', $namespaceAlias = 'n'): string
     {
         $whereClause = $namespaceAlias . ".nspname NOT IN ('pg_catalog', 'information_schema', 'pg_toast') AND ";
         if (strpos($table, '.') !== \false) {
@@ -433,7 +433,7 @@ SQL
      * might detect differences for binary type columns which do not have to be propagated
      * to database as there actually is no difference at database level.
      */
-    private function isUnchangedBinaryColumn(ColumnDiff $columnDiff) : bool
+    private function isUnchangedBinaryColumn(ColumnDiff $columnDiff): bool
     {
         $columnType = $columnDiff->column->getType();
         if (!$columnType instanceof BinaryType && !$columnType instanceof BlobType) {
@@ -490,7 +490,7 @@ SQL
     /**
      * Cache definition for sequences
      */
-    private function getSequenceCacheSQL(Sequence $sequence) : string
+    private function getSequenceCacheSQL(Sequence $sequence): string
     {
         if ($sequence->getCache() > 1) {
             return ' CACHE ' . $sequence->getCache();
@@ -634,7 +634,7 @@ SQL
             /**
              * @param mixed $value
              */
-            static function ($value) : ?int {
+            static function ($value): ?int {
                 return $value === null ? null : (int) $value;
             }
         );
@@ -893,14 +893,14 @@ SQL
     /**
      * @param mixed[] $column
      */
-    private function isSerialColumn(array $column) : bool
+    private function isSerialColumn(array $column): bool
     {
         return isset($column['type'], $column['autoincrement']) && $column['autoincrement'] === \true && $this->isIntegerType($column['type']);
     }
     /**
      * Check whether the type of a column is changed in a way that invalidates the default value for the column
      */
-    private function typeChangeBreaksDefaultValue(ColumnDiff $columnDiff) : bool
+    private function typeChangeBreaksDefaultValue(ColumnDiff $columnDiff): bool
     {
         if ($columnDiff->fromColumn === null) {
             return $columnDiff->hasChanged('type');
@@ -910,15 +910,15 @@ SQL
         // default should not be changed when switching between integer types and the default comes from a sequence
         return $columnDiff->hasChanged('type') && !($oldTypeIsInteger && $newTypeIsInteger && $columnDiff->column->getAutoincrement());
     }
-    private function isIntegerType(Type $type) : bool
+    private function isIntegerType(Type $type): bool
     {
         return $type instanceof PhpIntegerMappingType;
     }
-    private function getOldColumnComment(ColumnDiff $columnDiff) : ?string
+    private function getOldColumnComment(ColumnDiff $columnDiff): ?string
     {
         return $columnDiff->fromColumn !== null ? $this->getColumnComment($columnDiff->fromColumn) : null;
     }
-    public function getListTableMetadataSQL(string $table, ?string $schema = null) : string
+    public function getListTableMetadataSQL(string $table, ?string $schema = null): string
     {
         if ($schema !== null) {
             $table = $schema . '.' . $table;

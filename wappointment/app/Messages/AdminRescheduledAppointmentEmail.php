@@ -15,11 +15,11 @@ class AdminRescheduledAppointmentEmail extends \Wappointment\Messages\AbstractAd
         $tz = $this->getStaffTz($this->params['appointment']);
         $this->addLines([
             /* translators: %s - client's first name. */
-            \sprintf(__('Hi %s,', 'wappointment'), $this->params['appointment']->getStaff()->getFirstName()),
+            sprintf(__('Hi %s,', 'wappointment'), $this->params['appointment']->getStaff()->getFirstName()),
             __('A client rescheduled his appointment, find the details below.', 'wappointment'),
         ]);
         $this->addRoundedSquare($this->getEmailContent($this->params['client'], $this->params['appointment']));
-        $this->addRoundedSquare(['<u>' . __('Former appointment', 'wappointment') . '</u>', \sprintf(__('Date: %s', 'wappointment'), $this->params['oldAppointment']->start_at->setTimezone($tz)->format(Settings::get('date_format'))), \sprintf(
+        $this->addRoundedSquare(['<u>' . __('Former appointment', 'wappointment') . '</u>', sprintf(__('Date: %s', 'wappointment'), $this->params['oldAppointment']->start_at->setTimezone($tz)->format(Settings::get('date_format'))), sprintf(
             /* translators: %1$s is replaced with the start time, %2$s is replaced with the end time  */
             __('Time: %1$s - %2$s', 'wappointment'),
             $this->params['oldAppointment']->start_at->setTimezone($tz)->format(Settings::get('time_format')),

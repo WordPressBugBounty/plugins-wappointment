@@ -230,7 +230,7 @@ class OracleSchemaManager extends AbstractSchemaManager
      *
      * @param string $identifier The identifier to quote.
      */
-    private function getQuotedIdentifierName($identifier) : string
+    private function getQuotedIdentifierName($identifier): string
     {
         if (preg_match('/[a-z]/', $identifier) === 1) {
             return $this->_platform->quoteIdentifier($identifier);
@@ -240,7 +240,7 @@ class OracleSchemaManager extends AbstractSchemaManager
     /**
      * {@inheritdoc}
      */
-    public function listTableDetails($name) : Table
+    public function listTableDetails($name): Table
     {
         $table = parent::listTableDetails($name);
         $sql = $this->_platform->getListTableCommentsSQL($name);

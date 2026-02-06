@@ -276,13 +276,13 @@ abstract class AbstractLexer
      *
      * @return string[]
      */
-    protected abstract function getCatchablePatterns();
+    abstract protected function getCatchablePatterns();
     /**
      * Lexical non-catchable patterns.
      *
      * @return string[]
      */
-    protected abstract function getNonCatchablePatterns();
+    abstract protected function getNonCatchablePatterns();
     /**
      * Retrieve token type. Also processes the token value if necessary.
      *
@@ -292,5 +292,5 @@ abstract class AbstractLexer
      *
      * @param-out V $value
      */
-    protected abstract function getType(&$value);
+    abstract protected function getType(&$value);
 }

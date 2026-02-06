@@ -45,7 +45,7 @@ class Email extends Message
     {
         return $this->setHeaderBody('Text', 'Subject', $subject);
     }
-    public function getSubject() : ?string
+    public function getSubject(): ?string
     {
         return $this->getHeaders()->getHeaderBody('Subject');
     }
@@ -56,7 +56,7 @@ class Email extends Message
     {
         return $this->setHeaderBody('Date', 'Date', $dateTime);
     }
-    public function getDate() : ?\DateTimeImmutable
+    public function getDate(): ?\DateTimeImmutable
     {
         return $this->getHeaders()->getHeaderBody('Date');
     }
@@ -69,7 +69,7 @@ class Email extends Message
     {
         return $this->setHeaderBody('Path', 'Return-Path', Address::create($address));
     }
-    public function getReturnPath() : ?Address
+    public function getReturnPath(): ?Address
     {
         return $this->getHeaders()->getHeaderBody('Return-Path');
     }
@@ -82,7 +82,7 @@ class Email extends Message
     {
         return $this->setHeaderBody('Mailbox', 'Sender', Address::create($address));
     }
-    public function getSender() : ?Address
+    public function getSender(): ?Address
     {
         return $this->getHeaders()->getHeaderBody('Sender');
     }
@@ -107,7 +107,7 @@ class Email extends Message
     /**
      * @return Address[]
      */
-    public function getFrom() : array
+    public function getFrom(): array
     {
         return $this->getHeaders()->getHeaderBody('From') ?: [];
     }
@@ -132,7 +132,7 @@ class Email extends Message
     /**
      * @return Address[]
      */
-    public function getReplyTo() : array
+    public function getReplyTo(): array
     {
         return $this->getHeaders()->getHeaderBody('Reply-To') ?: [];
     }
@@ -157,7 +157,7 @@ class Email extends Message
     /**
      * @return Address[]
      */
-    public function getTo() : array
+    public function getTo(): array
     {
         return $this->getHeaders()->getHeaderBody('To') ?: [];
     }
@@ -182,7 +182,7 @@ class Email extends Message
     /**
      * @return Address[]
      */
-    public function getCc() : array
+    public function getCc(): array
     {
         return $this->getHeaders()->getHeaderBody('Cc') ?: [];
     }
@@ -207,7 +207,7 @@ class Email extends Message
     /**
      * @return Address[]
      */
-    public function getBcc() : array
+    public function getBcc(): array
     {
         return $this->getHeaders()->getHeaderBody('Bcc') ?: [];
     }
@@ -225,7 +225,7 @@ class Email extends Message
         } elseif ($priority < 1) {
             $priority = 1;
         }
-        return $this->setHeaderBody('Text', 'X-Priority', \sprintf('%d (%s)', $priority, self::PRIORITY_MAP[$priority]));
+        return $this->setHeaderBody('Text', 'X-Priority', sprintf('%d (%s)', $priority, self::PRIORITY_MAP[$priority]));
     }
     /**
      * Get the priority of this message.
@@ -233,9 +233,9 @@ class Email extends Message
      * The returned value is an integer where 1 is the highest priority and 5
      * is the lowest.
      */
-    public function getPriority() : int
+    public function getPriority(): int
     {
-        [$priority] = \sscanf($this->getHeaders()->getHeaderBody('X-Priority') ?? '', '%[1-5]');
+        [$priority] = sscanf($this->getHeaders()->getHeaderBody('X-Priority') ?? '', '%[1-5]');
         return $priority ?? 3;
     }
     /**
@@ -246,7 +246,7 @@ class Email extends Message
     public function text($body, string $charset = 'utf-8')
     {
         if (null !== $body && !\is_string($body) && !\is_resource($body)) {
-            throw new \TypeError(\sprintf('The body must be a string, a resource or null (got "%s").', \get_debug_type($body)));
+            throw new \TypeError(sprintf('The body must be a string, a resource or null (got "%s").', get_debug_type($body)));
         }
         $this->cachedBody = null;
         $this->text = $body;
@@ -260,7 +260,7 @@ class Email extends Message
     {
         return $this->text;
     }
-    public function getTextCharset() : ?string
+    public function getTextCharset(): ?string
     {
         return $this->textCharset;
     }
@@ -272,7 +272,7 @@ class Email extends Message
     public function html($body, string $charset = 'utf-8')
     {
         if (null !== $body && !\is_string($body) && !\is_resource($body)) {
-            throw new \TypeError(\sprintf('The body must be a string, a resource or null (got "%s").', \get_debug_type($body)));
+            throw new \TypeError(sprintf('The body must be a string, a resource or null (got "%s").', get_debug_type($body)));
         }
         $this->cachedBody = null;
         $this->html = $body;
@@ -286,7 +286,7 @@ class Email extends Message
     {
         return $this->html;
     }
-    public function getHtmlCharset() : ?string
+    public function getHtmlCharset(): ?string
     {
         return $this->htmlCharset;
     }
@@ -298,7 +298,7 @@ class Email extends Message
     public function attach($body, string $name = null, string $contentType = null)
     {
         if (!\is_string($body) && !\is_resource($body)) {
-            throw new \TypeError(\sprintf('The body must be a string or a resource (got "%s").', \get_debug_type($body)));
+            throw new \TypeError(sprintf('The body must be a string or a resource (got "%s").', get_debug_type($body)));
         }
         $this->cachedBody = null;
         $this->attachments[] = ['body' => $body, 'name' => $name, 'content-type' => $contentType, 'inline' => \false];
@@ -321,7 +321,7 @@ class Email extends Message
     public function embed($body, string $name = null, string $contentType = null)
     {
         if (!\is_string($body) && !\is_resource($body)) {
-            throw new \TypeError(\sprintf('The body must be a string or a resource (got "%s").', \get_debug_type($body)));
+            throw new \TypeError(sprintf('The body must be a string or a resource (got "%s").', get_debug_type($body)));
         }
         $this->cachedBody = null;
         $this->attachments[] = ['body' => $body, 'name' => $name, 'content-type' => $contentType, 'inline' => \true];
@@ -348,7 +348,7 @@ class Email extends Message
     /**
      * @return array|DataPart[]
      */
-    public function getAttachments() : array
+    public function getAttachments(): array
     {
         $parts = [];
         foreach ($this->attachments as $attachment) {
@@ -356,9 +356,9 @@ class Email extends Message
         }
         return $parts;
     }
-    public function getBody() : AbstractPart
+    public function getBody(): AbstractPart
     {
-        if (null !== ($body = parent::getBody())) {
+        if (null !== $body = parent::getBody()) {
             return $body;
         }
         return $this->generateBody();
@@ -390,7 +390,7 @@ class Email extends Message
      *         |
      *          ------------> application/pdf (with content)
      */
-    private function generateBody() : AbstractPart
+    private function generateBody(): AbstractPart
     {
         if (null !== $this->cachedBody) {
             return $this->cachedBody;
@@ -417,7 +417,7 @@ class Email extends Message
         }
         return $this->cachedBody = $part;
     }
-    private function prepareParts() : ?array
+    private function prepareParts(): ?array
     {
         $names = [];
         $htmlPart = null;
@@ -425,8 +425,8 @@ class Email extends Message
         if (null !== $html) {
             $htmlPart = new TextPart($html, $this->htmlCharset, 'html');
             $html = $htmlPart->getBody();
-            \preg_match_all('(<img\\s+[^>]*src\\s*=\\s*(?:([\'"])cid:(.+?)\\1|cid:([^>\\s]+)))i', $html, $names);
-            $names = \array_filter(\array_unique(\array_merge($names[2], $names[3])));
+            preg_match_all('(<img\s+[^>]*src\s*=\s*(?:([\'"])cid:(.+?)\1|cid:([^>\s]+)))i', $html, $names);
+            $names = array_filter(array_unique(array_merge($names[2], $names[3])));
         }
         // usage of reflection is a temporary workaround for missing getters that will be added in 6.2
         $nameRef = new \ReflectionProperty(TextPart::class, 'name');
@@ -446,7 +446,7 @@ class Email extends Message
                     continue 2;
                 }
                 $part->setDisposition('inline');
-                $html = \str_replace('cid:' . $name, 'cid:' . $part->getContentId(), $html, $count);
+                $html = str_replace('cid:' . $name, 'cid:' . $part->getContentId(), $html, $count);
                 if ($count) {
                     $related = \true;
                 }
@@ -462,9 +462,9 @@ class Email extends Message
         if (null !== $htmlPart) {
             $htmlPart = new TextPart($html, $this->htmlCharset, 'html');
         }
-        return [$htmlPart, $otherParts, \array_values($relatedParts)];
+        return [$htmlPart, $otherParts, array_values($relatedParts)];
     }
-    private function createDataPart(array $attachment) : DataPart
+    private function createDataPart(array $attachment): DataPart
     {
         if (isset($attachment['part'])) {
             return $attachment['part'];
@@ -482,14 +482,14 @@ class Email extends Message
     /**
      * @return $this
      */
-    private function setHeaderBody(string $type, string $name, $body) : object
+    private function setHeaderBody(string $type, string $name, $body): object
     {
         $this->getHeaders()->setHeaderBody($type, $name, $body);
         return $this;
     }
     private function addListAddressHeaderBody(string $name, array $addresses)
     {
-        if (!($header = $this->getHeaders()->get($name))) {
+        if (!$header = $this->getHeaders()->get($name)) {
             return $this->setListAddressHeaderBody($name, $addresses);
         }
         $header->addAddresses(Address::createArray($addresses));
@@ -512,7 +512,7 @@ class Email extends Message
     /**
      * @internal
      */
-    public function __serialize() : array
+    public function __serialize(): array
     {
         if (\is_resource($this->text)) {
             $this->text = (new TextPart($this->text))->getBody();
@@ -530,7 +530,7 @@ class Email extends Message
     /**
      * @internal
      */
-    public function __unserialize(array $data) : void
+    public function __unserialize(array $data): void
     {
         [$this->text, $this->textCharset, $this->html, $this->htmlCharset, $this->attachments, $parentData] = $data;
         parent::__unserialize($parentData);

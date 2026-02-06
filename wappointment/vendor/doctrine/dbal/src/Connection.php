@@ -249,7 +249,7 @@ class Connection
     /**
      * Creates an expression builder for the connection.
      */
-    public function createExpressionBuilder() : ExpressionBuilder
+    public function createExpressionBuilder(): ExpressionBuilder
     {
         return new ExpressionBuilder($this);
     }
@@ -302,7 +302,7 @@ class Connection
      *
      * @throws Exception If an invalid platform was specified for this connection.
      */
-    private function detectDatabasePlatform() : AbstractPlatform
+    private function detectDatabasePlatform(): AbstractPlatform
     {
         $version = $this->getDatabasePlatformVersion();
         if ($version !== null) {
@@ -501,7 +501,7 @@ class Connection
      *
      * @throws Exception
      */
-    private function addCriteriaCondition(array $criteria, array &$columns, array &$values, array &$conditions) : void
+    private function addCriteriaCondition(array $criteria, array &$columns, array &$values, array &$conditions): void
     {
         $platform = $this->getDatabasePlatform();
         foreach ($criteria as $columnName => $value) {
@@ -639,7 +639,7 @@ class Connection
      *
      * @return array<int, int|string|Type|null>|array<string, int|string|Type|null>
      */
-    private function extractTypeValues(array $columnList, array $types) : array
+    private function extractTypeValues(array $columnList, array $types): array
     {
         $typeValues = [];
         foreach ($columnList as $columnName) {
@@ -691,7 +691,7 @@ class Connection
      *
      * @throws Exception
      */
-    public function fetchAllNumeric(string $query, array $params = [], array $types = []) : array
+    public function fetchAllNumeric(string $query, array $params = [], array $types = []): array
     {
         return $this->executeQuery($query, $params, $types)->fetchAllNumeric();
     }
@@ -706,7 +706,7 @@ class Connection
      *
      * @throws Exception
      */
-    public function fetchAllAssociative(string $query, array $params = [], array $types = []) : array
+    public function fetchAllAssociative(string $query, array $params = [], array $types = []): array
     {
         return $this->executeQuery($query, $params, $types)->fetchAllAssociative();
     }
@@ -722,7 +722,7 @@ class Connection
      *
      * @throws Exception
      */
-    public function fetchAllKeyValue(string $query, array $params = [], array $types = []) : array
+    public function fetchAllKeyValue(string $query, array $params = [], array $types = []): array
     {
         return $this->executeQuery($query, $params, $types)->fetchAllKeyValue();
     }
@@ -739,7 +739,7 @@ class Connection
      *
      * @throws Exception
      */
-    public function fetchAllAssociativeIndexed(string $query, array $params = [], array $types = []) : array
+    public function fetchAllAssociativeIndexed(string $query, array $params = [], array $types = []): array
     {
         return $this->executeQuery($query, $params, $types)->fetchAllAssociativeIndexed();
     }
@@ -754,7 +754,7 @@ class Connection
      *
      * @throws Exception
      */
-    public function fetchFirstColumn(string $query, array $params = [], array $types = []) : array
+    public function fetchFirstColumn(string $query, array $params = [], array $types = []): array
     {
         return $this->executeQuery($query, $params, $types)->fetchFirstColumn();
     }
@@ -769,7 +769,7 @@ class Connection
      *
      * @throws Exception
      */
-    public function iterateNumeric(string $query, array $params = [], array $types = []) : Traversable
+    public function iterateNumeric(string $query, array $params = [], array $types = []): Traversable
     {
         return $this->executeQuery($query, $params, $types)->iterateNumeric();
     }
@@ -785,7 +785,7 @@ class Connection
      *
      * @throws Exception
      */
-    public function iterateAssociative(string $query, array $params = [], array $types = []) : Traversable
+    public function iterateAssociative(string $query, array $params = [], array $types = []): Traversable
     {
         return $this->executeQuery($query, $params, $types)->iterateAssociative();
     }
@@ -801,7 +801,7 @@ class Connection
      *
      * @throws Exception
      */
-    public function iterateKeyValue(string $query, array $params = [], array $types = []) : Traversable
+    public function iterateKeyValue(string $query, array $params = [], array $types = []): Traversable
     {
         return $this->executeQuery($query, $params, $types)->iterateKeyValue();
     }
@@ -818,7 +818,7 @@ class Connection
      *
      * @throws Exception
      */
-    public function iterateAssociativeIndexed(string $query, array $params = [], array $types = []) : Traversable
+    public function iterateAssociativeIndexed(string $query, array $params = [], array $types = []): Traversable
     {
         return $this->executeQuery($query, $params, $types)->iterateAssociativeIndexed();
     }
@@ -833,7 +833,7 @@ class Connection
      *
      * @throws Exception
      */
-    public function iterateColumn(string $query, array $params = [], array $types = []) : Traversable
+    public function iterateColumn(string $query, array $params = [], array $types = []): Traversable
     {
         return $this->executeQuery($query, $params, $types)->iterateColumn();
     }
@@ -844,7 +844,7 @@ class Connection
      *
      * @throws Exception
      */
-    public function prepare(string $sql) : Statement
+    public function prepare(string $sql): Statement
     {
         $connection = $this->getWrappedConnection();
         try {
@@ -866,7 +866,7 @@ class Connection
      *
      * @throws Exception
      */
-    public function executeQuery(string $sql, array $params = [], $types = [], ?QueryCacheProfile $qcp = null) : Result
+    public function executeQuery(string $sql, array $params = [], $types = [], ?QueryCacheProfile $qcp = null): Result
     {
         if ($qcp !== null) {
             return $this->executeCacheQuery($sql, $params, $types, $qcp);
@@ -910,7 +910,7 @@ class Connection
      * @throws CacheException
      * @throws Exception
      */
-    public function executeCacheQuery($sql, $params, $types, QueryCacheProfile $qcp) : Result
+    public function executeCacheQuery($sql, $params, $types, QueryCacheProfile $qcp): Result
     {
         $resultCache = $qcp->getResultCache() ?? $this->_config->getResultCache();
         if ($resultCache === null) {
@@ -1161,7 +1161,7 @@ class Connection
      *
      * @throws Exception
      */
-    private function commitAll() : void
+    private function commitAll(): void
     {
         while ($this->transactionNestingLevel !== 0) {
             if ($this->autoCommit === \false && $this->transactionNestingLevel === 1) {
@@ -1304,7 +1304,7 @@ class Connection
      *
      * @throws Exception
      */
-    public function createSchemaManager() : AbstractSchemaManager
+    public function createSchemaManager(): AbstractSchemaManager
     {
         return $this->_driver->getSchemaManager($this, $this->getDatabasePlatform());
     }
@@ -1395,7 +1395,7 @@ class Connection
      *
      * @throws Exception
      */
-    private function _bindTypedValues(DriverStatement $stmt, array $params, array $types) : void
+    private function _bindTypedValues(DriverStatement $stmt, array $params, array $types): void
     {
         // Check whether parameters are positional or named. Mixing is not allowed.
         if (is_int(key($params))) {
@@ -1433,7 +1433,7 @@ class Connection
      *
      * @throws Exception
      */
-    private function getBindingInfo($value, $type) : array
+    private function getBindingInfo($value, $type): array
     {
         if (is_string($type)) {
             $type = Type::getType($type);
@@ -1461,14 +1461,14 @@ class Connection
      * @param list<mixed>|array<string, mixed>                                     $params
      * @param array<int, int|string|Type|null>|array<string, int|string|Type|null> $types
      */
-    public final function convertExceptionDuringQuery(Driver\Exception $e, string $sql, array $params = [], array $types = []) : DriverException
+    final public function convertExceptionDuringQuery(Driver\Exception $e, string $sql, array $params = [], array $types = []): DriverException
     {
         return $this->handleDriverException($e, new Query($sql, $params, $types));
     }
     /**
      * @internal
      */
-    public final function convertException(Driver\Exception $e) : DriverException
+    final public function convertException(Driver\Exception $e): DriverException
     {
         return $this->handleDriverException($e, null);
     }
@@ -1478,7 +1478,7 @@ class Connection
      *
      * @return array{string, list<mixed>, array<int,Type|int|string|null>}
      */
-    private function expandArrayParameters(string $sql, array $params, array $types) : array
+    private function expandArrayParameters(string $sql, array $params, array $types): array
     {
         if ($this->parser === null) {
             $this->parser = $this->getDatabasePlatform()->createSQLParser();
@@ -1491,7 +1491,7 @@ class Connection
      * @param array<int, mixed>|array<string, mixed>                               $params
      * @param array<int, int|string|Type|null>|array<string, int|string|Type|null> $types
      */
-    private function needsArrayParameterConversion(array $params, array $types) : bool
+    private function needsArrayParameterConversion(array $params, array $types): bool
     {
         if (is_string(key($params))) {
             return \true;
@@ -1503,7 +1503,7 @@ class Connection
         }
         return \false;
     }
-    private function handleDriverException(Driver\Exception $driverException, ?Query $query) : DriverException
+    private function handleDriverException(Driver\Exception $driverException, ?Query $query): DriverException
     {
         if ($this->exceptionConverter === null) {
             $this->exceptionConverter = $this->_driver->getExceptionConverter();
@@ -1522,7 +1522,7 @@ class Connection
      * @param array<mixed>           $params The query parameters
      * @param array<int|string|null> $types  The parameter types
      */
-    public function executeUpdate(string $sql, array $params = [], array $types = []) : int
+    public function executeUpdate(string $sql, array $params = [], array $types = []): int
     {
         return $this->executeStatement($sql, $params, $types);
     }
@@ -1531,7 +1531,7 @@ class Connection
      *
      * @deprecated This API is deprecated and will be removed after 2022
      */
-    public function query(string $sql) : Result
+    public function query(string $sql): Result
     {
         return $this->executeQuery($sql);
     }
@@ -1540,7 +1540,7 @@ class Connection
      *
      * @deprecated This API is deprecated and will be removed after 2022
      */
-    public function exec(string $sql) : int
+    public function exec(string $sql): int
     {
         return $this->executeStatement($sql);
     }

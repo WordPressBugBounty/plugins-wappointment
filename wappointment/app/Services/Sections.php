@@ -62,7 +62,7 @@ class Sections
         }
         $slots = 0;
         foreach ($timestampsArray as $availableSection) {
-            $slots += \floor(($availableSection[1] - $availableSection[0]) / $duration);
+            $slots += floor(($availableSection[1] - $availableSection[0]) / $duration);
         }
         return $slots;
     }
@@ -77,6 +77,6 @@ class Sections
             $freeTime += $availability[1] - $availability[0];
         }
         $totalTime = $bookedTime + $freeTime;
-        return $totalTime < $duration ? 0 : \round($bookedTime / $totalTime * 100) . '%';
+        return $totalTime < $duration ? 0 : round($bookedTime / $totalTime * 100) . '%';
     }
 }

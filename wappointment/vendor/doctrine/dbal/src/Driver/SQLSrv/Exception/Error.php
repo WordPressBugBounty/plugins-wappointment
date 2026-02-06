@@ -14,7 +14,7 @@ use const SQLSRV_ERR_ERRORS;
  */
 final class Error extends AbstractException
 {
-    public static function new() : self
+    public static function new(): self
     {
         $message = '';
         $sqlState = null;

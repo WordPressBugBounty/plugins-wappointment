@@ -17,9 +17,9 @@ use WappoVendor\Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface
 use WappoVendor\Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 use WappoVendor\Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface;
 // Help opcache.preload discover always-needed symbols
-\class_exists(AttributeBag::class);
-\class_exists(FlashBag::class);
-\class_exists(SessionBagProxy::class);
+class_exists(AttributeBag::class);
+class_exists(FlashBag::class);
+class_exists(SessionBagProxy::class);
 /**
  * @author Fabien Potencier <fabien@symfony.com>
  * @author Drak <drak@zikula.org>
@@ -128,14 +128,14 @@ class Session implements SessionInterface, \IteratorAggregate, \Countable
     {
         return \count($this->getAttributeBag()->all());
     }
-    public function &getUsageIndex() : int
+    public function &getUsageIndex(): int
     {
         return $this->usageIndex;
     }
     /**
      * @internal
      */
-    public function isEmpty() : bool
+    public function isEmpty(): bool
     {
         if ($this->isStarted()) {
             ++$this->usageIndex;
@@ -226,7 +226,7 @@ class Session implements SessionInterface, \IteratorAggregate, \Countable
     public function getBag(string $name)
     {
         $bag = $this->storage->getBag($name);
-        return \method_exists($bag, 'getBag') ? $bag->getBag() : $bag;
+        return method_exists($bag, 'getBag') ? $bag->getBag() : $bag;
     }
     /**
      * Gets the flashbag interface.
@@ -242,7 +242,7 @@ class Session implements SessionInterface, \IteratorAggregate, \Countable
      *
      * Note that this method was added to help with IDE autocompletion.
      */
-    private function getAttributeBag() : AttributeBagInterface
+    private function getAttributeBag(): AttributeBagInterface
     {
         return $this->getBag($this->attributeName);
     }

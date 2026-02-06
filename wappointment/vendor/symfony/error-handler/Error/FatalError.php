@@ -29,9 +29,9 @@ class FatalError extends \Error
                 }
             }
         } elseif (null !== $traceOffset) {
-            if (\function_exists('xdebug_get_function_stack') && ($trace = @\xdebug_get_function_stack())) {
+            if (\function_exists('xdebug_get_function_stack') && $trace = @xdebug_get_function_stack()) {
                 if (0 < $traceOffset) {
-                    \array_splice($trace, -$traceOffset);
+                    array_splice($trace, -$traceOffset);
                 }
                 foreach ($trace as &$frame) {
                     if (!isset($frame['type'])) {
@@ -53,7 +53,7 @@ class FatalError extends \Error
                     }
                 }
                 unset($frame);
-                $trace = \array_reverse($trace);
+                $trace = array_reverse($trace);
             } else {
                 $trace = [];
             }
@@ -69,7 +69,7 @@ class FatalError extends \Error
     /**
      * {@inheritdoc}
      */
-    public function getError() : array
+    public function getError(): array
     {
         return $this->error;
     }

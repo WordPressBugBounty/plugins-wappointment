@@ -46,7 +46,7 @@ class PdoCaster
             $attr[$k][0] = new ClassStub($attr[$k][0]);
         }
         $prefix = Caster::PREFIX_VIRTUAL;
-        $a += [$prefix . 'inTransaction' => \method_exists($c, 'inTransaction'), $prefix . 'errorInfo' => $c->errorInfo(), $prefix . 'attributes' => new EnumStub($attr)];
+        $a += [$prefix . 'inTransaction' => method_exists($c, 'inTransaction'), $prefix . 'errorInfo' => $c->errorInfo(), $prefix . 'attributes' => new EnumStub($attr)];
         if ($a[$prefix . 'inTransaction']) {
             $a[$prefix . 'inTransaction'] = $c->inTransaction();
         } else {

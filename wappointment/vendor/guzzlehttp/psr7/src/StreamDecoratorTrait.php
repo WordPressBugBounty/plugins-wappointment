@@ -42,7 +42,7 @@ trait StreamDecoratorTrait
             return $this->getContents();
         } catch (\Exception $e) {
             // Really, PHP? https://bugs.php.net/bug.php?id=53648
-            \trigger_error('StreamDecorator::__toString exception: ' . (string) $e, \E_USER_ERROR);
+            trigger_error('StreamDecorator::__toString exception: ' . (string) $e, \E_USER_ERROR);
             return '';
         }
     }
@@ -60,7 +60,7 @@ trait StreamDecoratorTrait
      */
     public function __call($method, array $args)
     {
-        $result = \call_user_func_array([$this->stream, $method], $args);
+        $result = call_user_func_array([$this->stream, $method], $args);
         // Always return the wrapped object if the result is a return $this
         return $result === $this->stream ? $this : $result;
     }

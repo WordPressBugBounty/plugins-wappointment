@@ -31,7 +31,7 @@ trait InteractsWithContentTypes
     public function wantsJson()
     {
         $acceptable = $this->getAcceptableContentTypes();
-        return isset($acceptable[0]) && Str::contains(\strtolower($acceptable[0]), ['/json', '+json']);
+        return isset($acceptable[0]) && Str::contains(strtolower($acceptable[0]), ['/json', '+json']);
     }
     /**
      * Determines whether the current requests accepts a given content type.
@@ -42,7 +42,7 @@ trait InteractsWithContentTypes
     public function accepts($contentTypes)
     {
         $accepts = $this->getAcceptableContentTypes();
-        if (\count($accepts) === 0) {
+        if (count($accepts) === 0) {
             return \true;
         }
         $types = (array) $contentTypes;
@@ -51,9 +51,9 @@ trait InteractsWithContentTypes
                 return \true;
             }
             foreach ($types as $type) {
-                $accept = \strtolower($accept);
-                $type = \strtolower($type);
-                if ($this->matchesType($accept, $type) || $accept === \strtok($type, '/') . '/*') {
+                $accept = strtolower($accept);
+                $type = strtolower($type);
+                if ($this->matchesType($accept, $type) || $accept === strtok($type, '/') . '/*') {
                     return \true;
                 }
             }
@@ -71,17 +71,17 @@ trait InteractsWithContentTypes
         $accepts = $this->getAcceptableContentTypes();
         $contentTypes = (array) $contentTypes;
         foreach ($accepts as $accept) {
-            if (\in_array($accept, ['*/*', '*'])) {
+            if (in_array($accept, ['*/*', '*'])) {
                 return $contentTypes[0];
             }
             foreach ($contentTypes as $contentType) {
                 $type = $contentType;
-                if (!\is_null($mimeType = $this->getMimeType($contentType))) {
+                if (!is_null($mimeType = $this->getMimeType($contentType))) {
                     $type = $mimeType;
                 }
-                $accept = \strtolower($accept);
-                $type = \strtolower($type);
-                if ($this->matchesType($type, $accept) || $accept === \strtok($type, '/') . '/*') {
+                $accept = strtolower($accept);
+                $type = strtolower($type);
+                if ($this->matchesType($type, $accept) || $accept === strtok($type, '/') . '/*') {
                     return $contentType;
                 }
             }
@@ -95,7 +95,7 @@ trait InteractsWithContentTypes
     public function acceptsAnyContentType()
     {
         $acceptable = $this->getAcceptableContentTypes();
-        return \count($acceptable) === 0 || isset($acceptable[0]) && ($acceptable[0] === '*/*' || $acceptable[0] === '*');
+        return count($acceptable) === 0 || isset($acceptable[0]) && ($acceptable[0] === '*/*' || $acceptable[0] === '*');
     }
     /**
      * Determines whether a request accepts JSON.
@@ -127,8 +127,8 @@ trait InteractsWithContentTypes
         if ($actual === $type) {
             return \true;
         }
-        $split = \explode('/', $actual);
-        return isset($split[1]) && \preg_match('#' . \preg_quote($split[0], '#') . '/.+\\+' . \preg_quote($split[1], '#') . '#', $type);
+        $split = explode('/', $actual);
+        return isset($split[1]) && preg_match('#' . preg_quote($split[0], '#') . '/.+\+' . preg_quote($split[1], '#') . '#', $type);
     }
     /**
      * Get the data format expected in the response.

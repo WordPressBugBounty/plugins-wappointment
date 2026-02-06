@@ -13,7 +13,7 @@ class Service
     protected static function hasMultipleTypeslegacy()
     {
         $service = ServiceService::get();
-        return !empty($service['type']) && \count($service['type']) > 1;
+        return !empty($service['type']) && count($service['type']) > 1;
     }
     protected static function hasMultipleTypesNew()
     {
@@ -24,14 +24,14 @@ class Service
                 $types[static::getLocationId($location)] = $location;
             }
         }
-        return \count($types) > 1;
+        return count($types) > 1;
     }
     public static function getLocations($service)
     {
-        return \is_array($service) ? $service['locations'] : $service->locations;
+        return is_array($service) ? $service['locations'] : $service->locations;
     }
     public static function getLocationId($location)
     {
-        return \is_array($location) ? $location['id'] : $location->id;
+        return is_array($location) ? $location['id'] : $location->id;
     }
 }

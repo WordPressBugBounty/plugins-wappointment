@@ -37,7 +37,7 @@ class StreamedResponseListener implements EventSubscriberInterface
             $response->send();
         }
     }
-    public static function getSubscribedEvents() : array
+    public static function getSubscribedEvents(): array
     {
         return [KernelEvents::RESPONSE => ['onKernelResponse', -1024]];
     }

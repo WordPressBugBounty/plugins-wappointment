@@ -36,14 +36,22 @@ class ClientController extends \Wappointment\Controllers\RestController
         if (!empty($request->input('per_page'))) {
             Settings::saveStaff('per_page', $request->input('per_page'));
         }
-        return ['page' => $request->input('page'), 'viewData' => ['per_page' => Settings::getStaff('per_page'), 'timezones_list' => DateTime::tz()], 'clients' => $this->getClients()];
+        return ['page' => $request->input('page'), 'viewData' => ['per_page' => Settings::getStaff('per_page'), 'timezones_list' => DateTime::tz()], 'clients' => $this->getClients($request)];
     }
-    protected function getClients()
+    protected function getClients(Request $request)
     {
         $query = ClientModel::orderBy('id', 'DESC');
         if (!CurrentUser::isAdmin()) {
-            $raw = \str_replace('?', CurrentUser::calendarId(), Appointment::select('client_id')->where('staff_id', CurrentUser::calendarId())->distinct()->toSql());
+            $raw = str_replace('?', CurrentUser::calendarId(), Appointment::select('client_id')->where('staff_id', CurrentUser::calendarId())->distinct()->toSql());
             $query->whereRaw('id IN (' . $raw . ')');
+        }
+        if (!empty($request->input('search'))) {
+            $searchTerm = $request->input('search');
+            $query->where(function ($query) use ($searchTerm) {
+                $query->orWhere('email', 'LIKE', '%' . $searchTerm . '%');
+                $query->orWhere('name', 'LIKE', '%' . $searchTerm . '%');
+                $query->orWhere('options', 'LIKE', '%' . $searchTerm . '%');
+            });
         }
         return $query->paginate(Settings::getStaff('per_page'));
     }

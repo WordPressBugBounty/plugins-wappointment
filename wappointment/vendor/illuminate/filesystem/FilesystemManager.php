@@ -88,7 +88,7 @@ class FilesystemManager implements FactoryContract
      */
     public function build($config)
     {
-        return $this->resolve('ondemand', \is_array($config) ? $config : ['driver' => 'local', 'root' => $config]);
+        return $this->resolve('ondemand', is_array($config) ? $config : ['driver' => 'local', 'root' => $config]);
     }
     /**
      * Attempt to get the disk from the local cache.
@@ -119,8 +119,8 @@ class FilesystemManager implements FactoryContract
         if (isset($this->customCreators[$name])) {
             return $this->callCustomCreator($config);
         }
-        $driverMethod = 'create' . \ucfirst($name) . 'Driver';
-        if (!\method_exists($this, $driverMethod)) {
+        $driverMethod = 'create' . ucfirst($name) . 'Driver';
+        if (!method_exists($this, $driverMethod)) {
             throw new InvalidArgumentException("Driver [{$name}] is not supported.");
         }
         return $this->{$driverMethod}($config);
@@ -213,7 +213,7 @@ class FilesystemManager implements FactoryContract
         if ($cache) {
             $adapter = new CachedAdapter($adapter, $this->createCacheStore($cache));
         }
-        return new Flysystem($adapter, \count($config) > 0 ? $config : null);
+        return new Flysystem($adapter, count($config) > 0 ? $config : null);
     }
     /**
      * Create a cache store instance.

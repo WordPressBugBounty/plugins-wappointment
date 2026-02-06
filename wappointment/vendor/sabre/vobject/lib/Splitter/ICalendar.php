@@ -57,11 +57,11 @@ class ICalendar implements SplitterInterface
             }
             // Get component UID for recurring Events search
             if (!$component->UID) {
-                $component->UID = \sha1(\microtime()) . '-vobjectimport';
+                $component->UID = sha1(microtime()) . '-vobjectimport';
             }
             $uid = (string) $component->UID;
             // Take care of recurring events
-            if (!\array_key_exists($uid, $this->objects)) {
+            if (!array_key_exists($uid, $this->objects)) {
                 $this->objects[$uid] = new VCalendar();
             }
             $this->objects[$uid]->add(clone $component);
@@ -77,7 +77,7 @@ class ICalendar implements SplitterInterface
      */
     public function getNext()
     {
-        if ($object = \array_shift($this->objects)) {
+        if ($object = array_shift($this->objects)) {
             // create our baseobject
             $object->version = '2.0';
             $object->prodid = '-//Sabre//Sabre VObject ' . VObject\Version::VERSION . '//EN';

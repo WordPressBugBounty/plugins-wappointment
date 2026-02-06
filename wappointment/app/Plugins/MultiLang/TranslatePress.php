@@ -12,7 +12,7 @@ class TranslatePress extends \Wappointment\Plugins\MultiLang\AbstractMultilang i
     }
     private function getLanguagesArray()
     {
-        return \array_values((new Collection(trp_get_languages()))->map(function ($item, $key) {
+        return array_values((new Collection(trp_get_languages()))->map(function ($item, $key) {
             return ['locale' => $key, 'name' => $item];
         })->toArray());
     }

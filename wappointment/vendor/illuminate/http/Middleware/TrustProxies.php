@@ -45,8 +45,8 @@ class TrustProxies
         if ($trustedIps === '*' || $trustedIps === '**') {
             return $this->setTrustedProxyIpAddressesToTheCallingIp($request);
         }
-        $trustedIps = \is_string($trustedIps) ? \array_map('trim', \explode(',', $trustedIps)) : $trustedIps;
-        if (\is_array($trustedIps)) {
+        $trustedIps = is_string($trustedIps) ? array_map('trim', explode(',', $trustedIps)) : $trustedIps;
+        if (is_array($trustedIps)) {
             return $this->setTrustedProxyIpAddressesToSpecificIps($request, $trustedIps);
         }
     }

@@ -35,7 +35,7 @@ class Period extends Property
      */
     public function setRawMimeDirValue($val)
     {
-        $this->setValue(\explode($this->delimiter, $val));
+        $this->setValue(explode($this->delimiter, $val));
     }
     /**
      * Returns a raw mime-dir representation of the value.
@@ -44,7 +44,7 @@ class Period extends Property
      */
     public function getRawMimeDirValue()
     {
-        return \implode($this->delimiter, $this->getParts());
+        return implode($this->delimiter, $this->getParts());
     }
     /**
      * Returns the type of value.
@@ -65,8 +65,8 @@ class Period extends Property
      */
     public function setJsonValue(array $value)
     {
-        $value = \array_map(function ($item) {
-            return \strtr(\implode('/', $item), [':' => '', '-' => '']);
+        $value = array_map(function ($item) {
+            return strtr(implode('/', $item), [':' => '', '-' => '']);
         }, $value);
         parent::setJsonValue($value);
     }
@@ -81,14 +81,14 @@ class Period extends Property
     {
         $return = [];
         foreach ($this->getParts() as $item) {
-            list($start, $end) = \explode('/', $item, 2);
+            list($start, $end) = explode('/', $item, 2);
             $start = DateTimeParser::parseDateTime($start);
             // This is a duration value.
             if ('P' === $end[0]) {
-                $return[] = [$start->format('Y-m-d\\TH:i:s'), $end];
+                $return[] = [$start->format('Y-m-d\TH:i:s'), $end];
             } else {
                 $end = DateTimeParser::parseDateTime($end);
-                $return[] = [$start->format('Y-m-d\\TH:i:s'), $end->format('Y-m-d\\TH:i:s')];
+                $return[] = [$start->format('Y-m-d\TH:i:s'), $end->format('Y-m-d\TH:i:s')];
             }
         }
         return $return;
@@ -101,7 +101,7 @@ class Period extends Property
      */
     protected function xmlSerializeValue(Xml\Writer $writer)
     {
-        $writer->startElement(\strtolower($this->getValueType()));
+        $writer->startElement(strtolower($this->getValueType()));
         $value = $this->getJsonValue();
         $writer->writeElement('start', $value[0][0]);
         if ('P' === $value[0][1][0]) {

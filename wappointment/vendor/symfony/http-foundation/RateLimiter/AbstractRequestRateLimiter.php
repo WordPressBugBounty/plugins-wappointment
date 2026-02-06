@@ -22,7 +22,7 @@ use WappoVendor\Symfony\Component\RateLimiter\RateLimit;
  */
 abstract class AbstractRequestRateLimiter implements RequestRateLimiterInterface
 {
-    public function consume(Request $request) : RateLimit
+    public function consume(Request $request): RateLimit
     {
         $limiters = $this->getLimiters($request);
         if (0 === \count($limiters)) {
@@ -35,7 +35,7 @@ abstract class AbstractRequestRateLimiter implements RequestRateLimiterInterface
         }
         return $minimalRateLimit;
     }
-    public function reset(Request $request) : void
+    public function reset(Request $request): void
     {
         foreach ($this->getLimiters($request) as $limiter) {
             $limiter->reset();
@@ -44,8 +44,8 @@ abstract class AbstractRequestRateLimiter implements RequestRateLimiterInterface
     /**
      * @return LimiterInterface[] a set of limiters using keys extracted from the request
      */
-    protected abstract function getLimiters(Request $request) : array;
-    private static function getMinimalRateLimit(RateLimit $first, RateLimit $second) : RateLimit
+    abstract protected function getLimiters(Request $request): array;
+    private static function getMinimalRateLimit(RateLimit $first, RateLimit $second): RateLimit
     {
         if ($first->isAccepted() !== $second->isAccepted()) {
             return $first->isAccepted() ? $second : $first;

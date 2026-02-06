@@ -22,29 +22,29 @@ class ClassNotFoundErrorEnhancer implements ErrorEnhancerInterface
     /**
      * {@inheritdoc}
      */
-    public function enhance(\Throwable $error) : ?\Throwable
+    public function enhance(\Throwable $error): ?\Throwable
     {
         // Some specific versions of PHP produce a fatal error when extending a not found class.
         $message = !$error instanceof FatalError ? $error->getMessage() : $error->getError()['message'];
-        if (!\preg_match('/^(Class|Interface|Trait) [\'"]([^\'"]+)[\'"] not found$/', $message, $matches)) {
+        if (!preg_match('/^(Class|Interface|Trait) [\'"]([^\'"]+)[\'"] not found$/', $message, $matches)) {
             return null;
         }
-        $typeName = \strtolower($matches[1]);
+        $typeName = strtolower($matches[1]);
         $fullyQualifiedClassName = $matches[2];
-        if (\false !== ($namespaceSeparatorIndex = \strrpos($fullyQualifiedClassName, '\\'))) {
-            $className = \substr($fullyQualifiedClassName, $namespaceSeparatorIndex + 1);
-            $namespacePrefix = \substr($fullyQualifiedClassName, 0, $namespaceSeparatorIndex);
-            $message = \sprintf('Attempted to load %s "%s" from namespace "%s".', $typeName, $className, $namespacePrefix);
+        if (\false !== $namespaceSeparatorIndex = strrpos($fullyQualifiedClassName, '\\')) {
+            $className = substr($fullyQualifiedClassName, $namespaceSeparatorIndex + 1);
+            $namespacePrefix = substr($fullyQualifiedClassName, 0, $namespaceSeparatorIndex);
+            $message = sprintf('Attempted to load %s "%s" from namespace "%s".', $typeName, $className, $namespacePrefix);
             $tail = ' for another namespace?';
         } else {
             $className = $fullyQualifiedClassName;
-            $message = \sprintf('Attempted to load %s "%s" from the global namespace.', $typeName, $className);
+            $message = sprintf('Attempted to load %s "%s" from the global namespace.', $typeName, $className);
             $tail = '?';
         }
         if ($candidates = $this->getClassCandidates($className)) {
-            $tail = \array_pop($candidates) . '"?';
+            $tail = array_pop($candidates) . '"?';
             if ($candidates) {
-                $tail = ' for e.g. "' . \implode('", "', $candidates) . '" or "' . $tail;
+                $tail = ' for e.g. "' . implode('", "', $candidates) . '" or "' . $tail;
             } else {
                 $tail = ' for "' . $tail;
             }
@@ -62,9 +62,9 @@ class ClassNotFoundErrorEnhancer implements ErrorEnhancerInterface
      *
      * Returns an array of possible fully qualified class names
      */
-    private function getClassCandidates(string $class) : array
+    private function getClassCandidates(string $class): array
     {
-        if (!\is_array($functions = \spl_autoload_functions())) {
+        if (!\is_array($functions = spl_autoload_functions())) {
             return [];
         }
         // find Symfony and Composer autoloaders
@@ -93,41 +93,41 @@ class ClassNotFoundErrorEnhancer implements ErrorEnhancerInterface
                 }
             }
         }
-        return \array_unique(\array_merge([], ...$classes));
+        return array_unique(array_merge([], ...$classes));
     }
-    private function findClassInPath(string $path, string $class, string $prefix) : array
+    private function findClassInPath(string $path, string $class, string $prefix): array
     {
-        if (!($path = (\realpath($path . '/' . \strtr($prefix, '\\_', '//')) ?: \realpath($path . '/' . \dirname(\strtr($prefix, '\\_', '//')))) ?: \realpath($path))) {
+        if (!$path = (realpath($path . '/' . strtr($prefix, '\_', '//')) ?: realpath($path . '/' . \dirname(strtr($prefix, '\_', '//')))) ?: realpath($path)) {
             return [];
         }
         $classes = [];
         $filename = $class . '.php';
         foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS), \RecursiveIteratorIterator::LEAVES_ONLY) as $file) {
-            if ($filename == $file->getFileName() && ($class = $this->convertFileToClass($path, $file->getPathName(), $prefix))) {
+            if ($filename == $file->getFileName() && $class = $this->convertFileToClass($path, $file->getPathName(), $prefix)) {
                 $classes[] = $class;
             }
         }
         return $classes;
     }
-    private function convertFileToClass(string $path, string $file, string $prefix) : ?string
+    private function convertFileToClass(string $path, string $file, string $prefix): ?string
     {
         $candidates = [
             // namespaced class
-            $namespacedClass = \str_replace([$path . \DIRECTORY_SEPARATOR, '.php', '/'], ['', '', '\\'], $file),
+            $namespacedClass = str_replace([$path . \DIRECTORY_SEPARATOR, '.php', '/'], ['', '', '\\'], $file),
             // namespaced class (with target dir)
             $prefix . $namespacedClass,
             // namespaced class (with target dir and separator)
             $prefix . '\\' . $namespacedClass,
             // PEAR class
-            \str_replace('\\', '_', $namespacedClass),
+            str_replace('\\', '_', $namespacedClass),
             // PEAR class (with target dir)
-            \str_replace('\\', '_', $prefix . $namespacedClass),
+            str_replace('\\', '_', $prefix . $namespacedClass),
             // PEAR class (with target dir and separator)
-            \str_replace('\\', '_', $prefix . '\\' . $namespacedClass),
+            str_replace('\\', '_', $prefix . '\\' . $namespacedClass),
         ];
         if ($prefix) {
-            $candidates = \array_filter($candidates, function ($candidate) use($prefix) {
-                return 0 === \strpos($candidate, $prefix);
+            $candidates = array_filter($candidates, function ($candidate) use ($prefix) {
+                return 0 === strpos($candidate, $prefix);
             });
         }
         // We cannot use the autoloader here as most of them use require; but if the class
@@ -150,8 +150,8 @@ class ClassNotFoundErrorEnhancer implements ErrorEnhancerInterface
         }
         return null;
     }
-    private function classExists(string $class) : bool
+    private function classExists(string $class): bool
     {
-        return \class_exists($class, \false) || \interface_exists($class, \false) || \trait_exists($class, \false);
+        return class_exists($class, \false) || interface_exists($class, \false) || trait_exists($class, \false);
     }
 }

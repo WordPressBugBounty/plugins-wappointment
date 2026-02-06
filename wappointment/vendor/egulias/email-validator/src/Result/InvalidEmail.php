@@ -15,23 +15,23 @@ class InvalidEmail implements Result
         $this->token = $token;
         $this->reason = $reason;
     }
-    public function isValid() : bool
+    public function isValid(): bool
     {
         return \false;
     }
-    public function isInvalid() : bool
+    public function isInvalid(): bool
     {
         return \true;
     }
-    public function description() : string
+    public function description(): string
     {
         return $this->reason->description() . " in char " . $this->token;
     }
-    public function code() : int
+    public function code(): int
     {
         return $this->reason->code();
     }
-    public function reason() : Reason
+    public function reason(): Reason
     {
         return $this->reason;
     }

@@ -47,10 +47,10 @@ class Json extends Parser
      */
     public function parse($input = null, $options = 0)
     {
-        if (!\is_null($input)) {
+        if (!is_null($input)) {
             $this->setInput($input);
         }
-        if (\is_null($this->input)) {
+        if (is_null($this->input)) {
             throw new EofException('End of input stream, or no input supplied');
         }
         if (0 !== $options) {
@@ -87,17 +87,17 @@ class Json extends Parser
     {
         // We can remove $self from PHP 5.4 onward.
         $self = $this;
-        $properties = \array_map(function ($jProp) use($self) {
+        $properties = array_map(function ($jProp) use ($self) {
             return $self->parseProperty($jProp);
         }, $jComp[1]);
         if (isset($jComp[2])) {
-            $components = \array_map(function ($jComp) use($self) {
+            $components = array_map(function ($jComp) use ($self) {
                 return $self->parseComponent($jComp);
             }, $jComp[2]);
         } else {
             $components = [];
         }
-        return $this->root->createComponent($jComp[0], \array_merge($properties, $components), $defaults = \false);
+        return $this->root->createComponent($jComp[0], array_merge($properties, $components), $defaults = \false);
     }
     /**
      * Parses properties.
@@ -107,13 +107,13 @@ class Json extends Parser
     public function parseProperty(array $jProp)
     {
         list($propertyName, $parameters, $valueType) = $jProp;
-        $propertyName = \strtoupper($propertyName);
+        $propertyName = strtoupper($propertyName);
         // This is the default class we would be using if we didn't know the
         // value type. We're using this value later in this function.
         $defaultPropertyClass = $this->root->getClassNameForPropertyName($propertyName);
         $parameters = (array) $parameters;
-        $value = \array_slice($jProp, 3);
-        $valueType = \strtoupper($valueType);
+        $value = array_slice($jProp, 3);
+        $valueType = strtoupper($valueType);
         if (isset($parameters['group'])) {
             $propertyName = $parameters['group'] . '.' . $propertyName;
             unset($parameters['group']);
@@ -130,7 +130,7 @@ class Json extends Parser
         // If the value type we received (e.g.: TEXT) was not the default value
         // type for the given property (e.g.: BDAY), we need to add a VALUE=
         // parameter.
-        if ($defaultPropertyClass !== \get_class($prop)) {
+        if ($defaultPropertyClass !== get_class($prop)) {
             $prop['VALUE'] = $valueType;
         }
         return $prop;
@@ -142,11 +142,11 @@ class Json extends Parser
      */
     public function setInput($input)
     {
-        if (\is_resource($input)) {
-            $input = \stream_get_contents($input);
+        if (is_resource($input)) {
+            $input = stream_get_contents($input);
         }
-        if (\is_string($input)) {
-            $input = \json_decode($input);
+        if (is_string($input)) {
+            $input = json_decode($input);
         }
         $this->input = $input;
     }

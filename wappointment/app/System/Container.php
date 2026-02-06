@@ -13,7 +13,7 @@ class Container
     }
     public function resolve($bindingName)
     {
-        $result = Arr::first($this->bindings, function ($item) use($bindingName) {
+        $result = Arr::first($this->bindings, function ($item) use ($bindingName) {
             return $item['name'] === $bindingName;
         });
         return $result['instance'] ?? null;

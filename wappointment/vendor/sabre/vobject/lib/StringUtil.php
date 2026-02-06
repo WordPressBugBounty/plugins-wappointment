@@ -21,10 +21,10 @@ class StringUtil
     public static function isUTF8($str)
     {
         // Control characters
-        if (\preg_match('%[\\x00-\\x08\\x0B-\\x0C\\x0E\\x0F]%', $str)) {
+        if (preg_match('%[\x00-\x08\x0B-\x0C\x0E\x0F]%', $str)) {
             return \false;
         }
-        return (bool) \preg_match('%%u', $str);
+        return (bool) preg_match('%%u', $str);
     }
     /**
      * This method tries its best to convert the input string to UTF-8.
@@ -38,10 +38,10 @@ class StringUtil
      */
     public static function convertToUTF8($str)
     {
-        if (!\mb_check_encoding($str, 'UTF-8') && \mb_check_encoding($str, 'ISO-8859-1')) {
-            $str = \mb_convert_encoding($str, 'UTF-8', 'ISO-8859-1');
+        if (!mb_check_encoding($str, 'UTF-8') && mb_check_encoding($str, 'ISO-8859-1')) {
+            $str = mb_convert_encoding($str, 'UTF-8', 'ISO-8859-1');
         }
         // Removing any control characters
-        return \preg_replace('%(?:[\\x00-\\x08\\x0B-\\x0C\\x0E-\\x1F\\x7F])%', '', $str);
+        return preg_replace('%(?:[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F])%', '', $str);
     }
 }

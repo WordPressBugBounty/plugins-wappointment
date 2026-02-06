@@ -36,11 +36,11 @@ class DateCaster
     {
         $now = new \DateTimeImmutable('@0', new \DateTimeZone('UTC'));
         $numberOfSeconds = $now->add($interval)->getTimestamp() - $now->getTimestamp();
-        $title = \number_format($numberOfSeconds, 0, '.', ' ') . 's';
+        $title = number_format($numberOfSeconds, 0, '.', ' ') . 's';
         $i = [Caster::PREFIX_VIRTUAL . 'interval' => new ConstStub(self::formatInterval($interval), $title)];
         return $filter & Caster::EXCLUDE_VERBOSE ? $i : $i + $a;
     }
-    private static function formatInterval(\DateInterval $i) : string
+    private static function formatInterval(\DateInterval $i): string
     {
         $format = '%R ';
         if (0 === $i->y && 0 === $i->m && ($i->h >= 24 || $i->i >= 60 || $i->s >= 60)) {
@@ -51,9 +51,9 @@ class DateCaster
         } else {
             $format .= ($i->y ? '%yy ' : '') . ($i->m ? '%mm ' : '') . ($i->d ? '%dd ' : '');
         }
-        $format .= $i->h || $i->i || $i->s || $i->f ? '%H:%I:' . self::formatSeconds($i->s, \substr($i->f, 2)) : '';
+        $format .= $i->h || $i->i || $i->s || $i->f ? '%H:%I:' . self::formatSeconds($i->s, substr($i->f, 2)) : '';
         $format = '%R ' === $format ? '0s' : $format;
-        return $i->format(\rtrim($format));
+        return $i->format(rtrim($format));
     }
     public static function castTimeZone(\DateTimeZone $timeZone, array $a, Stub $stub, bool $isNested, int $filter)
     {
@@ -69,21 +69,21 @@ class DateCaster
         foreach (clone $p as $i => $d) {
             if (self::PERIOD_LIMIT === $i) {
                 $now = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
-                $dates[] = \sprintf('%s more', ($end = $p->getEndDate()) ? \ceil(($end->format('U.u') - $d->format('U.u')) / ((int) $now->add($p->getDateInterval())->format('U.u') - (int) $now->format('U.u'))) : $p->recurrences - $i);
+                $dates[] = sprintf('%s more', ($end = $p->getEndDate()) ? ceil(($end->format('U.u') - $d->format('U.u')) / ((int) $now->add($p->getDateInterval())->format('U.u') - (int) $now->format('U.u'))) : $p->recurrences - $i);
                 break;
             }
-            $dates[] = \sprintf('%s) %s', $i + 1, self::formatDateTime($d));
+            $dates[] = sprintf('%s) %s', $i + 1, self::formatDateTime($d));
         }
-        $period = \sprintf('every %s, from %s%s %s', self::formatInterval($p->getDateInterval()), $p->include_start_date ? '[' : ']', self::formatDateTime($p->getStartDate()), ($end = $p->getEndDate()) ? 'to ' . self::formatDateTime($end) . (\PHP_VERSION_ID >= 80200 && $p->include_end_date ? ']' : '[') : 'recurring ' . $p->recurrences . ' time/s');
-        $p = [Caster::PREFIX_VIRTUAL . 'period' => new ConstStub($period, \implode("\n", $dates))];
+        $period = sprintf('every %s, from %s%s %s', self::formatInterval($p->getDateInterval()), $p->include_start_date ? '[' : ']', self::formatDateTime($p->getStartDate()), ($end = $p->getEndDate()) ? 'to ' . self::formatDateTime($end) . (\PHP_VERSION_ID >= 80200 && $p->include_end_date ? ']' : '[') : 'recurring ' . $p->recurrences . ' time/s');
+        $p = [Caster::PREFIX_VIRTUAL . 'period' => new ConstStub($period, implode("\n", $dates))];
         return $filter & Caster::EXCLUDE_VERBOSE ? $p : $p + $a;
     }
-    private static function formatDateTime(\DateTimeInterface $d, string $extra = '') : string
+    private static function formatDateTime(\DateTimeInterface $d, string $extra = ''): string
     {
         return $d->format('Y-m-d H:i:' . self::formatSeconds($d->format('s'), $d->format('u')) . $extra);
     }
-    private static function formatSeconds(string $s, string $us) : string
+    private static function formatSeconds(string $s, string $us): string
     {
-        return \sprintf('%02d.%s', $s, 0 === ($len = \strlen($t = \rtrim($us, '0'))) ? '0' : ($len <= 3 ? \str_pad($t, 3, '0') : $us));
+        return sprintf('%02d.%s', $s, 0 === ($len = \strlen($t = rtrim($us, '0'))) ? '0' : ($len <= 3 ? str_pad($t, 3, '0') : $us));
     }
 }

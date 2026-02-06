@@ -71,11 +71,11 @@ abstract class AbstractSurrogateFragmentRenderer extends RoutableFragmentRendere
         $tag = $this->surrogate->renderIncludeTag($uri, $alt, $options['ignore_errors'] ?? \false, $options['comment'] ?? '');
         return new Response($tag);
     }
-    private function generateSignedFragmentUri(ControllerReference $uri, Request $request) : string
+    private function generateSignedFragmentUri(ControllerReference $uri, Request $request): string
     {
         return (new FragmentUriGenerator($this->fragmentPath, $this->signer))->generate($uri, $request);
     }
-    private function containsNonScalars(array $values) : bool
+    private function containsNonScalars(array $values): bool
     {
         foreach ($values as $value) {
             if (\is_scalar($value) || null === $value) {

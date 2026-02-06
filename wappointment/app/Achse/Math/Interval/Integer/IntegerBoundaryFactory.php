@@ -10,7 +10,7 @@ final class IntegerBoundaryFactory
      * @param bool $state
      * @return IntegerBoundary
      */
-    public static function create(int $value, bool $state) : \Wappointment\Achse\Math\Interval\Integer\IntegerBoundary
+    public static function create(int $value, bool $state): \Wappointment\Achse\Math\Interval\Integer\IntegerBoundary
     {
         return new \Wappointment\Achse\Math\Interval\Integer\IntegerBoundary(new \Wappointment\Achse\Math\Interval\Integer\Integer($value), $state);
     }

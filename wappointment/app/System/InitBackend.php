@@ -77,7 +77,7 @@ class InitBackend
         wp_register_script(WAPPOINTMENT_SLUG . '_backend_menu', \Wappointment\System\Helpers::assetUrl('js/backend_menu.js'), [], null, \true);
         $varJs = ['wizardStep' => \Wappointment\System\Status::wizardStep()];
         if (\Wappointment\System\Status::wizardComplete()) {
-            $varJs = \array_merge($varJs, ['defaultEmail' => wp_get_current_user()->user_email, 'days' => \Wappointment\System\Status::installedForXDays(), 'addons' => \Wappointment\Services\Addons::getActive()]);
+            $varJs = array_merge($varJs, ['defaultEmail' => wp_get_current_user()->user_email, 'days' => \Wappointment\System\Status::installedForXDays(), 'addons' => \Wappointment\Services\Addons::getActive()]);
             if (\Wappointment\System\Status::hasPendingUpdates()) {
                 $varJs['hasPendingUpdates'] = \true;
             }
@@ -114,7 +114,7 @@ class InitBackend
         $links[] = '<a href="' . esc_url(WPHelpers::adminUrl('wappointment_settings')) . '" >' . __('Settings', 'wappointment') . '</a>';
         if (\Wappointment\System\Status::canSeeUpdatePage()) {
             /* translators: %s - version number */
-            $links[] = '<a class="wappo_whatsnew" href="' . esc_url(WPHelpers::adminUrl('wappointment_calendar#see_whats_new')) . '" >' . \sprintf(__('See Improvements in %s', 'wappointment'), 'v' . WAPPOINTMENT_VERSION) . '</a>';
+            $links[] = '<a class="wappo_whatsnew" href="' . esc_url(WPHelpers::adminUrl('wappointment_calendar#see_whats_new')) . '" >' . sprintf(__('See Improvements in %s', 'wappointment'), 'v' . WAPPOINTMENT_VERSION) . '</a>';
         }
         return $links;
     }

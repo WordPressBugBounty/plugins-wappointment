@@ -101,7 +101,7 @@ class FreeBusyData
                 $newItems[] = ['start' => $newItem['end'] + 1, 'end' => $precedingItem['end'], 'type' => $precedingItem['type']];
             }
         }
-        \array_splice($this->data, $insertStartIndex, $itemsToDelete, $newItems);
+        array_splice($this->data, $insertStartIndex, $itemsToDelete, $newItems);
         $doMerge = \false;
         $mergeOffset = $insertStartIndex;
         $mergeItem = $newItem;
@@ -130,7 +130,7 @@ class FreeBusyData
             }
         }
         if ($doMerge) {
-            \array_splice($this->data, $mergeOffset, $mergeDelete, [$mergeItem]);
+            array_splice($this->data, $mergeOffset, $mergeDelete, [$mergeItem]);
         }
     }
     public function getData()

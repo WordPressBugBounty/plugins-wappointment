@@ -6,13 +6,13 @@ class RequiredIfFields extends \WappoVendor\Rakit\Validation\Rules\Required
 {
     protected $implicit = \true;
     protected $message = "The :attribute is fully required";
-    public function fillParameters(array $params) : \WappoVendor\Rakit\Validation\Rule
+    public function fillParameters(array $params): \WappoVendor\Rakit\Validation\Rule
     {
-        $this->params['field'] = \array_shift($params);
+        $this->params['field'] = array_shift($params);
         $this->params['values'] = $params;
         return $this;
     }
-    public function check($value) : bool
+    public function check($value): bool
     {
         $this->requireParameters(['field', 'values']);
         if ($this->isRequired($this->parameter('values'))) {
@@ -28,7 +28,7 @@ class RequiredIfFields extends \WappoVendor\Rakit\Validation\Rules\Required
         $requiresCheck = \false;
         $conditions = [];
         foreach ($definedValues as $key => $defvalue) {
-            $conditions[] = \explode(';', \str_replace(['[', ']'], '', $defvalue));
+            $conditions[] = explode(';', str_replace(['[', ']'], '', $defvalue));
         }
         $cdd = [];
         foreach ($conditions as $key => $condition) {

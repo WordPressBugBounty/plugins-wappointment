@@ -49,7 +49,7 @@ class FragmentListener implements EventSubscriberInterface
     public function onKernelRequest(RequestEvent $event)
     {
         $request = $event->getRequest();
-        if ($this->fragmentPath !== \rawurldecode($request->getPathInfo())) {
+        if ($this->fragmentPath !== rawurldecode($request->getPathInfo())) {
             return;
         }
         if ($request->attributes->has('_controller')) {
@@ -60,9 +60,9 @@ class FragmentListener implements EventSubscriberInterface
         if ($event->isMainRequest()) {
             $this->validateRequest($request);
         }
-        \parse_str($request->query->get('_path', ''), $attributes);
+        parse_str($request->query->get('_path', ''), $attributes);
         $request->attributes->add($attributes);
-        $request->attributes->set('_route_params', \array_replace($request->attributes->get('_route_params', []), $attributes));
+        $request->attributes->set('_route_params', array_replace($request->attributes->get('_route_params', []), $attributes));
         $request->query->remove('_path');
     }
     protected function validateRequest(Request $request)
@@ -77,7 +77,7 @@ class FragmentListener implements EventSubscriberInterface
         }
         throw new AccessDeniedHttpException();
     }
-    public static function getSubscribedEvents() : array
+    public static function getSubscribedEvents(): array
     {
         return [KernelEvents::REQUEST => [['onKernelRequest', 48]]];
     }

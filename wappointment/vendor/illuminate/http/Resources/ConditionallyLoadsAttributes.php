@@ -16,14 +16,14 @@ trait ConditionallyLoadsAttributes
         $index = -1;
         foreach ($data as $key => $value) {
             $index++;
-            if (\is_array($value)) {
+            if (is_array($value)) {
                 $data[$key] = $this->filter($value);
                 continue;
             }
-            if (\is_numeric($key) && $value instanceof MergeValue) {
-                return $this->mergeData($data, $index, $this->filter($value->data), \array_values($value->data) === $value->data);
+            if (is_numeric($key) && $value instanceof MergeValue) {
+                return $this->mergeData($data, $index, $this->filter($value->data), array_values($value->data) === $value->data);
             }
-            if ($value instanceof self && \is_null($value->resource)) {
+            if ($value instanceof self && is_null($value->resource)) {
                 $data[$key] = null;
             }
         }
@@ -41,9 +41,9 @@ trait ConditionallyLoadsAttributes
     protected function mergeData($data, $index, $merge, $numericKeys)
     {
         if ($numericKeys) {
-            return $this->removeMissingValues(\array_merge(\array_merge(\array_slice($data, 0, $index, \true), $merge), $this->filter(\array_values(\array_slice($data, $index + 1, null, \true)))));
+            return $this->removeMissingValues(array_merge(array_merge(array_slice($data, 0, $index, \true), $merge), $this->filter(array_values(array_slice($data, $index + 1, null, \true)))));
         }
-        return $this->removeMissingValues(\array_slice($data, 0, $index, \true) + $merge + $this->filter(\array_slice($data, $index + 1, null, \true)));
+        return $this->removeMissingValues(array_slice($data, 0, $index, \true) + $merge + $this->filter(array_slice($data, $index + 1, null, \true)));
     }
     /**
      * Remove the missing values from the filtered data.
@@ -58,13 +58,13 @@ trait ConditionallyLoadsAttributes
             if ($value instanceof PotentiallyMissing && $value->isMissing() || $value instanceof self && $value->resource instanceof PotentiallyMissing && $value->isMissing()) {
                 unset($data[$key]);
             } else {
-                $numericKeys = $numericKeys && \is_numeric($key);
+                $numericKeys = $numericKeys && is_numeric($key);
             }
         }
-        if (\property_exists($this, 'preserveKeys') && $this->preserveKeys === \true) {
+        if (property_exists($this, 'preserveKeys') && $this->preserveKeys === \true) {
             return $data;
         }
-        return $numericKeys ? \array_values($data) : $data;
+        return $numericKeys ? array_values($data) : $data;
     }
     /**
      * Retrieve a value based on a given condition.
@@ -79,7 +79,7 @@ trait ConditionallyLoadsAttributes
         if ($condition) {
             return \WappointmentLv::value($value);
         }
-        return \func_num_args() === 3 ? \WappointmentLv::value($default) : new MissingValue();
+        return func_num_args() === 3 ? \WappointmentLv::value($default) : new MissingValue();
     }
     /**
      * Merge a value into the array.
@@ -123,9 +123,9 @@ trait ConditionallyLoadsAttributes
     protected function whenAppended($attribute, $value = null, $default = null)
     {
         if ($this->resource->hasAppended($attribute)) {
-            return \func_num_args() >= 2 ? \WappointmentLv::value($value) : $this->resource->{$attribute};
+            return func_num_args() >= 2 ? \WappointmentLv::value($value) : $this->resource->{$attribute};
         }
-        return \func_num_args() === 3 ? \WappointmentLv::value($default) : new MissingValue();
+        return func_num_args() === 3 ? \WappointmentLv::value($default) : new MissingValue();
     }
     /**
      * Retrieve a relationship if it has been loaded.
@@ -137,13 +137,13 @@ trait ConditionallyLoadsAttributes
      */
     protected function whenLoaded($relationship, $value = null, $default = null)
     {
-        if (\func_num_args() < 3) {
+        if (func_num_args() < 3) {
             $default = new MissingValue();
         }
         if (!$this->resource->relationLoaded($relationship)) {
             return \WappointmentLv::value($default);
         }
-        if (\func_num_args() === 1) {
+        if (func_num_args() === 1) {
             return $this->resource->{$relationship};
         }
         if ($this->resource->{$relationship} === null) {
@@ -161,7 +161,7 @@ trait ConditionallyLoadsAttributes
      */
     protected function whenPivotLoaded($table, $value, $default = null)
     {
-        return $this->whenPivotLoadedAs('pivot', ...\func_get_args());
+        return $this->whenPivotLoadedAs('pivot', ...func_get_args());
     }
     /**
      * Execute a callback if the given pivot table with a custom accessor has been loaded.
@@ -174,7 +174,7 @@ trait ConditionallyLoadsAttributes
      */
     protected function whenPivotLoadedAs($accessor, $table, $value, $default = null)
     {
-        if (\func_num_args() === 3) {
+        if (func_num_args() === 3) {
             $default = new MissingValue();
         }
         return $this->when($this->resource->{$accessor} && ($this->resource->{$accessor} instanceof $table || $this->resource->{$accessor}->getTable() === $table), ...[$value, $default]);
@@ -189,6 +189,6 @@ trait ConditionallyLoadsAttributes
      */
     protected function transform($value, callable $callback, $default = null)
     {
-        return \WappointmentLv::transform($value, $callback, \func_num_args() === 3 ? $default : new MissingValue());
+        return \WappointmentLv::transform($value, $callback, func_num_args() === 3 ? $default : new MissingValue());
     }
 }

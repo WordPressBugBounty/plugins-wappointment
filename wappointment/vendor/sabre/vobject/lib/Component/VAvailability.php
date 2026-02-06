@@ -30,7 +30,7 @@ class VAvailability extends VObject\Component
     public function isInTimeRange(DateTimeInterface $start, DateTimeInterface $end)
     {
         list($effectiveStart, $effectiveEnd) = $this->getEffectiveStartEnd();
-        return (\is_null($effectiveStart) || $start < $effectiveEnd) && (\is_null($effectiveEnd) || $end > $effectiveStart);
+        return (is_null($effectiveStart) || $start < $effectiveEnd) && (is_null($effectiveEnd) || $end > $effectiveStart);
     }
     /**
      * Returns the 'effective start' and 'effective end' of this VAVAILABILITY

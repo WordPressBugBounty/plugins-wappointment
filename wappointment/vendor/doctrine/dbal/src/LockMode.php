@@ -16,7 +16,7 @@ class LockMode
      *
      * @codeCoverageIgnore
      */
-    private final function __construct()
+    final private function __construct()
     {
     }
 }

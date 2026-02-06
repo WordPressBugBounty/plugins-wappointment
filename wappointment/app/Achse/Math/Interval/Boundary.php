@@ -36,21 +36,21 @@ class Boundary implements \Wappointment\Achse\Comparable\IComparable
     /**
      * @return IComparable
      */
-    public function getValue() : \Wappointment\Achse\Comparable\IComparable
+    public function getValue(): \Wappointment\Achse\Comparable\IComparable
     {
         return $this->element;
     }
     /**
      * @return bool
      */
-    public function isClosed() : bool
+    public function isClosed(): bool
     {
         return $this->state === self::CLOSED;
     }
     /**
      * @inheritdoc
      */
-    public function compare(\Wappointment\Achse\Comparable\IComparable $other) : int
+    public function compare(\Wappointment\Achse\Comparable\IComparable $other): int
     {
         /** @var static $other */
         \Wappointment\Achse\Math\Interval\Utils::validateClassType(static::class, $other);
@@ -66,35 +66,35 @@ class Boundary implements \Wappointment\Achse\Comparable\IComparable
     /**
      * @return bool
      */
-    public function isOpened() : bool
+    public function isOpened(): bool
     {
         return $this->state === self::OPENED;
     }
     /**
      * @return bool
      */
-    public function getState() : bool
+    public function getState(): bool
     {
         return $this->state;
     }
     /**
      * @return string
      */
-    public function __toString() : string
+    public function __toString(): string
     {
         return ($this->isOpened() ? self::STRING_OPENED_LEFT : self::STRING_CLOSED_LEFT) . $this->element . ($this->isOpened() ? self::STRING_OPENED_RIGHT : self::STRING_CLOSED_RIGHT);
     }
     /**
      * @return static
      */
-    public function asOpened() : \Wappointment\Achse\Math\Interval\Boundary
+    public function asOpened(): \Wappointment\Achse\Math\Interval\Boundary
     {
         return new static($this->element, \Wappointment\Achse\Math\Interval\Boundary::OPENED);
     }
     /**
      * @return static
      */
-    public function asClosed() : \Wappointment\Achse\Math\Interval\Boundary
+    public function asClosed(): \Wappointment\Achse\Math\Interval\Boundary
     {
         return new static($this->element, \Wappointment\Achse\Math\Interval\Boundary::CLOSED);
     }

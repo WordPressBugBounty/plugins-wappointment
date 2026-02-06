@@ -20,7 +20,7 @@ class RFCValidation implements EmailValidation
      * @var ?InvalidEmail
      */
     private $error;
-    public function isValid(string $email, EmailLexer $emailLexer) : bool
+    public function isValid(string $email, EmailLexer $emailLexer): bool
     {
         $this->parser = new EmailParser($emailLexer);
         try {
@@ -37,11 +37,11 @@ class RFCValidation implements EmailValidation
         }
         return \true;
     }
-    public function getError() : ?InvalidEmail
+    public function getError(): ?InvalidEmail
     {
         return $this->error;
     }
-    public function getWarnings() : array
+    public function getWarnings(): array
     {
         return $this->warnings;
     }

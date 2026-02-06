@@ -138,7 +138,7 @@ class MorphToMany extends BelongsToMany
     protected function aliasedPivotColumns()
     {
         $defaults = [$this->foreignPivotKey, $this->relatedPivotKey, $this->morphType];
-        return \WappointmentLv::collect(\array_merge($defaults, $this->pivotColumns))->map(function ($column) {
+        return \WappointmentLv::collect(array_merge($defaults, $this->pivotColumns))->map(function ($column) {
             return $this->qualifyPivotColumn($column) . ' as pivot_' . $column;
         })->unique()->all();
     }

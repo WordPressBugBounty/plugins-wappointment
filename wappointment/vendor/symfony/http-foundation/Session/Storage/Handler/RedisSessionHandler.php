@@ -42,10 +42,10 @@ class RedisSessionHandler extends AbstractSessionHandler
     public function __construct($redis, array $options = [])
     {
         if (!$redis instanceof \Redis && !$redis instanceof \RedisArray && !$redis instanceof \RedisCluster && !$redis instanceof \WappoVendor\Predis\ClientInterface && !$redis instanceof RedisProxy && !$redis instanceof RedisClusterProxy) {
-            throw new \InvalidArgumentException(\sprintf('"%s()" expects parameter 1 to be Redis, RedisArray, RedisCluster or Predis\\ClientInterface, "%s" given.', __METHOD__, \get_debug_type($redis)));
+            throw new \InvalidArgumentException(sprintf('"%s()" expects parameter 1 to be Redis, RedisArray, RedisCluster or Predis\ClientInterface, "%s" given.', __METHOD__, get_debug_type($redis)));
         }
-        if ($diff = \array_diff(\array_keys($options), ['prefix', 'ttl'])) {
-            throw new \InvalidArgumentException(\sprintf('The following options are not supported "%s".', \implode(', ', $diff)));
+        if ($diff = array_diff(array_keys($options), ['prefix', 'ttl'])) {
+            throw new \InvalidArgumentException(sprintf('The following options are not supported "%s".', implode(', ', $diff)));
         }
         $this->redis = $redis;
         $this->prefix = $options['prefix'] ?? 'sf_s';
@@ -54,14 +54,14 @@ class RedisSessionHandler extends AbstractSessionHandler
     /**
      * {@inheritdoc}
      */
-    protected function doRead(string $sessionId) : string
+    protected function doRead(string $sessionId): string
     {
         return $this->redis->get($this->prefix . $sessionId) ?: '';
     }
     /**
      * {@inheritdoc}
      */
-    protected function doWrite(string $sessionId, string $data) : bool
+    protected function doWrite(string $sessionId, string $data): bool
     {
         $result = $this->redis->setEx($this->prefix . $sessionId, (int) ($this->ttl ?? \ini_get('session.gc_maxlifetime')), $data);
         return $result && !$result instanceof ErrorInterface;
@@ -69,7 +69,7 @@ class RedisSessionHandler extends AbstractSessionHandler
     /**
      * {@inheritdoc}
      */
-    protected function doDestroy(string $sessionId) : bool
+    protected function doDestroy(string $sessionId): bool
     {
         static $unlink = \true;
         if ($unlink) {
@@ -88,7 +88,7 @@ class RedisSessionHandler extends AbstractSessionHandler
      * {@inheritdoc}
      */
     #[\ReturnTypeWillChange]
-    public function close() : bool
+    public function close(): bool
     {
         return \true;
     }

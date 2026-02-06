@@ -56,25 +56,25 @@ final class Result implements ResultInterface
     /**
      * {@inheritDoc}
      */
-    public function fetchAllNumeric() : array
+    public function fetchAllNumeric(): array
     {
         return $this->fetchAll(OCI_NUM, OCI_FETCHSTATEMENT_BY_ROW);
     }
     /**
      * {@inheritDoc}
      */
-    public function fetchAllAssociative() : array
+    public function fetchAllAssociative(): array
     {
         return $this->fetchAll(OCI_ASSOC, OCI_FETCHSTATEMENT_BY_ROW);
     }
     /**
      * {@inheritDoc}
      */
-    public function fetchFirstColumn() : array
+    public function fetchFirstColumn(): array
     {
         return $this->fetchAll(OCI_NUM, OCI_FETCHSTATEMENT_BY_COLUMN)[0];
     }
-    public function rowCount() : int
+    public function rowCount(): int
     {
         $count = oci_num_rows($this->statement);
         if ($count !== \false) {
@@ -82,7 +82,7 @@ final class Result implements ResultInterface
         }
         return 0;
     }
-    public function columnCount() : int
+    public function columnCount(): int
     {
         $count = oci_num_fields($this->statement);
         if ($count !== \false) {
@@ -90,7 +90,7 @@ final class Result implements ResultInterface
         }
         return 0;
     }
-    public function free() : void
+    public function free(): void
     {
         oci_cancel($this->statement);
     }
@@ -110,7 +110,7 @@ final class Result implements ResultInterface
     /**
      * @return array<mixed>
      */
-    private function fetchAll(int $mode, int $fetchStructure) : array
+    private function fetchAll(int $mode, int $fetchStructure): array
     {
         oci_fetch_all($this->statement, $result, 0, -1, $mode | OCI_RETURN_NULLS | $fetchStructure | OCI_RETURN_LOBS);
         return $result;

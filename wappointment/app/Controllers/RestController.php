@@ -13,19 +13,16 @@ abstract class RestController
     {
         if ($result === \true) {
             return ['message' => 'Data is saved'];
+        } else if (empty($result)) {
+            $this->setError('There was no identifiable response');
         } else {
-            //$resultkey
-            if (empty($result)) {
-                $this->setError('There was no identifiable response');
-            } else {
-                foreach ($result as $field => $errors_field) {
-                    if (\is_array($errors_field)) {
-                        foreach ($errors_field as $error) {
-                            $this->setError($error, $field);
-                        }
-                    } else {
-                        $this->setError($errors_field);
+            foreach ($result as $field => $errors_field) {
+                if (is_array($errors_field)) {
+                    foreach ($errors_field as $error) {
+                        $this->setError($error, $field);
                     }
+                } else {
+                    $this->setError($errors_field);
                 }
             }
         }
@@ -33,20 +30,20 @@ abstract class RestController
     }
     public function turnDebugOn()
     {
-        \ini_set('display_errors', 1);
-        \ini_set('display_startup_errors', 1);
-        \error_reporting(\E_ALL);
+        ini_set('display_errors', 1);
+        ini_set('display_startup_errors', 1);
+        error_reporting(\E_ALL);
     }
     protected function registerPagination($request)
     {
-        \Wappointment\ClassConnect\Paginator::currentPageResolver(function ($pageName = 'page') use($request) {
+        \Wappointment\ClassConnect\Paginator::currentPageResolver(function ($pageName = 'page') use ($request) {
             return (int) $request->input($pageName);
         });
     }
     public function tryExecute($param)
     {
         global $wappo_mb_missing;
-        if (\defined('WP_DEBUG') && WP_DEBUG === \true) {
+        if (defined('WP_DEBUG') && WP_DEBUG === \true) {
             $this->turnDebugOn();
         }
         try {
@@ -64,14 +61,14 @@ abstract class RestController
             }
             // wrap request with validated data
             if (!empty($args['wparams']['hint'])) {
-                if (\class_exists($args['wparams']['hint'])) {
+                if (class_exists($args['wparams']['hint'])) {
                     $class = $args['wparams']['hint'];
                 } else {
-                    $class = '\\Wappointment\\Validators\\HttpRequest\\' . $args['wparams']['hint'];
+                    $class = '\Wappointment\Validators\HttpRequest\\' . $args['wparams']['hint'];
                 }
                 $request = new $class($request);
             }
-            if (!\method_exists($this, $methodName)) {
+            if (!method_exists($this, $methodName)) {
                 throw new \WappointmentException('Method ' . $methodName . ' does not exist', 1);
             }
             $result = $this->{$methodName}($request);
@@ -80,7 +77,7 @@ abstract class RestController
             $this->setError($e->getValidationErrors(), 'validations');
         } catch (\Exception $e) {
             if (WP_DEBUG) {
-                $this->setError($e->getMessage(), \get_class($this));
+                $this->setError($e->getMessage(), get_class($this));
             } else {
                 $this->setError($e->getMessage());
             }
@@ -96,7 +93,7 @@ abstract class RestController
     }
     protected function setError($error, $bag = 'default')
     {
-        if (\is_string($error)) {
+        if (is_string($error)) {
             $this->errors[$bag][] = $error;
         } else {
             $this->errors[$bag] = $error;
@@ -104,7 +101,7 @@ abstract class RestController
     }
     private function hasOneErrorOnly()
     {
-        if (\count($this->errors) > 1 || \count($this->errors[$this->arrayKeyFirst($this->errors)]) > 1) {
+        if (count($this->errors) > 1 || count($this->errors[$this->arrayKeyFirst($this->errors)]) > 1) {
             return \false;
         }
         return $this->errors[$this->arrayKeyFirst($this->errors)][0];

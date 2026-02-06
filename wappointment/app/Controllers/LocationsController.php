@@ -27,7 +27,7 @@ class LocationsController extends RestController
                 return \true;
             });
         }
-        return \array_values($locations->toArray());
+        return array_values($locations->toArray());
     }
     public function save(Request $request)
     {

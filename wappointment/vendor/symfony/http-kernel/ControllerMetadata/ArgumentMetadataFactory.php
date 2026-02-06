@@ -20,7 +20,7 @@ final class ArgumentMetadataFactory implements ArgumentMetadataFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createArgumentMetadata($controller) : array
+    public function createArgumentMetadata($controller): array
     {
         $arguments = [];
         if (\is_array($controller)) {
@@ -31,7 +31,7 @@ final class ArgumentMetadataFactory implements ArgumentMetadataFactoryInterface
             $class = $reflection->class;
         } else {
             $reflection = new \ReflectionFunction($controller);
-            if ($class = \str_contains($reflection->name, '{closure}') ? null : (\PHP_VERSION_ID >= 80111 ? $reflection->getClosureCalledClass() : $reflection->getClosureScopeClass())) {
+            if ($class = str_contains($reflection->name, '{closure}') ? null : (\PHP_VERSION_ID >= 80111 ? $reflection->getClosureCalledClass() : $reflection->getClosureScopeClass())) {
                 $class = $class->name;
             }
         }
@@ -39,7 +39,7 @@ final class ArgumentMetadataFactory implements ArgumentMetadataFactoryInterface
             $attributes = [];
             if (\PHP_VERSION_ID >= 80000) {
                 foreach ($param->getAttributes() as $reflectionAttribute) {
-                    if (\class_exists($reflectionAttribute->getName())) {
+                    if (class_exists($reflectionAttribute->getName())) {
                         $attributes[] = $reflectionAttribute->newInstance();
                     }
                 }
@@ -51,18 +51,18 @@ final class ArgumentMetadataFactory implements ArgumentMetadataFactoryInterface
     /**
      * Returns an associated type to the given parameter if available.
      */
-    private function getType(\ReflectionParameter $parameter, ?string $class) : ?string
+    private function getType(\ReflectionParameter $parameter, ?string $class): ?string
     {
-        if (!($type = $parameter->getType())) {
+        if (!$type = $parameter->getType()) {
             return null;
         }
         $name = $type instanceof \ReflectionNamedType ? $type->getName() : (string) $type;
         if (null !== $class) {
-            switch (\strtolower($name)) {
+            switch (strtolower($name)) {
                 case 'self':
                     return $class;
                 case 'parent':
-                    return \get_parent_class($class) ?: null;
+                    return get_parent_class($class) ?: null;
             }
         }
         return $name;

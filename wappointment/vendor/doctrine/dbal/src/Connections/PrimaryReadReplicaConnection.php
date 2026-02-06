@@ -118,7 +118,7 @@ class PrimaryReadReplicaConnection extends Connection
     /**
      * Checks if the connection is currently towards the primary or not.
      */
-    public function isConnectedToPrimary() : bool
+    public function isConnectedToPrimary(): bool
     {
         return $this->_conn !== null && $this->_conn === $this->connections['primary'];
     }
@@ -134,7 +134,7 @@ class PrimaryReadReplicaConnection extends Connection
         }
         return $this->performConnect();
     }
-    protected function performConnect(?string $connectionName = null) : bool
+    protected function performConnect(?string $connectionName = null): bool
     {
         $requestedConnectionChange = $connectionName !== null;
         $connectionName = $connectionName ?? 'replica';
@@ -179,7 +179,7 @@ class PrimaryReadReplicaConnection extends Connection
      *
      * All following statements after this will be executed against the primary node.
      */
-    public function ensureConnectedToPrimary() : bool
+    public function ensureConnectedToPrimary(): bool
     {
         return $this->performConnect('primary');
     }
@@ -190,7 +190,7 @@ class PrimaryReadReplicaConnection extends Connection
      * unless the keepReplica option is set to false and a primary connection
      * was already opened.
      */
-    public function ensureConnectedToReplica() : bool
+    public function ensureConnectedToReplica(): bool
     {
         return $this->performConnect('replica');
     }
@@ -296,7 +296,7 @@ class PrimaryReadReplicaConnection extends Connection
         $this->ensureConnectedToPrimary();
         parent::rollbackSavepoint($savepoint);
     }
-    public function prepare(string $sql) : Statement
+    public function prepare(string $sql): Statement
     {
         $this->ensureConnectedToPrimary();
         return parent::prepare($sql);

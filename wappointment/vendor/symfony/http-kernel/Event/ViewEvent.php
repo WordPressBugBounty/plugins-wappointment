@@ -48,7 +48,7 @@ final class ViewEvent extends RequestEvent
      *
      * @param mixed $controllerResult The controller return value
      */
-    public function setControllerResult($controllerResult) : void
+    public function setControllerResult($controllerResult): void
     {
         $this->controllerResult = $controllerResult;
     }

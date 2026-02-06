@@ -57,29 +57,29 @@ final class Result implements ResultInterface
     /**
      * {@inheritDoc}
      */
-    public function fetchAllNumeric() : array
+    public function fetchAllNumeric(): array
     {
         return FetchUtils::fetchAllNumeric($this);
     }
     /**
      * {@inheritDoc}
      */
-    public function fetchAllAssociative() : array
+    public function fetchAllAssociative(): array
     {
         return FetchUtils::fetchAllAssociative($this);
     }
     /**
      * {@inheritDoc}
      */
-    public function fetchFirstColumn() : array
+    public function fetchFirstColumn(): array
     {
         return FetchUtils::fetchFirstColumn($this);
     }
-    public function rowCount() : int
+    public function rowCount(): int
     {
         return @db2_num_rows($this->statement);
     }
-    public function columnCount() : int
+    public function columnCount(): int
     {
         $count = db2_num_fields($this->statement);
         if ($count !== \false) {
@@ -87,7 +87,7 @@ final class Result implements ResultInterface
         }
         return 0;
     }
-    public function free() : void
+    public function free(): void
     {
         db2_free_result($this->statement);
     }

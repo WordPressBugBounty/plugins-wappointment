@@ -40,11 +40,11 @@ abstract class KeywordList
      *
      * @return string[]
      */
-    protected abstract function getKeywords();
+    abstract protected function getKeywords();
     /**
      * Returns the name of this keyword list.
      *
      * @return string
      */
-    public abstract function getName();
+    abstract public function getName();
 }

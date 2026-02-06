@@ -100,7 +100,7 @@ abstract class AbstractMySQLPlatform extends AbstractPlatform
     {
         return 'DATEDIFF(' . $date1 . ', ' . $date2 . ')';
     }
-    public function getCurrentDatabaseExpression() : string
+    public function getCurrentDatabaseExpression(): string
     {
         return 'DATABASE()';
     }
@@ -278,7 +278,7 @@ abstract class AbstractMySQLPlatform extends AbstractPlatform
     {
         return 'SELECT COLUMN_NAME AS Field, COLUMN_TYPE AS Type, IS_NULLABLE AS `Null`, ' . 'COLUMN_KEY AS `Key`, COLUMN_DEFAULT AS `Default`, EXTRA AS Extra, COLUMN_COMMENT AS Comment, ' . 'CHARACTER_SET_NAME AS CharacterSet, COLLATION_NAME AS Collation ' . 'FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ' . $this->getDatabaseNameSQL($database) . ' AND TABLE_NAME = ' . $this->quoteStringLiteral($table) . ' ORDER BY ORDINAL_POSITION ASC';
     }
-    public function getListTableMetadataSQL(string $table, ?string $database = null) : string
+    public function getListTableMetadataSQL(string $table, ?string $database = null): string
     {
         return sprintf(<<<'SQL'
 SELECT t.ENGINE,
@@ -352,7 +352,7 @@ SQL
      *
      * @param mixed[] $options
      */
-    private function buildTableOptions(array $options) : string
+    private function buildTableOptions(array $options): string
     {
         if (isset($options['table_options'])) {
             return $options['table_options'];
@@ -395,7 +395,7 @@ SQL
      *
      * @param mixed[] $options
      */
-    private function buildPartitionOptions(array $options) : string
+    private function buildPartitionOptions(array $options): string
     {
         return isset($options['partition_options']) ? ' ' . $options['partition_options'] : '';
     }
@@ -519,7 +519,7 @@ SQL
      *
      * @throws Exception
      */
-    private function getPreAlterTableAlterPrimaryKeySQL(TableDiff $diff, Index $index) : array
+    private function getPreAlterTableAlterPrimaryKeySQL(TableDiff $diff, Index $index): array
     {
         $sql = [];
         if (!$index->isPrimary() || !$diff->fromTable instanceof Table) {
@@ -549,7 +549,7 @@ SQL
      *
      * @throws Exception
      */
-    private function getPreAlterTableAlterIndexForeignKeySQL(TableDiff $diff) : array
+    private function getPreAlterTableAlterIndexForeignKeySQL(TableDiff $diff): array
     {
         $sql = [];
         $table = $diff->getName($this)->getQuotedName($this);
@@ -601,7 +601,7 @@ SQL
      *
      * @return ForeignKeyConstraint[]
      */
-    private function getRemainingForeignKeyConstraintsRequiringRenamedIndexes(TableDiff $diff) : array
+    private function getRemainingForeignKeyConstraintsRequiringRenamedIndexes(TableDiff $diff): array
     {
         if (empty($diff->renamedIndexes) || !$diff->fromTable instanceof Table) {
             return [];
@@ -703,7 +703,7 @@ SQL
      *
      * @param mixed[] $columnDef
      */
-    private function getUnsignedDeclaration(array $columnDef) : string
+    private function getUnsignedDeclaration(array $columnDef): string
     {
         return !empty($columnDef['unsigned']) ? ' UNSIGNED' : '';
     }
@@ -782,7 +782,7 @@ SQL
      *
      * @link https://dev.mysql.com/doc/refman/8.0/en/alter-table.html
      */
-    public function getDropUniqueConstraintSQL(string $name, string $tableName) : string
+    public function getDropUniqueConstraintSQL(string $name, string $tableName): string
     {
         return $this->getDropIndexSQL($name, $tableName);
     }
@@ -895,11 +895,11 @@ SQL
     {
         return TransactionIsolationLevel::REPEATABLE_READ;
     }
-    public function supportsColumnLengthIndexes() : bool
+    public function supportsColumnLengthIndexes(): bool
     {
         return \true;
     }
-    private function getDatabaseNameSQL(?string $databaseName) : string
+    private function getDatabaseNameSQL(?string $databaseName): string
     {
         if ($databaseName !== null) {
             return $this->quoteStringLiteral($databaseName);

@@ -31,7 +31,7 @@ abstract class AbstractOracleDriver implements Driver
         assert($platform instanceof OraclePlatform);
         return new OracleSchemaManager($conn, $platform);
     }
-    public function getExceptionConverter() : ExceptionConverter
+    public function getExceptionConverter(): ExceptionConverter
     {
         return new OCI\ExceptionConverter();
     }

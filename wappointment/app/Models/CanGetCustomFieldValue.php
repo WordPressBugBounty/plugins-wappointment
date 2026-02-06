@@ -20,11 +20,11 @@ trait CanGetCustomFieldValue
     }
     public static function getGoogleLink($address)
     {
-        return '<a href="https://www.google.com/maps/search/?api=1&query=' . \urlencode($address) . '" target="_blank">' . \nl2br($address) . '</a>';
+        return '<a href="https://www.google.com/maps/search/?api=1&query=' . urlencode($address) . '" target="_blank">' . nl2br($address) . '</a>';
     }
     protected static function cfValueToString($cfValue, $customfield)
     {
-        return \is_array($cfValue) ? \implode(', ', static::convertKeysToLabels($cfValue, $customfield)) : static::convertKeyToLabel($cfValue, $customfield);
+        return is_array($cfValue) ? implode(', ', static::convertKeysToLabels($cfValue, $customfield)) : static::convertKeyToLabel($cfValue, $customfield);
     }
     protected static function convertKeysToLabels($cfValue, $customfield)
     {

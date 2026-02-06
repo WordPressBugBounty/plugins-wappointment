@@ -21,7 +21,7 @@ use WappoVendor\Symfony\Component\HttpKernel\KernelEvents;
 class DisallowRobotsIndexingListener implements EventSubscriberInterface
 {
     private const HEADER_NAME = 'X-Robots-Tag';
-    public function onResponse(ResponseEvent $event) : void
+    public function onResponse(ResponseEvent $event): void
     {
         if (!$event->getResponse()->headers->has(static::HEADER_NAME)) {
             $event->getResponse()->headers->set(static::HEADER_NAME, 'noindex');

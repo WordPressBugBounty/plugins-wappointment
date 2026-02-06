@@ -32,7 +32,7 @@ final class Driver extends AbstractOracleDriver
      *
      * @param mixed[] $params
      */
-    private function constructPdoDsn(array $params) : string
+    private function constructPdoDsn(array $params): string
     {
         $dsn = 'oci:dbname=' . $this->getEasyConnectString($params);
         if (isset($params['charset'])) {

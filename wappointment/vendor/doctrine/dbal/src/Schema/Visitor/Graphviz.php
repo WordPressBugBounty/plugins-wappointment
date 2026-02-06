@@ -44,7 +44,7 @@ class Graphviz extends AbstractVisitor
     {
         $this->output .= $this->createNode($table->getName(), ['label' => $this->createTableLabel($table), 'shape' => 'plaintext']);
     }
-    private function createTableLabel(Table $table) : string
+    private function createTableLabel(Table $table): string
     {
         // Start the table
         $label = '<<TABLE CELLSPACING="0" BORDER="1" ALIGN="LEFT">';
@@ -68,7 +68,7 @@ class Graphviz extends AbstractVisitor
      * @param string   $name
      * @param string[] $options
      */
-    private function createNode($name, $options) : string
+    private function createNode($name, $options): string
     {
         $node = $name . ' [';
         foreach ($options as $key => $value) {
@@ -82,7 +82,7 @@ class Graphviz extends AbstractVisitor
      * @param string   $node2
      * @param string[] $options
      */
-    private function createNodeRelation($node1, $node2, $options) : string
+    private function createNodeRelation($node1, $node2, $options): string
     {
         $relation = $node1 . ' -> ' . $node2 . ' [';
         foreach ($options as $key => $value) {

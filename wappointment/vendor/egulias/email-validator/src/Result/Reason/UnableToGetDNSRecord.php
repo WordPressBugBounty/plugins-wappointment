@@ -7,11 +7,11 @@ namespace WappoVendor\Egulias\EmailValidator\Result\Reason;
  */
 class UnableToGetDNSRecord extends NoDNSRecord
 {
-    public function code() : int
+    public function code(): int
     {
         return 3;
     }
-    public function description() : string
+    public function description(): string
     {
         return 'Unable to get DNS records for the host';
     }

@@ -36,7 +36,7 @@ class ExceptionDataCollector extends DataCollector
     {
         $this->data = [];
     }
-    public function hasException() : bool
+    public function hasException(): bool
     {
         return isset($this->data['exception']);
     }
@@ -47,26 +47,26 @@ class ExceptionDataCollector extends DataCollector
     {
         return $this->data['exception'];
     }
-    public function getMessage() : string
+    public function getMessage(): string
     {
         return $this->data['exception']->getMessage();
     }
-    public function getCode() : int
+    public function getCode(): int
     {
         return $this->data['exception']->getCode();
     }
-    public function getStatusCode() : int
+    public function getStatusCode(): int
     {
         return $this->data['exception']->getStatusCode();
     }
-    public function getTrace() : array
+    public function getTrace(): array
     {
         return $this->data['exception']->getTrace();
     }
     /**
      * {@inheritdoc}
      */
-    public function getName() : string
+    public function getName(): string
     {
         return 'exception';
     }

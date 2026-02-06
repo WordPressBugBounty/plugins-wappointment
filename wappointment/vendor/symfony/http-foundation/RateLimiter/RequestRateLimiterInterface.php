@@ -22,6 +22,6 @@ use WappoVendor\Symfony\Component\RateLimiter\RateLimit;
  */
 interface RequestRateLimiterInterface
 {
-    public function consume(Request $request) : RateLimit;
-    public function reset(Request $request) : void;
+    public function consume(Request $request): RateLimit;
+    public function reset(Request $request): void;
 }

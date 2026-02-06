@@ -20,7 +20,7 @@ trait CollectsResources
         if ($resource instanceof MissingValue) {
             return $resource;
         }
-        if (\is_array($resource)) {
+        if (is_array($resource)) {
             $resource = new Collection($resource);
         }
         $collects = $this->collects();
@@ -37,7 +37,7 @@ trait CollectsResources
         if ($this->collects) {
             return $this->collects;
         }
-        if (Str::endsWith(\WappointmentLv::class_basename($this), 'Collection') && (\class_exists($class = Str::replaceLast('Collection', '', \get_class($this))) || \class_exists($class = Str::replaceLast('Collection', 'Resource', \get_class($this))))) {
+        if (Str::endsWith(\WappointmentLv::class_basename($this), 'Collection') && (class_exists($class = Str::replaceLast('Collection', '', get_class($this))) || class_exists($class = Str::replaceLast('Collection', 'Resource', get_class($this))))) {
             return $class;
         }
     }

@@ -17,7 +17,7 @@ final class DataSourceName
     {
         $this->string = $string;
     }
-    public function toString() : string
+    public function toString(): string
     {
         return $this->string;
     }
@@ -26,7 +26,7 @@ final class DataSourceName
      *
      * @param array<string,mixed> $params
      */
-    public static function fromArray(array $params) : self
+    public static function fromArray(array $params): self
     {
         $chunks = [];
         foreach ($params as $key => $value) {
@@ -39,7 +39,7 @@ final class DataSourceName
      *
      * @param array<string,mixed> $params
      */
-    public static function fromConnectionParameters(array $params) : self
+    public static function fromConnectionParameters(array $params): self
     {
         if (isset($params['dbname']) && strpos($params['dbname'], '=') !== \false) {
             return new self($params['dbname']);

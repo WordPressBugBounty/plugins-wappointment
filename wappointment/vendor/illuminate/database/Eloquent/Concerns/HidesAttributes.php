@@ -65,10 +65,10 @@ trait HidesAttributes
      */
     public function makeVisible($attributes)
     {
-        $attributes = \is_array($attributes) ? $attributes : \func_get_args();
-        $this->hidden = \array_diff($this->hidden, $attributes);
+        $attributes = is_array($attributes) ? $attributes : func_get_args();
+        $this->hidden = array_diff($this->hidden, $attributes);
         if (!empty($this->visible)) {
-            $this->visible = \array_merge($this->visible, $attributes);
+            $this->visible = array_merge($this->visible, $attributes);
         }
         return $this;
     }
@@ -91,7 +91,7 @@ trait HidesAttributes
      */
     public function makeHidden($attributes)
     {
-        $this->hidden = \array_merge($this->hidden, \is_array($attributes) ? $attributes : \func_get_args());
+        $this->hidden = array_merge($this->hidden, is_array($attributes) ? $attributes : func_get_args());
         return $this;
     }
     /**

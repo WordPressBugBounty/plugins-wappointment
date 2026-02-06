@@ -42,7 +42,7 @@ class Uri extends Text
     public function parameters()
     {
         $parameters = parent::parameters();
-        if (!isset($parameters['VALUE']) && \in_array($this->name, ['URL', 'PHOTO'])) {
+        if (!isset($parameters['VALUE']) && in_array($this->name, ['URL', 'PHOTO'])) {
             // If we are encoding a URI value, and this URI value has no
             // VALUE=URI parameter, we add it anyway.
             //
@@ -75,11 +75,11 @@ class Uri extends Text
         // assume that a backslash is always intended as an escape character.
         if ('URL' === $this->name) {
             $regex = '#  (?: (\\\\ (?: \\\\ | : ) ) ) #x';
-            $matches = \preg_split($regex, $val, -1, \PREG_SPLIT_DELIM_CAPTURE | \PREG_SPLIT_NO_EMPTY);
+            $matches = preg_split($regex, $val, -1, \PREG_SPLIT_DELIM_CAPTURE | \PREG_SPLIT_NO_EMPTY);
             $newVal = '';
             foreach ($matches as $match) {
                 switch ($match) {
-                    case '\\:':
+                    case '\:':
                         $newVal .= ':';
                         break;
                     default:
@@ -89,7 +89,7 @@ class Uri extends Text
             }
             $this->value = $newVal;
         } else {
-            $this->value = \strtr($val, ['\\,' => ',']);
+            $this->value = strtr($val, ['\,' => ',']);
         }
     }
     /**
@@ -99,11 +99,11 @@ class Uri extends Text
      */
     public function getRawMimeDirValue()
     {
-        if (\is_array($this->value)) {
+        if (is_array($this->value)) {
             $value = $this->value[0];
         } else {
             $value = $this->value;
         }
-        return \strtr($value, [',' => '\\,']);
+        return strtr($value, [',' => '\,']);
     }
 }

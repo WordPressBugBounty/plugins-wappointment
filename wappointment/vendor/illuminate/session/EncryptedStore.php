@@ -38,7 +38,7 @@ class EncryptedStore extends Store
         try {
             return $this->encrypter->decrypt($data);
         } catch (DecryptException $e) {
-            return \serialize([]);
+            return serialize([]);
         }
     }
     /**

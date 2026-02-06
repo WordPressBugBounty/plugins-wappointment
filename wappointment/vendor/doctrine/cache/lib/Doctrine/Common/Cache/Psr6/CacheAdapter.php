@@ -24,12 +24,12 @@ use function strpbrk;
 use const PHP_VERSION_ID;
 final class CacheAdapter implements CacheItemPoolInterface
 {
-    private const RESERVED_CHARACTERS = '{}()/\\@:';
+    private const RESERVED_CHARACTERS = '{}()/\@:';
     /** @var Cache */
     private $cache;
     /** @var array<CacheItem|TypedCacheItem> */
     private $deferredItems = [];
-    public static function wrap(Cache $cache) : CacheItemPoolInterface
+    public static function wrap(Cache $cache): CacheItemPoolInterface
     {
         if ($cache instanceof DoctrineProvider && !$cache->getNamespace()) {
             return $cache->getPool();
@@ -48,14 +48,14 @@ final class CacheAdapter implements CacheItemPoolInterface
         $this->cache = $cache;
     }
     /** @internal */
-    public function getCache() : Cache
+    public function getCache(): Cache
     {
         return $this->cache;
     }
     /**
      * {@inheritDoc}
      */
-    public function getItem($key) : CacheItemInterface
+    public function getItem($key): CacheItemInterface
     {
         assert(self::validKey($key));
         if (isset($this->deferredItems[$key])) {
@@ -76,7 +76,7 @@ final class CacheAdapter implements CacheItemPoolInterface
     /**
      * {@inheritDoc}
      */
-    public function getItems(array $keys = []) : array
+    public function getItems(array $keys = []): array
     {
         if ($this->deferredItems) {
             $this->commit();
@@ -106,7 +106,7 @@ final class CacheAdapter implements CacheItemPoolInterface
     /**
      * {@inheritDoc}
      */
-    public function hasItem($key) : bool
+    public function hasItem($key): bool
     {
         assert(self::validKey($key));
         if (isset($this->deferredItems[$key])) {
@@ -114,7 +114,7 @@ final class CacheAdapter implements CacheItemPoolInterface
         }
         return $this->cache->contains($key);
     }
-    public function clear() : bool
+    public function clear(): bool
     {
         $this->deferredItems = [];
         if (!$this->cache instanceof ClearableCache) {
@@ -125,7 +125,7 @@ final class CacheAdapter implements CacheItemPoolInterface
     /**
      * {@inheritDoc}
      */
-    public function deleteItem($key) : bool
+    public function deleteItem($key): bool
     {
         assert(self::validKey($key));
         unset($this->deferredItems[$key]);
@@ -134,7 +134,7 @@ final class CacheAdapter implements CacheItemPoolInterface
     /**
      * {@inheritDoc}
      */
-    public function deleteItems(array $keys) : bool
+    public function deleteItems(array $keys): bool
     {
         foreach ($keys as $key) {
             assert(self::validKey($key));
@@ -142,11 +142,11 @@ final class CacheAdapter implements CacheItemPoolInterface
         }
         return $this->doDeleteMultiple($keys);
     }
-    public function save(CacheItemInterface $item) : bool
+    public function save(CacheItemInterface $item): bool
     {
         return $this->saveDeferred($item) && $this->commit();
     }
-    public function saveDeferred(CacheItemInterface $item) : bool
+    public function saveDeferred(CacheItemInterface $item): bool
     {
         if (!$item instanceof CacheItem && !$item instanceof TypedCacheItem) {
             return \false;
@@ -154,7 +154,7 @@ final class CacheAdapter implements CacheItemPoolInterface
         $this->deferredItems[$item->getKey()] = $item;
         return \true;
     }
-    public function commit() : bool
+    public function commit(): bool
     {
         if (!$this->deferredItems) {
             return \true;
@@ -199,7 +199,7 @@ final class CacheAdapter implements CacheItemPoolInterface
     /**
      * @param mixed $key
      */
-    private static function validKey($key) : bool
+    private static function validKey($key): bool
     {
         if (!is_string($key)) {
             throw new InvalidArgument(sprintf('Cache key must be string, "%s" given.', is_object($key) ? get_class($key) : gettype($key)));
@@ -215,7 +215,7 @@ final class CacheAdapter implements CacheItemPoolInterface
     /**
      * @param mixed[] $keys
      */
-    private static function validKeys(array $keys) : bool
+    private static function validKeys(array $keys): bool
     {
         foreach ($keys as $key) {
             self::validKey($key);
@@ -225,7 +225,7 @@ final class CacheAdapter implements CacheItemPoolInterface
     /**
      * @param mixed[] $keys
      */
-    private function doDeleteMultiple(array $keys) : bool
+    private function doDeleteMultiple(array $keys): bool
     {
         if ($this->cache instanceof MultiDeleteCache) {
             return $this->cache->deleteMultiple($keys);
@@ -241,7 +241,7 @@ final class CacheAdapter implements CacheItemPoolInterface
      *
      * @return mixed[]
      */
-    private function doFetchMultiple(array $keys) : array
+    private function doFetchMultiple(array $keys): array
     {
         if ($this->cache instanceof MultiGetCache) {
             return $this->cache->fetchMultiple($keys);
@@ -259,7 +259,7 @@ final class CacheAdapter implements CacheItemPoolInterface
     /**
      * @param mixed[] $keysAndValues
      */
-    private function doSaveMultiple(array $keysAndValues, int $lifetime = 0) : bool
+    private function doSaveMultiple(array $keysAndValues, int $lifetime = 0): bool
     {
         if ($this->cache instanceof MultiPutCache) {
             return $this->cache->saveMultiple($keysAndValues, $lifetime);

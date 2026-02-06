@@ -46,7 +46,7 @@ abstract class Transport implements \WappoSwift_Transport
      */
     public function registerPlugin(\WappoSwift_Events_EventListener $plugin)
     {
-        \array_push($this->plugins, $plugin);
+        array_push($this->plugins, $plugin);
     }
     /**
      * Iterate through registered plugins and execute plugins' methods.
@@ -58,7 +58,7 @@ abstract class Transport implements \WappoSwift_Transport
     {
         $event = new \WappoSwift_Events_SendEvent($this, $message);
         foreach ($this->plugins as $plugin) {
-            if (\method_exists($plugin, 'beforeSendPerformed')) {
+            if (method_exists($plugin, 'beforeSendPerformed')) {
                 $plugin->beforeSendPerformed($event);
             }
         }
@@ -73,7 +73,7 @@ abstract class Transport implements \WappoSwift_Transport
     {
         $event = new \WappoSwift_Events_SendEvent($this, $message);
         foreach ($this->plugins as $plugin) {
-            if (\method_exists($plugin, 'sendPerformed')) {
+            if (method_exists($plugin, 'sendPerformed')) {
                 $plugin->sendPerformed($event);
             }
         }
@@ -86,7 +86,7 @@ abstract class Transport implements \WappoSwift_Transport
      */
     protected function numberOfRecipients(\WappoSwift_Mime_SimpleMessage $message)
     {
-        return \count(\array_merge((array) $message->getTo(), (array) $message->getCc(), (array) $message->getBcc()));
+        return count(array_merge((array) $message->getTo(), (array) $message->getCc(), (array) $message->getBcc()));
     }
     /**
      * Get the "to" payload field for the API request.
@@ -108,7 +108,7 @@ abstract class Transport implements \WappoSwift_Transport
      */
     protected function allContacts(\WappoSwift_Mime_SimpleMessage $message)
     {
-        return \array_merge((array) $message->getTo(), (array) $message->getCc(), (array) $message->getBcc());
+        return array_merge((array) $message->getTo(), (array) $message->getCc(), (array) $message->getBcc());
     }
     /**
      * Get the API key being used by the transport.

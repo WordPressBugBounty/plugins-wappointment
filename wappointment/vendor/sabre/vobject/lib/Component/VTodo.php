@@ -117,6 +117,6 @@ class VTodo extends VObject\Component
      */
     protected function getDefaults()
     {
-        return ['UID' => 'sabre-vobject-' . VObject\UUIDUtil::getUUID(), 'DTSTAMP' => \date('Ymd\\THis\\Z')];
+        return ['UID' => 'sabre-vobject-' . VObject\UUIDUtil::getUUID(), 'DTSTAMP' => date('Ymd\THis\Z')];
     }
 }

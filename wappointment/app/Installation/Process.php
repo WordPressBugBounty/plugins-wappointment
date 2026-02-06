@@ -8,7 +8,7 @@ use Wappointment\System\Status;
 class Process extends \Wappointment\Installation\AbstractProcess
 {
     protected $key = 'installation_step';
-    protected $steps = ['Wappointment\\Installation\\Steps\\CreateMigrationTable', 'Wappointment\\Installation\\Steps\\CreateTables', \true];
+    protected $steps = ['Wappointment\Installation\Steps\CreateMigrationTable', 'Wappointment\Installation\Steps\CreateTables', \true];
     protected function isUpToDate()
     {
         if (empty(WPHelpers::getOption('installation_completed'))) {

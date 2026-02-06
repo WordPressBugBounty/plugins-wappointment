@@ -26,8 +26,8 @@ final class Php73
      */
     public static function hrtime($asNum = \false)
     {
-        $ns = \microtime(\false);
-        $s = \substr($ns, 11) - self::$startAt;
+        $ns = microtime(\false);
+        $s = substr($ns, 11) - self::$startAt;
         $ns = 1000000000.0 * (float) $ns;
         if ($asNum) {
             $ns += $s * 1000000000.0;

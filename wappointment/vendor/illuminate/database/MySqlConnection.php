@@ -21,7 +21,7 @@ class MySqlConnection extends Connection
      */
     public function isMaria()
     {
-        return \strpos($this->getPdo()->getAttribute(PDO::ATTR_SERVER_VERSION), 'MariaDB') !== \false;
+        return strpos($this->getPdo()->getAttribute(PDO::ATTR_SERVER_VERSION), 'MariaDB') !== \false;
     }
     /**
      * Get the default query grammar instance.
@@ -39,7 +39,7 @@ class MySqlConnection extends Connection
      */
     public function getSchemaBuilder()
     {
-        if (\is_null($this->schemaGrammar)) {
+        if (is_null($this->schemaGrammar)) {
             $this->useDefaultSchemaGrammar();
         }
         return new MySqlBuilder($this);
@@ -60,7 +60,7 @@ class MySqlConnection extends Connection
      * @param  callable|null  $processFactory
      * @return \Illuminate\Database\Schema\MySqlSchemaState
      */
-    public function getSchemaState(Filesystem $files = null, callable $processFactory = null)
+    public function getSchemaState(?Filesystem $files = null, ?callable $processFactory = null)
     {
         return new MySqlSchemaState($this, $files, $processFactory);
     }
@@ -80,6 +80,6 @@ class MySqlConnection extends Connection
      */
     protected function getDoctrineDriver()
     {
-        return \class_exists(Version::class) ? new DoctrineDriver() : new MySqlDriver();
+        return class_exists(Version::class) ? new DoctrineDriver() : new MySqlDriver();
     }
 }

@@ -14,7 +14,7 @@ trait IsReminder
     }
     protected function isReminderInTheFutureOrNotIsReminder($reminder, $params)
     {
-        if ($reminder->getDelay() && \time() > $this->reminderShouldBeSentOnThe($reminder, $params)) {
+        if ($reminder->getDelay() && time() > $this->reminderShouldBeSentOnThe($reminder, $params)) {
             return \false;
         }
         return \true;

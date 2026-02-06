@@ -124,6 +124,6 @@ class File extends UploadedFile
      */
     protected function tempFilePath()
     {
-        return \stream_get_meta_data($this->tempFile)['uri'];
+        return stream_get_meta_data($this->tempFile)['uri'];
     }
 }

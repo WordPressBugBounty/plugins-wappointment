@@ -12,7 +12,7 @@ use function sprintf;
  */
 final class FailedReadingStreamOffset extends AbstractException
 {
-    public static function new(int $parameter) : self
+    public static function new(int $parameter): self
     {
         return new self(sprintf('Failed reading the stream resource for parameter #%d.', $parameter));
     }

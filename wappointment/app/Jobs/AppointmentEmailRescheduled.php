@@ -5,7 +5,7 @@ namespace Wappointment\Jobs;
 use Wappointment\Models\Appointment;
 class AppointmentEmailRescheduled extends \Wappointment\Jobs\AppointmentEmailConfirmed
 {
-    const CONTENT = '\\Wappointment\\Messages\\AppointmentRescheduledEmail';
+    const CONTENT = '\Wappointment\Messages\AppointmentRescheduledEmail';
     protected function generateContent()
     {
         $emailClass = static::CONTENT;

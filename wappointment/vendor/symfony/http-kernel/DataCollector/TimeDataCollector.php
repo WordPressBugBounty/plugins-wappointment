@@ -39,7 +39,7 @@ class TimeDataCollector extends DataCollector implements LateDataCollectorInterf
         } else {
             $startTime = $request->server->get('REQUEST_TIME_FLOAT');
         }
-        $this->data = ['token' => $request->attributes->get('_stopwatch_token'), 'start_time' => $startTime * 1000, 'events' => [], 'stopwatch_installed' => \class_exists(Stopwatch::class, \false)];
+        $this->data = ['token' => $request->attributes->get('_stopwatch_token'), 'start_time' => $startTime * 1000, 'events' => [], 'stopwatch_installed' => class_exists(Stopwatch::class, \false)];
     }
     /**
      * {@inheritdoc}
@@ -74,14 +74,14 @@ class TimeDataCollector extends DataCollector implements LateDataCollectorInterf
     /**
      * @return StopwatchEvent[]
      */
-    public function getEvents() : array
+    public function getEvents(): array
     {
         return $this->data['events'];
     }
     /**
      * Gets the request elapsed time.
      */
-    public function getDuration() : float
+    public function getDuration(): float
     {
         if (!isset($this->data['events']['__section__'])) {
             return 0;
@@ -94,25 +94,25 @@ class TimeDataCollector extends DataCollector implements LateDataCollectorInterf
      *
      * This is the time spent until the beginning of the request handling.
      */
-    public function getInitTime() : float
+    public function getInitTime(): float
     {
         if (!isset($this->data['events']['__section__'])) {
             return 0;
         }
         return $this->data['events']['__section__']->getOrigin() - $this->getStartTime();
     }
-    public function getStartTime() : float
+    public function getStartTime(): float
     {
         return $this->data['start_time'];
     }
-    public function isStopwatchInstalled() : bool
+    public function isStopwatchInstalled(): bool
     {
         return $this->data['stopwatch_installed'];
     }
     /**
      * {@inheritdoc}
      */
-    public function getName() : string
+    public function getName(): string
     {
         return 'time';
     }

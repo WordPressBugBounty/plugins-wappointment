@@ -27,17 +27,17 @@ class VFreeBusy extends VObject\Component
         foreach ($this->select('FREEBUSY') as $freebusy) {
             // We are only interested in FBTYPE=BUSY (the default),
             // FBTYPE=BUSY-TENTATIVE or FBTYPE=BUSY-UNAVAILABLE.
-            if (isset($freebusy['FBTYPE']) && 'BUSY' !== \strtoupper(\substr((string) $freebusy['FBTYPE'], 0, 4))) {
+            if (isset($freebusy['FBTYPE']) && 'BUSY' !== strtoupper(substr((string) $freebusy['FBTYPE'], 0, 4))) {
                 continue;
             }
             // The freebusy component can hold more than 1 value, separated by
             // commas.
-            $periods = \explode(',', (string) $freebusy);
+            $periods = explode(',', (string) $freebusy);
             foreach ($periods as $period) {
                 // Every period is formatted as [start]/[end]. The start is an
                 // absolute UTC time, the end may be an absolute UTC time, or
                 // duration (relative) value.
-                list($busyStart, $busyEnd) = \explode('/', $period);
+                list($busyStart, $busyEnd) = explode('/', $period);
                 $busyStart = VObject\DateTimeParser::parse($busyStart);
                 $busyEnd = VObject\DateTimeParser::parse($busyEnd);
                 if ($busyEnd instanceof \DateInterval) {

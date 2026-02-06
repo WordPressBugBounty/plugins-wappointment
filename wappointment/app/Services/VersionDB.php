@@ -10,15 +10,15 @@ class VersionDB
     const CAN_RECURRENT = '2.4.6';
     public static function atLeast($version)
     {
-        return \version_compare(Status::dbVersion(), $version) >= 0;
+        return version_compare(Status::dbVersion(), $version) >= 0;
     }
     public static function isLessThan($version)
     {
-        return \version_compare(Status::dbVersion(), $version) < 0;
+        return version_compare(Status::dbVersion(), $version) < 0;
     }
     public static function equal($version)
     {
-        return \version_compare(Status::dbVersion(), $version) === 0;
+        return version_compare(Status::dbVersion(), $version) === 0;
     }
     public static function canServices()
     {

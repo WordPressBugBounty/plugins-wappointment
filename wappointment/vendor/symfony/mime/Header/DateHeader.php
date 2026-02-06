@@ -30,11 +30,11 @@ final class DateHeader extends AbstractHeader
     {
         $this->setDateTime($body);
     }
-    public function getBody() : \DateTimeImmutable
+    public function getBody(): \DateTimeImmutable
     {
         return $this->getDateTime();
     }
-    public function getDateTime() : \DateTimeImmutable
+    public function getDateTime(): \DateTimeImmutable
     {
         return $this->dateTime;
     }
@@ -51,7 +51,7 @@ final class DateHeader extends AbstractHeader
         }
         $this->dateTime = $dateTime;
     }
-    public function getBodyAsString() : string
+    public function getBodyAsString(): string
     {
         return $this->dateTime->format(\DateTime::RFC2822);
     }

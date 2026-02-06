@@ -7,7 +7,7 @@ class Plugins
 {
     public function __construct()
     {
-        if (!\function_exists('WappoVendor\\get_plugins')) {
+        if (!function_exists('WappoVendor\get_plugins')) {
             require_once ABSPATH . 'wp-admin/includes/plugin.php';
         }
     }

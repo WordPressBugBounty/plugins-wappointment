@@ -112,13 +112,13 @@ class Data implements \ArrayAccess, \Countable, \IteratorAggregate
     public function getIterator()
     {
         if (!\is_array($value = $this->getValue())) {
-            throw new \LogicException(\sprintf('"%s" object holds non-iterable type "%s".', self::class, \get_debug_type($value)));
+            throw new \LogicException(sprintf('"%s" object holds non-iterable type "%s".', self::class, get_debug_type($value)));
         }
         yield from $value;
     }
     public function __get(string $key)
     {
-        if (null !== ($data = $this->seek($key))) {
+        if (null !== $data = $this->seek($key)) {
             $item = $this->getStub($data->data[$data->position][$data->key]);
             return $item instanceof Stub || [] === $item ? $data : $item;
         }
@@ -172,7 +172,7 @@ class Data implements \ArrayAccess, \Countable, \IteratorAggregate
         if (!\is_array($value)) {
             return (string) $value;
         }
-        return \sprintf('%s (count=%d)', $this->getType(), \count($value));
+        return sprintf('%s (count=%d)', $this->getType(), \count($value));
     }
     /**
      * Returns a depth limited clone of $this.
@@ -360,7 +360,7 @@ class Data implements \ArrayAccess, \Countable, \IteratorAggregate
                     $dumper->leaveHash($cursor, $item->type, $item->class, $withChildren, $cut);
                     break;
                 default:
-                    throw new \RuntimeException(\sprintf('Unexpected Stub type: "%s".', $item->type));
+                    throw new \RuntimeException(sprintf('Unexpected Stub type: "%s".', $item->type));
             }
         } elseif ('array' === $type) {
             $dumper->enterHash($cursor, Cursor::HASH_INDEXED, 0, \false);
@@ -376,7 +376,7 @@ class Data implements \ArrayAccess, \Countable, \IteratorAggregate
      *
      * @return int The final number of removed items
      */
-    private function dumpChildren(DumperInterface $dumper, Cursor $parentCursor, array &$refs, array $children, int $hashCut, int $hashType, bool $dumpKeys) : int
+    private function dumpChildren(DumperInterface $dumper, Cursor $parentCursor, array &$refs, array $children, int $hashCut, int $hashType, bool $dumpKeys): int
     {
         $cursor = clone $parentCursor;
         ++$cursor->depth;
@@ -385,7 +385,7 @@ class Data implements \ArrayAccess, \Countable, \IteratorAggregate
         $cursor->hashLength = \count($children);
         $cursor->hashCut = $hashCut;
         foreach ($children as $key => $child) {
-            $cursor->hashKeyIsBinary = isset($key[0]) && !\preg_match('//u', $key);
+            $cursor->hashKeyIsBinary = isset($key[0]) && !preg_match('//u', $key);
             $cursor->hashKey = $dumpKeys ? $key : null;
             $this->dumpItem($dumper, $cursor, $refs, $child);
             if (++$cursor->hashIndex === $this->maxItemsPerDepth || $cursor->stop) {

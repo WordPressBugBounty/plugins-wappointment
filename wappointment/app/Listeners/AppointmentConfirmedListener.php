@@ -5,7 +5,7 @@ namespace Wappointment\Listeners;
 use Wappointment\Models\Reminder;
 class AppointmentConfirmedListener extends \Wappointment\Listeners\AbstractJobAppointmentListener
 {
-    protected $jobClass = '\\Wappointment\\Jobs\\AppointmentEmailConfirmed';
+    protected $jobClass = '\Wappointment\Jobs\AppointmentEmailConfirmed';
     protected $delay = 0;
     protected $event_trigger = Reminder::APPOINTMENT_CONFIRMED;
     protected $get_first = \true;
@@ -15,7 +15,7 @@ class AppointmentConfirmedListener extends \Wappointment\Listeners\AbstractJobAp
         foreach ($event->getReminders() as $reminder) {
             if ($reminder->type == Reminder::getType('email') && $reminder->event == $this->event_trigger) {
                 $params['reminder_id'] = 0;
-                $this->recordJob($this->jobClass, \array_merge($params, $this->data_job), 'client', null, $this->delay);
+                $this->recordJob($this->jobClass, array_merge($params, $this->data_job), 'client', null, $this->delay);
                 if ($this->get_first) {
                     return;
                 }

@@ -66,13 +66,13 @@ class XML extends Parser
      */
     public function parse($input = null, $options = 0)
     {
-        if (!\is_null($input)) {
+        if (!is_null($input)) {
             $this->setInput($input);
         }
         if (0 !== $options) {
             $this->options = $options;
         }
-        if (\is_null($this->input)) {
+        if (is_null($this->input)) {
             throw new EofException('End of input stream, or no input supplied');
         }
         switch ($this->input['name']) {
@@ -139,7 +139,7 @@ class XML extends Parser
                 $propertyName = 'xml';
                 $value = '<' . $tagName . ' xmlns="' . $namespace . '"';
                 foreach ($xmlProperty['attributes'] as $attributeName => $attributeValue) {
-                    $value .= ' ' . $attributeName . '="' . \str_replace('"', '\\"', $attributeValue) . '"';
+                    $value .= ' ' . $attributeName . '="' . str_replace('"', '\"', $attributeValue) . '"';
                 }
                 $value .= '>' . $xmlProperty['value'] . '</' . $tagName . '>';
                 $propertyValue = [$value];
@@ -152,12 +152,12 @@ class XML extends Parser
                     continue;
                 }
                 $this->pointer =& $xmlProperty['value'];
-                $this->parseProperties($parentComponent, \strtoupper($xmlProperty['attributes']['name']) . '.');
+                $this->parseProperties($parentComponent, strtoupper($xmlProperty['attributes']['name']) . '.');
                 continue;
             }
             // Collect parameters.
             foreach ($xmlProperty['value'] as $i => $xmlPropertyChild) {
-                if (!\is_array($xmlPropertyChild) || 'parameters' !== static::getTagName($xmlPropertyChild['name'])) {
+                if (!is_array($xmlPropertyChild) || 'parameters' !== static::getTagName($xmlPropertyChild['name'])) {
                     continue;
                 }
                 $xmlParameters = $xmlPropertyChild['value'];
@@ -166,9 +166,9 @@ class XML extends Parser
                     foreach ($xmlParameter['value'] as $xmlParameterValues) {
                         $propertyParameterValues[] = $xmlParameterValues['value'];
                     }
-                    $propertyParameters[static::getTagName($xmlParameter['name'])] = \implode(',', $propertyParameterValues);
+                    $propertyParameters[static::getTagName($xmlParameter['name'])] = implode(',', $propertyParameterValues);
                 }
-                \array_splice($xmlProperty['value'], $i, 1);
+                array_splice($xmlProperty['value'], $i, 1);
             }
             $propertyNameExtended = ($this->root instanceof VCalendar ? 'xcal' : 'xcard') . ':' . $propertyName;
             switch ($propertyNameExtended) {
@@ -204,7 +204,7 @@ class XML extends Parser
                         $tagName = static::getTagName($specialChild['name']);
                         if ('period' === $tagName) {
                             $propertyParameters['value'] = 'PERIOD';
-                            $propertyValue[] = \implode('/', $specialChild['value']);
+                            $propertyValue[] = implode('/', $specialChild['value']);
                         } else {
                             $propertyValue[] = $specialChild['value'];
                         }
@@ -258,10 +258,10 @@ class XML extends Parser
      */
     public function setInput($input)
     {
-        if (\is_resource($input)) {
-            $input = \stream_get_contents($input);
+        if (is_resource($input)) {
+            $input = stream_get_contents($input);
         }
-        if (\is_string($input)) {
+        if (is_string($input)) {
             $reader = new SabreXml\Reader();
             $reader->elementMap['{' . self::XCAL_NAMESPACE . '}period'] = XML\Element\KeyValue::class;
             $reader->elementMap['{' . self::XCAL_NAMESPACE . '}recur'] = XML\Element\KeyValue::class;

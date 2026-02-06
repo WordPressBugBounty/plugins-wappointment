@@ -68,7 +68,7 @@ class UniqueConstraint extends AbstractAsset implements Constraint
     /**
      * @return string[]
      */
-    public function getUnquotedColumns() : array
+    public function getUnquotedColumns(): array
     {
         return array_map([$this, 'trimQuotes'], $this->getColumns());
     }
@@ -77,7 +77,7 @@ class UniqueConstraint extends AbstractAsset implements Constraint
      *
      * @return string[]
      */
-    public function getFlags() : array
+    public function getFlags(): array
     {
         return array_keys($this->flags);
     }
@@ -88,7 +88,7 @@ class UniqueConstraint extends AbstractAsset implements Constraint
      *
      * @example $uniqueConstraint->addFlag('CLUSTERED')
      */
-    public function addFlag(string $flag) : UniqueConstraint
+    public function addFlag(string $flag): UniqueConstraint
     {
         $this->flags[strtolower($flag)] = \true;
         return $this;
@@ -96,21 +96,21 @@ class UniqueConstraint extends AbstractAsset implements Constraint
     /**
      * Does this unique constraint have a specific flag?
      */
-    public function hasFlag(string $flag) : bool
+    public function hasFlag(string $flag): bool
     {
         return isset($this->flags[strtolower($flag)]);
     }
     /**
      * Removes a flag.
      */
-    public function removeFlag(string $flag) : void
+    public function removeFlag(string $flag): void
     {
         unset($this->flags[strtolower($flag)]);
     }
     /**
      * Does this unique constraint have a specific option?
      */
-    public function hasOption(string $name) : bool
+    public function hasOption(string $name): bool
     {
         return isset($this->options[strtolower($name)]);
     }
@@ -124,14 +124,14 @@ class UniqueConstraint extends AbstractAsset implements Constraint
     /**
      * @return mixed[]
      */
-    public function getOptions() : array
+    public function getOptions(): array
     {
         return $this->options;
     }
     /**
      * Adds a new column to the unique constraint.
      */
-    protected function addColumn(string $column) : void
+    protected function addColumn(string $column): void
     {
         $this->columns[$column] = new Identifier($column);
     }

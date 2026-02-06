@@ -20,11 +20,11 @@ abstract class AbstractConnectionMiddleware implements ServerInfoAwareConnection
     {
         $this->wrappedConnection = $wrappedConnection;
     }
-    public function prepare(string $sql) : Statement
+    public function prepare(string $sql): Statement
     {
         return $this->wrappedConnection->prepare($sql);
     }
-    public function query(string $sql) : Result
+    public function query(string $sql): Result
     {
         return $this->wrappedConnection->query($sql);
     }
@@ -35,7 +35,7 @@ abstract class AbstractConnectionMiddleware implements ServerInfoAwareConnection
     {
         return $this->wrappedConnection->quote($value, $type);
     }
-    public function exec(string $sql) : int
+    public function exec(string $sql): int
     {
         return $this->wrappedConnection->exec($sql);
     }

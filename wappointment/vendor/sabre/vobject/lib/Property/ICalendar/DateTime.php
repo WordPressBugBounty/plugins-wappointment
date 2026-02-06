@@ -56,7 +56,7 @@ class DateTime extends Property
      */
     public function setValue($value)
     {
-        if (\is_array($value) && isset($value[0]) && $value[0] instanceof DateTimeInterface) {
+        if (is_array($value) && isset($value[0]) && $value[0] instanceof DateTimeInterface) {
             $this->setDateTimes($value);
         } elseif ($value instanceof DateTimeInterface) {
             $this->setDateTimes([$value]);
@@ -74,7 +74,7 @@ class DateTime extends Property
      */
     public function setRawMimeDirValue($val)
     {
-        $this->setValue(\explode($this->delimiter, $val));
+        $this->setValue(explode($this->delimiter, $val));
     }
     /**
      * Returns a raw mime-dir representation of the value.
@@ -83,7 +83,7 @@ class DateTime extends Property
      */
     public function getRawMimeDirValue()
     {
-        return \implode($this->delimiter, $this->getParts());
+        return implode($this->delimiter, $this->getParts());
     }
     /**
      * Returns true if this is a DATE-TIME value, false if it's a DATE.
@@ -92,7 +92,7 @@ class DateTime extends Property
      */
     public function hasTime()
     {
-        return 'DATE' !== \strtoupper((string) $this['VALUE']);
+        return 'DATE' !== strtoupper((string) $this['VALUE']);
     }
     /**
      * Returns true if this is a floating DATE or DATE-TIME.
@@ -101,7 +101,7 @@ class DateTime extends Property
      */
     public function isFloating()
     {
-        return !$this->hasTime() || !isset($this['TZID']) && \false === \strpos($this->getValue(), 'Z');
+        return !$this->hasTime() || !isset($this['TZID']) && \false === strpos($this->getValue(), 'Z');
     }
     /**
      * Returns a date-time value.
@@ -177,12 +177,12 @@ class DateTime extends Property
             $isUtc = \false;
             foreach ($dt as $d) {
                 if ($isFloating) {
-                    $values[] = $d->format('WappoVendor\\Ymd\\THis');
+                    $values[] = $d->format('WappoVendor\Ymd\THis');
                     continue;
                 }
-                if (\is_null($tz)) {
+                if (is_null($tz)) {
                     $tz = $d->getTimeZone();
-                    $isUtc = \in_array($tz->getName(), ['UTC', 'GMT', 'Z', '+00:00']);
+                    $isUtc = in_array($tz->getName(), ['UTC', 'GMT', 'Z', '+00:00']);
                     if (!$isUtc) {
                         $this->offsetSet('TZID', $tz->getName());
                     }
@@ -190,9 +190,9 @@ class DateTime extends Property
                     $d = $d->setTimeZone($tz);
                 }
                 if ($isUtc) {
-                    $values[] = $d->format('WappoVendor\\Ymd\\THis\\Z');
+                    $values[] = $d->format('WappoVendor\Ymd\THis\Z');
                 } else {
-                    $values[] = $d->format('WappoVendor\\Ymd\\THis');
+                    $values[] = $d->format('WappoVendor\Ymd\THis');
                 }
             }
             if ($isUtc || $isFloating) {
@@ -231,10 +231,10 @@ class DateTime extends Property
         $hasTime = $this->hasTime();
         $isFloating = $this->isFloating();
         $tz = $dts[0]->getTimeZone();
-        $isUtc = $isFloating ? \false : \in_array($tz->getName(), ['UTC', 'GMT', 'Z']);
-        return \array_map(function (DateTimeInterface $dt) use($hasTime, $isUtc) {
+        $isUtc = $isFloating ? \false : in_array($tz->getName(), ['UTC', 'GMT', 'Z']);
+        return array_map(function (DateTimeInterface $dt) use ($hasTime, $isUtc) {
             if ($hasTime) {
-                return $dt->format('Y-m-d\\TH:i:s') . ($isUtc ? 'Z' : '');
+                return $dt->format('Y-m-d\TH:i:s') . ($isUtc ? 'Z' : '');
             } else {
                 return $dt->format('Y-m-d');
             }
@@ -251,8 +251,8 @@ class DateTime extends Property
         // iCalendar. In jCal date-parts are separated by dashes, and
         // time-parts are separated by colons. It makes sense to just remove
         // those.
-        $this->setValue(\array_map(function ($item) {
-            return \strtr($item, [':' => '', '-' => '']);
+        $this->setValue(array_map(function ($item) {
+            return strtr($item, [':' => '', '-' => '']);
         }, $value));
     }
     /**
@@ -266,7 +266,7 @@ class DateTime extends Property
     public function offsetSet($name, $value)
     {
         parent::offsetSet($name, $value);
-        if ('VALUE' !== \strtoupper($name)) {
+        if ('VALUE' !== strtoupper($name)) {
             return;
         }
         // This will ensure that dates are correctly encoded.

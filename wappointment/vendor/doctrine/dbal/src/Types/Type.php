@@ -23,7 +23,7 @@ abstract class Type
     /**
      * @internal Do not instantiate directly - use {@see Type::addType()} method instead.
      */
-    public final function __construct()
+    final public function __construct()
     {
     }
     /**
@@ -64,7 +64,7 @@ abstract class Type
      *
      * @return string
      */
-    public abstract function getSQLDeclaration(array $column, AbstractPlatform $platform);
+    abstract public function getSQLDeclaration(array $column, AbstractPlatform $platform);
     /**
      * Gets the name of this type.
      *
@@ -72,15 +72,15 @@ abstract class Type
      *
      * @todo Needed?
      */
-    public abstract function getName();
-    public static final function getTypeRegistry() : TypeRegistry
+    abstract public function getName();
+    final public static function getTypeRegistry(): TypeRegistry
     {
         if (self::$typeRegistry === null) {
             self::$typeRegistry = self::createTypeRegistry();
         }
         return self::$typeRegistry;
     }
-    private static function createTypeRegistry() : TypeRegistry
+    private static function createTypeRegistry(): TypeRegistry
     {
         $instances = [];
         foreach (self::BUILTIN_TYPES_MAP as $name => $class) {
@@ -161,7 +161,7 @@ abstract class Type
      */
     public static function getTypesMap()
     {
-        return array_map(static function (Type $type) : string {
+        return array_map(static function (Type $type): string {
             return get_class($type);
         }, self::getTypeRegistry()->getMap());
     }

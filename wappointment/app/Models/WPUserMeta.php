@@ -25,12 +25,12 @@ class WPUserMeta extends Model
         $roles = Settings::get('calendar_roles');
         $wp_capabilities = [];
         foreach ($roles as $role) {
-            $wp_capabilities[] = \serialize([$role => \true]);
+            $wp_capabilities[] = serialize([$role => \true]);
         }
         global $wpdb;
         $site_prefix = $wpdb->get_blog_prefix();
-        $result_user_ids = self::select('user_id')->where('meta_key', $site_prefix . 'capabilities')->where(function ($query) use($roles) {
-            for ($i = 0; $i < \count($roles); $i++) {
+        $result_user_ids = self::select('user_id')->where('meta_key', $site_prefix . 'capabilities')->where(function ($query) use ($roles) {
+            for ($i = 0; $i < count($roles); $i++) {
                 $query->orwhere('meta_value', 'like', '%' . $roles[$i] . '%');
             }
         })->get();

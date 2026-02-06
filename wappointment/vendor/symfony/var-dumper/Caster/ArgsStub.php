@@ -33,17 +33,17 @@ class ArgsStub extends EnumStub
         if (\count($values) < \count($params)) {
             $params = \array_slice($params, 0, \count($values));
         } elseif (\count($values) > \count($params)) {
-            $values[] = new EnumStub(\array_splice($values, \count($params)), \false);
+            $values[] = new EnumStub(array_splice($values, \count($params)), \false);
             $params[] = $variadic;
         }
         if (['...'] === $params) {
             $this->dumpKeys = \false;
             $this->value = $values[0]->value;
         } else {
-            $this->value = \array_combine($params, $values);
+            $this->value = array_combine($params, $values);
         }
     }
-    private static function getParameters(string $function, ?string $class) : array
+    private static function getParameters(string $function, ?string $class): array
     {
         if (isset(self::$parameters[$k = $class . '::' . $function])) {
             return self::$parameters[$k];

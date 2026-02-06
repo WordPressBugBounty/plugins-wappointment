@@ -41,21 +41,21 @@ final class Query
         $this->params = $params;
         $this->types = $types;
     }
-    public function getSQL() : string
+    public function getSQL(): string
     {
         return $this->sql;
     }
     /**
      * @return array<mixed>
      */
-    public function getParams() : array
+    public function getParams(): array
     {
         return $this->params;
     }
     /**
      * @return array<Type|int|string|null>
      */
-    public function getTypes() : array
+    public function getTypes(): array
     {
         return $this->types;
     }

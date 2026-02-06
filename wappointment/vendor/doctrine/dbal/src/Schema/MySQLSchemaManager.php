@@ -30,17 +30,17 @@ class MySQLSchemaManager extends AbstractSchemaManager
      * @see https://mariadb.com/kb/en/library/string-literals/#escape-sequences
      */
     private const MARIADB_ESCAPE_SEQUENCES = [
-        '\\0' => "\x00",
+        '\0' => "\x00",
         "\\'" => "'",
-        '\\"' => '"',
-        '\\b' => "\\b",
-        '\\n' => "\n",
-        '\\r' => "\r",
-        '\\t' => "\t",
-        '\\Z' => "\x1a",
+        '\"' => '"',
+        '\b' => "\\b",
+        '\n' => "\n",
+        '\r' => "\r",
+        '\t' => "\t",
+        '\Z' => "\x1a",
         '\\\\' => '\\',
-        '\\%' => '%',
-        '\\_' => '_',
+        '\%' => '%',
+        '\_' => '_',
         // Internally, MariaDB escapes single quotes using the standard syntax
         "''" => "'",
     ];
@@ -129,7 +129,7 @@ class MySQLSchemaManager extends AbstractSchemaManager
             case 'real':
             case 'numeric':
             case 'decimal':
-                if (preg_match('([A-Za-z]+\\(([0-9]+),([0-9]+)\\))', $tableColumn['type'], $match) === 1) {
+                if (preg_match('([A-Za-z]+\(([0-9]+),([0-9]+)\))', $tableColumn['type'], $match) === 1) {
                     $precision = $match[1];
                     $scale = $match[2];
                     $length = null;
@@ -198,7 +198,7 @@ class MySQLSchemaManager extends AbstractSchemaManager
      *
      * @param string|null $columnDefault default value as stored in information_schema for MariaDB >= 10.2.7
      */
-    private function getMariaDb1027ColumnDefault(MariaDb1027Platform $platform, ?string $columnDefault) : ?string
+    private function getMariaDb1027ColumnDefault(MariaDb1027Platform $platform, ?string $columnDefault): ?string
     {
         if ($columnDefault === 'NULL' || $columnDefault === null) {
             return null;
@@ -265,14 +265,14 @@ class MySQLSchemaManager extends AbstractSchemaManager
         $table->addOption('create_options', $this->parseCreateOptions($tableOptions['CREATE_OPTIONS']));
         return $table;
     }
-    public function createComparator() : Comparator
+    public function createComparator(): Comparator
     {
         return new MySQL\Comparator($this->getDatabasePlatform(), new CachingCollationMetadataProvider(new ConnectionCollationMetadataProvider($this->_conn)));
     }
     /**
      * @return string[]|true[]
      */
-    private function parseCreateOptions(?string $string) : array
+    private function parseCreateOptions(?string $string): array
     {
         $options = [];
         if ($string === null || $string === '') {

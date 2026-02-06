@@ -25,7 +25,7 @@ class FileCookieJar extends CookieJar
         parent::__construct();
         $this->filename = $cookieFile;
         $this->storeSessionCookies = $storeSessionCookies;
-        if (\file_exists($cookieFile)) {
+        if (file_exists($cookieFile)) {
             $this->load($cookieFile);
         }
     }
@@ -52,7 +52,7 @@ class FileCookieJar extends CookieJar
             }
         }
         $jsonStr = \WappoVendor\GuzzleHttp\json_encode($json);
-        if (\false === \file_put_contents($filename, $jsonStr, \LOCK_EX)) {
+        if (\false === file_put_contents($filename, $jsonStr, \LOCK_EX)) {
             throw new \RuntimeException("Unable to save file {$filename}");
         }
     }
@@ -66,18 +66,18 @@ class FileCookieJar extends CookieJar
      */
     public function load($filename)
     {
-        $json = \file_get_contents($filename);
+        $json = file_get_contents($filename);
         if (\false === $json) {
             throw new \RuntimeException("Unable to load file {$filename}");
         } elseif ($json === '') {
             return;
         }
         $data = \WappoVendor\GuzzleHttp\json_decode($json, \true);
-        if (\is_array($data)) {
-            foreach (\json_decode($json, \true) as $cookie) {
+        if (is_array($data)) {
+            foreach (json_decode($json, \true) as $cookie) {
                 $this->setCookie(new SetCookie($cookie));
             }
-        } elseif (\strlen($data)) {
+        } elseif (strlen($data)) {
             throw new \RuntimeException("Invalid cookie file: {$filename}");
         }
     }

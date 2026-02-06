@@ -250,10 +250,10 @@ final class EnglishInflector implements InflectorInterface
     /**
      * {@inheritdoc}
      */
-    public function singularize(string $plural) : array
+    public function singularize(string $plural): array
     {
-        $pluralRev = \strrev($plural);
-        $lowerPluralRev = \strtolower($pluralRev);
+        $pluralRev = strrev($plural);
+        $lowerPluralRev = strtolower($pluralRev);
         $pluralLength = \strlen($lowerPluralRev);
         // Check if the word is one which is not inflected, return early if so
         if (\in_array($lowerPluralRev, self::UNINFLECTED, \true)) {
@@ -277,7 +277,7 @@ final class EnglishInflector implements InflectorInterface
                 if ($j === $suffixLength) {
                     // Is there any character preceding the suffix in the plural string?
                     if ($j < $pluralLength) {
-                        $nextIsVocal = \false !== \strpos('aeiou', $lowerPluralRev[$j]);
+                        $nextIsVocal = \false !== strpos('aeiou', $lowerPluralRev[$j]);
                         if (!$map[2] && $nextIsVocal) {
                             // suffix may not succeed a vocal but next char is one
                             break;
@@ -287,20 +287,20 @@ final class EnglishInflector implements InflectorInterface
                             break;
                         }
                     }
-                    $newBase = \substr($plural, 0, $pluralLength - $suffixLength);
+                    $newBase = substr($plural, 0, $pluralLength - $suffixLength);
                     $newSuffix = $map[4];
                     // Check whether the first character in the plural suffix
                     // is uppercased. If yes, uppercase the first character in
                     // the singular suffix too
-                    $firstUpper = \ctype_upper($pluralRev[$j - 1]);
+                    $firstUpper = ctype_upper($pluralRev[$j - 1]);
                     if (\is_array($newSuffix)) {
                         $singulars = [];
                         foreach ($newSuffix as $newSuffixEntry) {
-                            $singulars[] = $newBase . ($firstUpper ? \ucfirst($newSuffixEntry) : $newSuffixEntry);
+                            $singulars[] = $newBase . ($firstUpper ? ucfirst($newSuffixEntry) : $newSuffixEntry);
                         }
                         return $singulars;
                     }
-                    return [$newBase . ($firstUpper ? \ucfirst($newSuffix) : $newSuffix)];
+                    return [$newBase . ($firstUpper ? ucfirst($newSuffix) : $newSuffix)];
                 }
                 // Suffix is longer than word
                 if ($j === $pluralLength) {
@@ -314,10 +314,10 @@ final class EnglishInflector implements InflectorInterface
     /**
      * {@inheritdoc}
      */
-    public function pluralize(string $singular) : array
+    public function pluralize(string $singular): array
     {
-        $singularRev = \strrev($singular);
-        $lowerSingularRev = \strtolower($singularRev);
+        $singularRev = strrev($singular);
+        $lowerSingularRev = strtolower($singularRev);
         $singularLength = \strlen($lowerSingularRev);
         // Check if the word is one which is not inflected, return early if so
         if (\in_array($lowerSingularRev, self::UNINFLECTED, \true)) {
@@ -341,7 +341,7 @@ final class EnglishInflector implements InflectorInterface
                 if ($j === $suffixLength) {
                     // Is there any character preceding the suffix in the plural string?
                     if ($j < $singularLength) {
-                        $nextIsVocal = \false !== \strpos('aeiou', $lowerSingularRev[$j]);
+                        $nextIsVocal = \false !== strpos('aeiou', $lowerSingularRev[$j]);
                         if (!$map[2] && $nextIsVocal) {
                             // suffix may not succeed a vocal but next char is one
                             break;
@@ -351,20 +351,20 @@ final class EnglishInflector implements InflectorInterface
                             break;
                         }
                     }
-                    $newBase = \substr($singular, 0, $singularLength - $suffixLength);
+                    $newBase = substr($singular, 0, $singularLength - $suffixLength);
                     $newSuffix = $map[4];
                     // Check whether the first character in the singular suffix
                     // is uppercased. If yes, uppercase the first character in
                     // the singular suffix too
-                    $firstUpper = \ctype_upper($singularRev[$j - 1]);
+                    $firstUpper = ctype_upper($singularRev[$j - 1]);
                     if (\is_array($newSuffix)) {
                         $plurals = [];
                         foreach ($newSuffix as $newSuffixEntry) {
-                            $plurals[] = $newBase . ($firstUpper ? \ucfirst($newSuffixEntry) : $newSuffixEntry);
+                            $plurals[] = $newBase . ($firstUpper ? ucfirst($newSuffixEntry) : $newSuffixEntry);
                         }
                         return $plurals;
                     }
-                    return [$newBase . ($firstUpper ? \ucfirst($newSuffix) : $newSuffix)];
+                    return [$newBase . ($firstUpper ? ucfirst($newSuffix) : $newSuffix)];
                 }
                 // Suffix is longer than word
                 if ($j === $singularLength) {

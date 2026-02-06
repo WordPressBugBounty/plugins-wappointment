@@ -13,30 +13,30 @@ interface IComparable
      * @param IComparable $other
      * @return int (-1, 0, 1)
      */
-    public function compare(\Wappointment\Achse\Comparable\IComparable $other) : int;
+    public function compare(\Wappointment\Achse\Comparable\IComparable $other): int;
     /**
      * @param IComparable $other
      * @return bool
      */
-    public function isEqual(\Wappointment\Achse\Comparable\IComparable $other) : bool;
+    public function isEqual(\Wappointment\Achse\Comparable\IComparable $other): bool;
     /**
      * @param IComparable $other
      * @return bool
      */
-    public function isLessThan(\Wappointment\Achse\Comparable\IComparable $other) : bool;
+    public function isLessThan(\Wappointment\Achse\Comparable\IComparable $other): bool;
     /**
      * @param IComparable $other
      * @return bool
      */
-    public function isLessThanOrEqual(\Wappointment\Achse\Comparable\IComparable $other) : bool;
+    public function isLessThanOrEqual(\Wappointment\Achse\Comparable\IComparable $other): bool;
     /**
      * @param IComparable $other
      * @return bool
      */
-    public function isGreaterThan(\Wappointment\Achse\Comparable\IComparable $other) : bool;
+    public function isGreaterThan(\Wappointment\Achse\Comparable\IComparable $other): bool;
     /**
      * @param IComparable $other
      * @return bool
      */
-    public function isGreaterThanOrEqual(\Wappointment\Achse\Comparable\IComparable $other) : bool;
+    public function isGreaterThanOrEqual(\Wappointment\Achse\Comparable\IComparable $other): bool;
 }

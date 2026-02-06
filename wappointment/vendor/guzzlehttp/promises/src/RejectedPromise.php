@@ -13,7 +13,7 @@ class RejectedPromise implements PromiseInterface
     private $reason;
     public function __construct($reason)
     {
-        if (\is_object($reason) && \method_exists($reason, 'then')) {
+        if (is_object($reason) && method_exists($reason, 'then')) {
             throw new \InvalidArgumentException('You cannot create a RejectedPromise with a promise.');
         }
         $this->reason = $reason;
@@ -27,7 +27,7 @@ class RejectedPromise implements PromiseInterface
         $queue = Utils::queue();
         $reason = $this->reason;
         $p = new Promise([$queue, 'run']);
-        $queue->add(static function () use($p, $reason, $onRejected) {
+        $queue->add(static function () use ($p, $reason, $onRejected) {
             if (Is::pending($p)) {
                 try {
                     // Return a resolved promise if onRejected does not throw.

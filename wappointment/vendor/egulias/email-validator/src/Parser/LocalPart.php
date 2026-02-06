@@ -19,7 +19,7 @@ class LocalPart extends PartParser
      * @var string
      */
     private $localPart = '';
-    public function parse() : Result
+    public function parse(): Result
     {
         $this->lexer->startRecording();
         while ($this->lexer->token['type'] !== EmailLexer::S_AT && null !== $this->lexer->token['type']) {
@@ -61,54 +61,54 @@ class LocalPart extends PartParser
             $this->lexer->moveNext();
         }
         $this->lexer->stopRecording();
-        $this->localPart = \rtrim($this->lexer->getAccumulatedValues(), '@');
-        if (\strlen($this->localPart) > LocalTooLong::LOCAL_PART_LENGTH) {
+        $this->localPart = rtrim($this->lexer->getAccumulatedValues(), '@');
+        if (strlen($this->localPart) > LocalTooLong::LOCAL_PART_LENGTH) {
             $this->warnings[LocalTooLong::CODE] = new LocalTooLong();
         }
         return new ValidEmail();
     }
-    protected function validateTokens(bool $hasComments) : Result
+    protected function validateTokens(bool $hasComments): Result
     {
         if (isset(self::INVALID_TOKENS[$this->lexer->token['type']])) {
             return new InvalidEmail(new ExpectingATEXT('Invalid token found'), $this->lexer->token['value']);
         }
         return new ValidEmail();
     }
-    public function localPart() : string
+    public function localPart(): string
     {
         return $this->localPart;
     }
-    private function parseLocalFWS() : Result
+    private function parseLocalFWS(): Result
     {
         $foldingWS = new FoldingWhiteSpace($this->lexer);
         $resultFWS = $foldingWS->parse();
         if ($resultFWS->isValid()) {
-            $this->warnings = \array_merge($this->warnings, $foldingWS->getWarnings());
+            $this->warnings = array_merge($this->warnings, $foldingWS->getWarnings());
         }
         return $resultFWS;
     }
-    private function hasDotAtStart() : bool
+    private function hasDotAtStart(): bool
     {
         return $this->lexer->token['type'] === EmailLexer::S_DOT && null === $this->lexer->getPrevious()['type'];
     }
-    private function parseDoubleQuote() : Result
+    private function parseDoubleQuote(): Result
     {
         $dquoteParser = new DoubleQuote($this->lexer);
         $parseAgain = $dquoteParser->parse();
-        $this->warnings = \array_merge($this->warnings, $dquoteParser->getWarnings());
+        $this->warnings = array_merge($this->warnings, $dquoteParser->getWarnings());
         return $parseAgain;
     }
-    protected function parseComments() : Result
+    protected function parseComments(): Result
     {
         $commentParser = new Comment($this->lexer, new LocalComment());
         $result = $commentParser->parse();
-        $this->warnings = \array_merge($this->warnings, $commentParser->getWarnings());
+        $this->warnings = array_merge($this->warnings, $commentParser->getWarnings());
         if ($result->isInvalid()) {
             return $result;
         }
         return $result;
     }
-    private function validateEscaping() : Result
+    private function validateEscaping(): Result
     {
         //Backslash found
         if ($this->lexer->token['type'] !== EmailLexer::S_BACKSLASH) {

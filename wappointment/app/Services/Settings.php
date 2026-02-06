@@ -75,10 +75,14 @@ class Settings
             'email_notifications' => '',
             'mail_status' => \true,
             'mail_config' => ['method' => 'wpmail', 'from_address' => self::getFromEmail(), 'from_name' => self::getFromName(), 'mgdomain' => '', 'mgkey' => '', 'host' => '', 'port' => '', 'username' => '', 'password' => '', 'wpmail_html' => \false, 'attachments_off' => \false],
-            'reschedule_link' => __('Reschedule', 'wappointment'),
-            'cancellation_link' => __('Cancel', 'wappointment'),
-            'save_appointment_text_link' => __('Save to calendar', 'wappointment'),
-            'new_booking_link' => __('Book a new appointment', 'wappointment'),
+            'reschedule_link' => 'Reschedule',
+            //__('Reschedule', 'wappointment'),
+            'cancellation_link' => 'Cancel',
+            //__('Cancel', 'wappointment'),
+            'save_appointment_text_link' => 'Save to calendar',
+            //__('Save to calendar', 'wappointment'),
+            'new_booking_link' => 'Book a new appointment',
+            //__('Book a new appointment', 'wappointment'),
             'booking_page' => 0,
             'show_welcome' => \false,
             'force_ugly_permalinks' => \false,
@@ -106,7 +110,8 @@ class Settings
             'calendar_ignores_free' => \false,
             'invoice' => \false,
             'invoice_seller' => '',
-            'invoice_num' => __('Order nº', 'wappointment'),
+            'invoice_num' => 'Order nº',
+            //__('Order nº', 'wappointment'),
             'invoice_client' => ['name'],
             'wp_remote' => \false,
             'jitsi_url' => '',
@@ -121,7 +126,7 @@ class Settings
     }
     public static function getFromName()
     {
-        return \ucfirst(WPHelpers::currentUserName());
+        return ucfirst(WPHelpers::currentUserName());
     }
     public static function getFromEmail()
     {
@@ -134,12 +139,12 @@ class Settings
     }
     protected static function cleanHost($host)
     {
-        return \strpos($host, 'www.') !== -1 ? \str_replace('www.', '', $host) : $host;
+        return strpos($host, 'www.') !== -1 ? str_replace('www.', '', $host) : $host;
     }
     public static function staffDefaults()
     {
         $timezone = WPHelpers::getWPOption('timezone_string');
-        return ['regav' => static::get('regavDefault'), 'availaible_booking_days' => 60, 'calurl' => '', 'timezone' => $timezone, 'avatarId' => \false, 'viewed_updates' => \false, 'email_logo' => \false, 'per_page' => 10, 'display_name' => '', 'dotcom' => \false];
+        return ['regav' => static::get('regavDefault'), 'availaible_booking_days' => 60, 'calurl' => '', 'timezone' => empty($timezone) ? 'UTC' : $timezone, 'avatarId' => \false, 'viewed_updates' => \false, 'email_logo' => \false, 'per_page' => 10, 'display_name' => '', 'dotcom' => \false];
     }
     public static function defaultGet($key)
     {
@@ -156,7 +161,7 @@ class Settings
         $values = static::getValues();
         if (isset($values[$setting_key])) {
             $method = $setting_key . 'GetTransform';
-            return \method_exists(static::class, $method) ? static::$method($values[$setting_key]) : $values[$setting_key];
+            return method_exists(static::class, $method) ? static::$method($values[$setting_key]) : $values[$setting_key];
         } else {
             return $default !== null ? $default : static::defaultGet($setting_key);
         }
@@ -164,23 +169,23 @@ class Settings
     protected static function prepareSave($setting_key, $value)
     {
         if (!static::$valid || static::valid($setting_key, $value)) {
-            $updatedValues = static::getValues();
+            $updatedValues = static::getValues() ?? [];
             if ($setting_key == 'service') {
                 unset($value['id']);
             }
             $updatedValues[$setting_key] = static::format($setting_key, $value);
             //before save
             $method = $setting_key . 'BeforeSave';
-            if (\method_exists(static::class, $method)) {
+            if (method_exists(static::class, $method)) {
                 static::$method($value);
             }
             $methodTransform = $setting_key . 'TransformValue';
-            if (\method_exists(static::class, $methodTransform)) {
+            if (method_exists(static::class, $methodTransform)) {
                 $updatedValues[$setting_key] = static::$methodTransform($value);
             }
             static::updateLocalSettings($updatedValues);
             $method = $setting_key . 'Saved';
-            if (\method_exists(static::class, $method)) {
+            if (method_exists(static::class, $method)) {
                 static::$method($setting_key, $value);
             }
             return $updatedValues;
@@ -224,7 +229,7 @@ class Settings
     protected static function prepare($setting_key, $value)
     {
         $method = $setting_key . 'Prepare';
-        return \method_exists(\get_called_class(), $method) ? static::$method($value) : \false;
+        return method_exists(get_called_class(), $method) ? static::$method($value) : \false;
     }
     public static function hasStaff($setting_key, $staff_id = \false)
     {
@@ -241,7 +246,7 @@ class Settings
             WPHelpers::setStaffOption(static::$key_option, $values, $staff_id);
             static::updateLocalStaffSettings($staff_id, $values);
             $methodAfterSaved = $setting_key . 'Saved';
-            if (\method_exists(static::class, $methodAfterSaved)) {
+            if (method_exists(static::class, $methodAfterSaved)) {
                 static::$methodAfterSaved($staff_id);
             }
             return ['message' => empty(static::$msg) ? Translations::get('element_saved') : static::$msg];
@@ -258,7 +263,7 @@ class Settings
     protected static function valid($setting_key, $value, $staff_id = \false)
     {
         $method = $setting_key . 'Valid';
-        if (\method_exists(static::class, $method)) {
+        if (method_exists(static::class, $method)) {
             return static::$method($value, $staff_id);
         }
         if (!isset(static::allDefaults()[$setting_key]) && !isset(static::staffDefaults()[$setting_key])) {
@@ -269,7 +274,7 @@ class Settings
     protected static function format($setting_key, $value)
     {
         $method = $setting_key . 'Format';
-        if (\method_exists(static::class, $method)) {
+        if (method_exists(static::class, $method)) {
             return static::$method($value);
         }
         return $value;
@@ -283,11 +288,11 @@ class Settings
     }
     protected static function jitsi_urlValid($value)
     {
-        $validated_url = \filter_var($value, \FILTER_VALIDATE_URL);
+        $validated_url = filter_var($value, \FILTER_VALIDATE_URL);
         if (empty($validated_url)) {
             throw new \WappointmentException('URL is not valid');
         }
-        if (\substr($validated_url, -1) != '/') {
+        if (substr($validated_url, -1) != '/') {
             $validated_url .= '/';
         }
         return $validated_url;
@@ -424,11 +429,11 @@ class Settings
     }
     protected static function between($value, $minLimit, $maxLimit)
     {
-        return \is_numeric($value) && $value >= $minLimit && $value <= $maxLimit ? \true : \false;
+        return is_numeric($value) && $value >= $minLimit && $value <= $maxLimit ? \true : \false;
     }
     protected static function greaterEqualTo($value, $minLimit = 0)
     {
-        return \is_numeric($value) && $value >= $minLimit ? \true : \false;
+        return is_numeric($value) && $value >= $minLimit ? \true : \false;
     }
     protected static function hourField($value)
     {
@@ -451,7 +456,7 @@ class Settings
             }
         }
         //we clear the null records and reset the array index
-        return \array_values(\array_filter($availabilities));
+        return array_values(array_filter($availabilities));
     }
     protected static function activeStaffIdValid($value)
     {
@@ -474,14 +479,14 @@ class Settings
     }
     protected static function email_notificationsGetTransform($value)
     {
-        return \is_array($value) ? $value : \array_map('trim', \explode(',', $value));
+        return is_array($value) ? $value : array_map('trim', explode(',', $value));
     }
     protected static function emailField($value)
     {
         $validator = new RakitValidator();
         $validation = $validator->validate(['email' => $value], ['email' => 'required|email']);
         if ($validation->fails()) {
-            $error = \sprintf('The Email %s is not valid', $value);
+            $error = sprintf('The Email %s is not valid', $value);
             throw new \WappointmentException($error);
         }
         return \true;

@@ -30,7 +30,7 @@ final class SingleDayTimeInterval extends \Wappointment\Achse\Math\Interval\Inte
     /**
      * @inheritdoc
      */
-    protected function isContainingElementRightCheck(\Wappointment\Achse\Comparable\IComparable $element) : bool
+    protected function isContainingElementRightCheck(\Wappointment\Achse\Comparable\IComparable $element): bool
     {
         return $this->isRightOpened() && $this->getRight()->getValue()->isGreaterThan($element) || $this->isRightClosed() && $this->getRight()->getValue()->isGreaterThanOrEqual($element) || $this->isEndingAtMidnightNextDay($this->left, $this->right);
     }
@@ -39,7 +39,7 @@ final class SingleDayTimeInterval extends \Wappointment\Achse\Math\Interval\Inte
      * @param string $till
      * @return SingleDayTimeInterval
      */
-    public static function fromString(string $from, string $till) : \Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTimeInterval
+    public static function fromString(string $from, string $till): \Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTimeInterval
     {
         return new static(new \Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTimeBoundary(\Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTime::from($from), \Wappointment\Achse\Math\Interval\Boundary::CLOSED), new \Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTimeBoundary(\Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTime::from($till), \Wappointment\Achse\Math\Interval\Boundary::OPENED));
     }
@@ -48,7 +48,7 @@ final class SingleDayTimeInterval extends \Wappointment\Achse\Math\Interval\Inte
      * @param DateTimeInterface $date
      * @return static
      */
-    public static function fromDateTimeInterval(\Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutableInterval $interval, \DateTimeInterface $date) : \Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTimeInterval
+    public static function fromDateTimeInterval(\Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutableInterval $interval, \DateTimeInterface $date): \Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTimeInterval
     {
         $thisDayInterval = self::buildWholeDayInterval($date);
         /** @var DateTimeImmutableInterval $intersection */
@@ -61,7 +61,7 @@ final class SingleDayTimeInterval extends \Wappointment\Achse\Math\Interval\Inte
      * @param DateTimeInterface $date
      * @return DateTimeImmutableInterval
      */
-    protected static function buildWholeDayInterval(\DateTimeInterface $date) : \Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutableInterval
+    protected static function buildWholeDayInterval(\DateTimeInterface $date): \Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutableInterval
     {
         $start = \Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutable::from($date)->setTime(0, 0, 0);
         $ends = \Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutable::from($date)->setTime(23, 59, 59);
@@ -73,7 +73,7 @@ final class SingleDayTimeInterval extends \Wappointment\Achse\Math\Interval\Inte
      * @param string $precision
      * @return bool
      */
-    public function isFollowedByWithPrecision(\Wappointment\Achse\Math\Interval\Interval $other, $precision) : bool
+    public function isFollowedByWithPrecision(\Wappointment\Achse\Math\Interval\Interval $other, $precision): bool
     {
         try {
             $this->getRight()->getValue()->modify('+' . $precision);
@@ -87,14 +87,14 @@ final class SingleDayTimeInterval extends \Wappointment\Achse\Math\Interval\Inte
     /**
      * @return SingleDayTimeBoundary
      */
-    public function getRight() : \Wappointment\Achse\Math\Interval\Boundary
+    public function getRight(): \Wappointment\Achse\Math\Interval\Boundary
     {
         return parent::getRight();
     }
     /**
      * @return SingleDayTimeBoundary
      */
-    public function getLeft() : \Wappointment\Achse\Math\Interval\Boundary
+    public function getLeft(): \Wappointment\Achse\Math\Interval\Boundary
     {
         return parent::getLeft();
     }
@@ -102,7 +102,7 @@ final class SingleDayTimeInterval extends \Wappointment\Achse\Math\Interval\Inte
      * @param DateTimeInterface $day
      * @return DateTimeImmutableInterval
      */
-    public function toDateTimeInterval(\DateTimeInterface $day) : \Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutableInterval
+    public function toDateTimeInterval(\DateTimeInterface $day): \Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutableInterval
     {
         $left = new \Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutableBoundary($this->getLeft()->getValue()->toDateTime($day), $this->getLeft()->getState());
         $right = new \Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutableBoundary($this->getRight()->getValue()->toDateTime($day), $this->getRight()->getState());
@@ -113,7 +113,7 @@ final class SingleDayTimeInterval extends \Wappointment\Achse\Math\Interval\Inte
      * @param bool $state
      * @return SingleDayTimeBoundary
      */
-    protected function buildBoundary(\Wappointment\Achse\Comparable\IComparable $element, bool $state) : \Wappointment\Achse\Math\Interval\Boundary
+    protected function buildBoundary(\Wappointment\Achse\Comparable\IComparable $element, bool $state): \Wappointment\Achse\Math\Interval\Boundary
     {
         return new \Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTimeBoundary($element, $state);
     }
@@ -122,14 +122,14 @@ final class SingleDayTimeInterval extends \Wappointment\Achse\Math\Interval\Inte
      * @param Boundary $right
      * @return bool
      */
-    private function isEndingAtMidnightNextDay(\Wappointment\Achse\Math\Interval\Boundary $left, \Wappointment\Achse\Math\Interval\Boundary $right) : bool
+    private function isEndingAtMidnightNextDay(\Wappointment\Achse\Math\Interval\Boundary $left, \Wappointment\Achse\Math\Interval\Boundary $right): bool
     {
         return !($left->isOpened() && $left->getValue()->isEqual($right->getValue())) && $right->isOpened() && $right->getValue()->isEqual($this->getZeroElement());
     }
     /**
      * @return SingleDayTime
      */
-    private function getZeroElement() : \Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTime
+    private function getZeroElement(): \Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTime
     {
         return new \Wappointment\Achse\Math\Interval\SingleDayTime\SingleDayTime(0, 0, 0);
     }

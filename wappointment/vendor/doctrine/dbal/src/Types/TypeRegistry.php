@@ -26,7 +26,7 @@ final class TypeRegistry
      *
      * @throws Exception
      */
-    public function get(string $name) : Type
+    public function get(string $name): Type
     {
         if (!isset($this->instances[$name])) {
             throw Exception::unknownColumnType($name);
@@ -38,7 +38,7 @@ final class TypeRegistry
      *
      * @throws Exception
      */
-    public function lookupName(Type $type) : string
+    public function lookupName(Type $type): string
     {
         $name = $this->findTypeName($type);
         if ($name === null) {
@@ -49,7 +49,7 @@ final class TypeRegistry
     /**
      * Checks if there is a type of the given name.
      */
-    public function has(string $name) : bool
+    public function has(string $name): bool
     {
         return isset($this->instances[$name]);
     }
@@ -58,7 +58,7 @@ final class TypeRegistry
      *
      * @throws Exception
      */
-    public function register(string $name, Type $type) : void
+    public function register(string $name, Type $type): void
     {
         if (isset($this->instances[$name])) {
             throw Exception::typeExists($name);
@@ -73,7 +73,7 @@ final class TypeRegistry
      *
      * @throws Exception
      */
-    public function override(string $name, Type $type) : void
+    public function override(string $name, Type $type): void
     {
         if (!isset($this->instances[$name])) {
             throw Exception::typeNotFound($name);
@@ -90,11 +90,11 @@ final class TypeRegistry
      *
      * @return array<string, Type>
      */
-    public function getMap() : array
+    public function getMap(): array
     {
         return $this->instances;
     }
-    private function findTypeName(Type $type) : ?string
+    private function findTypeName(Type $type): ?string
     {
         $name = array_search($type, $this->instances, \true);
         if ($name === \false) {

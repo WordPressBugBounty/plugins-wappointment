@@ -78,7 +78,7 @@ class Client
     {
         $data['options'] = static::addRtl($data['options']);
         //create or load client account
-        $client = MClient::firstOrCreate(['email' => $data['email']], ['name' => $data['name'], 'options' => ['tz' => $data['options']['tz'], 'skype' => $data['options']['skype'], 'phone' => $data['options']['phone']]]);
+        $client = MClient::firstOrCreate(['email' => $data['email']], ['name' => $data['name'], 'options' => ['tz' => $data['options']['tz'], 'phone' => $data['options']['phone']]]);
         $options = $client->options;
         foreach ($data['options'] as $key => $value) {
             $options[$key] = $value;

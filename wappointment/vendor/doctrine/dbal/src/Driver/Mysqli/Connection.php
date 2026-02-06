@@ -32,16 +32,16 @@ final class Connection implements ServerInfoAwareConnection
      *
      * @deprecated Call {@see getNativeConnection()} instead.
      */
-    public function getWrappedResourceHandle() : mysqli
+    public function getWrappedResourceHandle(): mysqli
     {
         Deprecation::trigger('doctrine/dbal', 'https://github.com/doctrine/dbal/pull/5037', '%s is deprecated, call getNativeConnection() instead.', __METHOD__);
         return $this->getNativeConnection();
     }
-    public function getServerVersion() : string
+    public function getServerVersion(): string
     {
         return $this->connection->get_server_info();
     }
-    public function prepare(string $sql) : DriverStatement
+    public function prepare(string $sql): DriverStatement
     {
         try {
             $stmt = $this->connection->prepare($sql);
@@ -53,7 +53,7 @@ final class Connection implements ServerInfoAwareConnection
         }
         return new Statement($stmt);
     }
-    public function query(string $sql) : ResultInterface
+    public function query(string $sql): ResultInterface
     {
         return $this->prepare($sql)->execute();
     }
@@ -64,7 +64,7 @@ final class Connection implements ServerInfoAwareConnection
     {
         return "'" . $this->connection->escape_string($value) . "'";
     }
-    public function exec(string $sql) : int
+    public function exec(string $sql): int
     {
         try {
             $result = $this->connection->query($sql);
@@ -86,12 +86,12 @@ final class Connection implements ServerInfoAwareConnection
         }
         return $this->connection->insert_id;
     }
-    public function beginTransaction() : bool
+    public function beginTransaction(): bool
     {
         $this->connection->begin_transaction();
         return \true;
     }
-    public function commit() : bool
+    public function commit(): bool
     {
         try {
             return $this->connection->commit();
@@ -99,7 +99,7 @@ final class Connection implements ServerInfoAwareConnection
             return \false;
         }
     }
-    public function rollBack() : bool
+    public function rollBack(): bool
     {
         try {
             return $this->connection->rollback();
@@ -107,7 +107,7 @@ final class Connection implements ServerInfoAwareConnection
             return \false;
         }
     }
-    public function getNativeConnection() : mysqli
+    public function getNativeConnection(): mysqli
     {
         return $this->connection;
     }

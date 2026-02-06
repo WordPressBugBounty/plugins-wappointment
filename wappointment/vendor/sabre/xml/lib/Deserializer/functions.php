@@ -52,7 +52,7 @@ use WappoVendor\Sabre\Xml\Reader;
  * Attributes will be removed from the top-level elements. If elements with
  * the same name appear twice in the list, only the last one will be kept.
  */
-function keyValue(Reader $reader, string $namespace = null) : array
+function keyValue(Reader $reader, string $namespace = null): array
 {
     // If there's no children, we don't do anything.
     if ($reader->isEmptyElement) {
@@ -76,10 +76,8 @@ function keyValue(Reader $reader, string $namespace = null) : array
                 $clark = $reader->getClark();
                 $values[$clark] = $reader->parseCurrentElement()['value'];
             }
-        } else {
-            if (!$reader->read()) {
-                break;
-            }
+        } else if (!$reader->read()) {
+            break;
         }
     } while (Reader::END_ELEMENT !== $reader->nodeType);
     $reader->read();
@@ -131,7 +129,7 @@ function keyValue(Reader $reader, string $namespace = null) : array
  *
  * @return string[]
  */
-function enum(Reader $reader, string $namespace = null) : array
+function enum(Reader $reader, string $namespace = null): array
 {
     // If there's no children, we don't do anything.
     if ($reader->isEmptyElement) {
@@ -152,7 +150,7 @@ function enum(Reader $reader, string $namespace = null) : array
         if (Reader::ELEMENT !== $reader->nodeType) {
             continue;
         }
-        if (!\is_null($namespace) && $namespace === $reader->namespaceURI) {
+        if (!is_null($namespace) && $namespace === $reader->namespaceURI) {
             $values[] = $reader->localName;
         } else {
             $values[] = $reader->getClark();
@@ -177,12 +175,12 @@ function valueObject(Reader $reader, string $className, string $namespace)
         $reader->next();
         return $valueObject;
     }
-    $defaultProperties = \get_class_vars($className);
+    $defaultProperties = get_class_vars($className);
     $reader->read();
     do {
         if (Reader::ELEMENT === $reader->nodeType && $reader->namespaceURI == $namespace) {
-            if (\property_exists($valueObject, $reader->localName)) {
-                if (\is_array($defaultProperties[$reader->localName])) {
+            if (property_exists($valueObject, $reader->localName)) {
+                if (is_array($defaultProperties[$reader->localName])) {
                     $valueObject->{$reader->localName}[] = $reader->parseCurrentElement()['value'];
                 } else {
                     $valueObject->{$reader->localName} = $reader->parseCurrentElement()['value'];
@@ -191,10 +189,8 @@ function valueObject(Reader $reader, string $className, string $namespace)
                 // Ignore property
                 $reader->next();
             }
-        } else {
-            if (!$reader->read()) {
-                break;
-            }
+        } else if (!$reader->read()) {
+            break;
         }
     } while (Reader::END_ELEMENT !== $reader->nodeType);
     $reader->read();
@@ -224,7 +220,7 @@ function valueObject(Reader $reader, string $className, string $namespace)
  * $childElementName must either be a a clark-notation element name, or if no
  * namespace is used, the bare element name.
  */
-function repeatingElements(Reader $reader, string $childElementName) : array
+function repeatingElements(Reader $reader, string $childElementName): array
 {
     if ('{' !== $childElementName[0]) {
         $childElementName = '{}' . $childElementName;
@@ -256,7 +252,7 @@ function repeatingElements(Reader $reader, string $childElementName) : array
  *
  * In strict XML documents you wont find this kind of markup but in html this is a quite common pattern.
  */
-function mixedContent(Reader $reader) : array
+function mixedContent(Reader $reader): array
 {
     // If there's no children, we don't do anything.
     if ($reader->isEmptyElement) {
@@ -269,7 +265,7 @@ function mixedContent(Reader $reader) : array
     while (\true) {
         if (Reader::ELEMENT == $reader->nodeType) {
             $content[] = $reader->parseCurrentElement();
-        } elseif ($reader->depth >= $previousDepth && \in_array($reader->nodeType, [Reader::TEXT, Reader::CDATA, Reader::WHITESPACE])) {
+        } elseif ($reader->depth >= $previousDepth && in_array($reader->nodeType, [Reader::TEXT, Reader::CDATA, Reader::WHITESPACE])) {
             $content[] = $reader->value;
             $reader->read();
         } elseif (Reader::END_ELEMENT == $reader->nodeType) {

@@ -5,11 +5,11 @@ namespace Wappointment\Validators;
 class IsString extends \WappoVendor\Rakit\Validation\Rule
 {
     protected $message = ":attribute is not valid";
-    public function check($value) : bool
+    public function check($value): bool
     {
-        if (!\is_string($value)) {
+        if (!is_string($value)) {
             return \false;
         }
-        return \preg_match('/^[\\pL\\pM\\pN\\s_-]+$/u', $value) > 0;
+        return preg_match('/^[\pL\pM\pN\s_-]+$/u', $value) > 0;
     }
 }

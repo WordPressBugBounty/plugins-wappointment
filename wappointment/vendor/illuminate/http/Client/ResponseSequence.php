@@ -45,7 +45,7 @@ class ResponseSequence
      */
     public function push($body = '', int $status = 200, array $headers = [])
     {
-        $body = \is_array($body) ? \json_encode($body) : $body;
+        $body = is_array($body) ? json_encode($body) : $body;
         return $this->pushResponse(Factory::response($body, $status, $headers));
     }
     /**
@@ -69,7 +69,7 @@ class ResponseSequence
      */
     public function pushFile(string $filePath, int $status = 200, array $headers = [])
     {
-        $string = \file_get_contents($filePath);
+        $string = file_get_contents($filePath);
         return $this->pushResponse(Factory::response($string, $status, $headers));
     }
     /**
@@ -111,7 +111,7 @@ class ResponseSequence
      */
     public function isEmpty()
     {
-        return \count($this->responses) === 0;
+        return count($this->responses) === 0;
     }
     /**
      * Get the next response in the sequence.
@@ -122,12 +122,12 @@ class ResponseSequence
      */
     public function __invoke()
     {
-        if ($this->failWhenEmpty && \count($this->responses) === 0) {
+        if ($this->failWhenEmpty && count($this->responses) === 0) {
             throw new OutOfBoundsException('A request was made, but the response sequence is empty.');
         }
-        if (!$this->failWhenEmpty && \count($this->responses) === 0) {
+        if (!$this->failWhenEmpty && count($this->responses) === 0) {
             return \WappointmentLv::value($this->emptyResponse ?? Factory::response());
         }
-        return \array_shift($this->responses);
+        return array_shift($this->responses);
     }
 }

@@ -55,9 +55,9 @@ abstract class AbstractMySQLDriver implements VersionAwarePlatformDriver
      *
      * @throws Exception
      */
-    private function getOracleMysqlVersionNumber(string $versionString) : string
+    private function getOracleMysqlVersionNumber(string $versionString): string
     {
-        if (preg_match('/^(?P<major>\\d+)(?:\\.(?P<minor>\\d+)(?:\\.(?P<patch>\\d+))?)?/', $versionString, $versionParts) === 0) {
+        if (preg_match('/^(?P<major>\d+)(?:\.(?P<minor>\d+)(?:\.(?P<patch>\d+))?)?/', $versionString, $versionParts) === 0) {
             throw Exception::invalidPlatformVersionSpecified($versionString, '<major_version>.<minor_version>.<patch_version>');
         }
         $majorVersion = $versionParts['major'];
@@ -76,10 +76,10 @@ abstract class AbstractMySQLDriver implements VersionAwarePlatformDriver
      *
      * @throws Exception
      */
-    private function getMariaDbMysqlVersionNumber(string $versionString) : string
+    private function getMariaDbMysqlVersionNumber(string $versionString): string
     {
-        if (preg_match('/^(?:5\\.5\\.5-)?(mariadb-)?(?P<major>\\d+)\\.(?P<minor>\\d+)\\.(?P<patch>\\d+)/i', $versionString, $versionParts) === 0) {
-            throw Exception::invalidPlatformVersionSpecified($versionString, '^(?:5\\.5\\.5-)?(mariadb-)?<major_version>.<minor_version>.<patch_version>');
+        if (preg_match('/^(?:5\.5\.5-)?(mariadb-)?(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)/i', $versionString, $versionParts) === 0) {
+            throw Exception::invalidPlatformVersionSpecified($versionString, '^(?:5\.5\.5-)?(mariadb-)?<major_version>.<minor_version>.<patch_version>');
         }
         return $versionParts['major'] . '.' . $versionParts['minor'] . '.' . $versionParts['patch'];
     }
@@ -102,7 +102,7 @@ abstract class AbstractMySQLDriver implements VersionAwarePlatformDriver
         assert($platform instanceof AbstractMySQLPlatform);
         return new MySQLSchemaManager($conn, $platform);
     }
-    public function getExceptionConverter() : ExceptionConverter
+    public function getExceptionConverter(): ExceptionConverter
     {
         return new MySQL\ExceptionConverter();
     }

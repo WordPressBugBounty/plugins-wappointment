@@ -14,7 +14,7 @@ final class CannotCopyStreamToStream extends AbstractException
     /**
      * @psalm-param array{message: string}|null $error
      */
-    public static function new(?array $error) : self
+    public static function new(?array $error): self
     {
         $message = 'Could not copy source stream to temporary file';
         if ($error !== null) {

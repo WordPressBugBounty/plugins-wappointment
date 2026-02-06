@@ -138,7 +138,7 @@ class OraclePlatform extends AbstractPlatform
     {
         return 'BITAND(' . $value1 . ', ' . $value2 . ')';
     }
-    public function getCurrentDatabaseExpression() : string
+    public function getCurrentDatabaseExpression(): string
     {
         return "SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA')";
     }
@@ -152,7 +152,7 @@ class OraclePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getCreatePrimaryKeySQL(Index $index, $table) : string
+    public function getCreatePrimaryKeySQL(Index $index, $table): string
     {
         if ($table instanceof Table) {
             $table = $table->getQuotedName($this);
@@ -180,7 +180,7 @@ class OraclePlatform extends AbstractPlatform
     /**
      * Cache definition for sequences
      */
-    private function getSequenceCacheSQL(Sequence $sequence) : string
+    private function getSequenceCacheSQL(Sequence $sequence): string
     {
         if ($sequence->getCache() === 0) {
             return ' NOCACHE';
@@ -450,7 +450,7 @@ END;';
      *
      * @param string $name The identifier to normalize.
      */
-    private function normalizeIdentifier($name) : Identifier
+    private function normalizeIdentifier($name): Identifier
     {
         $identifier = new Identifier($name);
         return $identifier->isQuoted() ? $identifier : new Identifier(strtoupper($name));
@@ -461,7 +461,7 @@ END;';
      * if the new string exceeds max identifier length,
      * keeps $suffix, cuts from $identifier as much as the part exceeding.
      */
-    private function addSuffix(string $identifier, string $suffix) : string
+    private function addSuffix(string $identifier, string $suffix): string
     {
         $maxPossibleLengthWithoutSuffix = $this->getMaxIdentifierLength() - strlen($suffix);
         if (strlen($identifier) > $maxPossibleLengthWithoutSuffix) {
@@ -475,7 +475,7 @@ END;';
      * Quotes the autoincrement primary key identifier name
      * if the given table name is quoted by intention.
      */
-    private function getAutoincrementIdentifierName(Identifier $table) : string
+    private function getAutoincrementIdentifierName(Identifier $table): string
     {
         $identifierName = $this->addSuffix($table->getName(), '_AI_PK');
         return $table->isQuoted() ? $this->quoteSingleIdentifier($identifierName) : $identifierName;
@@ -753,8 +753,8 @@ SQL
         if ($limit === null && $offset <= 0) {
             return $query;
         }
-        if (preg_match('/^\\s*SELECT/i', $query) === 1) {
-            if (preg_match('/\\sFROM\\s/i', $query) === 0) {
+        if (preg_match('/^\s*SELECT/i', $query) === 1) {
+            if (preg_match('/\sFROM\s/i', $query) === 0) {
                 $query .= ' FROM dual';
             }
             $columns = ['a.*'];
@@ -867,7 +867,7 @@ SQL
     {
         return 'BLOB';
     }
-    public function getListTableCommentsSQL(string $table, ?string $database = null) : string
+    public function getListTableCommentsSQL(string $table, ?string $database = null): string
     {
         $tableCommentsName = 'user_tab_comments';
         $ownerCondition = '';

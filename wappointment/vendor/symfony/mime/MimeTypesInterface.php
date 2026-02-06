@@ -20,11 +20,11 @@ interface MimeTypesInterface extends MimeTypeGuesserInterface
      *
      * @return string[]
      */
-    public function getExtensions(string $mimeType) : array;
+    public function getExtensions(string $mimeType): array;
     /**
      * Gets the MIME types for the given extension in decreasing order of preference.
      *
      * @return string[]
      */
-    public function getMimeTypes(string $ext) : array;
+    public function getMimeTypes(string $ext): array;
 }

@@ -40,7 +40,7 @@ class ArrayType extends Type
             return null;
         }
         $value = is_resource($value) ? stream_get_contents($value) : $value;
-        set_error_handler(function (int $code, string $message) : bool {
+        set_error_handler(function (int $code, string $message): bool {
             if ($code === E_DEPRECATED || $code === E_USER_DEPRECATED) {
                 return \false;
             }

@@ -168,7 +168,7 @@ class Profile
         $this->children[] = $child;
         $child->setParent($this);
     }
-    public function getChildByToken(string $token) : ?self
+    public function getChildByToken(string $token): ?self
     {
         foreach ($this->children as $child) {
             if ($token === $child->getToken()) {
@@ -187,7 +187,7 @@ class Profile
     public function getCollector(string $name)
     {
         if (!isset($this->collectors[$name])) {
-            throw new \InvalidArgumentException(\sprintf('Collector "%s" does not exist.', $name));
+            throw new \InvalidArgumentException(sprintf('Collector "%s" does not exist.', $name));
         }
         return $this->collectors[$name];
     }

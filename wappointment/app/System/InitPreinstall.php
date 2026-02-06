@@ -41,7 +41,7 @@ class InitPreinstall
     }
     public function customPluginRowMeta($links, $file)
     {
-        if (\strpos($file, $this->plugin_file) !== \false) {
+        if (strpos($file, $this->plugin_file) !== \false) {
             $buttonInit = '<a href="' . WPHelpers::adminUrl('wappointment_calendar') . '" class="button button-primary button-large" >' . __('Setup', 'wappointment') . '</a>';
             $htmlWrap = '<div class="notice inline notice-info">
             <p>' . __('Thanks for activating me! Now set me up in only few seconds', 'wappointment') . ' ' . $buttonInit . '

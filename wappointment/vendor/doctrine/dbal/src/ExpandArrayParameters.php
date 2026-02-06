@@ -34,7 +34,7 @@ final class ExpandArrayParameters implements Visitor
         $this->originalParameters = $parameters;
         $this->originalTypes = $types;
     }
-    public function acceptPositionalParameter(string $sql) : void
+    public function acceptPositionalParameter(string $sql): void
     {
         $index = $this->originalParameterIndex;
         if (!array_key_exists($index, $this->originalParameters)) {
@@ -43,7 +43,7 @@ final class ExpandArrayParameters implements Visitor
         $this->acceptParameter($index, $this->originalParameters[$index]);
         $this->originalParameterIndex++;
     }
-    public function acceptNamedParameter(string $sql) : void
+    public function acceptNamedParameter(string $sql): void
     {
         $name = substr($sql, 1);
         if (!array_key_exists($name, $this->originalParameters)) {
@@ -51,18 +51,18 @@ final class ExpandArrayParameters implements Visitor
         }
         $this->acceptParameter($name, $this->originalParameters[$name]);
     }
-    public function acceptOther(string $sql) : void
+    public function acceptOther(string $sql): void
     {
         $this->convertedSQL[] = $sql;
     }
-    public function getSQL() : string
+    public function getSQL(): string
     {
         return implode('', $this->convertedSQL);
     }
     /**
      * @return list<mixed>
      */
-    public function getParameters() : array
+    public function getParameters(): array
     {
         return $this->convertedParameteres;
     }
@@ -70,7 +70,7 @@ final class ExpandArrayParameters implements Visitor
      * @param int|string $key
      * @param mixed      $value
      */
-    private function acceptParameter($key, $value) : void
+    private function acceptParameter($key, $value): void
     {
         if (!isset($this->originalTypes[$key])) {
             $this->convertedSQL[] = '?';
@@ -91,7 +91,7 @@ final class ExpandArrayParameters implements Visitor
     /**
      * @return array<int,Type|int|string|null>
      */
-    public function getTypes() : array
+    public function getTypes(): array
     {
         return $this->convertedTypes;
     }
@@ -99,7 +99,7 @@ final class ExpandArrayParameters implements Visitor
      * @param list<mixed>          $values
      * @param Type|int|string|null $type
      */
-    private function appendTypedParameter(array $values, $type) : void
+    private function appendTypedParameter(array $values, $type): void
     {
         $this->convertedSQL[] = implode(', ', array_fill(0, count($values), '?'));
         $index = count($this->convertedParameteres);

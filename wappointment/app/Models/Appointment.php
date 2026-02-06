@@ -33,7 +33,6 @@ class Appointment extends \Wappointment\Models\TicketAbstract
     protected $fillable = ['start_at', 'end_at', 'edit_key', 'client_id', 'status', 'type', 'staff_id', 'service_id', 'options', 'location_id', 'recurrent', 'parent', 'created_at', 'updated_at'];
     public const TYPE_PHYSICAL = 0;
     public const TYPE_PHONE = 1;
-    public const TYPE_SKYPE = 2;
     public const TYPE_ZOOM = 5;
     public const STATUS_AWAITING_CONFIRMATION = 0;
     public const STATUS_CONFIRMED = 1;
@@ -54,8 +53,8 @@ class Appointment extends \Wappointment\Models\TicketAbstract
     public function getClientMethodOrEmpty($key)
     {
         $cmodel = $this->getClientModel();
-        if ($cmodel && !\is_null($cmodel) && \in_array($key, ['getPhone', 'getSkype', 'getNameForDotcom', 'getEmailForDotcom'])) {
-            return \call_user_func([$cmodel, $key]);
+        if ($cmodel && !is_null($cmodel) && in_array($key, ['getPhone', 'getNameForDotcom', 'getEmailForDotcom'])) {
+            return call_user_func([$cmodel, $key]);
         }
         return '';
     }
@@ -77,7 +76,7 @@ class Appointment extends \Wappointment\Models\TicketAbstract
     }
     public function getIdentifier()
     {
-        return \preg_replace('/[^\\da-z]/i', '', \md5(get_site_url()) . '-' . $this->start_at->timestamp . \strtolower($this->getStaffName() . '-' . $this->getTitle()));
+        return preg_replace('/[^\da-z]/i', '', md5(get_site_url()) . '-' . $this->start_at->timestamp . strtolower($this->getStaffName() . '-' . $this->getTitle()));
     }
     public function tryDestroy($force = \false)
     {

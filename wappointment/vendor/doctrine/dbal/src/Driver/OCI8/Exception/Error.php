@@ -16,7 +16,7 @@ final class Error extends AbstractException
     /**
      * @param resource $resource
      */
-    public static function new($resource) : self
+    public static function new($resource): self
     {
         $error = oci_error($resource);
         assert($error !== \false);

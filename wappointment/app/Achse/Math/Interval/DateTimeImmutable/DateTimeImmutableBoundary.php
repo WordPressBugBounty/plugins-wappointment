@@ -18,7 +18,7 @@ final class DateTimeImmutableBoundary extends \Wappointment\Achse\Math\Interval\
     /**
      * @return DateTimeImmutable
      */
-    public function getValue() : \Wappointment\Achse\Comparable\IComparable
+    public function getValue(): \Wappointment\Achse\Comparable\IComparable
     {
         return parent::getValue();
     }

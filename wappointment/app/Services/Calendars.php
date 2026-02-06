@@ -17,16 +17,13 @@ class Calendars
         $query = static::getModel()::active()->orderBy('sorting');
         if ($onlyAvailable) {
             $query->whereNotNull('availability');
-        } else {
-            //this is admin we add permissions
-            if ($cron === \false && !\Wappointment\Services\CurrentUser::isAdmin()) {
-                $query->where('wp_uid', \Wappointment\Services\CurrentUser::id());
-            }
+        } else if ($cron === \false && !\Wappointment\Services\CurrentUser::isAdmin()) {
+            $query->where('wp_uid', \Wappointment\Services\CurrentUser::id());
         }
         $results = $query->fetch();
         if ($onlyAvailable) {
             return $results->filter(function ($e) {
-                return \count($e->services) > 0;
+                return count($e->services) > 0;
             });
         } else {
             return $results;
@@ -59,10 +56,8 @@ class Calendars
         $calendarDB = null;
         if (!empty($calendarData['id'])) {
             $calendarDB = static::getModel()::findOrFail($calendarData['id']);
-        } else {
-            if (!Central::get('CalendarModel')::canCreate()) {
-                throw new \WappointmentValidationException(Translations::get('error_saving'));
-            }
+        } else if (!Central::get('CalendarModel')::canCreate()) {
+            throw new \WappointmentValidationException(Translations::get('error_saving'));
         }
         $calendarData = apply_filters('wappointment_calendar_before_saved', $calendarData, $calendarDB);
         $calendarData['options'] = static::dataToOptions($calendarData, $calendarDB);
@@ -91,7 +86,7 @@ class Calendars
     public static function dataToOptions($calendarData, $calendarDB)
     {
         $optiondb = !empty($calendarDB->options) ? $calendarDB->options : [];
-        return \array_merge($optiondb, ['avatar_id' => empty($calendarData['avatar_id']) ? '' : $calendarData['avatar_id'], 'gravatar' => $calendarData['gravatar'], 'timezone' => $calendarData['timezone'], 'regav' => static::regavClean($calendarData['regav']), 'avb' => $calendarData['avb']]);
+        return array_merge($optiondb, ['avatar_id' => empty($calendarData['avatar_id']) ? '' : $calendarData['avatar_id'], 'gravatar' => $calendarData['gravatar'], 'timezone' => $calendarData['timezone'], 'regav' => static::regavClean($calendarData['regav']), 'avb' => $calendarData['avb']]);
     }
     public static function regavClean($regav)
     {
@@ -100,7 +95,7 @@ class Calendars
                 $newblocks = $blocks;
             } else {
                 $newblocks = [];
-                if (\is_array($blocks) && !empty($blocks)) {
+                if (is_array($blocks) && !empty($blocks)) {
                     foreach ($blocks as $key => $block) {
                         if ($block[1] - $block[0] > 0) {
                             $newblocks[] = $block;

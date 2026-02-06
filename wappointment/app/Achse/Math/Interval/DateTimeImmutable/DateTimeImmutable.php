@@ -14,14 +14,14 @@ final class DateTimeImmutable extends \DateTimeImmutable implements \Wappointmen
      * @param DateTimeInterface $dateTime
      * @return static
      */
-    public static function from(\DateTimeInterface $dateTime) : \Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutable
+    public static function from(\DateTimeInterface $dateTime): \Wappointment\Achse\Math\Interval\DateTimeImmutable\DateTimeImmutable
     {
         return new static($dateTime->format('Y-m-d H:i:s.u'), $dateTime->getTimezone());
     }
     /**
      * @inheritdoc
      */
-    public function compare(\Wappointment\Achse\Comparable\IComparable $other) : int
+    public function compare(\Wappointment\Achse\Comparable\IComparable $other): int
     {
         /** @var static $other */
         \Wappointment\Achse\Math\Interval\Utils::validateClassType(static::class, $other);
@@ -30,7 +30,7 @@ final class DateTimeImmutable extends \DateTimeImmutable implements \Wappointmen
     /**
      * @return string
      */
-    public function __toString() : string
+    public function __toString(): string
     {
         return $this->format(\DateTime::ATOM);
     }

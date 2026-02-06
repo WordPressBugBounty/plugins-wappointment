@@ -14,7 +14,7 @@ final class PrepareFailed extends AbstractException
     /**
      * @psalm-param array{message: string}|null $error
      */
-    public static function new(?array $error) : self
+    public static function new(?array $error): self
     {
         if ($error === null) {
             return new self('Unknown error');

@@ -38,7 +38,7 @@ class Segment
         foreach ($intervals as $i => $interval) {
             $segments[$i] = [$interval->getLeft()->getValue()->toInt(), $interval->getRight()->getValue()->toInt()];
         }
-        return \array_values($segments);
+        return array_values($segments);
     }
     public function convertToArrayDebugged($intervals)
     {
@@ -64,15 +64,15 @@ class Segment
             //dd($mainSegments);
             exit;
         }
-        return $this->convertToArray(\array_filter($mainSegments));
+        return $this->convertToArray(array_filter($mainSegments));
     }
     public function processMainSegment($mainSegments, $main, $substract, $i, $debug = \false)
     {
-        if (\is_null($main)) {
+        if (is_null($main)) {
             return $mainSegments;
         }
         if ($debug) {
-            echo '--main segment [' . $i . '] total ' . \count($mainSegments) . "\n";
+            echo '--main segment [' . $i . '] total ' . count($mainSegments) . "\n";
         }
         if ($this->intersects($main, $substract)) {
             if ($debug) {
@@ -81,10 +81,10 @@ class Segment
             $mainSegments = $this->containsOrTouches($mainSegments, $main, $substract, $i, $debug);
             if ($debug) {
                 dd($mainSegments);
-                \print_r($this->convertToArrayDebugged($mainSegments));
+                print_r($this->convertToArrayDebugged($mainSegments));
             }
         }
-        return \array_values($mainSegments);
+        return array_values($mainSegments);
     }
     public function containsOrTouches($mainSegments, $main, $substract, $i, $debug = \false)
     {
@@ -97,10 +97,10 @@ class Segment
         } else {
             // part of the section is must be available
             $diff = $main->difference($substract);
-            $start_array = \array_slice($mainSegments, 0, $i);
+            $start_array = array_slice($mainSegments, 0, $i);
             // we just remove the section needed
-            $end_array = \array_slice($mainSegments, $i + 1);
-            $mainSegments = \array_merge($start_array, $diff, $end_array);
+            $end_array = array_slice($mainSegments, $i + 1);
+            $mainSegments = array_merge($start_array, $diff, $end_array);
             if ($debug && !empty($diff)) {
                 $this->debugSegment($diff);
             }
@@ -139,13 +139,13 @@ class Segment
     {
         $dirtySegments = $this->convertToIntervals($dirtySegments);
         $ignorekey = [];
-        for ($ki = 0; $ki < \count($dirtySegments) + 1; $ki++) {
+        for ($ki = 0; $ki < count($dirtySegments) + 1; $ki++) {
             $free = empty($dirtySegments[$ki]) ? '' : $dirtySegments[$ki];
             //Todo error to trackdown
             if (isset($ignorekey[$ki]) || empty($free)) {
                 continue;
             }
-            for ($ki2 = 0; $ki2 < \count($dirtySegments) + 1; $ki2++) {
+            for ($ki2 = 0; $ki2 < count($dirtySegments) + 1; $ki2++) {
                 if ($ki == $ki2) {
                     continue;
                 }
@@ -176,10 +176,8 @@ class Segment
                             echo "OK \n";
                         }
                     }
-                } else {
-                    if ($debug) {
-                        echo "FAIL \n";
-                    }
+                } else if ($debug) {
+                    echo "FAIL \n";
                 }
                 if ($debug) {
                     echo '--------------' . "\n";
@@ -192,7 +190,7 @@ class Segment
         }
         $cleanSegments = [];
         foreach ($dirtySegments as $key => $union) {
-            if (\is_null($union)) {
+            if (is_null($union)) {
                 continue;
             }
             //echo  '[' . $key . ']' . $this->debugSegment($union) . "\n";
@@ -206,6 +204,6 @@ class Segment
     }
     public function debugDate($timestamp)
     {
-        return Carbon::createFromTimestamp($timestamp)->format('Y-m-d\\TH:i:00 T');
+        return Carbon::createFromTimestamp($timestamp)->format('Y-m-d\TH:i:00 T');
     }
 }

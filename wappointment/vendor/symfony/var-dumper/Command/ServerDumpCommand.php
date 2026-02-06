@@ -47,7 +47,7 @@ class ServerDumpCommand extends Command
     }
     protected function configure()
     {
-        $this->addOption('format', null, InputOption::VALUE_REQUIRED, \sprintf('The output format (%s)', \implode(', ', $this->getAvailableFormats())), 'cli')->setDescription(self::$defaultDescription)->setHelp(<<<'EOF'
+        $this->addOption('format', null, InputOption::VALUE_REQUIRED, sprintf('The output format (%s)', implode(', ', $this->getAvailableFormats())), 'cli')->setDescription(self::$defaultDescription)->setHelp(<<<'EOF'
 <info>%command.name%</info> starts a dump server that collects and displays
 dumps in a single place for debugging you application:
 
@@ -61,31 +61,31 @@ and redirecting the output to a file:
 EOF
 );
     }
-    protected function execute(InputInterface $input, OutputInterface $output) : int
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
         $format = $input->getOption('format');
-        if (!($descriptor = $this->descriptors[$format] ?? null)) {
-            throw new InvalidArgumentException(\sprintf('Unsupported format "%s".', $format));
+        if (!$descriptor = $this->descriptors[$format] ?? null) {
+            throw new InvalidArgumentException(sprintf('Unsupported format "%s".', $format));
         }
         $errorIo = $io->getErrorStyle();
         $errorIo->title('Symfony Var Dumper Server');
         $this->server->start();
-        $errorIo->success(\sprintf('Server listening on %s', $this->server->getHost()));
+        $errorIo->success(sprintf('Server listening on %s', $this->server->getHost()));
         $errorIo->comment('Quit the server with CONTROL-C.');
-        $this->server->listen(function (Data $data, array $context, int $clientId) use($descriptor, $io) {
+        $this->server->listen(function (Data $data, array $context, int $clientId) use ($descriptor, $io) {
             $descriptor->describe($io, $data, $context, $clientId);
         });
         return 0;
     }
-    public function complete(CompletionInput $input, CompletionSuggestions $suggestions) : void
+    public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
     {
         if ($input->mustSuggestOptionValuesFor('format')) {
             $suggestions->suggestValues($this->getAvailableFormats());
         }
     }
-    private function getAvailableFormats() : array
+    private function getAvailableFormats(): array
     {
-        return \array_keys($this->descriptors);
+        return array_keys($this->descriptors);
     }
 }

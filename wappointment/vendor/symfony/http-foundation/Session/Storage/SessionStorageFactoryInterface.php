@@ -19,5 +19,5 @@ interface SessionStorageFactoryInterface
     /**
      * Creates a new instance of SessionStorageInterface.
      */
-    public function createStorage(?Request $request) : SessionStorageInterface;
+    public function createStorage(?Request $request): SessionStorageInterface;
 }

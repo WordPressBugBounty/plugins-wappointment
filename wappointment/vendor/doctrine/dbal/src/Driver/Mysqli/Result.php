@@ -113,36 +113,36 @@ final class Result implements ResultInterface
     /**
      * {@inheritdoc}
      */
-    public function fetchAllNumeric() : array
+    public function fetchAllNumeric(): array
     {
         return FetchUtils::fetchAllNumeric($this);
     }
     /**
      * {@inheritdoc}
      */
-    public function fetchAllAssociative() : array
+    public function fetchAllAssociative(): array
     {
         return FetchUtils::fetchAllAssociative($this);
     }
     /**
      * {@inheritdoc}
      */
-    public function fetchFirstColumn() : array
+    public function fetchFirstColumn(): array
     {
         return FetchUtils::fetchFirstColumn($this);
     }
-    public function rowCount() : int
+    public function rowCount(): int
     {
         if ($this->hasColumns) {
             return $this->statement->num_rows;
         }
         return $this->statement->affected_rows;
     }
-    public function columnCount() : int
+    public function columnCount(): int
     {
         return $this->statement->field_count;
     }
-    public function free() : void
+    public function free(): void
     {
         $this->statement->free_result();
     }

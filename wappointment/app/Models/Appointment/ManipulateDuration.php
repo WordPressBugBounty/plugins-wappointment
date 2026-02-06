@@ -20,7 +20,7 @@ trait ManipulateDuration
     protected function formatDuration($durationInMin)
     {
         /* translators: %s - minutes */
-        return \sprintf(__('%s min', 'wappointment'), $durationInMin);
+        return sprintf(__('%s min', 'wappointment'), $durationInMin);
     }
     public function getDuration()
     {
@@ -44,10 +44,14 @@ trait ManipulateDuration
     }
     public function getStartsDayAndTime($timezone)
     {
-        return !empty($this->start_at) ? DateTime::i18nDateTime($this->start_at->timestamp, $timezone) : '';
+        if (empty($this->start_at)) {
+            return '';
+        }
+        $datetime = DateTime::i18nDateTime($this->start_at->timestamp, $timezone);
+        return $datetime . ' (' . $timezone . ')';
     }
     public function isOver()
     {
-        return $this->end_at->getTimestamp() - \time() < 0;
+        return $this->end_at->getTimestamp() - time() < 0;
     }
 }

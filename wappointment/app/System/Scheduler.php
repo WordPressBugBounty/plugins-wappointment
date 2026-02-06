@@ -42,7 +42,7 @@ class Scheduler
         $staff_id = Settings::get('activeStaffId');
         $calendar_urls = WPHelpers::getStaffOption('cal_urls', $staff_id);
         $hasChanged = \false;
-        if (!empty($calendar_urls) && \is_array($calendar_urls)) {
+        if (!empty($calendar_urls) && is_array($calendar_urls)) {
             foreach ($calendar_urls as $calurl) {
                 if ((new \Wappointment\Services\Calendar($calurl, $staff_id))->fetch()) {
                     $hasChanged = \true;
@@ -62,7 +62,7 @@ class Scheduler
      */
     public static function processQueue()
     {
-        Flag::save('cronLastRun', \time());
+        Flag::save('cronLastRun', time());
         if (\Wappointment\System\Helpers::isProd()) {
             $lock = new \Wappointment\Services\Lock();
             if (!$lock->alreadySet()) {

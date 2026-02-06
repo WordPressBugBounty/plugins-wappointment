@@ -12,7 +12,7 @@ namespace WappoVendor\Symfony\Component\HttpFoundation\Session\Storage;
 
 use WappoVendor\Symfony\Component\HttpFoundation\Request;
 // Help opcache.preload discover always-needed symbols
-\class_exists(NativeSessionStorage::class);
+class_exists(NativeSessionStorage::class);
 /**
  * @author Jérémy Derussé <jeremy@derusse.com>
  */
@@ -32,7 +32,7 @@ class NativeSessionStorageFactory implements SessionStorageFactoryInterface
         $this->metaBag = $metaBag;
         $this->secure = $secure;
     }
-    public function createStorage(?Request $request) : SessionStorageInterface
+    public function createStorage(?Request $request): SessionStorageInterface
     {
         $storage = new NativeSessionStorage($this->options, $this->handler, $this->metaBag);
         if ($this->secure && $request && $request->isSecure()) {

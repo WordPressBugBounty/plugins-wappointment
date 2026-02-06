@@ -73,19 +73,19 @@ class ErrorHandler
     /**
      * Registers the error handler.
      */
-    public static function register(self $handler = null, bool $replace = \true) : self
+    public static function register(self $handler = null, bool $replace = \true): self
     {
         if (null === self::$reservedMemory) {
-            self::$reservedMemory = \str_repeat('x', 32768);
-            \register_shutdown_function(__CLASS__ . '::handleFatalError');
+            self::$reservedMemory = str_repeat('x', 32768);
+            register_shutdown_function(__CLASS__ . '::handleFatalError');
         }
         if ($handlerIsNew = null === $handler) {
             $handler = new static();
         }
-        if (null === ($prev = \set_error_handler([$handler, 'handleError']))) {
-            \restore_error_handler();
+        if (null === $prev = set_error_handler([$handler, 'handleError'])) {
+            restore_error_handler();
             // Specifying the error types earlier would expose us to https://bugs.php.net/63206
-            \set_error_handler([$handler, 'handleError'], $handler->thrownErrors | $handler->loggedErrors);
+            set_error_handler([$handler, 'handleError'], $handler->thrownErrors | $handler->loggedErrors);
             $handler->isRoot = \true;
         }
         if ($handlerIsNew && \is_array($prev) && $prev[0] instanceof self) {
@@ -93,17 +93,17 @@ class ErrorHandler
             $replace = \false;
         }
         if (!$replace && $prev) {
-            \restore_error_handler();
+            restore_error_handler();
             $handlerIsRegistered = \is_array($prev) && $handler === $prev[0];
         } else {
             $handlerIsRegistered = \true;
         }
-        if (\is_array($prev = \set_exception_handler([$handler, 'handleException'])) && $prev[0] instanceof self) {
-            \restore_exception_handler();
+        if (\is_array($prev = set_exception_handler([$handler, 'handleException'])) && $prev[0] instanceof self) {
+            restore_exception_handler();
             if (!$handlerIsRegistered) {
                 $handler = $prev[0];
             } elseif ($handler !== $prev[0] && $replace) {
-                \set_exception_handler([$handler, 'handleException']);
+                set_exception_handler([$handler, 'handleException']);
                 $p = $prev[0]->setExceptionHandler(null);
                 $handler->setExceptionHandler($p);
                 $prev[0]->setExceptionHandler($p);
@@ -123,9 +123,9 @@ class ErrorHandler
      */
     public static function call(callable $function, ...$arguments)
     {
-        \set_error_handler(static function (int $type, string $message, string $file, int $line) {
+        set_error_handler(static function (int $type, string $message, string $file, int $line) {
             if (__FILE__ === $file) {
-                $trace = \debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS, 3);
+                $trace = debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS, 3);
                 $file = $trace[2]['file'] ?? $file;
                 $line = $trace[2]['line'] ?? $line;
             }
@@ -134,7 +134,7 @@ class ErrorHandler
         try {
             return $function(...$arguments);
         } finally {
-            \restore_error_handler();
+            restore_error_handler();
         }
     }
     public function __construct(BufferingLogger $bootstrappingLogger = null, bool $debug = \false)
@@ -145,7 +145,7 @@ class ErrorHandler
         }
         $traceReflector = new \ReflectionProperty(\Exception::class, 'trace');
         $traceReflector->setAccessible(\true);
-        $this->configureException = \Closure::bind(static function ($e, $trace, $file = null, $line = null) use($traceReflector) {
+        $this->configureException = \Closure::bind(static function ($e, $trace, $file = null, $line = null) use ($traceReflector) {
             $traceReflector->setValue($e, $trace);
             $e->file = $file ?? $e->file;
             $e->line = $line ?? $e->line;
@@ -161,7 +161,7 @@ class ErrorHandler
      * @param array|int|null  $levels  An array map of E_* to LogLevel::* or an integer bit field of E_* constants
      * @param bool            $replace Whether to replace or not any existing logger
      */
-    public function setDefaultLogger(LoggerInterface $logger, $levels = \E_ALL, bool $replace = \false) : void
+    public function setDefaultLogger(LoggerInterface $logger, $levels = \E_ALL, bool $replace = \false): void
     {
         $loggers = [];
         if (\is_array($levels)) {
@@ -192,7 +192,7 @@ class ErrorHandler
      *
      * @throws \InvalidArgumentException
      */
-    public function setLoggers(array $loggers) : array
+    public function setLoggers(array $loggers): array
     {
         $prevLogged = $this->loggedErrors;
         $prev = $this->loggers;
@@ -238,7 +238,7 @@ class ErrorHandler
      *
      * @return callable|null The previous exception handler
      */
-    public function setExceptionHandler(?callable $handler) : ?callable
+    public function setExceptionHandler(?callable $handler): ?callable
     {
         $prev = $this->exceptionHandler;
         $this->exceptionHandler = $handler;
@@ -252,7 +252,7 @@ class ErrorHandler
      *
      * @return int The previous value
      */
-    public function throwAt(int $levels, bool $replace = \false) : int
+    public function throwAt(int $levels, bool $replace = \false): int
     {
         $prev = $this->thrownErrors;
         $this->thrownErrors = ($levels | \E_RECOVERABLE_ERROR | \E_USER_ERROR) & ~\E_USER_DEPRECATED & ~\E_DEPRECATED;
@@ -270,7 +270,7 @@ class ErrorHandler
      *
      * @return int The previous value
      */
-    public function scopeAt(int $levels, bool $replace = \false) : int
+    public function scopeAt(int $levels, bool $replace = \false): int
     {
         $prev = $this->scopedErrors;
         $this->scopedErrors = $levels;
@@ -287,7 +287,7 @@ class ErrorHandler
      *
      * @return int The previous value
      */
-    public function traceAt(int $levels, bool $replace = \false) : int
+    public function traceAt(int $levels, bool $replace = \false): int
     {
         $prev = $this->tracedErrors;
         $this->tracedErrors = $levels;
@@ -304,7 +304,7 @@ class ErrorHandler
      *
      * @return int The previous value
      */
-    public function screamAt(int $levels, bool $replace = \false) : int
+    public function screamAt(int $levels, bool $replace = \false): int
     {
         $prev = $this->screamedErrors;
         $this->screamedErrors = $levels;
@@ -316,18 +316,18 @@ class ErrorHandler
     /**
      * Re-registers as a PHP error handler if levels changed.
      */
-    private function reRegister(int $prev) : void
+    private function reRegister(int $prev): void
     {
         if ($prev !== ($this->thrownErrors | $this->loggedErrors)) {
-            $handler = \set_error_handler('is_int');
+            $handler = set_error_handler('is_int');
             $handler = \is_array($handler) ? $handler[0] : null;
-            \restore_error_handler();
+            restore_error_handler();
             if ($handler === $this) {
-                \restore_error_handler();
+                restore_error_handler();
                 if ($this->isRoot) {
-                    \set_error_handler([$this, 'handleError'], $this->thrownErrors | $this->loggedErrors);
+                    set_error_handler([$this, 'handleError'], $this->thrownErrors | $this->loggedErrors);
                 } else {
-                    \set_error_handler([$this, 'handleError']);
+                    set_error_handler([$this, 'handleError']);
                 }
             }
         }
@@ -341,13 +341,13 @@ class ErrorHandler
      *
      * @internal
      */
-    public function handleError(int $type, string $message, string $file, int $line) : bool
+    public function handleError(int $type, string $message, string $file, int $line): bool
     {
-        if (\PHP_VERSION_ID >= 70300 && \E_WARNING === $type && '"' === $message[0] && \false !== \strpos($message, '" targeting switch is equivalent to "break')) {
+        if (\PHP_VERSION_ID >= 70300 && \E_WARNING === $type && '"' === $message[0] && \false !== strpos($message, '" targeting switch is equivalent to "break')) {
             $type = \E_DEPRECATED;
         }
         // Level is the current error reporting level to manage silent error.
-        $level = \error_reporting();
+        $level = error_reporting();
         $silenced = 0 === ($level & $type);
         // Strong errors are not authorized to be silenced.
         $level |= \E_RECOVERABLE_ERROR | \E_USER_ERROR | \E_DEPRECATED | \E_USER_DEPRECATED;
@@ -355,7 +355,7 @@ class ErrorHandler
         $throw = $this->thrownErrors & $type & $level;
         $type &= $level | $this->screamedErrors;
         // Never throw on warnings triggered by assert()
-        if (\E_WARNING === $type && 'a' === $message[0] && 0 === \strncmp($message, 'assert(): ', 10)) {
+        if (\E_WARNING === $type && 'a' === $message[0] && 0 === strncmp($message, 'assert(): ', 10)) {
             $throw = 0;
         }
         if (!$type || !$log && !$throw) {
@@ -367,7 +367,7 @@ class ErrorHandler
             self::$toStringException = null;
         } elseif (!$throw && !($type & $level)) {
             if (!isset(self::$silencedErrorCache[$id = $file . ':' . $line])) {
-                $lightTrace = $this->tracedErrors & $type ? $this->cleanTrace(\debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS, 5), $type, $file, $line, \false) : [];
+                $lightTrace = $this->tracedErrors & $type ? $this->cleanTrace(debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS, 5), $type, $file, $line, \false) : [];
                 $errorAsException = new SilencedErrorContext($type, $file, $line, isset($lightTrace[1]) ? [$lightTrace[0]] : $lightTrace);
             } elseif (isset(self::$silencedErrorCache[$id][$message])) {
                 $lightTrace = null;
@@ -388,8 +388,8 @@ class ErrorHandler
                 return \true;
             }
         } else {
-            if (\false !== \strpos($message, '@anonymous')) {
-                $backtrace = \debug_backtrace(\false, 5);
+            if (\false !== strpos($message, '@anonymous')) {
+                $backtrace = debug_backtrace(\false, 5);
                 for ($i = 1; isset($backtrace[$i]); ++$i) {
                     if (isset($backtrace[$i]['function'], $backtrace[$i]['args'][0]) && ('trigger_error' === $backtrace[$i]['function'] || 'user_error' === $backtrace[$i]['function'])) {
                         if ($backtrace[$i]['args'][0] !== $message) {
@@ -420,7 +420,7 @@ class ErrorHandler
                         // given a caught $e exception in __toString(), quitting the method with
                         // `return trigger_error($e, E_USER_ERROR);` allows this error handler
                         // to make $e get through the __toString() barrier.
-                        $context = 4 < \func_num_args() ? \func_get_arg(4) ?: [] : [];
+                        $context = 4 < \func_num_args() ? func_get_arg(4) ?: [] : [];
                         foreach ($context as $e) {
                             if ($e instanceof \Throwable && $e->__toString() === $message) {
                                 self::$toStringException = $e;
@@ -440,8 +440,8 @@ class ErrorHandler
             $log = 0;
         } else {
             if (\PHP_VERSION_ID < (\PHP_VERSION_ID < 70400 ? 70316 : 70404)) {
-                $currentErrorHandler = \set_error_handler('is_int');
-                \restore_error_handler();
+                $currentErrorHandler = set_error_handler('is_int');
+                restore_error_handler();
             }
             try {
                 $this->isRecursive = \true;
@@ -450,7 +450,7 @@ class ErrorHandler
             } finally {
                 $this->isRecursive = \false;
                 if (\PHP_VERSION_ID < (\PHP_VERSION_ID < 70400 ? 70316 : 70404)) {
-                    \set_error_handler($currentErrorHandler);
+                    set_error_handler($currentErrorHandler);
                 }
             }
         }
@@ -471,7 +471,7 @@ class ErrorHandler
             $type = $exception->getError()['type'];
         }
         if ($this->loggedErrors & $type) {
-            if (\false !== \strpos($message = $exception->getMessage(), "@anonymous\x00")) {
+            if (\false !== strpos($message = $exception->getMessage(), "@anonymous\x00")) {
                 $message = $this->parseAnonymousClass($message);
             }
             if ($exception instanceof FatalError) {
@@ -531,7 +531,7 @@ class ErrorHandler
      *
      * @internal
      */
-    public static function handleFatalError(array $error = null) : void
+    public static function handleFatalError(array $error = null): void
     {
         if (null === self::$reservedMemory) {
             return;
@@ -541,14 +541,14 @@ class ErrorHandler
         $previousHandler = null;
         $sameHandlerLimit = 10;
         while (!\is_array($handler) || !$handler[0] instanceof self) {
-            $handler = \set_exception_handler('is_int');
-            \restore_exception_handler();
+            $handler = set_exception_handler('is_int');
+            restore_exception_handler();
             if (!$handler) {
                 break;
             }
-            \restore_exception_handler();
+            restore_exception_handler();
             if ($handler !== $previousHandler) {
-                \array_unshift($handlers, $handler);
+                array_unshift($handlers, $handler);
                 $previousHandler = $handler;
             } elseif (0 === --$sameHandlerLimit) {
                 $handler = null;
@@ -556,7 +556,7 @@ class ErrorHandler
             }
         }
         foreach ($handlers as $h) {
-            \set_exception_handler($h);
+            set_exception_handler($h);
         }
         if (!$handler) {
             return;
@@ -567,13 +567,13 @@ class ErrorHandler
         $handler = $handler[0];
         $handlers = [];
         if ($exit = null === $error) {
-            $error = \error_get_last();
+            $error = error_get_last();
         }
-        if ($error && ($error['type'] &= \E_PARSE | \E_ERROR | \E_CORE_ERROR | \E_COMPILE_ERROR)) {
+        if ($error && $error['type'] &= \E_PARSE | \E_ERROR | \E_CORE_ERROR | \E_COMPILE_ERROR) {
             // Let's not throw anymore but keep logging
             $handler->throwAt(0, \true);
             $trace = $error['backtrace'] ?? null;
-            if (0 === \strpos($error['message'], 'Allowed memory') || 0 === \strpos($error['message'], 'Out of memory')) {
+            if (0 === strpos($error['message'], 'Allowed memory') || 0 === strpos($error['message'], 'Out of memory')) {
                 $fatalError = new OutOfMemoryError($handler->levels[$error['type']] . ': ' . $error['message'], 0, $error, 2, \false, $trace);
             } else {
                 $fatalError = new FatalError($handler->levels[$error['type']] . ': ' . $error['message'], 0, $error, 2, \true, $trace);
@@ -591,7 +591,7 @@ class ErrorHandler
         }
         if ($exit && self::$exitCode) {
             $exitCode = self::$exitCode;
-            \register_shutdown_function('register_shutdown_function', function () use($exitCode) {
+            register_shutdown_function('register_shutdown_function', function () use ($exitCode) {
                 exit($exitCode);
             });
         }
@@ -602,14 +602,14 @@ class ErrorHandler
      * As this method is mainly called during boot where nothing is yet available,
      * the output is always either HTML or CLI depending where PHP runs.
      */
-    private function renderException(\Throwable $exception) : void
+    private function renderException(\Throwable $exception): void
     {
         $renderer = \in_array(\PHP_SAPI, ['cli', 'phpdbg'], \true) ? new CliErrorRenderer() : new HtmlErrorRenderer($this->debug);
         $exception = $renderer->render($exception);
-        if (!\headers_sent()) {
-            \http_response_code($exception->getStatusCode());
+        if (!headers_sent()) {
+            http_response_code($exception->getStatusCode());
             foreach ($exception->getHeaders() as $name => $value) {
-                \header($name . ': ' . $value, \false);
+                header($name . ': ' . $value, \false);
             }
         }
         echo $exception->getAsString();
@@ -619,14 +619,14 @@ class ErrorHandler
      *
      * @return ErrorEnhancerInterface[]
      */
-    protected function getErrorEnhancers() : iterable
+    protected function getErrorEnhancers(): iterable
     {
         return [new UndefinedFunctionErrorEnhancer(), new UndefinedMethodErrorEnhancer(), new ClassNotFoundErrorEnhancer()];
     }
     /**
      * Cleans the trace by removing function arguments and the frames added by the error handler and DebugClassLoader.
      */
-    private function cleanTrace(array $backtrace, int $type, string &$file, int &$line, bool $throw) : array
+    private function cleanTrace(array $backtrace, int $type, string &$file, int &$line, bool $throw): array
     {
         $lightTrace = $backtrace;
         for ($i = 0; isset($backtrace[$i]); ++$i) {
@@ -648,10 +648,10 @@ class ErrorHandler
                 }
             }
         }
-        if (\class_exists(DebugClassLoader::class, \false)) {
+        if (class_exists(DebugClassLoader::class, \false)) {
             for ($i = \count($lightTrace) - 2; 0 < $i; --$i) {
                 if (DebugClassLoader::class === ($lightTrace[$i]['class'] ?? null)) {
-                    \array_splice($lightTrace, --$i, 2);
+                    array_splice($lightTrace, --$i, 2);
                 }
             }
         }
@@ -666,10 +666,10 @@ class ErrorHandler
      * Parse the error message by removing the anonymous class notation
      * and using the parent class instead if possible.
      */
-    private function parseAnonymousClass(string $message) : string
+    private function parseAnonymousClass(string $message): string
     {
-        return \preg_replace_callback('/[a-zA-Z_\\x7f-\\xff][\\\\a-zA-Z0-9_\\x7f-\\xff]*+@anonymous\\x00.*?\\.php(?:0x?|:[0-9]++\\$)[0-9a-fA-F]++/', static function ($m) {
-            return \class_exists($m[0], \false) ? ((\get_parent_class($m[0]) ?: \key(\class_implements($m[0]))) ?: 'class') . '@anonymous' : $m[0];
+        return preg_replace_callback('/[a-zA-Z_\x7f-\xff][\\\\a-zA-Z0-9_\x7f-\xff]*+@anonymous\x00.*?\.php(?:0x?|:[0-9]++\$)[0-9a-fA-F]++/', static function ($m) {
+            return class_exists($m[0], \false) ? ((get_parent_class($m[0]) ?: key(class_implements($m[0]))) ?: 'class') . '@anonymous' : $m[0];
         }, $message);
     }
 }

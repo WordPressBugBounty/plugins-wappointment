@@ -72,10 +72,10 @@ class RegisterControllerArgumentLocatorsPass implements CompilerPassInterface
                 $bindings += $def->getBindings();
             }
             $class = $parameterBag->resolveValue($class);
-            if (!($r = $container->getReflectionClass($class))) {
-                throw new InvalidArgumentException(\sprintf('Class "%s" used for service "%s" cannot be found.', $class, $id));
+            if (!$r = $container->getReflectionClass($class)) {
+                throw new InvalidArgumentException(sprintf('Class "%s" used for service "%s" cannot be found.', $class, $id));
             }
-            $isContainerAware = $r->implementsInterface(ContainerAwareInterface::class) || \is_subclass_of($class, AbstractController::class);
+            $isContainerAware = $r->implementsInterface(ContainerAwareInterface::class) || is_subclass_of($class, AbstractController::class);
             // get regular public methods
             $methods = [];
             $arguments = [];
@@ -84,7 +84,7 @@ class RegisterControllerArgumentLocatorsPass implements CompilerPassInterface
                     continue;
                 }
                 if (!$r->isConstructor() && !$r->isDestructor() && !$r->isAbstract()) {
-                    $methods[\strtolower($r->name)] = [$r, $r->getParameters()];
+                    $methods[strtolower($r->name)] = [$r, $r->getParameters()];
                 }
             }
             // validate and collect explicit per-actions and per-arguments service references
@@ -95,11 +95,11 @@ class RegisterControllerArgumentLocatorsPass implements CompilerPassInterface
                 }
                 foreach (['action', 'argument', 'id'] as $k) {
                     if (!isset($attributes[$k][0])) {
-                        throw new InvalidArgumentException(\sprintf('Missing "%s" attribute on tag "%s" %s for service "%s".', $k, $this->controllerTag, \json_encode($attributes, \JSON_UNESCAPED_UNICODE), $id));
+                        throw new InvalidArgumentException(sprintf('Missing "%s" attribute on tag "%s" %s for service "%s".', $k, $this->controllerTag, json_encode($attributes, \JSON_UNESCAPED_UNICODE), $id));
                     }
                 }
-                if (!isset($methods[$action = \strtolower($attributes['action'])])) {
-                    throw new InvalidArgumentException(\sprintf('Invalid "action" attribute on tag "%s" for service "%s": no public "%s()" method found on class "%s".', $this->controllerTag, $id, $attributes['action'], $class));
+                if (!isset($methods[$action = strtolower($attributes['action'])])) {
+                    throw new InvalidArgumentException(sprintf('Invalid "action" attribute on tag "%s" for service "%s": no public "%s()" method found on class "%s".', $this->controllerTag, $id, $attributes['action'], $class));
                 }
                 [$r, $parameters] = $methods[$action];
                 $found = \false;
@@ -113,7 +113,7 @@ class RegisterControllerArgumentLocatorsPass implements CompilerPassInterface
                     }
                 }
                 if (!$found) {
-                    throw new InvalidArgumentException(\sprintf('Invalid "%s" tag for service "%s": method "%s()" has no "%s" argument on class "%s".', $this->controllerTag, $id, $r->name, $attributes['argument'], $class));
+                    throw new InvalidArgumentException(sprintf('Invalid "%s" tag for service "%s": method "%s()" has no "%s" argument on class "%s".', $this->controllerTag, $id, $r->name, $attributes['argument'], $class));
                 }
             }
             foreach ($methods as [$r, $parameters]) {
@@ -122,18 +122,18 @@ class RegisterControllerArgumentLocatorsPass implements CompilerPassInterface
                 $args = [];
                 foreach ($parameters as $p) {
                     /** @var \ReflectionParameter $p */
-                    $type = \ltrim($target = (string) ProxyHelper::getTypeHint($r, $p), '\\');
+                    $type = ltrim($target = (string) ProxyHelper::getTypeHint($r, $p), '\\');
                     $invalidBehavior = ContainerInterface::IGNORE_ON_INVALID_REFERENCE;
                     if (isset($arguments[$r->name][$p->name])) {
                         $target = $arguments[$r->name][$p->name];
                         if ('?' !== $target[0]) {
                             $invalidBehavior = ContainerInterface::RUNTIME_EXCEPTION_ON_INVALID_REFERENCE;
-                        } elseif ('' === ($target = (string) \substr($target, 1))) {
-                            throw new InvalidArgumentException(\sprintf('A "%s" tag must have non-empty "id" attributes for service "%s".', $this->controllerTag, $id));
+                        } elseif ('' === $target = (string) substr($target, 1)) {
+                            throw new InvalidArgumentException(sprintf('A "%s" tag must have non-empty "id" attributes for service "%s".', $this->controllerTag, $id));
                         } elseif ($p->allowsNull() && !$p->isOptional()) {
                             $invalidBehavior = ContainerInterface::NULL_ON_INVALID_REFERENCE;
                         }
-                    } elseif (isset($bindings[$bindingName = $type . ' $' . ($name = Target::parseName($p))]) || isset($bindings[$bindingName = '$' . $name]) || isset($bindings[$bindingName = $type])) {
+                    } elseif (isset($bindings[$bindingName = $type . ' $' . $name = Target::parseName($p)]) || isset($bindings[$bindingName = '$' . $name]) || isset($bindings[$bindingName = $type])) {
                         $binding = $bindings[$bindingName];
                         [$bindingValue, $bindingId, , $bindingType, $bindingFile] = $binding->getValues();
                         $binding->setValues([$bindingValue, $bindingId, \true, $bindingType, $bindingFile]);
@@ -146,7 +146,7 @@ class RegisterControllerArgumentLocatorsPass implements CompilerPassInterface
                         continue;
                     } elseif (!$type || !$autowire || '\\' !== $target[0]) {
                         continue;
-                    } elseif (\is_subclass_of($type, \UnitEnum::class)) {
+                    } elseif (is_subclass_of($type, \UnitEnum::class)) {
                         // do not attempt to register enum typed arguments if not already present in bindings
                         continue;
                     } elseif (!$p->allowsNull()) {
@@ -155,16 +155,16 @@ class RegisterControllerArgumentLocatorsPass implements CompilerPassInterface
                     if (Request::class === $type || SessionInterface::class === $type || Response::class === $type) {
                         continue;
                     }
-                    if ($type && !$p->isOptional() && !$p->allowsNull() && !\class_exists($type) && !\interface_exists($type, \false)) {
-                        $message = \sprintf('Cannot determine controller argument for "%s::%s()": the $%s argument is type-hinted with the non-existent class or interface: "%s".', $class, $r->name, $p->name, $type);
+                    if ($type && !$p->isOptional() && !$p->allowsNull() && !class_exists($type) && !interface_exists($type, \false)) {
+                        $message = sprintf('Cannot determine controller argument for "%s::%s()": the $%s argument is type-hinted with the non-existent class or interface: "%s".', $class, $r->name, $p->name, $type);
                         // see if the type-hint lives in the same namespace as the controller
-                        if (0 === \strncmp($type, $class, \strrpos($class, '\\'))) {
+                        if (0 === strncmp($type, $class, strrpos($class, '\\'))) {
                             $message .= ' Did you forget to add a use statement?';
                         }
                         $container->register($erroredId = '.errored.' . $container->hash($message), $type)->addError($message);
                         $args[$p->name] = new Reference($erroredId, ContainerInterface::RUNTIME_EXCEPTION_ON_INVALID_REFERENCE);
                     } else {
-                        $target = \ltrim($target, '\\');
+                        $target = ltrim($target, '\\');
                         $args[$p->name] = $type ? new TypedReference($target, $type, $invalidBehavior, Target::parseName($p)) : new Reference($target, $invalidBehavior);
                     }
                 }

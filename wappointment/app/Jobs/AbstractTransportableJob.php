@@ -6,7 +6,7 @@ abstract class AbstractTransportableJob implements \Wappointment\Jobs\JobInterfa
 {
     public $transport = null;
     protected $params = [];
-    public abstract function setTransport();
+    abstract public function setTransport();
     public function __construct($params)
     {
         $this->setTransport();

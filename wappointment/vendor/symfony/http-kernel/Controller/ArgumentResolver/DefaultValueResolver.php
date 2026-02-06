@@ -23,15 +23,15 @@ final class DefaultValueResolver implements ArgumentValueResolverInterface
     /**
      * {@inheritdoc}
      */
-    public function supports(Request $request, ArgumentMetadata $argument) : bool
+    public function supports(Request $request, ArgumentMetadata $argument): bool
     {
         return $argument->hasDefaultValue() || null !== $argument->getType() && $argument->isNullable() && !$argument->isVariadic();
     }
     /**
      * {@inheritdoc}
      */
-    public function resolve(Request $request, ArgumentMetadata $argument) : iterable
+    public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
-        (yield $argument->hasDefaultValue() ? $argument->getDefaultValue() : null);
+        yield $argument->hasDefaultValue() ? $argument->getDefaultValue() : null;
     }
 }

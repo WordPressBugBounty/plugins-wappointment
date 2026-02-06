@@ -51,7 +51,7 @@ class Response extends SymfonyResponse
             $this->header('Content-Type', 'application/json');
             $content = $this->morphToJson($content);
             if ($content === \false) {
-                throw new InvalidArgumentException(\json_last_error_msg());
+                throw new InvalidArgumentException(json_last_error_msg());
             }
         } elseif ($content instanceof Renderable) {
             $content = $content->render();
@@ -67,7 +67,7 @@ class Response extends SymfonyResponse
      */
     protected function shouldBeJson($content)
     {
-        return $content instanceof Arrayable || $content instanceof Jsonable || $content instanceof ArrayObject || $content instanceof JsonSerializable || \is_array($content);
+        return $content instanceof Arrayable || $content instanceof Jsonable || $content instanceof ArrayObject || $content instanceof JsonSerializable || is_array($content);
     }
     /**
      * Morph the given content into JSON.
@@ -80,8 +80,8 @@ class Response extends SymfonyResponse
         if ($content instanceof Jsonable) {
             return $content->toJson();
         } elseif ($content instanceof Arrayable) {
-            return \json_encode($content->toArray());
+            return json_encode($content->toArray());
         }
-        return \json_encode($content);
+        return json_encode($content);
     }
 }

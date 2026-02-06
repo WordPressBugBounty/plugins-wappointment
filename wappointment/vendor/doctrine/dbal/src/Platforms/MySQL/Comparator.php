@@ -33,7 +33,7 @@ class Comparator extends BaseComparator
     {
         return parent::diffTable($this->normalizeColumns($fromTable), $this->normalizeColumns($toTable));
     }
-    private function normalizeColumns(Table $table) : Table
+    private function normalizeColumns(Table $table): Table
     {
         $tableOptions = array_intersect_key($table->getOptions(), ['charset' => null, 'collation' => null]);
         $table = clone $table;
@@ -53,7 +53,7 @@ class Comparator extends BaseComparator
      *
      * @return array<string,string>
      */
-    private function normalizeOptions(array $options) : array
+    private function normalizeOptions(array $options): array
     {
         if (isset($options['collation']) && !isset($options['charset'])) {
             $charset = $this->collationMetadataProvider->getCollationCharset($options['collation']);

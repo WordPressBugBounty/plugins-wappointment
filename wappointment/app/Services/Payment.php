@@ -47,7 +47,7 @@ class Payment
     public static function formatPrice($price)
     {
         $currency = static::currency();
-        return \str_replace(['[price]', '[currency]'], [\number_format($price, 2), $currency['symbol']], $currency['format']);
+        return str_replace(['[price]', '[currency]'], [number_format($price, 2), $currency['symbol']], $currency['format']);
     }
     public static function methods()
     {
@@ -77,7 +77,7 @@ class Payment
     public static function isWooActive()
     {
         $methods = static::methods();
-        return \count($methods) < 2 && $methods[0]['key'] == 'woocommerce';
+        return count($methods) < 2 && $methods[0]['key'] == 'woocommerce';
     }
     public static function atLeastOneMethodIsActive()
     {

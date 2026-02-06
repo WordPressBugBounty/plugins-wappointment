@@ -24,7 +24,7 @@ class CalcFunction extends CSSFunction
     public static function parse(ParserState $oParserState)
     {
         $aOperators = ['+', '-', '*', '/'];
-        $sFunction = \trim($oParserState->consumeUntil('(', \false, \true));
+        $sFunction = trim($oParserState->consumeUntil('(', \false, \true));
         $oCalcList = new CalcRuleValueList($oParserState->currentLine());
         $oList = new RuleValueList(',', $oParserState->currentLine());
         $iNestingLevel = 0;
@@ -46,18 +46,16 @@ class CalcFunction extends CSSFunction
                 $oVal = Value::parsePrimitiveValue($oParserState);
                 $oCalcList->addListComponent($oVal);
                 $iLastComponentType = CalcFunction::T_OPERAND;
-            } else {
-                if (\in_array($oParserState->peek(), $aOperators)) {
-                    if ($oParserState->comes('-') || $oParserState->comes('+')) {
-                        if ($oParserState->peek(1, -1) != ' ' || !($oParserState->comes('- ') || $oParserState->comes('+ '))) {
-                            throw new UnexpectedTokenException(" {$oParserState->peek()} ", $oParserState->peek(1, -1) . $oParserState->peek(2), 'literal', $oParserState->currentLine());
-                        }
+            } else if (in_array($oParserState->peek(), $aOperators)) {
+                if ($oParserState->comes('-') || $oParserState->comes('+')) {
+                    if ($oParserState->peek(1, -1) != ' ' || !($oParserState->comes('- ') || $oParserState->comes('+ '))) {
+                        throw new UnexpectedTokenException(" {$oParserState->peek()} ", $oParserState->peek(1, -1) . $oParserState->peek(2), 'literal', $oParserState->currentLine());
                     }
-                    $oCalcList->addListComponent($oParserState->consume(1));
-                    $iLastComponentType = CalcFunction::T_OPERATOR;
-                } else {
-                    throw new UnexpectedTokenException(\sprintf('Next token was expected to be an operand of type %s. Instead "%s" was found.', \implode(', ', $aOperators), $oVal), '', 'custom', $oParserState->currentLine());
                 }
+                $oCalcList->addListComponent($oParserState->consume(1));
+                $iLastComponentType = CalcFunction::T_OPERATOR;
+            } else {
+                throw new UnexpectedTokenException(sprintf('Next token was expected to be an operand of type %s. Instead "%s" was found.', implode(', ', $aOperators), $oVal), '', 'custom', $oParserState->currentLine());
             }
             $oParserState->consumeWhiteSpace();
         }

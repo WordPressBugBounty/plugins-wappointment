@@ -21,7 +21,7 @@ class Status
     }
     public static function installedForXDays()
     {
-        return \round((\time() - self::installationTime()) / (60 * 60 * 24));
+        return round((time() - self::installationTime()) / (60 * 60 * 24));
     }
     public static function dbVersion()
     {
@@ -34,11 +34,11 @@ class Status
     public static function seenUpdatePage()
     {
         $update_seen = static::viewedUpdates();
-        return $update_seen && \version_compare($update_seen, WAPPOINTMENT_VERSION) >= 0;
+        return $update_seen && version_compare($update_seen, WAPPOINTMENT_VERSION) >= 0;
     }
     public static function getBaseVersion()
     {
-        return \substr(WAPPOINTMENT_VERSION, 0, 3 - \strlen(WAPPOINTMENT_VERSION));
+        return substr(WAPPOINTMENT_VERSION, 0, 3 - strlen(WAPPOINTMENT_VERSION));
     }
     public static function hasPendingUpdates()
     {
@@ -46,7 +46,7 @@ class Status
     }
     public static function coreRequiresDBUpdate()
     {
-        return \version_compare(self::dbVersion(), self::$db_version_required) < 0;
+        return version_compare(self::dbVersion(), self::$db_version_required) < 0;
     }
     public static function addonRequiresDBUpdate()
     {
@@ -92,7 +92,7 @@ class Status
     }
     public static function dbVersionAlterRequired()
     {
-        return \version_compare(WPHelpers::getOption('db_version_created', '1.0.0'), self::$db_version_required) < 0;
+        return version_compare(WPHelpers::getOption('db_version_created', '1.0.0'), self::$db_version_required) < 0;
     }
     public static function setViewedUpdated()
     {

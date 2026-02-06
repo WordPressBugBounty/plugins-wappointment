@@ -17,5 +17,5 @@ namespace WappoVendor\Symfony\Component\VarDumper\Dumper\ContextProvider;
  */
 interface ContextProviderInterface
 {
-    public function getContext() : ?array;
+    public function getContext(): ?array;
 }

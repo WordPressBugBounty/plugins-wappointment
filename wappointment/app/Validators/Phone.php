@@ -11,7 +11,7 @@ class Phone extends \WappoVendor\Rakit\Validation\Rule
     {
         $this->countries = $countriesAllowed;
     }
-    public function check($value) : bool
+    public function check($value): bool
     {
         if (empty($value)) {
             return \false;

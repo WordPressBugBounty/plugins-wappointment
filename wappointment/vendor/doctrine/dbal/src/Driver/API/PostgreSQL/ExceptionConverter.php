@@ -28,7 +28,7 @@ final class ExceptionConverter implements ExceptionConverterInterface
     /**
      * @link http://www.postgresql.org/docs/9.4/static/errcodes-appendix.html
      */
-    public function convert(Exception $exception, ?Query $query) : DriverException
+    public function convert(Exception $exception, ?Query $query): DriverException
     {
         switch ($exception->getSQLState()) {
             case '40001':

@@ -52,7 +52,7 @@ class IntlCaster
         $a += [Caster::PREFIX_VIRTUAL . 'locale' => $c->getLocale(), Caster::PREFIX_VIRTUAL . 'pattern' => $c->getPattern(), Caster::PREFIX_VIRTUAL . 'calendar' => $c->getCalendar(), Caster::PREFIX_VIRTUAL . 'time_zone_id' => $c->getTimeZoneId(), Caster::PREFIX_VIRTUAL . 'time_type' => $c->getTimeType(), Caster::PREFIX_VIRTUAL . 'date_type' => $c->getDateType(), Caster::PREFIX_VIRTUAL . 'calendar_object' => $filter & Caster::EXCLUDE_VERBOSE ? new CutStub($c->getCalendarObject()) : $c->getCalendarObject(), Caster::PREFIX_VIRTUAL . 'time_zone' => $filter & Caster::EXCLUDE_VERBOSE ? new CutStub($c->getTimeZone()) : $c->getTimeZone()];
         return self::castError($c, $a);
     }
-    private static function castError(object $c, array $a) : array
+    private static function castError(object $c, array $a): array
     {
         if ($errorCode = $c->getErrorCode()) {
             $a += [Caster::PREFIX_VIRTUAL . 'error_code' => $errorCode, Caster::PREFIX_VIRTUAL . 'error_message' => $c->getErrorMessage()];

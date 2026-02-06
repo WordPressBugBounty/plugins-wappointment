@@ -56,8 +56,8 @@ class VarCloner extends AbstractCloner
         $stub = null;
         // Stub capturing the main properties of an original item value
         // or null if the original value is used directly
-        if (!($gid = self::$gid)) {
-            $gid = self::$gid = \md5(\random_bytes(6));
+        if (!$gid = self::$gid) {
+            $gid = self::$gid = md5(random_bytes(6));
             // Unique string used to detect the special $GLOBALS variable
         }
         $arrayStub = new Stub();
@@ -86,7 +86,7 @@ class VarCloner extends AbstractCloner
                     // Break hard references to make $queue completely
                     unset($stub);
                     // independent from the original structure
-                    if (\PHP_VERSION_ID >= 70400 ? null !== ($vals[$k] = $hardRefs[$zvalRef] ?? null) : $v instanceof Stub && isset($hardRefs[\spl_object_id($v)])) {
+                    if (\PHP_VERSION_ID >= 70400 ? null !== $vals[$k] = $hardRefs[$zvalRef] ?? null : $v instanceof Stub && isset($hardRefs[spl_object_id($v)])) {
                         if (\PHP_VERSION_ID >= 70400) {
                             $v = $vals[$k];
                         } else {
@@ -105,7 +105,7 @@ class VarCloner extends AbstractCloner
                         $hardRefs[$zvalRef] = $vals[$k];
                     } else {
                         $refs[$k] = $vals[$k];
-                        $h = \spl_object_id($refs[$k]);
+                        $h = spl_object_id($refs[$k]);
                         $hardRefs[$h] =& $refs[$k];
                         $values[$h] = $v;
                     }
@@ -122,22 +122,22 @@ class VarCloner extends AbstractCloner
                         if ('' === $v) {
                             continue 2;
                         }
-                        if (!\preg_match('//u', $v)) {
+                        if (!preg_match('//u', $v)) {
                             $stub = new Stub();
                             $stub->type = Stub::TYPE_STRING;
                             $stub->class = Stub::STRING_BINARY;
-                            if (0 <= $maxString && 0 < ($cut = \strlen($v) - $maxString)) {
+                            if (0 <= $maxString && 0 < $cut = \strlen($v) - $maxString) {
                                 $stub->cut = $cut;
-                                $stub->value = \substr($v, 0, -$cut);
+                                $stub->value = substr($v, 0, -$cut);
                             } else {
                                 $stub->value = $v;
                             }
-                        } elseif (0 <= $maxString && isset($v[1 + ($maxString >> 2)]) && 0 < ($cut = \mb_strlen($v, 'UTF-8') - $maxString)) {
+                        } elseif (0 <= $maxString && isset($v[1 + ($maxString >> 2)]) && 0 < $cut = mb_strlen($v, 'UTF-8') - $maxString) {
                             $stub = new Stub();
                             $stub->type = Stub::TYPE_STRING;
                             $stub->class = Stub::STRING_UTF8;
                             $stub->cut = $cut;
-                            $stub->value = \mb_substr($v, 0, $maxString, 'UTF-8');
+                            $stub->value = mb_substr($v, 0, $maxString, 'UTF-8');
                         } else {
                             continue 2;
                         }
@@ -149,7 +149,7 @@ class VarCloner extends AbstractCloner
                         }
                         $stub = $arrayStub;
                         if (\PHP_VERSION_ID >= 80100) {
-                            $stub->class = \array_is_list($v) ? Stub::ARRAY_INDEXED : Stub::ARRAY_ASSOC;
+                            $stub->class = array_is_list($v) ? Stub::ARRAY_INDEXED : Stub::ARRAY_ASSOC;
                             $a = $v;
                             break;
                         }
@@ -178,7 +178,7 @@ class VarCloner extends AbstractCloner
                                         $gv =& $a[$gk];
                                         $hardRefs[\ReflectionReference::fromArrayElement($a, $gk)->getId()] =& $gv;
                                     } else {
-                                        $gv =& $hardRefs[\spl_object_id($v)];
+                                        $gv =& $hardRefs[spl_object_id($v)];
                                     }
                                     $gv = $v;
                                 }
@@ -190,7 +190,7 @@ class VarCloner extends AbstractCloner
                         }
                         break;
                     case \is_object($v):
-                        if (empty($objRefs[$h = \spl_object_id($v)])) {
+                        if (empty($objRefs[$h = spl_object_id($v)])) {
                             $stub = new Stub();
                             $stub->type = Stub::TYPE_OBJECT;
                             $stub->class = \get_class($v);
@@ -201,7 +201,7 @@ class VarCloner extends AbstractCloner
                                 if (Stub::TYPE_OBJECT !== $stub->type || null === $stub->value) {
                                     break;
                                 }
-                                $stub->handle = $h = \spl_object_id($stub->value);
+                                $stub->handle = $h = spl_object_id($stub->value);
                             }
                             $stub->value = null;
                             if (0 <= $maxItems && $maxItems <= $pos && $minimumDepthReached) {
@@ -223,7 +223,7 @@ class VarCloner extends AbstractCloner
                         if (empty($resRefs[$h = (int) $v])) {
                             $stub = new Stub();
                             $stub->type = Stub::TYPE_RESOURCE;
-                            if ('Unknown' === ($stub->class = @\get_resource_type($v))) {
+                            if ('Unknown' === $stub->class = @get_resource_type($v)) {
                                 $stub->class = 'Closed';
                             }
                             $stub->value = $v;
@@ -249,7 +249,7 @@ class VarCloner extends AbstractCloner
                         $queue[$len] = $a;
                         $stub->position = $len++;
                     } elseif ($pos < $maxItems) {
-                        if ($maxItems < ($pos += \count($a))) {
+                        if ($maxItems < $pos += \count($a)) {
                             $a = \array_slice($a, 0, $maxItems - $pos, \true);
                             if ($stub->cut >= 0) {
                                 $stub->cut += $pos - $maxItems;

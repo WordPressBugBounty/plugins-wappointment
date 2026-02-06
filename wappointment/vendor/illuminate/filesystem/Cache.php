@@ -46,7 +46,7 @@ class Cache extends AbstractCache
     public function load()
     {
         $contents = $this->repository->get($this->key);
-        if (!\is_null($contents)) {
+        if (!is_null($contents)) {
             $this->setFromStorage($contents);
         }
     }

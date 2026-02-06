@@ -19,7 +19,7 @@ class Booking extends \Wappointment\Validators\HttpRequest\LegacyBooking
     public static $startKey = 'time';
     protected function validationMessages()
     {
-        return ['is_phone' => __('Your phone number is not valid', 'wappointment'), 'email' => __('Your email is not valid', 'wappointment'), 'skype:regex' => __('Your skype username is not valid', 'wappointment'), static::$startKey => __('The selected time is not valid', 'wappointment')];
+        return ['is_phone' => __('Your phone number is not valid', 'wappointment'), 'email' => __('Your email is not valid', 'wappointment'), static::$startKey => __('The selected time is not valid', 'wappointment')];
     }
     public function getUserEmail()
     {
@@ -27,7 +27,7 @@ class Booking extends \Wappointment\Validators\HttpRequest\LegacyBooking
     }
     protected function bookingFromFront()
     {
-        return \strpos(\get_class($this), 'BookingAdmin') === \false;
+        return strpos(get_class($this), 'BookingAdmin') === \false;
     }
     protected function forceEmail()
     {
@@ -67,7 +67,7 @@ class Booking extends \Wappointment\Validators\HttpRequest\LegacyBooking
     }
     public function getFields()
     {
-        return \array_keys($this->validationRulesArray);
+        return array_keys($this->validationRulesArray);
     }
     /**
      * Ignore certain given values
@@ -76,8 +76,8 @@ class Booking extends \Wappointment\Validators\HttpRequest\LegacyBooking
      */
     public function getFieldsFiltered()
     {
-        return \array_filter($this->getFields(), function ($var) {
-            return !\in_array($var, ['recurrent', 'page']);
+        return array_filter($this->getFields(), function ($var) {
+            return !in_array($var, ['recurrent', 'page']);
         });
     }
     protected function validationRules()
@@ -96,7 +96,7 @@ class Booking extends \Wappointment\Validators\HttpRequest\LegacyBooking
     }
     public function validateService($inputs)
     {
-        if (!\is_numeric($inputs['service'])) {
+        if (!is_numeric($inputs['service'])) {
             throw new \WappointmentException("Service data error", 1);
         }
         $service = ServiceCentral::model()::find((int) $inputs['service']);
@@ -107,10 +107,10 @@ class Booking extends \Wappointment\Validators\HttpRequest\LegacyBooking
     }
     public function validateLocation($inputs)
     {
-        if (!\is_numeric($inputs['location'])) {
+        if (!is_numeric($inputs['location'])) {
             throw new \WappointmentException("Delivery Modality data error", 1);
         }
-        if (\count($this->service->locations) == 0) {
+        if (count($this->service->locations) == 0) {
             throw new \WappointmentException("Delivery Modality data error", 1);
         }
         foreach ($this->service->locations as $key => $location) {
@@ -122,16 +122,13 @@ class Booking extends \Wappointment\Validators\HttpRequest\LegacyBooking
                 if ($this->location->type == 2) {
                     $this->location->options['fields'][] = 'phone';
                 }
-                if ($this->location->type == 3) {
-                    $this->location->options['fields'][] = 'skype';
-                }
             }
         }
         if (empty($this->location)) {
             throw new \WappointmentException("Location data error 2", 1);
         }
     }
-    public function prepareInputs($inputs) : array
+    public function prepareInputs($inputs): array
     {
         if (VersionDB::canServices()) {
             $this->staff = Calendar::active()->findOrFail((int) $inputs['staff_id']);
@@ -155,7 +152,7 @@ class Booking extends \Wappointment\Validators\HttpRequest\LegacyBooking
         $custom_fields = $this->getFieldsFiltered();
         $dataClient = ['options' => []];
         foreach ($custom_fields as $cfield) {
-            if (\in_array($cfield, ['location', 'duration', 'service', 'time', 'start', 'clientid', 'end'])) {
+            if (in_array($cfield, ['location', 'duration', 'service', 'time', 'start', 'clientid', 'end'])) {
                 continue;
             }
             switch ($cfield) {

@@ -37,28 +37,28 @@ class Html2Text
     public static function convert($html, $ignore_error = \false)
     {
         // replace &nbsp; with spaces
-        $html = \str_replace("&nbsp;", " ", $html);
-        $html = \str_replace(" ", " ", $html);
+        $html = str_replace("&nbsp;", " ", $html);
+        $html = str_replace(" ", " ", $html);
         $is_office_document = static::isOfficeDocument($html);
         if ($is_office_document) {
             // remove office namespace
-            $html = \str_replace(array("<o:p>", "</o:p>"), "", $html);
+            $html = str_replace(array("<o:p>", "</o:p>"), "", $html);
         }
         $html = static::fixNewlines($html);
-        if (\mb_detect_encoding($html, "UTF-8", \true)) {
-            $html = \mb_convert_encoding($html, "HTML-ENTITIES", "UTF-8");
+        if (mb_detect_encoding($html, "UTF-8", \true)) {
+            $html = mb_convert_encoding($html, "HTML-ENTITIES", "UTF-8");
         }
         $doc = static::getDocument($html, $ignore_error);
         $output = static::iterateOverNode($doc, null, \false, $is_office_document);
         // remove leading and trailing spaces on each line
-        $output = \preg_replace("/[ \t]*\n[ \t]*/im", "\n", $output);
-        $output = \preg_replace("/ *\t */im", "\t", $output);
+        $output = preg_replace("/[ \t]*\n[ \t]*/im", "\n", $output);
+        $output = preg_replace("/ *\t */im", "\t", $output);
         // unarmor pre blocks
-        $output = \str_replace("\r", "\n", $output);
+        $output = str_replace("\r", "\n", $output);
         // remove unnecessary empty lines
-        $output = \preg_replace("/\n\n\n*/im", "\n\n", $output);
+        $output = preg_replace("/\n\n\n*/im", "\n\n", $output);
         // remove leading and trailing whitespace
-        $output = \trim($output);
+        $output = trim($output);
         return $output;
     }
     /**
@@ -72,9 +72,9 @@ class Html2Text
     static function fixNewlines($text)
     {
         // replace \r\n to \n
-        $text = \str_replace("\r\n", "\n", $text);
+        $text = str_replace("\r\n", "\n", $text);
         // remove \rs
-        $text = \str_replace("\r", "\n", $text);
+        $text = str_replace("\r", "\n", $text);
         return $text;
     }
     /**
@@ -87,7 +87,7 @@ class Html2Text
     static function getDocument($html, $ignore_error = \false)
     {
         $doc = new \DOMDocument();
-        $html = \trim($html);
+        $html = trim($html);
         if (!$html) {
             // DOMDocument doesn't support empty value and throws an error
             // Return empty document instead
@@ -104,9 +104,9 @@ class Html2Text
             $doc->strictErrorChecking = \false;
             $doc->recover = \true;
             $doc->xmlStandalone = \true;
-            $old_internal_errors = \libxml_use_internal_errors(\true);
+            $old_internal_errors = libxml_use_internal_errors(\true);
             $load_result = $doc->loadHTML($html, \LIBXML_NOWARNING | \LIBXML_NOERROR | \LIBXML_NONET);
-            \libxml_use_internal_errors($old_internal_errors);
+            libxml_use_internal_errors($old_internal_errors);
         } else {
             $load_result = $doc->loadHTML($html);
         }
@@ -120,11 +120,11 @@ class Html2Text
      */
     static function isOfficeDocument($html)
     {
-        return \strpos($html, "urn:schemas-microsoft-com:office") !== \false;
+        return strpos($html, "urn:schemas-microsoft-com:office") !== \false;
     }
     static function isWhitespace($text)
     {
-        return \strlen(\trim($text, "\n\r\t ")) === 0;
+        return strlen(trim($text, "\n\r\t ")) === 0;
     }
     static function nextChildName($node)
     {
@@ -143,7 +143,7 @@ class Html2Text
         }
         $nextName = null;
         if (($nextNode instanceof \DOMElement || $nextNode instanceof \DOMText) && $nextNode != null) {
-            $nextName = \strtolower($nextNode->nodeName);
+            $nextName = strtolower($nextNode->nodeName);
         }
         return $nextName;
     }
@@ -152,13 +152,13 @@ class Html2Text
         if ($node instanceof \DOMText) {
             // Replace whitespace characters with a space (equivilant to \s)
             if ($in_pre) {
-                $text = "\n" . \trim($node->wholeText, "\n\r\t ") . "\n";
+                $text = "\n" . trim($node->wholeText, "\n\r\t ") . "\n";
                 // Remove trailing whitespace only
-                $text = \preg_replace("/[ \t]*\n/im", "\n", $text);
+                $text = preg_replace("/[ \t]*\n/im", "\n", $text);
                 // armor newlines with \r.
-                return \str_replace("\n", "\r", $text);
+                return str_replace("\n", "\r", $text);
             } else {
-                $text = \preg_replace("/[\\t\\n\\f\\r ]+/im", " ", $node->wholeText);
+                $text = preg_replace("/[\\t\\n\\f\\r ]+/im", " ", $node->wholeText);
                 if (!static::isWhitespace($text) && ($prevName == 'p' || $prevName == 'div')) {
                     return "\n" . $text;
                 }
@@ -173,7 +173,7 @@ class Html2Text
             // ignore
             return "";
         }
-        $name = \strtolower($node->nodeName);
+        $name = strtolower($node->nodeName);
         $nextName = static::nextChildName($node);
         // start whitespace
         switch ($name) {
@@ -246,7 +246,7 @@ class Html2Text
                 if ($n instanceof \DOMDocumentType || $n instanceof \DOMProcessingInstruction || $n instanceof \DOMText && static::isWhitespace($text)) {
                     // Keep current previousSiblingName, these are invisible
                 } else {
-                    $previousSiblingName = \strtolower($n->nodeName);
+                    $previousSiblingName = strtolower($n->nodeName);
                 }
                 $node->removeChild($n);
                 $n = $node->childNodes->item(0);
@@ -280,10 +280,10 @@ class Html2Text
             case "a":
                 // links are returned in [text](link) format
                 $href = $node->getAttribute("href");
-                $output = \trim($output);
+                $output = trim($output);
                 // remove double [[ ]] s from linking images
-                if (\substr($output, 0, 1) == "[" && \substr($output, -1) == "]") {
-                    $output = \substr($output, 1, \strlen($output) - 2);
+                if (substr($output, 0, 1) == "[" && substr($output, -1) == "]") {
+                    $output = substr($output, 1, strlen($output) - 2);
                     // for linking images, the title of the <a> overrides the title of the <img>
                     if ($node->getAttribute("title")) {
                         $output = $node->getAttribute("title");
@@ -298,19 +298,14 @@ class Html2Text
                     if ($node->getAttribute("name") != null) {
                         $output = "[{$output}]";
                     }
+                } else if ($href == $output || $href == "mailto:{$output}" || $href == "http://{$output}" || $href == "https://{$output}") {
+                    // link to the same address: just use link
+                    $output;
+                } else if ($output) {
+                    $output = "[{$output}]({$href})";
                 } else {
-                    if ($href == $output || $href == "mailto:{$output}" || $href == "http://{$output}" || $href == "https://{$output}") {
-                        // link to the same address: just use link
-                        $output;
-                    } else {
-                        // replace it
-                        if ($output) {
-                            $output = "[{$output}]({$href})";
-                        } else {
-                            // empty string
-                            $output = $href;
-                        }
-                    }
+                    // empty string
+                    $output = $href;
                 }
                 // does the next node require additional whitespace?
                 switch ($nextName) {

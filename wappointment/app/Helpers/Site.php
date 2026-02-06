@@ -33,7 +33,7 @@ class Site
         if (!empty($instance)) {
             return $instance;
         }
-        if (!\class_exists($className)) {
+        if (!class_exists($className)) {
             throw new \WappointmentException("Class cannot be binded " . $className, 1);
         }
         return \Wappointment\Helpers\Site::container()->bind($className, new $className());

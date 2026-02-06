@@ -151,7 +151,7 @@ class Order extends Model
     {
         foreach ($this->prices as $charge) {
             //cancel appointment
-            if ($charge->appointment_id > 0 && !\is_null($charge->appointment)) {
+            if ($charge->appointment_id > 0 && !is_null($charge->appointment)) {
                 //avoid issue with foreign key
                 $appointment = $charge->appointment;
                 $charge->appointment_id = null;
@@ -164,7 +164,7 @@ class Order extends Model
     {
         $this->status = static::STATUS_CANCELLED;
         $options = $this->options;
-        $options['auto_cancelled_at'] = \time();
+        $options['auto_cancelled_at'] = time();
         $this->options = $options;
         $this->save();
     }
@@ -175,7 +175,7 @@ class Order extends Model
     }
     public function prices()
     {
-        return $this->hasMany('Wappointment\\Models\\OrderPrice', 'order_id');
+        return $this->hasMany('Wappointment\Models\OrderPrice', 'order_id');
     }
     public function clearLastAdded($appointment)
     {
@@ -192,7 +192,7 @@ class Order extends Model
         }
         AppointmentNew::silentCancel($appointment_ids, $charge_ids);
         if (!empty($reservations) && $appointment->id !== (int) $reservations[0]['appointment_id']) {
-            CleanPendingPaymentAppointment::cancelReservations(\array_merge($this->options, ['client_id' => $this->client_id]));
+            CleanPendingPaymentAppointment::cancelReservations(array_merge($this->options, ['client_id' => $this->client_id]));
         }
     }
     public function add(\Wappointment\Models\TicketAbstract $ticket, $quantity = \false)
@@ -237,11 +237,11 @@ class Order extends Model
     {
         $description = '';
         foreach ($this->prices as $price) {
-            if (!\is_null($price->appointment)) {
+            if (!is_null($price->appointment)) {
                 $description .= $price->appointment->getStaffName();
             }
             $description .= ' - ' . $price->item_name . ' - ';
-            if (!\is_null($price->appointment)) {
+            if (!is_null($price->appointment)) {
                 $description .= $price->appointment->getStartsDayAndTime($price->appointment->getStaffTZ());
             }
             $description .= " | ";
@@ -267,7 +267,7 @@ class Order extends Model
     }
     public function calculateTax($amount)
     {
-        return \round($amount / 100 * $this->tax_percent);
+        return round($amount / 100 * $this->tax_percent);
     }
     public function confirmAppointments()
     {

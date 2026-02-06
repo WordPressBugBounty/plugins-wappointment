@@ -211,7 +211,7 @@ class VCard extends VObject\Document
         $warnings = [];
         $versionMap = [self::VCARD21 => '2.1', self::VCARD30 => '3.0', self::VCARD40 => '4.0'];
         $version = $this->select('VERSION');
-        if (1 === \count($version)) {
+        if (1 === count($version)) {
             $version = (string) $this->VERSION;
             if ('2.1' !== $version && '3.0' !== $version && '4.0' !== $version) {
                 $warnings[] = ['level' => 3, 'message' => 'Only vcard version 4.0 (RFC6350), version 3.0 (RFC2426) or version 2.1 (icm-vcard-2.1) are supported.', 'node' => $this];
@@ -224,7 +224,7 @@ class VCard extends VObject\Document
             }
         }
         $uid = $this->select('UID');
-        if (0 === \count($uid)) {
+        if (0 === count($uid)) {
             if ($options & self::PROFILE_CARDDAV) {
                 // Required for CardDAV
                 $warningLevel = 3;
@@ -241,13 +241,13 @@ class VCard extends VObject\Document
             $warnings[] = ['level' => $warningLevel, 'message' => $message, 'node' => $this];
         }
         $fn = $this->select('FN');
-        if (1 !== \count($fn)) {
+        if (1 !== count($fn)) {
             $repaired = \false;
-            if ($options & self::REPAIR && 0 === \count($fn)) {
+            if ($options & self::REPAIR && 0 === count($fn)) {
                 // We're going to try to see if we can use the contents of the
                 // N property.
                 if (isset($this->N)) {
-                    $value = \explode(';', (string) $this->N);
+                    $value = explode(';', (string) $this->N);
                     if (isset($value[1]) && $value[1]) {
                         $this->FN = $value[1] . ' ' . $value[0];
                     } else {
@@ -270,7 +270,7 @@ class VCard extends VObject\Document
             }
             $warnings[] = ['level' => $repaired ? 1 : 3, 'message' => 'The FN property must appear in the VCARD component exactly 1 time', 'node' => $this];
         }
-        return \array_merge(parent::validate($options), $warnings);
+        return array_merge(parent::validate($options), $warnings);
     }
     /**
      * A simple list of validation rules.
@@ -355,7 +355,7 @@ class VCard extends VObject\Document
             } elseif (isset($field['PREF'])) {
                 $pref = $field['PREF']->getValue();
             }
-            if ($pref < $lastPref || \is_null($preferred)) {
+            if ($pref < $lastPref || is_null($preferred)) {
                 $preferred = $field;
                 $lastPref = $pref;
             }
@@ -405,7 +405,7 @@ class VCard extends VObject\Document
         foreach ($this->children() as $child) {
             $properties[] = $child->jsonSerialize();
         }
-        return [\strtolower($this->name), $properties];
+        return [strtolower($this->name), $properties];
     }
     /**
      * This method serializes the data into XML. This is used to create xCard or
@@ -413,7 +413,7 @@ class VCard extends VObject\Document
      *
      * @param Xml\Writer $writer XML writer
      */
-    public function xmlSerialize(Xml\Writer $writer) : void
+    public function xmlSerialize(Xml\Writer $writer): void
     {
         $propertiesByGroup = [];
         foreach ($this->children() as $property) {
@@ -423,11 +423,11 @@ class VCard extends VObject\Document
             }
             $propertiesByGroup[$group][] = $property;
         }
-        $writer->startElement(\strtolower($this->name));
+        $writer->startElement(strtolower($this->name));
         foreach ($propertiesByGroup as $group => $properties) {
             if (!empty($group)) {
                 $writer->startElement('group');
-                $writer->writeAttribute('name', \strtolower($group));
+                $writer->writeAttribute('name', strtolower($group));
             }
             foreach ($properties as $property) {
                 switch ($property->name) {

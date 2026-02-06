@@ -22,9 +22,9 @@ use WappoVendor\Egulias\EmailValidator\Result\Reason\UnusualElements;
 use WappoVendor\Egulias\EmailValidator\Warning\DomainLiteral as WarningDomainLiteral;
 class DomainLiteral extends PartParser
 {
-    public const IPV4_REGEX = '/\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/';
+    public const IPV4_REGEX = '/\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/';
     public const OBSOLETE_WARNINGS = [EmailLexer::INVALID, EmailLexer::C_DEL, EmailLexer::S_LF, EmailLexer::S_BACKSLASH];
-    public function parse() : Result
+    public function parse(): Result
     {
         $this->addTagWarnings();
         $IPv6TAG = \false;
@@ -56,7 +56,7 @@ class DomainLiteral extends PartParser
             $addressLiteral .= $this->lexer->token['value'];
         } while ($this->lexer->moveNext());
         //Encapsulate
-        $addressLiteral = \str_replace('[', '', $addressLiteral);
+        $addressLiteral = str_replace('[', '', $addressLiteral);
         $isAddressLiteralIPv4 = $this->checkIPV4Tag($addressLiteral);
         if (!$isAddressLiteralIPv4) {
             return new ValidEmail();
@@ -75,18 +75,18 @@ class DomainLiteral extends PartParser
      * @param string $addressLiteral
      * @param int $maxGroups
      */
-    public function checkIPV6Tag($addressLiteral, $maxGroups = 8) : void
+    public function checkIPV6Tag($addressLiteral, $maxGroups = 8): void
     {
         $prev = $this->lexer->getPrevious();
         if ($prev['type'] === EmailLexer::S_COLON) {
             $this->warnings[IPV6ColonEnd::CODE] = new IPV6ColonEnd();
         }
-        $IPv6 = \substr($addressLiteral, 5);
+        $IPv6 = substr($addressLiteral, 5);
         //Daniel Marschall's new IPv6 testing strategy
-        $matchesIP = \explode(':', $IPv6);
-        $groupCount = \count($matchesIP);
-        $colons = \strpos($IPv6, '::');
-        if (\count(\preg_grep('/^[0-9A-Fa-f]{0,4}$/', $matchesIP, \PREG_GREP_INVERT)) !== 0) {
+        $matchesIP = explode(':', $IPv6);
+        $groupCount = count($matchesIP);
+        $colons = strpos($IPv6, '::');
+        if (count(preg_grep('/^[0-9A-Fa-f]{0,4}$/', $matchesIP, \PREG_GREP_INVERT)) !== 0) {
             $this->warnings[IPV6BadChar::CODE] = new IPV6BadChar();
         }
         if ($colons === \false) {
@@ -96,11 +96,11 @@ class DomainLiteral extends PartParser
             }
             return;
         }
-        if ($colons !== \strrpos($IPv6, '::')) {
+        if ($colons !== strrpos($IPv6, '::')) {
             $this->warnings[IPV6DoubleColon::CODE] = new IPV6DoubleColon();
             return;
         }
-        if ($colons === 0 || $colons === \strlen($IPv6) - 2) {
+        if ($colons === 0 || $colons === strlen($IPv6) - 2) {
             // RFC 4291 allows :: at the start or end of an address
             //with 7 other groups in addition
             ++$maxGroups;
@@ -111,17 +111,17 @@ class DomainLiteral extends PartParser
             $this->warnings[IPV6Deprecated::CODE] = new IPV6Deprecated();
         }
     }
-    public function convertIPv4ToIPv6(string $addressLiteralIPv4) : string
+    public function convertIPv4ToIPv6(string $addressLiteralIPv4): string
     {
         $matchesIP = [];
-        $IPv4Match = \preg_match(self::IPV4_REGEX, $addressLiteralIPv4, $matchesIP);
+        $IPv4Match = preg_match(self::IPV4_REGEX, $addressLiteralIPv4, $matchesIP);
         // Extract IPv4 part from the end of the address-literal (if there is one)
         if ($IPv4Match > 0) {
-            $index = (int) \strrpos($addressLiteralIPv4, $matchesIP[0]);
+            $index = (int) strrpos($addressLiteralIPv4, $matchesIP[0]);
             //There's a match but it is at the start
             if ($index > 0) {
                 // Convert IPv4 part to IPv6 format for further testing
-                return \substr($addressLiteralIPv4, 0, $index) . '0:0';
+                return substr($addressLiteralIPv4, 0, $index) . '0:0';
             }
         }
         return $addressLiteralIPv4;
@@ -131,13 +131,13 @@ class DomainLiteral extends PartParser
      *
      * @return bool
      */
-    protected function checkIPV4Tag($addressLiteral) : bool
+    protected function checkIPV4Tag($addressLiteral): bool
     {
         $matchesIP = [];
-        $IPv4Match = \preg_match(self::IPV4_REGEX, $addressLiteral, $matchesIP);
+        $IPv4Match = preg_match(self::IPV4_REGEX, $addressLiteral, $matchesIP);
         // Extract IPv4 part from the end of the address-literal (if there is one)
         if ($IPv4Match > 0) {
-            $index = \strrpos($addressLiteral, $matchesIP[0]);
+            $index = strrpos($addressLiteral, $matchesIP[0]);
             //There's a match but it is at the start
             if ($index === 0) {
                 $this->warnings[AddressLiteral::CODE] = new AddressLiteral();
@@ -146,13 +146,13 @@ class DomainLiteral extends PartParser
         }
         return \true;
     }
-    private function addObsoleteWarnings() : void
+    private function addObsoleteWarnings(): void
     {
-        if (\in_array($this->lexer->token['type'], self::OBSOLETE_WARNINGS)) {
+        if (in_array($this->lexer->token['type'], self::OBSOLETE_WARNINGS)) {
             $this->warnings[ObsoleteDTEXT::CODE] = new ObsoleteDTEXT();
         }
     }
-    private function addTagWarnings() : void
+    private function addTagWarnings(): void
     {
         if ($this->lexer->isNextToken(EmailLexer::S_COLON)) {
             $this->warnings[IPV6ColonStart::CODE] = new IPV6ColonStart();

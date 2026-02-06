@@ -45,14 +45,14 @@ final class Statement implements StatementInterface
     /**
      * {@inheritdoc}
      */
-    public function bindValue($param, $value, $type = ParameterType::STRING) : bool
+    public function bindValue($param, $value, $type = ParameterType::STRING): bool
     {
         return $this->bindParam($param, $value, $type);
     }
     /**
      * {@inheritdoc}
      */
-    public function bindParam($param, &$variable, $type = ParameterType::STRING, $length = null) : bool
+    public function bindParam($param, &$variable, $type = ParameterType::STRING, $length = null): bool
     {
         if (is_int($param)) {
             if (!isset($this->parameterMap[$param])) {
@@ -74,7 +74,7 @@ final class Statement implements StatementInterface
     /**
      * Converts DBAL parameter type to oci8 parameter type
      */
-    private function convertParameterType(int $type) : int
+    private function convertParameterType(int $type): int
     {
         switch ($type) {
             case ParameterType::BINARY:
@@ -88,7 +88,7 @@ final class Statement implements StatementInterface
     /**
      * {@inheritdoc}
      */
-    public function execute($params = null) : ResultInterface
+    public function execute($params = null): ResultInterface
     {
         if ($params !== null) {
             foreach ($params as $key => $val) {

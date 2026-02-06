@@ -147,7 +147,7 @@ class Broker
     public function parseEvent($calendar, $userHref, $oldCalendar = null)
     {
         if ($oldCalendar) {
-            if (\is_string($oldCalendar)) {
+            if (is_string($oldCalendar)) {
                 $oldCalendar = Reader::read($oldCalendar);
             }
             if (!isset($oldCalendar->VEVENT)) {
@@ -159,8 +159,8 @@ class Broker
             $oldEventInfo = ['organizer' => null, 'significantChangeHash' => '', 'attendees' => []];
         }
         $userHref = (array) $userHref;
-        if (!\is_null($calendar)) {
-            if (\is_string($calendar)) {
+        if (!is_null($calendar)) {
+            if (is_string($calendar)) {
                 $calendar = Reader::read($calendar);
             }
             if (!isset($calendar->VEVENT)) {
@@ -193,7 +193,7 @@ class Broker
                 return [];
             }
             $eventInfo = $oldEventInfo;
-            if (\in_array($eventInfo['organizer'], $userHref)) {
+            if (in_array($eventInfo['organizer'], $userHref)) {
                 // This is an organizer deleting the event.
                 $eventInfo['attendees'] = [];
                 // Increasing the sequence, but only if the organizer deleted
@@ -202,21 +202,21 @@ class Broker
             } else {
                 // This is an attendee deleting the event.
                 foreach ($eventInfo['attendees'] as $key => $attendee) {
-                    if (\in_array($attendee['href'], $userHref)) {
+                    if (in_array($attendee['href'], $userHref)) {
                         $eventInfo['attendees'][$key]['instances'] = ['master' => ['id' => 'master', 'partstat' => 'DECLINED']];
                     }
                 }
             }
             $baseCalendar = $oldCalendar;
         }
-        if (\in_array($eventInfo['organizer'], $userHref)) {
+        if (in_array($eventInfo['organizer'], $userHref)) {
             return $this->parseEventForOrganizer($baseCalendar, $eventInfo, $oldEventInfo);
         } elseif ($oldCalendar) {
             // We need to figure out if the user is an attendee, but we're only
             // doing so if there's an oldCalendar, because we only want to
             // process updates, not creation of new events.
             foreach ($eventInfo['attendees'] as $attendee) {
-                if (\in_array($attendee['href'], $userHref)) {
+                if (in_array($attendee['href'], $userHref)) {
                     return $this->parseEventForAttendee($baseCalendar, $eventInfo, $oldEventInfo, $attendee['href']);
                 }
             }
@@ -305,7 +305,7 @@ class Broker
             $instances[$recurId] = $attendee['PARTSTAT']->getValue();
             if (isset($vevent->{'REQUEST-STATUS'})) {
                 $requestStatus = $vevent->{'REQUEST-STATUS'}->getValue();
-                list($requestStatus) = \explode(';', $requestStatus);
+                list($requestStatus) = explode(';', $requestStatus);
             }
         }
         // Now we need to loop through the original organizer event, to find
@@ -438,7 +438,7 @@ class Broker
                 // CANCEL.
                 $message->method = 'CANCEL';
                 $icalMsg->METHOD = $message->method;
-                $event = $icalMsg->add('VEVENT', ['UID' => $message->uid, 'SEQUENCE' => $message->sequence, 'DTSTAMP' => \gmdate('Ymd\\THis\\Z')]);
+                $event = $icalMsg->add('VEVENT', ['UID' => $message->uid, 'SEQUENCE' => $message->sequence, 'DTSTAMP' => gmdate('Ymd\THis\Z')]);
                 if (isset($calendar->VEVENT->SUMMARY)) {
                     $event->add('SUMMARY', $calendar->VEVENT->SUMMARY->getValue());
                 }
@@ -465,9 +465,9 @@ class Broker
                 // some value that changes if there's a certain set of
                 // properties changed in the event, or simply if there's a
                 // difference in instances that the attendee is invited to.
-                $oldAttendeeInstances = \array_keys($attendee['oldInstances']);
-                $newAttendeeInstances = \array_keys($attendee['newInstances']);
-                $message->significantChange = 'REQUEST' === $attendee['forceSend'] || \count($oldAttendeeInstances) != \count($newAttendeeInstances) || \count(\array_diff($oldAttendeeInstances, $newAttendeeInstances)) > 0 || $oldEventInfo['significantChangeHash'] !== $eventInfo['significantChangeHash'];
+                $oldAttendeeInstances = array_keys($attendee['oldInstances']);
+                $newAttendeeInstances = array_keys($attendee['newInstances']);
+                $message->significantChange = 'REQUEST' === $attendee['forceSend'] || count($oldAttendeeInstances) != count($newAttendeeInstances) || count(array_diff($oldAttendeeInstances, $newAttendeeInstances)) > 0 || $oldEventInfo['significantChangeHash'] !== $eventInfo['significantChangeHash'];
                 foreach ($attendee['newInstances'] as $instanceId => $instanceInfo) {
                     $currentEvent = clone $eventInfo['instances'][$instanceId];
                     if ('master' === $instanceId) {
@@ -483,7 +483,7 @@ class Broker
                         // existing EXDATE property, if it exists.
                         if ($exceptions) {
                             if (isset($currentEvent->EXDATE)) {
-                                $currentEvent->EXDATE->setParts(\array_merge($currentEvent->EXDATE->getParts(), $exceptions));
+                                $currentEvent->EXDATE->setParts(array_merge($currentEvent->EXDATE->getParts(), $exceptions));
                             } else {
                                 $currentEvent->EXDATE = $exceptions;
                             }
@@ -502,7 +502,7 @@ class Broker
                             }
                         }
                     }
-                    $currentEvent->DTSTAMP = \gmdate('Ymd\\THis\\Z');
+                    $currentEvent->DTSTAMP = gmdate('Ymd\THis\Z');
                     $icalMsg->add($currentEvent);
                 }
             }
@@ -549,7 +549,7 @@ class Broker
         // We only need to do that though, if the master event is not declined.
         if (isset($instances['master']) && 'DECLINED' !== $instances['master']['newstatus']) {
             foreach ($eventInfo['exdate'] as $exDate) {
-                if (!\in_array($exDate, $oldEventInfo['exdate'])) {
+                if (!in_array($exDate, $oldEventInfo['exdate'])) {
                     if (isset($instances[$exDate])) {
                         $instances[$exDate]['newstatus'] = 'DECLINED';
                     } else {
@@ -609,7 +609,7 @@ class Broker
                 // EXDATE
                 $dt = DateTimeParser::parse($instance['id'], $eventInfo['timezone']);
                 // Treat is as a DATE field
-                if (\strlen($instance['id']) <= 8) {
+                if (strlen($instance['id']) <= 8) {
                     $event->add('DTSTART', $dt, ['VALUE' => 'DATE']);
                 } else {
                     $event->add('DTSTART', $dt);
@@ -621,7 +621,7 @@ class Broker
             if ('master' !== $instance['id']) {
                 $dt = DateTimeParser::parse($instance['id'], $eventInfo['timezone']);
                 // Treat is as a DATE field
-                if (\strlen($instance['id']) <= 8) {
+                if (strlen($instance['id']) <= 8) {
                     $event->add('RECURRENCE-ID', $dt, ['VALUE' => 'DATE']);
                 } else {
                     $event->add('RECURRENCE-ID', $dt);
@@ -688,36 +688,32 @@ class Broker
         foreach ($calendar->VEVENT as $vevent) {
             $eventSignificantChangeHash = '';
             $rrule = [];
-            if (\is_null($uid)) {
+            if (is_null($uid)) {
                 $uid = $vevent->UID->getValue();
-            } else {
-                if ($uid !== $vevent->UID->getValue()) {
-                    throw new ITipException('If a calendar contained more than one event, they must have the same UID.');
-                }
+            } else if ($uid !== $vevent->UID->getValue()) {
+                throw new ITipException('If a calendar contained more than one event, they must have the same UID.');
             }
             if (!isset($vevent->DTSTART)) {
                 throw new ITipException('An event MUST have a DTSTART property.');
             }
             if (isset($vevent->ORGANIZER)) {
-                if (\is_null($organizer)) {
+                if (is_null($organizer)) {
                     $organizer = $vevent->ORGANIZER->getNormalizedValue();
                     $organizerName = isset($vevent->ORGANIZER['CN']) ? $vevent->ORGANIZER['CN'] : null;
-                } else {
-                    if (\strtoupper($organizer) !== \strtoupper($vevent->ORGANIZER->getNormalizedValue())) {
-                        throw new SameOrganizerForAllComponentsException('Every instance of the event must have the same organizer.');
-                    }
+                } else if (strtoupper($organizer) !== strtoupper($vevent->ORGANIZER->getNormalizedValue())) {
+                    throw new SameOrganizerForAllComponentsException('Every instance of the event must have the same organizer.');
                 }
-                $organizerForceSend = isset($vevent->ORGANIZER['SCHEDULE-FORCE-SEND']) ? \strtoupper($vevent->ORGANIZER['SCHEDULE-FORCE-SEND']) : null;
-                $organizerScheduleAgent = isset($vevent->ORGANIZER['SCHEDULE-AGENT']) ? \strtoupper((string) $vevent->ORGANIZER['SCHEDULE-AGENT']) : 'SERVER';
+                $organizerForceSend = isset($vevent->ORGANIZER['SCHEDULE-FORCE-SEND']) ? strtoupper($vevent->ORGANIZER['SCHEDULE-FORCE-SEND']) : null;
+                $organizerScheduleAgent = isset($vevent->ORGANIZER['SCHEDULE-AGENT']) ? strtoupper((string) $vevent->ORGANIZER['SCHEDULE-AGENT']) : 'SERVER';
             }
-            if (\is_null($sequence) && isset($vevent->SEQUENCE)) {
+            if (is_null($sequence) && isset($vevent->SEQUENCE)) {
                 $sequence = $vevent->SEQUENCE->getValue();
             }
             if (isset($vevent->EXDATE)) {
                 foreach ($vevent->select('EXDATE') as $val) {
-                    $exdate = \array_merge($exdate, $val->getParts());
+                    $exdate = array_merge($exdate, $val->getParts());
                 }
-                \sort($exdate);
+                sort($exdate);
             }
             if (isset($vevent->RRULE)) {
                 foreach ($vevent->select('RRULE') as $rr) {
@@ -726,19 +722,19 @@ class Broker
                         if ('INTERVAL' === $key && 1 == $val) {
                             continue;
                         }
-                        if (\is_array($val)) {
-                            $val = \implode(',', $val);
+                        if (is_array($val)) {
+                            $val = implode(',', $val);
                         }
                         $rrule[] = "{$key}={$val}";
                     }
                 }
-                \sort($rrule);
+                sort($rrule);
             }
             if (isset($vevent->STATUS)) {
-                $status = \strtoupper($vevent->STATUS->getValue());
+                $status = strtoupper($vevent->STATUS->getValue());
             }
             $recurId = isset($vevent->{'RECURRENCE-ID'}) ? $vevent->{'RECURRENCE-ID'}->getValue() : 'master';
-            if (\is_null($timezone)) {
+            if (is_null($timezone)) {
                 if ('master' === $recurId) {
                     $timezone = $vevent->DTSTART->getDateTime()->getTimeZone();
                 } else {
@@ -747,11 +743,11 @@ class Broker
             }
             if (isset($vevent->ATTENDEE)) {
                 foreach ($vevent->ATTENDEE as $attendee) {
-                    if ($this->scheduleAgentServerRules && isset($attendee['SCHEDULE-AGENT']) && 'CLIENT' === \strtoupper($attendee['SCHEDULE-AGENT']->getValue())) {
+                    if ($this->scheduleAgentServerRules && isset($attendee['SCHEDULE-AGENT']) && 'CLIENT' === strtoupper($attendee['SCHEDULE-AGENT']->getValue())) {
                         continue;
                     }
-                    $partStat = isset($attendee['PARTSTAT']) ? \strtoupper($attendee['PARTSTAT']) : 'NEEDS-ACTION';
-                    $forceSend = isset($attendee['SCHEDULE-FORCE-SEND']) ? \strtoupper($attendee['SCHEDULE-FORCE-SEND']) : null;
+                    $partStat = isset($attendee['PARTSTAT']) ? strtoupper($attendee['PARTSTAT']) : 'NEEDS-ACTION';
+                    $forceSend = isset($attendee['SCHEDULE-FORCE-SEND']) ? strtoupper($attendee['SCHEDULE-FORCE-SEND']) : null;
                     if (isset($attendees[$attendee->getNormalizedValue()])) {
                         $attendees[$attendee->getNormalizedValue()]['instances'][$recurId] = ['id' => $recurId, 'partstat' => $partStat, 'forceSend' => $forceSend];
                     } else {
@@ -765,9 +761,9 @@ class Broker
                     $propertyValues = $vevent->select($prop);
                     $eventSignificantChangeHash .= $prop . ':';
                     if ('EXDATE' === $prop) {
-                        $eventSignificantChangeHash .= \implode(',', $exdate) . ';';
+                        $eventSignificantChangeHash .= implode(',', $exdate) . ';';
                     } elseif ('RRULE' === $prop) {
-                        $eventSignificantChangeHash .= \implode(',', $rrule) . ';';
+                        $eventSignificantChangeHash .= implode(',', $rrule) . ';';
                     } else {
                         foreach ($propertyValues as $val) {
                             $eventSignificantChangeHash .= $val->getValue() . ';';
@@ -777,11 +773,11 @@ class Broker
             }
             $significantChangeEventProperties[] = $eventSignificantChangeHash;
         }
-        \asort($significantChangeEventProperties);
+        asort($significantChangeEventProperties);
         foreach ($significantChangeEventProperties as $eventSignificantChangeHash) {
             $significantChangeHash .= $eventSignificantChangeHash;
         }
-        $significantChangeHash = \md5($significantChangeHash);
-        return \compact('uid', 'organizer', 'organizerName', 'organizerScheduleAgent', 'organizerForceSend', 'instances', 'attendees', 'sequence', 'exdate', 'timezone', 'significantChangeHash', 'status');
+        $significantChangeHash = md5($significantChangeHash);
+        return compact('uid', 'organizer', 'organizerName', 'organizerScheduleAgent', 'organizerForceSend', 'instances', 'attendees', 'sequence', 'exdate', 'timezone', 'significantChangeHash', 'status');
     }
 }

@@ -36,25 +36,25 @@ class Recur extends Property
         if ($value instanceof \StdClass) {
             $value = (array) $value;
         }
-        if (\is_array($value)) {
+        if (is_array($value)) {
             $newVal = [];
             foreach ($value as $k => $v) {
-                if (\is_string($v)) {
-                    $v = \strtoupper($v);
+                if (is_string($v)) {
+                    $v = strtoupper($v);
                     // The value had multiple sub-values
-                    if (\false !== \strpos($v, ',')) {
-                        $v = \explode(',', $v);
+                    if (\false !== strpos($v, ',')) {
+                        $v = explode(',', $v);
                     }
-                    if (0 === \strcmp($k, 'until')) {
-                        $v = \strtr($v, [':' => '', '-' => '']);
+                    if (0 === strcmp($k, 'until')) {
+                        $v = strtr($v, [':' => '', '-' => '']);
                     }
-                } elseif (\is_array($v)) {
-                    $v = \array_map('strtoupper', $v);
+                } elseif (is_array($v)) {
+                    $v = array_map('strtoupper', $v);
                 }
-                $newVal[\strtoupper($k)] = $v;
+                $newVal[strtoupper($k)] = $v;
             }
             $this->value = $newVal;
-        } elseif (\is_string($value)) {
+        } elseif (is_string($value)) {
             $this->value = self::stringToArray($value);
         } else {
             throw new \InvalidArgumentException('You must either pass a string, or a key=>value array');
@@ -75,9 +75,9 @@ class Recur extends Property
     {
         $out = [];
         foreach ($this->value as $key => $value) {
-            $out[] = $key . '=' . (\is_array($value) ? \implode(',', $value) : $value);
+            $out[] = $key . '=' . (is_array($value) ? implode(',', $value) : $value);
         }
-        return \strtoupper(\implode(';', $out));
+        return strtoupper(implode(';', $out));
     }
     /**
      * Sets a multi-valued property.
@@ -142,13 +142,13 @@ class Recur extends Property
     {
         $values = [];
         foreach ($this->getParts() as $k => $v) {
-            if (0 === \strcmp($k, 'UNTIL')) {
+            if (0 === strcmp($k, 'UNTIL')) {
                 $date = new DateTime($this->root, null, $v);
-                $values[\strtolower($k)] = $date->getJsonValue()[0];
-            } elseif (0 === \strcmp($k, 'COUNT')) {
-                $values[\strtolower($k)] = \intval($v);
+                $values[strtolower($k)] = $date->getJsonValue()[0];
+            } elseif (0 === strcmp($k, 'COUNT')) {
+                $values[strtolower($k)] = intval($v);
             } else {
-                $values[\strtolower($k)] = $v;
+                $values[strtolower($k)] = $v;
             }
         }
         return [$values];
@@ -161,7 +161,7 @@ class Recur extends Property
      */
     protected function xmlSerializeValue(Xml\Writer $writer)
     {
-        $valueType = \strtolower($this->getValueType());
+        $valueType = strtolower($this->getValueType());
         foreach ($this->getJsonValue() as $value) {
             $writer->writeElement($valueType, $value);
         }
@@ -175,17 +175,17 @@ class Recur extends Property
      */
     public static function stringToArray($value)
     {
-        $value = \strtoupper($value);
+        $value = strtoupper($value);
         $newValue = [];
-        foreach (\explode(';', $value) as $part) {
+        foreach (explode(';', $value) as $part) {
             // Skipping empty parts.
             if (empty($part)) {
                 continue;
             }
-            list($partName, $partValue) = \explode('=', $part);
+            list($partName, $partValue) = explode('=', $part);
             // The value itself had multiple values..
-            if (\false !== \strpos($partValue, ',')) {
-                $partValue = \explode(',', $partValue);
+            if (\false !== strpos($partValue, ',')) {
+                $partValue = explode(',', $partValue);
             }
             $newValue[$partName] = $partValue;
         }
@@ -227,10 +227,10 @@ class Recur extends Property
             } elseif ('BYMONTH' == $key) {
                 $byMonth = (array) $value;
                 foreach ($byMonth as $i => $v) {
-                    if (!\is_numeric($v) || (int) $v < 1 || (int) $v > 12) {
+                    if (!is_numeric($v) || (int) $v < 1 || (int) $v > 12) {
                         $warnings[] = ['level' => $repair ? 1 : 3, 'message' => 'BYMONTH in RRULE must have value(s) between 1 and 12!', 'node' => $this];
                         if ($repair) {
-                            if (\is_array($value)) {
+                            if (is_array($value)) {
                                 unset($values[$key][$i]);
                             } else {
                                 unset($values[$key]);
@@ -239,16 +239,16 @@ class Recur extends Property
                     }
                 }
                 // if there is no valid entry left, remove the whole value
-                if (\is_array($value) && empty($values[$key])) {
+                if (is_array($value) && empty($values[$key])) {
                     unset($values[$key]);
                 }
             } elseif ('BYWEEKNO' == $key) {
                 $byWeekNo = (array) $value;
                 foreach ($byWeekNo as $i => $v) {
-                    if (!\is_numeric($v) || (int) $v < -53 || 0 == (int) $v || (int) $v > 53) {
+                    if (!is_numeric($v) || (int) $v < -53 || 0 == (int) $v || (int) $v > 53) {
                         $warnings[] = ['level' => $repair ? 1 : 3, 'message' => 'BYWEEKNO in RRULE must have value(s) from -53 to -1, or 1 to 53!', 'node' => $this];
                         if ($repair) {
-                            if (\is_array($value)) {
+                            if (is_array($value)) {
                                 unset($values[$key][$i]);
                             } else {
                                 unset($values[$key]);
@@ -257,16 +257,16 @@ class Recur extends Property
                     }
                 }
                 // if there is no valid entry left, remove the whole value
-                if (\is_array($value) && empty($values[$key])) {
+                if (is_array($value) && empty($values[$key])) {
                     unset($values[$key]);
                 }
             } elseif ('BYYEARDAY' == $key) {
                 $byYearDay = (array) $value;
                 foreach ($byYearDay as $i => $v) {
-                    if (!\is_numeric($v) || (int) $v < -366 || 0 == (int) $v || (int) $v > 366) {
+                    if (!is_numeric($v) || (int) $v < -366 || 0 == (int) $v || (int) $v > 366) {
                         $warnings[] = ['level' => $repair ? 1 : 3, 'message' => 'BYYEARDAY in RRULE must have value(s) from -366 to -1, or 1 to 366!', 'node' => $this];
                         if ($repair) {
-                            if (\is_array($value)) {
+                            if (is_array($value)) {
                                 unset($values[$key][$i]);
                             } else {
                                 unset($values[$key]);
@@ -275,7 +275,7 @@ class Recur extends Property
                     }
                 }
                 // if there is no valid entry left, remove the whole value
-                if (\is_array($value) && empty($values[$key])) {
+                if (is_array($value) && empty($values[$key])) {
                     unset($values[$key]);
                 }
             }

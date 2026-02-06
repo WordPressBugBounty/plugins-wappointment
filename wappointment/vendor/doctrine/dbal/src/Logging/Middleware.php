@@ -14,7 +14,7 @@ final class Middleware implements MiddlewareInterface
     {
         $this->logger = $logger;
     }
-    public function wrap(DriverInterface $driver) : DriverInterface
+    public function wrap(DriverInterface $driver): DriverInterface
     {
         return new Driver($driver, $this->logger);
     }

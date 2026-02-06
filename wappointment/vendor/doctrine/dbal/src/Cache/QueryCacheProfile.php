@@ -45,7 +45,7 @@ class QueryCacheProfile
             throw new TypeError(sprintf('$resultCache: Expected either null or an instance of %s or %s, got %s.', CacheItemPoolInterface::class, Cache::class, get_class($resultCache)));
         }
     }
-    public function getResultCache() : ?CacheItemPoolInterface
+    public function getResultCache(): ?CacheItemPoolInterface
     {
         return $this->resultCache;
     }
@@ -102,7 +102,7 @@ class QueryCacheProfile
         }
         return [$cacheKey, $realCacheKey];
     }
-    public function setResultCache(CacheItemPoolInterface $cache) : QueryCacheProfile
+    public function setResultCache(CacheItemPoolInterface $cache): QueryCacheProfile
     {
         return new QueryCacheProfile($this->lifetime, $this->cacheKey, $cache);
     }

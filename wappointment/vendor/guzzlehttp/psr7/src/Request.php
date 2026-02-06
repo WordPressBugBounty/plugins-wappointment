@@ -31,7 +31,7 @@ class Request implements RequestInterface
         if (!$uri instanceof UriInterface) {
             $uri = new Uri($uri);
         }
-        $this->method = \strtoupper($method);
+        $this->method = strtoupper($method);
         $this->uri = $uri;
         $this->setHeaders($headers);
         $this->protocol = $version;
@@ -58,7 +58,7 @@ class Request implements RequestInterface
     }
     public function withRequestTarget($requestTarget)
     {
-        if (\preg_match('#\\s#', $requestTarget)) {
+        if (preg_match('#\s#', $requestTarget)) {
             throw new InvalidArgumentException('Invalid request target provided; cannot contain whitespace');
         }
         $new = clone $this;
@@ -73,7 +73,7 @@ class Request implements RequestInterface
     {
         $this->assertMethod($method);
         $new = clone $this;
-        $new->method = \strtoupper($method);
+        $new->method = strtoupper($method);
         return $new;
     }
     public function getUri()
@@ -113,7 +113,7 @@ class Request implements RequestInterface
     }
     private function assertMethod($method)
     {
-        if (!\is_string($method) || $method === '') {
+        if (!is_string($method) || $method === '') {
             throw new \InvalidArgumentException('Method must be a non-empty string.');
         }
     }

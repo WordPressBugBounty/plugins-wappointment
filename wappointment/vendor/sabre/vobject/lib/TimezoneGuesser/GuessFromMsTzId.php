@@ -97,7 +97,7 @@ class GuessFromMsTzId implements TimezoneGuesser
         16 => 'Pacific/Midway',
         39 => 'Pacific/Kwajalein',
     ];
-    public function guess(VTimeZone $vtimezone, bool $throwIfUnsure = \false) : ?DateTimeZone
+    public function guess(VTimeZone $vtimezone, bool $throwIfUnsure = \false): ?DateTimeZone
     {
         // Microsoft may add a magic number, which we also have an
         // answer for.
@@ -106,7 +106,7 @@ class GuessFromMsTzId implements TimezoneGuesser
         }
         $cdoId = (int) $vtimezone->{'X-MICROSOFT-CDO-TZID'}->getValue();
         // 2 can mean both Europe/Lisbon and Europe/Sarajevo.
-        if (2 === $cdoId && \false !== \strpos((string) $vtimezone->TZID, 'Sarajevo')) {
+        if (2 === $cdoId && \false !== strpos((string) $vtimezone->TZID, 'Sarajevo')) {
             return new DateTimeZone('Europe/Sarajevo');
         }
         if (isset(self::$microsoftExchangeMap[$cdoId])) {

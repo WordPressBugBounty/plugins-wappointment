@@ -20,7 +20,7 @@ class Services implements ServiceInterface
     {
         $services = static::getModel()::orderBy('sorting')->fetch();
         return $services->filter(function ($service, $key) {
-            return \count($service->locations) > 0;
+            return count($service->locations) > 0;
         })->toArray();
     }
     public static function save($serviceData)
@@ -60,10 +60,8 @@ class Services implements ServiceInterface
         $serviceDB = null;
         if (!empty($serviceData['id'])) {
             $serviceDB = static::getModel()::findOrFail($serviceData['id']);
-        } else {
-            if (!static::getModel()::canCreate()) {
-                throw new \WappointmentValidationException(Translations::get('error_saving'));
-            }
+        } else if (!static::getModel()::canCreate()) {
+            throw new \WappointmentValidationException(Translations::get('error_saving'));
         }
         $serviceData = static::savePrices($serviceData);
         $serviceData = apply_filters('wappointment_service_before_saved', $serviceData, $serviceDB);
@@ -96,7 +94,7 @@ class Services implements ServiceInterface
             }
             $durations[$key] = $duration;
         }
-        $serviceData['options']['durations'] = \array_values($durations);
+        $serviceData['options']['durations'] = array_values($durations);
         return $serviceData;
     }
     public static function updatePricesReference($id, $serviceData)
@@ -121,7 +119,7 @@ class Services implements ServiceInterface
         if (empty($serviceDB)) {
             throw new \WappointmentException(Translations::get('error_updating'), 1);
         }
-        $options = \array_merge($serviceDB->options, $data['options']);
+        $options = array_merge($serviceDB->options, $data['options']);
         $serviceDB->update(['options' => $options]);
     }
     public static function delete($service_id = \false)
@@ -149,7 +147,7 @@ class Services implements ServiceInterface
     }
     public static function hasZoom($service)
     {
-        if (\is_array($service)) {
+        if (is_array($service)) {
             foreach ($service['locations'] as $location) {
                 if ((int) $location['type'] === LocationModel::TYPE_ZOOM) {
                     return \true;

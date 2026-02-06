@@ -35,7 +35,7 @@ class StreamWrapper
         } else {
             throw new \InvalidArgumentException('The stream must be readable, ' . 'writable, or both.');
         }
-        return \fopen('guzzle://stream', $mode, null, self::createStreamContext($stream));
+        return fopen('guzzle://stream', $mode, null, self::createStreamContext($stream));
     }
     /**
      * Creates a stream context that can be used to open a stream as a php stream resource.
@@ -46,20 +46,20 @@ class StreamWrapper
      */
     public static function createStreamContext(StreamInterface $stream)
     {
-        return \stream_context_create(['guzzle' => ['stream' => $stream]]);
+        return stream_context_create(['guzzle' => ['stream' => $stream]]);
     }
     /**
      * Registers the stream wrapper if needed
      */
     public static function register()
     {
-        if (!\in_array('guzzle', \stream_get_wrappers())) {
-            \stream_wrapper_register('guzzle', __CLASS__);
+        if (!in_array('guzzle', stream_get_wrappers())) {
+            stream_wrapper_register('guzzle', __CLASS__);
         }
     }
     public function stream_open($path, $mode, $options, &$opened_path)
     {
-        $options = \stream_context_get_options($this->context);
+        $options = stream_context_get_options($this->context);
         if (!isset($options['guzzle']['stream'])) {
             return \false;
         }

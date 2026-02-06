@@ -14,7 +14,7 @@ class BookingTest
         $durationinSec = $service['duration'] * 60;
         $staff = $availability_data['staffs'][0];
         $availability = $availability_data['availability'][$staff['id']][0];
-        $type = (int) \call_user_func('Wappointment\\Models\\Appointment::getType' . \ucfirst($service['type'][0]));
+        $type = (int) call_user_func('Wappointment\Models\Appointment::getType' . ucfirst($service['type'][0]));
         $hasBeenBooked = \Wappointment\Services\Appointment::adminBook($client, $availability[0], $availability[0] + $durationinSec, $type, $service);
         if (!$hasBeenBooked) {
             throw new \WappointmentException('Error cannot generate test appointment', 1);

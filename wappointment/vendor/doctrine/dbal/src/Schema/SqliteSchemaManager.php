@@ -116,13 +116,13 @@ class SqliteSchemaManager extends AbstractSchemaManager
         if (!empty($tableForeignKeys)) {
             $createSql = $this->getCreateTableSQL($table);
             if (preg_match_all('#
-                    (?:CONSTRAINT\\s+([^\\s]+)\\s+)?
-                    (?:FOREIGN\\s+KEY[^\\)]+\\)\\s*)?
-                    REFERENCES\\s+[^\\s]+\\s+(?:\\([^)]+\\))?
+                    (?:CONSTRAINT\s+([^\s]+)\s+)?
+                    (?:FOREIGN\s+KEY[^\)]+\)\s*)?
+                    REFERENCES\s+[^\s]+\s+(?:\([^)]+\))?
                     (?:
                         [^,]*?
-                        (NOT\\s+DEFERRABLE|DEFERRABLE)
-                        (?:\\s+INITIALLY\\s+(DEFERRED|IMMEDIATE))?
+                        (NOT\s+DEFERRABLE|DEFERRABLE)
+                        (?:\s+INITIALLY\s+(DEFERRED|IMMEDIATE))?
                     )?#isx', $createSql, $match) > 0) {
                 $names = array_reverse($match[1]);
                 $deferrable = array_reverse($match[2]);
@@ -160,7 +160,7 @@ class SqliteSchemaManager extends AbstractSchemaManager
              * @param array<string,mixed> $a
              * @param array<string,mixed> $b
              */
-            static function (array $a, array $b) : int {
+            static function (array $a, array $b): int {
                 if ($a['pk'] === $b['pk']) {
                     return $a['cid'] - $b['cid'];
                 }
@@ -338,7 +338,7 @@ class SqliteSchemaManager extends AbstractSchemaManager
      *
      * @throws Exception
      */
-    private function getTableDiffForAlterForeignKey($table) : TableDiff
+    private function getTableDiffForAlterForeignKey($table): TableDiff
     {
         if (!$table instanceof Table) {
             $table = $this->listTableDetails($table);
@@ -347,41 +347,41 @@ class SqliteSchemaManager extends AbstractSchemaManager
         $tableDiff->fromTable = $table;
         return $tableDiff;
     }
-    private function parseColumnCollationFromSQL(string $column, string $sql) : ?string
+    private function parseColumnCollationFromSQL(string $column, string $sql): ?string
     {
-        $pattern = '{(?:\\W' . preg_quote($column) . '\\W|\\W' . preg_quote($this->_platform->quoteSingleIdentifier($column)) . '\\W)[^,(]+(?:\\([^()]+\\)[^,]*)?(?:(?:DEFAULT|CHECK)\\s*(?:\\(.*?\\))?[^,]*)*COLLATE\\s+["\']?([^\\s,"\')]+)}is';
+        $pattern = '{(?:\W' . preg_quote($column) . '\W|\W' . preg_quote($this->_platform->quoteSingleIdentifier($column)) . '\W)[^,(]+(?:\([^()]+\)[^,]*)?(?:(?:DEFAULT|CHECK)\s*(?:\(.*?\))?[^,]*)*COLLATE\s+["\']?([^\s,"\')]+)}is';
         if (preg_match($pattern, $sql, $match) !== 1) {
             return null;
         }
         return $match[1];
     }
-    private function parseTableCommentFromSQL(string $table, string $sql) : ?string
+    private function parseTableCommentFromSQL(string $table, string $sql): ?string
     {
-        $pattern = '/\\s* # Allow whitespace characters at start of line
-CREATE\\sTABLE # Match "CREATE TABLE"
-(?:\\W"' . preg_quote($this->_platform->quoteSingleIdentifier($table), '/') . '"\\W|\\W' . preg_quote($table, '/') . '\\W) # Match table name (quoted and unquoted)
+        $pattern = '/\s* # Allow whitespace characters at start of line
+CREATE\sTABLE # Match "CREATE TABLE"
+(?:\W"' . preg_quote($this->_platform->quoteSingleIdentifier($table), '/') . '"\W|\W' . preg_quote($table, '/') . '\W) # Match table name (quoted and unquoted)
 ( # Start capture
-   (?:\\s*--[^\\n]*\\n?)+ # Capture anything that starts with whitespaces followed by -- until the end of the line(s)
+   (?:\s*--[^\n]*\n?)+ # Capture anything that starts with whitespaces followed by -- until the end of the line(s)
 )/ix';
         if (preg_match($pattern, $sql, $match) !== 1) {
             return null;
         }
-        $comment = preg_replace('{^\\s*--}m', '', rtrim($match[1], "\n"));
+        $comment = preg_replace('{^\s*--}m', '', rtrim($match[1], "\n"));
         return $comment === '' ? null : $comment;
     }
-    private function parseColumnCommentFromSQL(string $column, string $sql) : ?string
+    private function parseColumnCommentFromSQL(string $column, string $sql): ?string
     {
-        $pattern = '{[\\s(,](?:\\W' . preg_quote($this->_platform->quoteSingleIdentifier($column)) . '\\W|\\W' . preg_quote($column) . '\\W)(?:\\([^)]*?\\)|[^,(])*?,?((?:(?!\\n))(?:\\s*--[^\\n]*\\n?)+)}i';
+        $pattern = '{[\s(,](?:\W' . preg_quote($this->_platform->quoteSingleIdentifier($column)) . '\W|\W' . preg_quote($column) . '\W)(?:\([^)]*?\)|[^,(])*?,?((?:(?!\n))(?:\s*--[^\n]*\n?)+)}i';
         if (preg_match($pattern, $sql, $match) !== 1) {
             return null;
         }
-        $comment = preg_replace('{^\\s*--}m', '', rtrim($match[1], "\n"));
+        $comment = preg_replace('{^\s*--}m', '', rtrim($match[1], "\n"));
         return $comment === '' ? null : $comment;
     }
     /**
      * @throws Exception
      */
-    private function getCreateTableSQL(string $table) : string
+    private function getCreateTableSQL(string $table): string
     {
         $sql = $this->_conn->fetchOne(<<<'SQL'
 SELECT sql
@@ -406,7 +406,7 @@ SQL
      *
      * @param string $name
      */
-    public function listTableDetails($name) : Table
+    public function listTableDetails($name): Table
     {
         $table = parent::listTableDetails($name);
         $tableCreateSql = $this->getCreateTableSQL($name);
@@ -416,7 +416,7 @@ SQL
         }
         return $table;
     }
-    public function createComparator() : Comparator
+    public function createComparator(): Comparator
     {
         return new SQLite\Comparator($this->getDatabasePlatform());
     }

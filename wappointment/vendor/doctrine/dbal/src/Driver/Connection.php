@@ -16,13 +16,13 @@ interface Connection
      *
      * @throws Exception
      */
-    public function prepare(string $sql) : Statement;
+    public function prepare(string $sql): Statement;
     /**
      * Executes an SQL statement, returning a result set as a Statement object.
      *
      * @throws Exception
      */
-    public function query(string $sql) : Result;
+    public function query(string $sql): Result;
     /**
      * Quotes a string for use in a query.
      *
@@ -40,7 +40,7 @@ interface Connection
      *
      * @throws Exception
      */
-    public function exec(string $sql) : int;
+    public function exec(string $sql): int;
     /**
      * Returns the ID of the last inserted row or sequence value.
      *

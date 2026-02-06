@@ -41,7 +41,7 @@ class Message extends RawMessage
         $this->body = $body;
         return $this;
     }
-    public function getBody() : ?AbstractPart
+    public function getBody(): ?AbstractPart
     {
         return $this->body;
     }
@@ -53,11 +53,11 @@ class Message extends RawMessage
         $this->headers = $headers;
         return $this;
     }
-    public function getHeaders() : Headers
+    public function getHeaders(): Headers
     {
         return $this->headers;
     }
-    public function getPreparedHeaders() : Headers
+    public function getPreparedHeaders(): Headers
     {
         $headers = clone $this->headers;
         if (!$headers->has('From')) {
@@ -83,19 +83,19 @@ class Message extends RawMessage
         $headers->remove('Bcc');
         return $headers;
     }
-    public function toString() : string
+    public function toString(): string
     {
-        if (null === ($body = $this->getBody())) {
+        if (null === $body = $this->getBody()) {
             $body = new TextPart('');
         }
         return $this->getPreparedHeaders()->toString() . $body->toString();
     }
-    public function toIterable() : iterable
+    public function toIterable(): iterable
     {
-        if (null === ($body = $this->getBody())) {
+        if (null === $body = $this->getBody()) {
             $body = new TextPart('');
         }
-        (yield $this->getPreparedHeaders()->toString());
+        yield $this->getPreparedHeaders()->toString();
         yield from $body->toIterable();
     }
     public function ensureValidity()
@@ -108,7 +108,7 @@ class Message extends RawMessage
         }
         parent::ensureValidity();
     }
-    public function generateMessageId() : string
+    public function generateMessageId(): string
     {
         if ($this->headers->has('Sender')) {
             $sender = $this->headers->get('Sender')->getAddress();
@@ -117,13 +117,13 @@ class Message extends RawMessage
         } else {
             throw new LogicException('An email must have a "From" or a "Sender" header.');
         }
-        return \bin2hex(\random_bytes(16)) . \strstr($sender->getAddress(), '@');
+        return bin2hex(random_bytes(16)) . strstr($sender->getAddress(), '@');
     }
-    public function __serialize() : array
+    public function __serialize(): array
     {
         return [$this->headers, $this->body];
     }
-    public function __unserialize(array $data) : void
+    public function __unserialize(array $data): void
     {
         [$this->headers, $this->body] = $data;
     }

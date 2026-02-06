@@ -20,8 +20,8 @@ class Uri implements UriInterface
      */
     const HTTP_DEFAULT_HOST = 'localhost';
     private static $defaultPorts = ['http' => 80, 'https' => 443, 'ftp' => 21, 'gopher' => 70, 'nntp' => 119, 'news' => 119, 'telnet' => 23, 'tn3270' => 23, 'imap' => 143, 'pop' => 110, 'ldap' => 389];
-    private static $charUnreserved = 'a-zA-Z0-9_\\-\\.~';
-    private static $charSubDelims = '!\\$&\'\\(\\)\\*\\+,;=';
+    private static $charUnreserved = 'a-zA-Z0-9_\-\.~';
+    private static $charSubDelims = '!\$&\'\(\)\*\+,;=';
     private static $replaceQuery = ['=' => '%3D', '&' => '%26'];
     /** @var string Uri scheme. */
     private $scheme = '';
@@ -72,18 +72,18 @@ class Uri implements UriInterface
     {
         // If IPv6
         $prefix = '';
-        if (\preg_match('%^(.*://\\[[0-9:a-f]+\\])(.*?)$%', $url, $matches)) {
+        if (preg_match('%^(.*://\[[0-9:a-f]+\])(.*?)$%', $url, $matches)) {
             $prefix = $matches[1];
             $url = $matches[2];
         }
-        $encodedUrl = \preg_replace_callback('%[^:/@?&=#]+%usD', static function ($matches) {
-            return \urlencode($matches[0]);
+        $encodedUrl = preg_replace_callback('%[^:/@?&=#]+%usD', static function ($matches) {
+            return urlencode($matches[0]);
         }, $url);
-        $result = \parse_url($prefix . $encodedUrl);
+        $result = parse_url($prefix . $encodedUrl);
         if ($result === \false) {
             return \false;
         }
-        return \array_map('urldecode', $result);
+        return array_map('urldecode', $result);
     }
     public function __toString()
     {
@@ -284,7 +284,7 @@ class Uri implements UriInterface
     public static function withoutQueryValue(UriInterface $uri, $key)
     {
         $result = self::getFilteredQueryString($uri, [$key]);
-        return $uri->withQuery(\implode('&', $result));
+        return $uri->withQuery(implode('&', $result));
     }
     /**
      * Creates a new URI with a specific query string value.
@@ -305,7 +305,7 @@ class Uri implements UriInterface
     {
         $result = self::getFilteredQueryString($uri, [$key]);
         $result[] = self::generateQueryString($key, $value);
-        return $uri->withQuery(\implode('&', $result));
+        return $uri->withQuery(implode('&', $result));
     }
     /**
      * Creates a new URI with multiple specific query string values.
@@ -319,11 +319,11 @@ class Uri implements UriInterface
      */
     public static function withQueryValues(UriInterface $uri, array $keyValueArray)
     {
-        $result = self::getFilteredQueryString($uri, \array_keys($keyValueArray));
+        $result = self::getFilteredQueryString($uri, array_keys($keyValueArray));
         foreach ($keyValueArray as $key => $value) {
             $result[] = self::generateQueryString($key, $value);
         }
-        return $uri->withQuery(\implode('&', $result));
+        return $uri->withQuery(implode('&', $result));
     }
     /**
      * Creates a URI from a hash of `parse_url` components.
@@ -490,7 +490,7 @@ class Uri implements UriInterface
      */
     private function filterScheme($scheme)
     {
-        if (!\is_string($scheme)) {
+        if (!is_string($scheme)) {
             throw new \InvalidArgumentException('Scheme must be a string');
         }
         return \strtr($scheme, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz');
@@ -504,10 +504,10 @@ class Uri implements UriInterface
      */
     private function filterUserInfoComponent($component)
     {
-        if (!\is_string($component)) {
+        if (!is_string($component)) {
             throw new \InvalidArgumentException('User info must be a string');
         }
-        return \preg_replace_callback('/(?:[^%' . self::$charUnreserved . self::$charSubDelims . ']+|%(?![A-Fa-f0-9]{2}))/', [$this, 'rawurlencodeMatchZero'], $component);
+        return preg_replace_callback('/(?:[^%' . self::$charUnreserved . self::$charSubDelims . ']+|%(?![A-Fa-f0-9]{2}))/', [$this, 'rawurlencodeMatchZero'], $component);
     }
     /**
      * @param string $host
@@ -518,7 +518,7 @@ class Uri implements UriInterface
      */
     private function filterHost($host)
     {
-        if (!\is_string($host)) {
+        if (!is_string($host)) {
             throw new \InvalidArgumentException('Host must be a string');
         }
         return \strtr($host, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz');
@@ -537,7 +537,7 @@ class Uri implements UriInterface
         }
         $port = (int) $port;
         if (0 > $port || 0xffff < $port) {
-            throw new \InvalidArgumentException(\sprintf('Invalid port: %d. Must be between 0 and 65535', $port));
+            throw new \InvalidArgumentException(sprintf('Invalid port: %d. Must be between 0 and 65535', $port));
         }
         return $port;
     }
@@ -553,9 +553,9 @@ class Uri implements UriInterface
         if ($current === '') {
             return [];
         }
-        $decodedKeys = \array_map('rawurldecode', $keys);
-        return \array_filter(\explode('&', $current), function ($part) use($decodedKeys) {
-            return !\in_array(\rawurldecode(\explode('=', $part)[0]), $decodedKeys, \true);
+        $decodedKeys = array_map('rawurldecode', $keys);
+        return array_filter(explode('&', $current), function ($part) use ($decodedKeys) {
+            return !in_array(rawurldecode(explode('=', $part)[0]), $decodedKeys, \true);
         });
     }
     /**
@@ -569,9 +569,9 @@ class Uri implements UriInterface
         // Query string separators ("=", "&") within the key or value need to be encoded
         // (while preventing double-encoding) before setting the query string. All other
         // chars that need percent-encoding will be encoded by withQuery().
-        $queryString = \strtr($key, self::$replaceQuery);
+        $queryString = strtr($key, self::$replaceQuery);
         if ($value !== null) {
-            $queryString .= '=' . \strtr($value, self::$replaceQuery);
+            $queryString .= '=' . strtr($value, self::$replaceQuery);
         }
         return $queryString;
     }
@@ -592,10 +592,10 @@ class Uri implements UriInterface
      */
     private function filterPath($path)
     {
-        if (!\is_string($path)) {
+        if (!is_string($path)) {
             throw new \InvalidArgumentException('Path must be a string');
         }
-        return \preg_replace_callback('/(?:[^' . self::$charUnreserved . self::$charSubDelims . '%:@\\/]++|%(?![A-Fa-f0-9]{2}))/', [$this, 'rawurlencodeMatchZero'], $path);
+        return preg_replace_callback('/(?:[^' . self::$charUnreserved . self::$charSubDelims . '%:@\/]++|%(?![A-Fa-f0-9]{2}))/', [$this, 'rawurlencodeMatchZero'], $path);
     }
     /**
      * Filters the query string or fragment of a URI.
@@ -608,14 +608,14 @@ class Uri implements UriInterface
      */
     private function filterQueryAndFragment($str)
     {
-        if (!\is_string($str)) {
+        if (!is_string($str)) {
             throw new \InvalidArgumentException('Query and fragment must be a string');
         }
-        return \preg_replace_callback('/(?:[^' . self::$charUnreserved . self::$charSubDelims . '%:@\\/\\?]++|%(?![A-Fa-f0-9]{2}))/', [$this, 'rawurlencodeMatchZero'], $str);
+        return preg_replace_callback('/(?:[^' . self::$charUnreserved . self::$charSubDelims . '%:@\/\?]++|%(?![A-Fa-f0-9]{2}))/', [$this, 'rawurlencodeMatchZero'], $str);
     }
     private function rawurlencodeMatchZero(array $match)
     {
-        return \rawurlencode($match[0]);
+        return rawurlencode($match[0]);
     }
     private function validateState()
     {
@@ -623,14 +623,14 @@ class Uri implements UriInterface
             $this->host = self::HTTP_DEFAULT_HOST;
         }
         if ($this->getAuthority() === '') {
-            if (0 === \strpos($this->path, '//')) {
+            if (0 === strpos($this->path, '//')) {
                 throw new \InvalidArgumentException('The path of a URI without an authority must not start with two slashes "//"');
             }
-            if ($this->scheme === '' && \false !== \strpos(\explode('/', $this->path, 2)[0], ':')) {
+            if ($this->scheme === '' && \false !== strpos(explode('/', $this->path, 2)[0], ':')) {
                 throw new \InvalidArgumentException('A relative URI must not have a path beginning with a segment containing a colon');
             }
         } elseif (isset($this->path[0]) && $this->path[0] !== '/') {
-            @\trigger_error('The path of a URI with an authority must start with a slash "/" or be empty. Automagically fixing the URI ' . 'by adding a leading slash to the path is deprecated since version 1.4 and will throw an exception instead.', \E_USER_DEPRECATED);
+            @trigger_error('The path of a URI with an authority must start with a slash "/" or be empty. Automagically fixing the URI ' . 'by adding a leading slash to the path is deprecated since version 1.4 and will throw an exception instead.', \E_USER_DEPRECATED);
             $this->path = '/' . $this->path;
             //throw new \InvalidArgumentException('The path of a URI with an authority must start with a slash "/" or be empty');
         }

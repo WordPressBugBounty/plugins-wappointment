@@ -11,7 +11,7 @@ use WappoVendor\Doctrine\DBAL\Driver\AbstractException;
  */
 final class SequenceDoesNotExist extends AbstractException
 {
-    public static function new() : self
+    public static function new(): self
     {
         return new self('lastInsertId failed: Query was executed but no result was returned.');
     }

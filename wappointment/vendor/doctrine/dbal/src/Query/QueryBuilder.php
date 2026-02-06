@@ -210,7 +210,7 @@ class QueryBuilder
      *
      * @throws Exception
      */
-    public function fetchAllNumeric() : array
+    public function fetchAllNumeric(): array
     {
         return $this->connection->fetchAllNumeric($this->getSQL(), $this->params, $this->paramTypes);
     }
@@ -221,7 +221,7 @@ class QueryBuilder
      *
      * @throws Exception
      */
-    public function fetchAllAssociative() : array
+    public function fetchAllAssociative(): array
     {
         return $this->connection->fetchAllAssociative($this->getSQL(), $this->params, $this->paramTypes);
     }
@@ -233,7 +233,7 @@ class QueryBuilder
      *
      * @throws Exception
      */
-    public function fetchAllKeyValue() : array
+    public function fetchAllKeyValue(): array
     {
         return $this->connection->fetchAllKeyValue($this->getSQL(), $this->params, $this->paramTypes);
     }
@@ -246,7 +246,7 @@ class QueryBuilder
      *
      * @throws Exception
      */
-    public function fetchAllAssociativeIndexed() : array
+    public function fetchAllAssociativeIndexed(): array
     {
         return $this->connection->fetchAllAssociativeIndexed($this->getSQL(), $this->params, $this->paramTypes);
     }
@@ -257,7 +257,7 @@ class QueryBuilder
      *
      * @throws Exception
      */
-    public function fetchFirstColumn() : array
+    public function fetchFirstColumn(): array
     {
         return $this->connection->fetchFirstColumn($this->getSQL(), $this->params, $this->paramTypes);
     }
@@ -266,7 +266,7 @@ class QueryBuilder
      *
      * @throws Exception
      */
-    public function executeQuery() : Result
+    public function executeQuery(): Result
     {
         return $this->connection->executeQuery($this->getSQL(), $this->params, $this->paramTypes);
     }
@@ -279,7 +279,7 @@ class QueryBuilder
      *
      * @throws Exception
      */
-    public function executeStatement() : int
+    public function executeStatement(): int
     {
         return $this->connection->executeStatement($this->getSQL(), $this->params, $this->paramTypes);
     }
@@ -553,7 +553,7 @@ class QueryBuilder
      *
      * @return $this This QueryBuilder instance.
      */
-    public function distinct() : self
+    public function distinct(): self
     {
         $this->sqlParts['distinct'] = \true;
         return $this;
@@ -1116,7 +1116,7 @@ class QueryBuilder
     /**
      * @throws QueryException
      */
-    private function getSQLForSelect() : string
+    private function getSQLForSelect(): string
     {
         $query = 'SELECT ' . ($this->sqlParts['distinct'] ? 'DISTINCT ' : '') . implode(', ', $this->sqlParts['select']);
         $query .= ($this->sqlParts['from'] ? ' FROM ' . implode(', ', $this->getFromClauses()) : '') . ($this->sqlParts['where'] !== null ? ' WHERE ' . (string) $this->sqlParts['where'] : '') . ($this->sqlParts['groupBy'] ? ' GROUP BY ' . implode(', ', $this->sqlParts['groupBy']) : '') . ($this->sqlParts['having'] !== null ? ' HAVING ' . (string) $this->sqlParts['having'] : '') . ($this->sqlParts['orderBy'] ? ' ORDER BY ' . implode(', ', $this->sqlParts['orderBy']) : '');
@@ -1130,7 +1130,7 @@ class QueryBuilder
      *
      * @throws QueryException
      */
-    private function getFromClauses() : array
+    private function getFromClauses(): array
     {
         $fromClauses = [];
         $knownAliases = [];
@@ -1154,7 +1154,7 @@ class QueryBuilder
      *
      * @throws QueryException
      */
-    private function verifyAllAliasesAreKnown(array $knownAliases) : void
+    private function verifyAllAliasesAreKnown(array $knownAliases): void
     {
         foreach ($this->sqlParts['join'] as $fromAlias => $joins) {
             if (!isset($knownAliases[$fromAlias])) {
@@ -1162,21 +1162,21 @@ class QueryBuilder
             }
         }
     }
-    private function isLimitQuery() : bool
+    private function isLimitQuery(): bool
     {
         return $this->maxResults !== null || $this->firstResult !== 0;
     }
     /**
      * Converts this instance into an INSERT string in SQL.
      */
-    private function getSQLForInsert() : string
+    private function getSQLForInsert(): string
     {
         return 'INSERT INTO ' . $this->sqlParts['from']['table'] . ' (' . implode(', ', array_keys($this->sqlParts['values'])) . ')' . ' VALUES(' . implode(', ', $this->sqlParts['values']) . ')';
     }
     /**
      * Converts this instance into an UPDATE string in SQL.
      */
-    private function getSQLForUpdate() : string
+    private function getSQLForUpdate(): string
     {
         $table = $this->sqlParts['from']['table'] . ($this->sqlParts['from']['alias'] ? ' ' . $this->sqlParts['from']['alias'] : '');
         return 'UPDATE ' . $table . ' SET ' . implode(', ', $this->sqlParts['set']) . ($this->sqlParts['where'] !== null ? ' WHERE ' . (string) $this->sqlParts['where'] : '');
@@ -1184,7 +1184,7 @@ class QueryBuilder
     /**
      * Converts this instance into a DELETE string in SQL.
      */
-    private function getSQLForDelete() : string
+    private function getSQLForDelete(): string
     {
         $table = $this->sqlParts['from']['table'] . ($this->sqlParts['from']['alias'] ? ' ' . $this->sqlParts['from']['alias'] : '');
         return 'DELETE FROM ' . $table . ($this->sqlParts['where'] !== null ? ' WHERE ' . (string) $this->sqlParts['where'] : '');
@@ -1268,7 +1268,7 @@ class QueryBuilder
      *
      * @throws QueryException
      */
-    private function getSQLForJoins($fromAlias, array &$knownAliases) : string
+    private function getSQLForJoins($fromAlias, array &$knownAliases): string
     {
         $sql = '';
         if (isset($this->sqlParts['join'][$fromAlias])) {

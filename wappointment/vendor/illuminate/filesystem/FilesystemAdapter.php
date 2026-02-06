@@ -67,11 +67,11 @@ class FilesystemAdapter implements CloudFilesystemContract
      */
     public function assertExists($path, $content = null)
     {
-        \clearstatcache();
+        clearstatcache();
         $paths = Arr::wrap($path);
         foreach ($paths as $path) {
             PHPUnit::assertTrue($this->exists($path), "Unable to find a file at path [{$path}].");
-            if (!\is_null($content)) {
+            if (!is_null($content)) {
                 $actual = $this->get($path);
                 PHPUnit::assertSame($content, $actual, "File [{$path}] was found, but content [{$actual}] does not match [{$content}].");
             }
@@ -86,7 +86,7 @@ class FilesystemAdapter implements CloudFilesystemContract
      */
     public function assertMissing($path)
     {
-        \clearstatcache();
+        clearstatcache();
         $paths = Arr::wrap($path);
         foreach ($paths as $path) {
             PHPUnit::assertFalse($this->exists($path), "Found unexpected file at path [{$path}].");
@@ -155,13 +155,13 @@ class FilesystemAdapter implements CloudFilesystemContract
     public function response($path, $name = null, array $headers = [], $disposition = 'inline')
     {
         $response = new StreamedResponse();
-        $filename = $name ?? \basename($path);
+        $filename = $name ?? basename($path);
         $disposition = $response->headers->makeDisposition($disposition, $filename, $this->fallbackName($filename));
         $response->headers->replace($headers + ['Content-Type' => $this->mimeType($path), 'Content-Length' => $this->size($path), 'Content-Disposition' => $disposition]);
-        $response->setCallback(function () use($path) {
+        $response->setCallback(function () use ($path) {
             $stream = $this->readStream($path);
-            \fpassthru($stream);
-            \fclose($stream);
+            fpassthru($stream);
+            fclose($stream);
         });
         return $response;
     }
@@ -185,7 +185,7 @@ class FilesystemAdapter implements CloudFilesystemContract
      */
     protected function fallbackName($name)
     {
-        return \str_replace('%', '', Str::ascii($name));
+        return str_replace('%', '', Str::ascii($name));
     }
     /**
      * Write the contents of a file.
@@ -197,7 +197,7 @@ class FilesystemAdapter implements CloudFilesystemContract
      */
     public function put($path, $contents, $options = [])
     {
-        $options = \is_string($options) ? ['visibility' => $options] : (array) $options;
+        $options = is_string($options) ? ['visibility' => $options] : (array) $options;
         // If the given contents is actually a file or uploaded file instance than we will
         // automatically store the file using a stream. This provides a convenient path
         // for the developer to store streams without managing them manually in code.
@@ -207,7 +207,7 @@ class FilesystemAdapter implements CloudFilesystemContract
         if ($contents instanceof StreamInterface) {
             return $this->driver->putStream($path, $contents->detach(), $options);
         }
-        return \is_resource($contents) ? $this->driver->putStream($path, $contents, $options) : $this->driver->put($path, $contents, $options);
+        return is_resource($contents) ? $this->driver->putStream($path, $contents, $options) : $this->driver->put($path, $contents, $options);
     }
     /**
      * Store the uploaded file on the disk.
@@ -219,7 +219,7 @@ class FilesystemAdapter implements CloudFilesystemContract
      */
     public function putFile($path, $file, $options = [])
     {
-        $file = \is_string($file) ? new File($file) : $file;
+        $file = is_string($file) ? new File($file) : $file;
         return $this->putFileAs($path, $file, $file->hashName(), $options);
     }
     /**
@@ -233,13 +233,13 @@ class FilesystemAdapter implements CloudFilesystemContract
      */
     public function putFileAs($path, $file, $name, $options = [])
     {
-        $stream = \fopen(\is_string($file) ? $file : $file->getRealPath(), 'r');
+        $stream = fopen(is_string($file) ? $file : $file->getRealPath(), 'r');
         // Next, we will format the path of the file and store the file using a stream since
         // they provide better performance than alternatives. Once we write the file this
         // stream will get closed automatically by us so the developer doesn't have to.
-        $result = $this->put($path = \trim($path . '/' . $name, '/'), $stream, $options);
-        if (\is_resource($stream)) {
-            \fclose($stream);
+        $result = $this->put($path = trim($path . '/' . $name, '/'), $stream, $options);
+        if (is_resource($stream)) {
+            fclose($stream);
         }
         return $result ? $path : \false;
     }
@@ -305,7 +305,7 @@ class FilesystemAdapter implements CloudFilesystemContract
      */
     public function delete($paths)
     {
-        $paths = \is_array($paths) ? $paths : \func_get_args();
+        $paths = is_array($paths) ? $paths : func_get_args();
         $success = \true;
         foreach ($paths as $path) {
             try {
@@ -384,9 +384,9 @@ class FilesystemAdapter implements CloudFilesystemContract
         if ($adapter instanceof CachedAdapter) {
             $adapter = $adapter->getAdapter();
         }
-        if (\method_exists($adapter, 'getUrl')) {
+        if (method_exists($adapter, 'getUrl')) {
             return $adapter->getUrl($path);
-        } elseif (\method_exists($this->driver, 'getUrl')) {
+        } elseif (method_exists($this->driver, 'getUrl')) {
             return $this->driver->getUrl($path);
         } elseif ($adapter instanceof AwsS3Adapter) {
             return $this->getAwsUrl($adapter, $path);
@@ -432,7 +432,7 @@ class FilesystemAdapter implements CloudFilesystemContract
         // If an explicit base URL has been set on the disk configuration then we will use
         // it as the base URL instead of the default path. This allows the developer to
         // have full control over the base path for this filesystem's generated URLs.
-        if (!\is_null($url = $this->driver->getConfig()->get('url'))) {
+        if (!is_null($url = $this->driver->getConfig()->get('url'))) {
             return $this->concatPathToUrl($url, $adapter->getPathPrefix() . $path);
         }
         return $adapter->getClient()->getObjectUrl($adapter->getBucket(), $adapter->getPathPrefix() . $path);
@@ -488,7 +488,7 @@ class FilesystemAdapter implements CloudFilesystemContract
         if ($adapter instanceof CachedAdapter) {
             $adapter = $adapter->getAdapter();
         }
-        if (\method_exists($adapter, 'getTemporaryUrl')) {
+        if (method_exists($adapter, 'getTemporaryUrl')) {
             return $adapter->getTemporaryUrl($path, $expiration, $options);
         }
         if ($this->temporaryUrlCallback) {
@@ -511,12 +511,12 @@ class FilesystemAdapter implements CloudFilesystemContract
     public function getAwsTemporaryUrl($adapter, $path, $expiration, $options)
     {
         $client = $adapter->getClient();
-        $command = $client->getCommand('GetObject', \array_merge(['Bucket' => $adapter->getBucket(), 'Key' => $adapter->getPathPrefix() . $path], $options));
+        $command = $client->getCommand('GetObject', array_merge(['Bucket' => $adapter->getBucket(), 'Key' => $adapter->getPathPrefix() . $path], $options));
         $uri = $client->createPresignedRequest($command, $expiration)->getUri();
         // If an explicit base URL has been set on the disk configuration then we will use
         // it as the base URL instead of the default path. This allows the developer to
         // have full control over the base path for this filesystem's generated URLs.
-        if (!\is_null($url = $this->driver->getConfig()->get('temporary_url'))) {
+        if (!is_null($url = $this->driver->getConfig()->get('temporary_url'))) {
             $uri = $this->replaceBaseUrl($uri, $url);
         }
         return (string) $uri;
@@ -530,7 +530,7 @@ class FilesystemAdapter implements CloudFilesystemContract
      */
     protected function concatPathToUrl($url, $path)
     {
-        return \rtrim($url, '/') . '/' . \ltrim($path, '/');
+        return rtrim($url, '/') . '/' . ltrim($path, '/');
     }
     /**
      * Replace the scheme, host and port of the given UriInterface with values from the given URL.
@@ -541,7 +541,7 @@ class FilesystemAdapter implements CloudFilesystemContract
      */
     protected function replaceBaseUrl($uri, $url)
     {
-        $parsed = \parse_url($url);
+        $parsed = parse_url($url);
         return $uri->withScheme($parsed['scheme'])->withHost($parsed['host'])->withPort($parsed['port'] ?? null);
     }
     /**
@@ -650,7 +650,7 @@ class FilesystemAdapter implements CloudFilesystemContract
      */
     protected function parseVisibility($visibility)
     {
-        if (\is_null($visibility)) {
+        if (is_null($visibility)) {
             return;
         }
         switch ($visibility) {

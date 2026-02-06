@@ -76,7 +76,7 @@ class Result
      *
      * @throws Exception
      */
-    public function fetchAllNumeric() : array
+    public function fetchAllNumeric(): array
     {
         try {
             return $this->result->fetchAllNumeric();
@@ -91,7 +91,7 @@ class Result
      *
      * @throws Exception
      */
-    public function fetchAllAssociative() : array
+    public function fetchAllAssociative(): array
     {
         try {
             return $this->result->fetchAllAssociative();
@@ -106,7 +106,7 @@ class Result
      *
      * @throws Exception
      */
-    public function fetchAllKeyValue() : array
+    public function fetchAllKeyValue(): array
     {
         $this->ensureHasKeyValue();
         $data = [];
@@ -123,7 +123,7 @@ class Result
      *
      * @throws Exception
      */
-    public function fetchAllAssociativeIndexed() : array
+    public function fetchAllAssociativeIndexed(): array
     {
         $data = [];
         foreach ($this->fetchAllAssociative() as $row) {
@@ -136,7 +136,7 @@ class Result
      *
      * @throws Exception
      */
-    public function fetchFirstColumn() : array
+    public function fetchFirstColumn(): array
     {
         try {
             return $this->result->fetchFirstColumn();
@@ -149,10 +149,10 @@ class Result
      *
      * @throws Exception
      */
-    public function iterateNumeric() : Traversable
+    public function iterateNumeric(): Traversable
     {
         while (($row = $this->fetchNumeric()) !== \false) {
-            (yield $row);
+            yield $row;
         }
     }
     /**
@@ -160,10 +160,10 @@ class Result
      *
      * @throws Exception
      */
-    public function iterateAssociative() : Traversable
+    public function iterateAssociative(): Traversable
     {
         while (($row = $this->fetchAssociative()) !== \false) {
-            (yield $row);
+            yield $row;
         }
     }
     /**
@@ -171,11 +171,11 @@ class Result
      *
      * @throws Exception
      */
-    public function iterateKeyValue() : Traversable
+    public function iterateKeyValue(): Traversable
     {
         $this->ensureHasKeyValue();
         foreach ($this->iterateNumeric() as [$key, $value]) {
-            (yield $key => $value);
+            yield $key => $value;
         }
     }
     /**
@@ -186,10 +186,10 @@ class Result
      *
      * @throws Exception
      */
-    public function iterateAssociativeIndexed() : Traversable
+    public function iterateAssociativeIndexed(): Traversable
     {
         foreach ($this->iterateAssociative() as $row) {
-            (yield array_shift($row) => $row);
+            yield array_shift($row) => $row;
         }
     }
     /**
@@ -197,16 +197,16 @@ class Result
      *
      * @throws Exception
      */
-    public function iterateColumn() : Traversable
+    public function iterateColumn(): Traversable
     {
         while (($value = $this->fetchOne()) !== \false) {
-            (yield $value);
+            yield $value;
         }
     }
     /**
      * @throws Exception
      */
-    public function rowCount() : int
+    public function rowCount(): int
     {
         try {
             return $this->result->rowCount();
@@ -217,7 +217,7 @@ class Result
     /**
      * @throws Exception
      */
-    public function columnCount() : int
+    public function columnCount(): int
     {
         try {
             return $this->result->columnCount();
@@ -225,14 +225,14 @@ class Result
             throw $this->connection->convertException($e);
         }
     }
-    public function free() : void
+    public function free(): void
     {
         $this->result->free();
     }
     /**
      * @throws Exception
      */
-    private function ensureHasKeyValue() : void
+    private function ensureHasKeyValue(): void
     {
         $columnCount = $this->columnCount();
         if ($columnCount < 2) {
@@ -262,7 +262,7 @@ class Result
         if ($mode === FetchMode::COLUMN) {
             return $this->fetchOne();
         }
-        throw new LogicException('Only fetch modes declared on Doctrine\\DBAL\\FetchMode are supported by legacy API.');
+        throw new LogicException('Only fetch modes declared on Doctrine\DBAL\FetchMode are supported by legacy API.');
     }
     /**
      * BC layer for a wide-spread use-case of old DBAL APIs
@@ -273,7 +273,7 @@ class Result
      *
      * @throws Exception
      */
-    public function fetchAll(int $mode = FetchMode::ASSOCIATIVE) : array
+    public function fetchAll(int $mode = FetchMode::ASSOCIATIVE): array
     {
         if (func_num_args() > 1) {
             throw new LogicException('Only invocations with one argument are still supported by this legacy API.');
@@ -287,6 +287,6 @@ class Result
         if ($mode === FetchMode::COLUMN) {
             return $this->fetchFirstColumn();
         }
-        throw new LogicException('Only fetch modes declared on Doctrine\\DBAL\\FetchMode are supported by legacy API.');
+        throw new LogicException('Only fetch modes declared on Doctrine\DBAL\FetchMode are supported by legacy API.');
     }
 }
