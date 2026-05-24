@@ -135,9 +135,11 @@ class Booking extends \Wappointment\Validators\HttpRequest\LegacyBooking
         }
         $this->validateService($inputs);
         $this->validateLocation($inputs);
-        $result = apply_filters('wappointment_validate_booking', \true, $inputs, $this->service, $this->location, static::$startKey, $this->staff);
-        if ($result !== \true) {
-            throw new \WappointmentException("Error Processing Request", 1);
+        if (!isset($this->service->options['slots'])) {
+            $result = apply_filters('wappointment_validate_booking', \true, $inputs, $this->service, $this->location, static::$startKey, $this->staff);
+            if ($result !== \true) {
+                throw new \WappointmentException("Error Processing Request", 1);
+            }
         }
         $this->generateValidation($inputs);
         $inputs[static::$startKey] = (int) $inputs[static::$startKey];
